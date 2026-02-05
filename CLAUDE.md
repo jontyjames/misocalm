@@ -1,6 +1,10 @@
 # Project Architecture Rules
 
 > Follow these rules to build clean, maintainable code from day one.
+>
+> **IMPORTANT:** Before building any feature, read `UX-PHILOSOPHY.md`.
+> Every screen, interaction, and piece of text must align with those principles.
+> Run the Decision Checklist at the bottom of that document before writing code.
 
 ---
 
