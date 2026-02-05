@@ -1,0 +1,305 @@
+/**
+ * Breathing Box Animation
+ * Box breathing with animated border that fills/unwinds around the perimeter
+ */
+
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+
+const PHASES = {
+  GET_READY: { name: 'Get Ready', duration: 3, countdown: true },
+  INHALE: { name: 'Breathe In', duration: 4 },
+  HOLD_IN: { name: 'Hold', duration: 4 },
+  EXHALE: { name: 'Breathe Out', duration: 4 },
+  HOLD_OUT: { name: 'Hold', duration: 4 },
+};
+
+const SEQUENCE = ['GET_READY', 'INHALE', 'HOLD_IN', 'EXHALE', 'HOLD_OUT'];
+
+export default function BreathingBox({
+  isActive = false,
+  onCycleComplete,
+  onStart,
+  size = 220,
+}) {
+  const [phase, setPhase] = useState('GET_READY');
+  const [secondCount, setSecondCount] = useState(3);
+  const [progress, setProgress] = useState(1);
+
+  const animationRef = useRef(null);
+  const phaseStartTimeRef = useRef(null);
+  const onCycleCompleteRef = useRef(onCycleComplete);
+
+  useEffect(() => {
+    onCycleCompleteRef.current = onCycleComplete;
+  }, [onCycleComplete]);
+
+  const strokeWidth = 12;
+  const padding = 2;
+  const innerSize = size - padding * 2;
+  const sideLen = innerSize - strokeWidth;
+
+  // Cosmic green color for the animated fill
+  const fillColor = '#00ff9d';
+
+  // Reset when becoming inactive
+  useEffect(() => {
+    if (!isActive) {
+      setPhase('GET_READY');
+      setSecondCount(3);
+      setProgress(1);
+      phaseStartTimeRef.current = null;
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    }
+  }, [isActive]);
+
+  // Main animation loop
+  useEffect(() => {
+    if (!isActive) return;
+
+
+    const currentPhaseData = PHASES[phase];
+    const phaseDurationMs = currentPhaseData.duration * 1000;
+    phaseStartTimeRef.current = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - phaseStartTimeRef.current;
+      const rawProgress = Math.min(elapsed / phaseDurationMs, 1);
+
+      const newProgress = currentPhaseData.countdown ? (1 - rawProgress) : rawProgress;
+      setProgress(newProgress);
+
+      const currentSecond = currentPhaseData.countdown
+        ? Math.ceil(currentPhaseData.duration - (elapsed / 1000))
+        : Math.floor(elapsed / 1000) + 1;
+
+      setSecondCount(Math.max(1, Math.min(currentSecond, currentPhaseData.duration)));
+
+      if (rawProgress >= 1) {
+        const currentIndex = SEQUENCE.indexOf(phase);
+        const nextIndex = currentIndex + 1;
+
+        if (nextIndex >= SEQUENCE.length) {
+          onCycleCompleteRef.current?.();
+          setPhase('INHALE');
+          setProgress(0);
+        } else {
+          const nextPhase = SEQUENCE[nextIndex];
+          setPhase(nextPhase);
+          setProgress(nextPhase === 'GET_READY' ? 1 : 0);
+        }
+      } else {
+        animationRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isActive, phase]);
+
+  const currentPhase = PHASES[phase];
+
+  // Calculate fill lengths for each side
+  const getFills = () => {
+    if (phase === 'GET_READY') {
+      // Countdown: progress goes from 1 to 0
+      // totalFilled goes from 4 to 0
+      const totalFilled = progress * 4;
+      return {
+        bottom: Math.min(1, Math.max(0, totalFilled)) * sideLen,
+        right: Math.min(1, Math.max(0, totalFilled - 1)) * sideLen,
+        top: Math.min(1, Math.max(0, totalFilled - 2)) * sideLen,
+        left: Math.min(1, Math.max(0, totalFilled - 3)) * sideLen,
+      };
+    }
+
+    // Breathing phases
+    const phaseIndex = SEQUENCE.indexOf(phase);
+    const fills = { left: 0, top: 0, right: 0, bottom: 0 };
+
+    // Completed sides stay filled
+    if (phaseIndex > 1) fills.left = sideLen;
+    if (phaseIndex > 2) fills.top = sideLen;
+    if (phaseIndex > 3) fills.right = sideLen;
+
+    // Current side fills with progress
+    if (phase === 'INHALE') fills.left = progress * sideLen;
+    else if (phase === 'HOLD_IN') fills.top = progress * sideLen;
+    else if (phase === 'EXHALE') fills.right = progress * sideLen;
+    else if (phase === 'HOLD_OUT') fills.bottom = progress * sideLen;
+
+    return fills;
+  };
+
+  const fills = getFills();
+
+  // Coordinates for the box corners
+  const x1 = padding + strokeWidth / 2;
+  const y1 = padding + strokeWidth / 2;
+  const x2 = x1 + sideLen;
+  const y2 = y1 + sideLen;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div
+        className="relative"
+        style={{ width: size, height: size }}
+        onClick={!isActive && onStart ? onStart : undefined}
+      >
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          className="absolute inset-0"
+        >
+          {/* Box outline */}
+          <rect
+            x={x1}
+            y={y1}
+            width={sideLen}
+            height={sideLen}
+            fill="none"
+            stroke="rgba(100, 116, 139, 0.4)"
+            strokeWidth={strokeWidth}
+          />
+
+          {/* Animated sides - cosmic green fill */}
+
+          {/* Bottom side */}
+          {fills.bottom > 0 && (
+            phase === 'GET_READY' ? (
+              <line
+                x1={x1}
+                y1={y2}
+                x2={x1 + fills.bottom}
+                y2={y2}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            ) : (
+              <line
+                x1={x2}
+                y1={y2}
+                x2={x2 - fills.bottom}
+                y2={y2}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            )
+          )}
+
+          {/* Right side */}
+          {fills.right > 0 && (
+            phase === 'GET_READY' ? (
+              <line
+                x1={x2}
+                y1={y2}
+                x2={x2}
+                y2={y2 - fills.right}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            ) : (
+              <line
+                x1={x2}
+                y1={y1}
+                x2={x2}
+                y2={y1 + fills.right}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            )
+          )}
+
+          {/* Top side */}
+          {fills.top > 0 && (
+            phase === 'GET_READY' ? (
+              <line
+                x1={x2}
+                y1={y1}
+                x2={x2 - fills.top}
+                y2={y1}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            ) : (
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x1 + fills.top}
+                y2={y1}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            )
+          )}
+
+          {/* Left side */}
+          {fills.left > 0 && (
+            phase === 'GET_READY' ? (
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x1}
+                y2={y1 + fills.left}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            ) : (
+              <line
+                x1={x1}
+                y1={y2}
+                x2={x1}
+                y2={y2 - fills.left}
+                stroke={fillColor}
+                strokeWidth={strokeWidth}
+                strokeLinecap="square"
+              />
+            )
+          )}
+        </svg>
+
+        {/* Center content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
+          {isActive ? (
+            <>
+              <span className="text-5xl font-thin text-white mb-2">
+                {secondCount}
+              </span>
+              <span className={`text-base font-light text-center px-4 ${
+                phase === 'GET_READY' ? 'text-amber-300' : 'text-cyan-300'
+              }`}>
+                {currentPhase.name}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-2xl font-thin text-white mb-1">
+                Ready
+              </span>
+              <span className="text-xs font-light text-slate-400">
+                Tap to Start
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

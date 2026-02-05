@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/* Base styles - Cosmic Serenity theme */
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+/* Phone frame styling for desktop */
+@media (min-width: 448px) {
+  body {
+    padding: 20px 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
+  }
+}
+
+/* Custom color utilities - lightened for better visibility */
+.bg-void-black {
+  background-color: #0f172a;
+}
+
+.bg-deep-space {
+  background-color: #1e293b;
+}
+
+/* Slate colors for borders and backgrounds */
+.bg-slate-900\/50 {
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+.bg-slate-800\/50 {
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+.border-slate-800 {
+  border-color: #334155;
+}
+
+.border-slate-700 {
+  border-color: #475569;
+}
+
+/* Gradient backgrounds - enhanced visibility */
+.bg-nebula-indigo {
+  background: radial-gradient(ellipse at center, rgba(99,102,241,0.4) 0%, rgba(139,92,246,0.2) 40%, transparent 70%);
+}
+
+.bg-nebula-cyan {
+  background: radial-gradient(ellipse at center, rgba(34,211,238,0.35) 0%, rgba(6,182,212,0.15) 40%, transparent 70%);
+}
+
+.bg-card-highlight {
+  background: linear-gradient(160deg, rgba(99,102,241,0.15) 0%, rgba(30,41,59,0.9) 100%);
+}
+
+.bg-primary-cta {
+  background: linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(139,92,246,0.15) 100%);
+}
+
+.bg-logo-ring {
+  background: linear-gradient(135deg, #818cf8 0%, #a855f7 50%, #22d3ee 100%);
+}
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(90deg, #67e8f9 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Starfield animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.6; }
+}
+
+.star {
+  animation: twinkle var(--duration, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Breathing animation */
+.breathing-circle {
+  transition: transform 4s ease-in-out;
+}
+
+.breathing-circle.inhale {
+  transform: scale(1.1);
+}
+
+.breathing-circle.exhale {
+  transform: scale(0.9);
+}
+
+/* Slow spin for logo */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .star,
+  .animate-spin-slow,
+  .breathing-circle {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus states for accessibility */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+/* Safe area for mobile */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Ensure text is readable */
+.text-white { color: #ffffff; }
+.text-slate-300 { color: #cbd5e1; }
+.text-slate-400 { color: #94a3b8; }
+.text-slate-500 { color: #64748b; }
+.text-slate-600 { color: #475569; }
+.text-indigo-300 { color: #a5b4fc; }
+.text-indigo-400 { color: #818cf8; }
+.text-cyan-300 { color: #67e8f9; }
+.text-cyan-400 { color: #22d3ee; }
+.text-purple-300 { color: #d8b4fe; }
+.text-purple-400 { color: #a78bfa; }
+.text-emerald-300 { color: #6ee7b7; }
+.text-emerald-400 { color: #34d399; }
+.text-amber-400 { color: #fbbf24; }
+.text-rose-400 { color: #fb7185; }
+
+/* Accent color backgrounds for buttons */
+.bg-indigo-500\/20 { background-color: rgba(99, 102, 241, 0.2); }
+.bg-cyan-500\/20 { background-color: rgba(34, 211, 238, 0.2); }
+.bg-purple-500\/20 { background-color: rgba(168, 85, 247, 0.2); }
+.bg-emerald-500\/20 { background-color: rgba(16, 185, 129, 0.2); }
+.bg-amber-500\/20 { background-color: rgba(245, 158, 11, 0.2); }
+.bg-rose-500\/20 { background-color: rgba(244, 63, 94, 0.2); }
+
+/* Accent borders */
+.border-indigo-500\/30 { border-color: rgba(99, 102, 241, 0.3); }
+.border-cyan-500\/30 { border-color: rgba(34, 211, 238, 0.3); }
+.border-purple-500\/30 { border-color: rgba(168, 85, 247, 0.3); }
+.border-emerald-500\/30 { border-color: rgba(16, 185, 129, 0.3); }
+.border-amber-500\/30 { border-color: rgba(245, 158, 11, 0.3); }
+.border-rose-500\/30 { border-color: rgba(244, 63, 94, 0.3); }
+
+/* Glow effects from spec */
+.glow-indigo { box-shadow: 0 0 60px rgba(99, 102, 241, 0.3); }
+.glow-cyan { box-shadow: 0 0 60px rgba(34, 211, 238, 0.3); }
+.glow-purple { box-shadow: 0 0 40px rgba(139, 92, 246, 0.3); }
+
+/* Premium animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Sanctuary text: wait 0.4s, fade in 0.3s, hold 0.6s, fade out 0.3s = 1.6s total */
+@keyframes sanctuary {
+  0%   { opacity: 0; }
+  25%  { opacity: 0; }  /* 0.4s delay */
+  44%  { opacity: 1; }  /* fade in by 0.7s */
+  81%  { opacity: 1; }  /* hold until 1.3s */
+  100% { opacity: 0; }  /* fade out by 1.6s */
+}
+
+/* Screen fade: wait 1.2s, then fade in over 0.4s = 1.6s total */
+@keyframes screenFade {
+  0%   { opacity: 0; }
+  75%  { opacity: 0; }  /* 1.2s delay */
+  100% { opacity: 1; }  /* fade in by 1.6s */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes progressGrow {
+  from {
+    width: 0%;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-delayed {
+  animation: fadeIn 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+}
+
+/* Words appear one at a time: 0.4s delay between welcome fadeout and first word */
+.animate-word-1 {
+  animation: fadeIn 0.3s ease-out 0.4s forwards;
+}
+
+.animate-word-2 {
+  animation: fadeIn 0.3s ease-out 0.7s forwards;
+}
+
+.animate-word-3 {
+  animation: fadeIn 0.3s ease-out 1.0s forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.animate-progress {
+  animation: progressGrow 0.8s ease-out forwards;
+}
+
+/* Staggered animation delays */
+.stagger-1 { animation-delay: 0.05s; opacity: 0; }
+.stagger-2 { animation-delay: 0.1s; opacity: 0; }
+.stagger-3 { animation-delay: 0.15s; opacity: 0; }
+.stagger-4 { animation-delay: 0.2s; opacity: 0; }
+.stagger-5 { animation-delay: 0.25s; opacity: 0; }
+.stagger-6 { animation-delay: 0.3s; opacity: 0; }
+.stagger-7 { animation-delay: 0.35s; opacity: 0; }
+.stagger-8 { animation-delay: 0.4s; opacity: 0; }
