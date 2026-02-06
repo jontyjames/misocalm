@@ -98,14 +98,34 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+      {/* Soft radial glow — lights coming on */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center 45%, rgba(139,92,246,0.12) 0%, rgba(34,211,238,0.06) 40%, transparent 70%)',
+        }}
+      />
+
       {/* Top bar — all dots complete */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="relative z-10 flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
       </div>
 
       {/* Content — centred */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
+        {/* Encouragement */}
+        <p
+          className="text-lg text-white/80 font-light mb-8"
+          style={{
+            fontFamily: "'Josefin Sans', sans-serif",
+            fontWeight: 200,
+            textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
+          }}
+        >
+          Well done for choosing this path
+        </p>
+
         {/* Logo */}
         <div className="mb-10">
           <Logo size="xl" />
@@ -119,23 +139,31 @@ export default function PlanPage() {
           Your sanctuary is ready
         </h1>
 
-        <p className="text-base text-slate-200 font-light leading-relaxed mb-3">
-          Breathing tools, trigger tracking, and<br />
-          personalised support
+        <p className="text-lg text-white/70 font-light leading-relaxed mb-3">
+          A companion for living with misophonia
         </p>
-        <p className="text-base text-indigo-400 font-light mb-10">
+        <p className="text-lg text-indigo-300 font-light mb-10">
           All here for you
         </p>
 
-        <Button
-          onClick={handleEnter}
-          loading={saving}
-          shape="pill"
-          className="w-64"
-          size="lg"
-        >
-          Enter MisoMind
-        </Button>
+        <div className="relative">
+          <div
+            className="absolute -inset-4 rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)',
+              filter: 'blur(12px)',
+            }}
+          />
+          <Button
+            onClick={handleEnter}
+            loading={saving}
+            shape="pill"
+            className="relative w-64"
+            size="lg"
+          >
+            Enter MisoMind
+          </Button>
+        </div>
       </div>
 
       {/* Disclaimer */}
