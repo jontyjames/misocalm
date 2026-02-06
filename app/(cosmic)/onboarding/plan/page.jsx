@@ -114,17 +114,24 @@ export default function PlanPage() {
 
       {/* Content — centred */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
-        {/* Encouragement */}
-        <p
-          className="text-lg text-white/80 font-light mb-10"
-          style={{
-            fontFamily: "'Josefin Sans', sans-serif",
-            fontWeight: 200,
-            textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
-          }}
-        >
-          Well done for choosing this path
-        </p>
+        {/* Encouragement — letter by letter */}
+        <div className="flex items-center justify-center flex-wrap mb-10">
+          {'Well done for choosing this path'.split('').map((char, i) => (
+            <span
+              key={i}
+              className="text-lg text-white/80 opacity-0"
+              style={{
+                fontFamily: "'Josefin Sans', sans-serif",
+                fontWeight: 200,
+                textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
+                animation: `fadeIn 0.3s ease-out ${0.4 + i * 0.04}s forwards`,
+                width: char === ' ' ? '0.4em' : undefined,
+              }}
+            >
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </div>
 
         {/* Logo */}
         <div className="mb-10">
