@@ -131,7 +131,7 @@ export default function AssessmentPage() {
               `}
             >
               <p className="text-lg text-white font-light">{option.label}</p>
-              <p className="text-sm text-slate-300 font-light mt-1">{option.description}</p>
+              <p className="text-sm text-indigo-300 font-light mt-1">{option.description}</p>
             </button>
           ))}
         </div>
