@@ -7,7 +7,7 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export const API_TIMEOUT = 10000; // 10 seconds for Supabase calls
 export const DEBOUNCE_DELAY = 300;
 
-// Default triggers ordered by most commonly reported (based on misophonia research)
+// Top 10 most commonly reported triggers (based on misophonia research)
 export const DEFAULT_TRIGGERS = [
   'Chewing',
   'Lip smacking',
@@ -18,6 +18,7 @@ export const DEFAULT_TRIGGERS = [
   'Pen clicking',
   'Throat clearing',
   'Coughing',
+  'Crunching',
 ];
 
 // Enums matching database
@@ -78,6 +79,7 @@ export const ROUTES = {
   ONBOARDING_ASSESSMENT: '/onboarding/assessment',
   ONBOARDING_PLAN: '/onboarding/plan',
   ONBOARDING_FIRST_PRACTICE: '/onboarding/first-practice',
+  ONBOARDING_TRIGGERS: '/onboarding/triggers',
   DASHBOARD: '/dashboard',
   TOOLS: '/tools',
   LOG: '/log',

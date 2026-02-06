@@ -1,43 +1,31 @@
 /**
  * MisoMind Logo Component
- * Animated gradient ring with heart icon
+ * Uses the star/waves logo image with glow effect
  */
 
-import { Heart } from 'lucide-react';
-
-export default function Logo({ size = 'md', animate = true, showText = false }) {
+export default function Logo({ size = 'md', showText = false }) {
   const sizes = {
-    sm: { ring: 'w-10 h-10', inner: 'inset-1', icon: 'w-4 h-4', text: 'text-lg' },
-    md: { ring: 'w-14 h-14', inner: 'inset-1.5', icon: 'w-6 h-6', text: 'text-2xl' },
-    lg: { ring: 'w-20 h-20', inner: 'inset-2', icon: 'w-8 h-8', text: 'text-3xl' },
-    xl: { ring: 'w-28 h-28', inner: 'inset-2.5', icon: 'w-10 h-10', text: 'text-4xl' },
+    sm: { img: 'w-8 h-8', text: 'text-lg', glow: 'drop-shadow-[0_0_15px_rgba(99,102,241,0.3)]' },
+    md: { img: 'w-12 h-12', text: 'text-2xl', glow: 'drop-shadow-[0_0_25px_rgba(99,102,241,0.3)]' },
+    lg: { img: 'w-20 h-20', text: 'text-3xl', glow: 'drop-shadow-[0_0_35px_rgba(99,102,241,0.4)]' },
+    xl: { img: 'w-44 h-44', text: 'text-4xl', glow: 'drop-shadow-[0_0_50px_rgba(99,102,241,0.4)] drop-shadow-[0_0_100px_rgba(34,211,238,0.2)]' },
   };
 
   const s = sizes[size];
 
   return (
     <div className="flex items-center gap-3">
-      <div className={`${s.ring} rounded-full relative`}>
-        {/* Animated gradient ring */}
-        <div
-          className={`
-            absolute inset-0 rounded-full bg-logo-ring
-            ${animate ? 'animate-spin-slow' : ''}
-          `}
-        />
-        {/* Inner circle with icon */}
-        <div
-          className={`
-            absolute ${s.inner} rounded-full bg-slate-950
-            flex items-center justify-center
-          `}
-        >
-          <Heart className={`${s.icon} text-cyan-300`} fill="currentColor" />
-        </div>
-      </div>
+      <img
+        src="/icons/MisoMind-logo-v1.png"
+        alt="MisoMind"
+        className={`${s.img} ${s.glow} brightness-110`}
+      />
 
       {showText && (
-        <span className={`${s.text} font-thin text-white`}>
+        <span
+          className={`${s.text} tracking-wide text-white`}
+          style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 100 }}
+        >
           MisoMind
         </span>
       )}
