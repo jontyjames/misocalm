@@ -116,7 +116,7 @@ export default function PlanPage() {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
         {/* Encouragement */}
         <p
-          className="text-lg text-white/80 font-light mb-8"
+          className="text-lg text-white/80 font-light mb-10"
           style={{
             fontFamily: "'Josefin Sans', sans-serif",
             fontWeight: 200,
