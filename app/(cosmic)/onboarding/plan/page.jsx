@@ -42,6 +42,13 @@ export default function PlanPage() {
   const { user, upsertProfile, isAuthenticated, loading: authLoading } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  // Reveal content after letter animation finishes
+  useEffect(() => {
+    const timer = setTimeout(() => setShowContent(true), 2200);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEYS.ONBOARDING_DATA);
@@ -133,43 +140,46 @@ export default function PlanPage() {
           ))}
         </div>
 
-        {/* Logo */}
-        <div className="mb-10">
-          <Logo size="xl" />
-        </div>
+        {/* Everything below fades in after letter animation */}
+        <div className={`transition-opacity duration-700 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Logo */}
+          <div className="mb-10 flex justify-center">
+            <Logo size="xl" />
+          </div>
 
-        {/* Header */}
-        <h1
-          className="text-[2rem] text-white mb-3"
-          style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, letterSpacing: '0.06em' }}
-        >
-          Your sanctuary is ready
-        </h1>
-
-        <p className="text-lg text-white/70 font-light leading-relaxed mb-3">
-          A companion for living with misophonia
-        </p>
-        <p className="text-lg text-indigo-300 font-light mb-10">
-          All here for you
-        </p>
-
-        <div className="relative">
-          <div
-            className="absolute -inset-4 rounded-full pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)',
-              filter: 'blur(12px)',
-            }}
-          />
-          <Button
-            onClick={handleEnter}
-            loading={saving}
-            shape="pill"
-            className="relative w-64"
-            size="lg"
+          {/* Header */}
+          <h1
+            className="text-[2rem] text-white mb-3"
+            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, letterSpacing: '0.06em' }}
           >
-            Enter MisoMind
-          </Button>
+            Your sanctuary is ready
+          </h1>
+
+          <p className="text-lg text-white/70 font-light leading-relaxed mb-3">
+            A companion for living with misophonia
+          </p>
+          <p className="text-lg text-indigo-300 font-light mb-10">
+            All here for you
+          </p>
+
+          <div className="relative flex justify-center">
+            <div
+              className="absolute -inset-4 rounded-full pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)',
+                filter: 'blur(12px)',
+              }}
+            />
+            <Button
+              onClick={handleEnter}
+              loading={saving}
+              shape="pill"
+              className="relative w-64"
+              size="lg"
+            >
+              Enter MisoMind
+            </Button>
+          </div>
         </div>
       </div>
 
