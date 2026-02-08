@@ -40,6 +40,9 @@ const MANTRAS = [
   "Healing isn't linear. Every step counts.",
   "You chose to be here. That's strength.",
   'We trust you. Completely.',
+  'Your nervous system is learning something new.',
+  'Stillness is not the absence of sound. It lives inside you.',
+  'What you are building here, no one can take from you.',
 ];
 
 export default function Navigation() {

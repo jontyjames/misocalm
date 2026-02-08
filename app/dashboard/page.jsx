@@ -125,7 +125,7 @@ export default function DashboardPage() {
                 style={{
                   background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.02) 42%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.02) 58%, transparent 65%)',
                   backgroundSize: '250% 100%',
-                  animation: 'shimmer 14s ease-in-out infinite',
+                  animation: 'shimmer 13s ease-in-out infinite',
                 }}
               />
               <span

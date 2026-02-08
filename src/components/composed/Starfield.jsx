@@ -7,16 +7,19 @@
 
 import { useMemo } from 'react';
 
-export default function Starfield({ count = 30 }) {
+// Prime-based durations so stars never blink in unison
+const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];
+
+export default function Starfield({ count = 37 }) {
   const stars = useMemo(() => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       delay: `${Math.random() * 3}s`,
-      duration: `${Math.random() * 2 + 2}s`,
-      size: Math.random() > 0.7 ? 'w-1 h-1' : 'w-0.5 h-0.5', // Some bigger stars
-      opacity: Math.random() * 0.5 + 0.2, // Brighter: 0.2-0.7 instead of 0.1-0.5
+      duration: `${PRIME_DURATIONS[i % PRIME_DURATIONS.length]}s`,
+      size: Math.random() > 0.7 ? 'w-1 h-1' : 'w-0.5 h-0.5',
+      opacity: Math.random() * 0.5 + 0.2,
     }));
   }, [count]);
 

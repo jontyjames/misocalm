@@ -103,6 +103,53 @@ export const ATTRIBUTION_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
+// ─── Sacred Geometry & Harmonics ───────────────────────────────────
+
+// Golden Ratio
+export const PHI = 1.618033988749895;
+
+// Phi-based spacing scale (base unit: 6px, Tesla's 3-6-9)
+// Each step ≈ previous × phi
+export const PHI_SCALE = [6, 10, 16, 26, 42, 68, 110];
+
+// Fibonacci sequence (used for animation timing in ms)
+export const FIBONACCI_TIMING = {
+  micro: 34,     // hover, micro-interactions
+  fast: 55,      // stagger delays
+  snap: 89,      // quick feedback
+  shift: 144,    // transitions
+  move: 233,     // element transitions
+  flow: 377,     // page elements
+  ease: 610,     // reveals
+  breathe: 987,  // emotional moments
+  ceremony: 1597, // page ceremonies
+  sacred: 2584,  // full sequences
+};
+
+// Solfeggio frequency-colour mapping
+// Each colour carries an intentional vibrational association
+export const SOLFEGGIO = {
+  indigo: { hz: 528, name: 'Transformation & Love', purpose: 'DNA repair, nervous system harmony' },
+  violet: { hz: 852, name: 'Returning to Spiritual Order', purpose: 'Intuition, inner knowing' },
+  cyan:   { hz: 741, name: 'Awakening & Expression', purpose: 'Solutions, self-expression' },
+  slate:  { hz: 396, name: 'Liberation from Fear', purpose: 'Grounding, safety' },
+  white:  { hz: 963, name: 'Higher Connection', purpose: 'Unity, oneness' },
+};
+
+// Sacred counts
+export const SACRED = {
+  stars: 37,        // prime
+  mantras: 23,      // prime
+  dailyMessages: 7, // sacred, prime
+  breathTechniques: 3, // Tesla's 3
+  sessionsPerTechnique: 3, // Tesla's 3
+  baseUnit: 6,      // Tesla's 6
+  seedOfLifeCircles: 7, // sacred
+};
+
+// Prime-based durations for organic rhythm (never sync mechanically)
+export const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];
+
 // Storage keys
 export const STORAGE_KEYS = {
   PENDING_EMAIL: 'misomind_pending_email',

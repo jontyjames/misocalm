@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+/* ─── Sacred Geometry Foundation ───────────────────────────────────
+ * Phi (1.618) spacing scale, Fibonacci timing, solfeggio harmonics.
+ * Base unit: 6px (Tesla's 3-6-9). Each step ≈ previous × phi.
+ */
+:root {
+  --phi: 1.618;
+  --sacred-base: 6px;
+  --phi-1: 6px;
+  --phi-2: 10px;
+  --phi-3: 16px;
+  --phi-4: 26px;
+  --phi-5: 42px;
+  --phi-6: 68px;
+  --phi-7: 110px;
+
+  /* Fibonacci timing scale (ms) */
+  --fib-micro: 34ms;
+  --fib-fast: 55ms;
+  --fib-snap: 89ms;
+  --fib-shift: 144ms;
+  --fib-move: 233ms;
+  --fib-flow: 377ms;
+  --fib-ease: 610ms;
+  --fib-breathe: 987ms;
+  --fib-ceremony: 1597ms;
+  --fib-sacred: 2584ms;
+}
+
 /* Base styles - Cosmic Serenity theme */
 html, body {
   min-height: 100vh;
@@ -223,25 +251,25 @@ body {
 @keyframes shimmer {
   0%, 100% { background-position: 200% 0; }
   50% { background-position: -200% 0; }
-}
+}  /* 13s duration (Fibonacci) applied in component */
 
 @keyframes glow-breathe {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.618;
     transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.0618);
   }
-}
+}  /* 8s duration (Fibonacci), phi-based opacity & scale */
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 610ms ease-out forwards;
 }
 
 .animate-fade-in-delayed {
-  animation: fadeIn 0.8s ease-out 0.5s forwards;
+  animation: fadeIn 987ms ease-out 610ms forwards;
   opacity: 0;
 }
 
@@ -259,23 +287,23 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out forwards;
+  animation: fadeInUp 377ms ease-out forwards;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.3s ease-out forwards;
+  animation: scaleIn 233ms ease-out forwards;
 }
 
 .animate-progress {
-  animation: progressGrow 0.8s ease-out forwards;
+  animation: progressGrow 987ms ease-out forwards;
 }
 
-/* Staggered animation delays */
-.stagger-1 { animation-delay: 0.05s; opacity: 0; }
-.stagger-2 { animation-delay: 0.1s; opacity: 0; }
-.stagger-3 { animation-delay: 0.15s; opacity: 0; }
-.stagger-4 { animation-delay: 0.2s; opacity: 0; }
-.stagger-5 { animation-delay: 0.25s; opacity: 0; }
-.stagger-6 { animation-delay: 0.3s; opacity: 0; }
-.stagger-7 { animation-delay: 0.35s; opacity: 0; }
-.stagger-8 { animation-delay: 0.4s; opacity: 0; }
+/* Staggered animation delays (55ms Fibonacci increments) */
+.stagger-1 { animation-delay: 55ms; opacity: 0; }
+.stagger-2 { animation-delay: 110ms; opacity: 0; }
+.stagger-3 { animation-delay: 165ms; opacity: 0; }
+.stagger-4 { animation-delay: 220ms; opacity: 0; }
+.stagger-5 { animation-delay: 275ms; opacity: 0; }
+.stagger-6 { animation-delay: 330ms; opacity: 0; }
+.stagger-7 { animation-delay: 385ms; opacity: 0; }
+.stagger-8 { animation-delay: 440ms; opacity: 0; }
