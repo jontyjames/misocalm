@@ -158,6 +158,15 @@ export default function BreathingCircle({
           transition: `transform ${currentPhase.transitionMs}ms ease-in-out`,
         }}
       >
+        {/* Phi outermost ring — third ring for torus cross-section */}
+        <div
+          className="absolute -inset-2 rounded-full pointer-events-none"
+          style={{
+            border: '1px solid rgba(139,92,246,0.04)',
+            background: 'radial-gradient(circle, transparent 65%, rgba(99,102,241,0.03) 100%)',
+          }}
+        />
+
         {/* Outer glow */}
         <div
           className="absolute inset-0 rounded-full"
@@ -165,6 +174,24 @@ export default function BreathingCircle({
             background: 'radial-gradient(circle, rgba(99,102,241,0.4) 0%, rgba(139,92,246,0.25) 50%, transparent 70%)',
           }}
         />
+
+        {/* Seed of Life — sacred geometry overlay, counter-rotating for torus hint */}
+        <svg
+          className="absolute inset-0 pointer-events-none seed-of-life"
+          viewBox="0 0 100 100"
+          style={{
+            opacity: 0.05,
+            animation: 'counter-rotate 89s linear infinite',
+          }}
+        >
+          <circle cx="50" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="68" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="59" cy="65.6" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="41" cy="65.6" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="32" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="41" cy="34.4" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="59" cy="34.4" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+        </svg>
 
         {/* Inner gradient ring */}
         <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-400 via-purple-500 to-cyan-400 opacity-70" />

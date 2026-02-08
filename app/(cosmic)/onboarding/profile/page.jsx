@@ -77,7 +77,7 @@ export default function ProfilePage() {
       setLoading(false);
     } else {
       setSubmitted(true);
-      setTimeout(() => router.push(ROUTES.ONBOARDING_VERIFY), 2000);
+      setTimeout(() => router.push(ROUTES.ONBOARDING_VERIFY), 1597);
     }
   };
 
@@ -92,7 +92,7 @@ export default function ProfilePage() {
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
-                animation: `fadeIn 0.3s ease-out ${i * 0.04}s forwards`,
+                animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >

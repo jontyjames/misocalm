@@ -2,9 +2,11 @@
 
 > Follow these rules to build clean, maintainable code from day one.
 >
-> **IMPORTANT:** Before building any feature, read `UX-PHILOSOPHY.md`.
+> **IMPORTANT:** Before building any feature, read `UX-PHILOSOPHY.md` and `SACRED-GEOMETRY.md`.
 > Every screen, interaction, and piece of text must align with those principles.
-> Run the Decision Checklist at the bottom of that document before writing code.
+> All timing must use Fibonacci values. All spacing must follow the phi scale.
+> All counts must be prime. All colours must match their solfeggio purpose.
+> Run the Decision Checklist at the bottom of each document before writing code.
 
 ---
 

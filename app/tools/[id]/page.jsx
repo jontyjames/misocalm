@@ -369,141 +369,160 @@ export default function ToolPage() {
               </div>
             </div>
 
-            {/* Progress dots */}
-            {!completed && selectedDuration.rounds <= 8 && (
-              <div className="mb-6">
-                <div className="flex justify-center gap-2 flex-wrap max-w-xs">
-                  {Array.from({ length: selectedDuration.rounds }, (_, i) => i + 1).map((n) => (
+            {/* Bottom section — fixed minHeight prevents circle from shifting on state change */}
+            <div className="w-full flex flex-col items-center" style={{ minHeight: '12rem' }}>
+              {/* Progress dots */}
+              {!completed && selectedDuration.rounds <= 8 && (
+                <div className="mb-4">
+                  <div className="flex justify-center gap-2 flex-wrap max-w-xs">
+                    {Array.from({ length: selectedDuration.rounds }, (_, i) => i + 1).map((n) => (
+                      <div
+                        key={n}
+                        className={`
+                          w-2.5 h-2.5 rounded-full transition-all duration-300
+                          ${cycleCount >= n
+                            ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]'
+                            : cycleCount + 1 === n
+                              ? 'bg-cyan-400/50 animate-pulse'
+                              : 'bg-slate-700'
+                          }
+                        `}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Progress bar for longer sessions */}
+              {!completed && selectedDuration.rounds > 8 && (
+                <div className="mb-4 w-full max-w-xs">
+                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                     <div
-                      key={n}
-                      className={`
-                        w-2.5 h-2.5 rounded-full transition-all duration-300
-                        ${cycleCount >= n
-                          ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]'
-                          : cycleCount + 1 === n
-                            ? 'bg-cyan-400/50 animate-pulse'
-                            : 'bg-slate-700'
-                        }
-                      `}
+                      className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 transition-all duration-500"
+                      style={{ width: `${(cycleCount / selectedDuration.rounds) * 100}%` }}
                     />
-                  ))}
+                  </div>
+                  <p className="text-xs text-slate-400 text-center mt-2">
+                    {cycleCount} of {selectedDuration.rounds} rounds
+                  </p>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Progress bar for longer sessions */}
-            {!completed && selectedDuration.rounds > 8 && (
-              <div className="mb-6 w-full max-w-xs">
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 transition-all duration-500"
-                    style={{ width: `${(cycleCount / selectedDuration.rounds) * 100}%` }}
-                  />
+              {/* Completed state */}
+              {completed && (
+                <div className="mb-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-cyan-400/15 border border-cyan-400/30 flex items-center justify-center">
+                    <Check className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <p
+                    className="text-cyan-300 font-light mb-1"
+                    style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+                  >
+                    Practice Complete
+                  </p>
+                  <p className="text-slate-400 text-sm font-light">{selectedDuration.rounds} rounds completed</p>
                 </div>
-                <p className="text-xs text-slate-400 text-center mt-2">
-                  {cycleCount} of {selectedDuration.rounds} rounds
-                </p>
-              </div>
-            )}
+              )}
 
-            {/* Completed state */}
-            {completed && (
-              <div className="mb-8 text-center">
-                <div className="text-4xl mb-2">🎉</div>
-                <p className="text-cyan-300 font-light mb-1">Practice Complete!</p>
-                <p className="text-slate-400 text-sm">{selectedDuration.rounds} rounds completed</p>
-              </div>
-            )}
+              {/* Controls — torus flow: practice → journal (integrate) → sanctuary (return to centre) */}
+              {!isActive && (
+                <div className="w-full max-w-xs space-y-3 mb-4">
+                  {completed ? (
+                    <>
+                      <Button
+                        onClick={() => router.push(ROUTES.JOURNAL)}
+                        className="w-full"
+                        size="lg"
+                      >
+                        Journal how you feel
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={() => router.push(ROUTES.DASHBOARD)}
+                        className="w-full"
+                        size="lg"
+                      >
+                        Return to sanctuary
+                      </Button>
+                      <button
+                        onClick={handleStartAnother}
+                        className="w-full text-sm text-slate-400 hover:text-white transition-colors font-light"
+                      >
+                        Practice again
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => setIsActive(true)}
+                        className="w-full"
+                        size="lg"
+                      >
+                        {cycleCount > 0 ? 'Start Again' : 'Start Practice'}
+                      </Button>
+                      {cycleCount > 0 && (
+                        <button
+                          onClick={() => setSelectedDuration(null)}
+                          className="w-full text-sm text-slate-400 hover:text-white transition-colors"
+                        >
+                          Change duration
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
 
-            {/* Controls — pinned to bottom when actively breathing */}
-            {isActive ? (
+              {/* How-to — only shown when not actively breathing */}
+              {!isActive && tool.breathType && BREATH_INSTRUCTIONS[tool.breathType] && (
+                <div className="w-full max-w-xs relative">
+                  <div className="rounded-xl bg-slate-800/30 border border-slate-700/50 overflow-hidden">
+                    <button
+                      onClick={() => setShowHowTo(!showHowTo)}
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/30 transition-colors"
+                    >
+                      <span className="text-sm text-white font-light">{BREATH_INSTRUCTIONS[tool.breathType].question}</span>
+                      <span className="flex items-center gap-2 text-xs text-indigo-400">
+                        How to do it
+                        {showHowTo
+                          ? <ChevronDown className="w-4 h-4" />
+                          : <ChevronUp className="w-4 h-4" />
+                        }
+                      </span>
+                    </button>
+                  </div>
+
+                  {showHowTo && (
+                    <div
+                      className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-sm"
+                      style={{ animation: 'fadeIn 0.3s ease-out' }}
+                    >
+                      <div className="px-4 py-4">
+                        <ul className="text-sm text-slate-300 font-light space-y-2">
+                          {BREATH_INSTRUCTIONS[tool.breathType].steps.map((step, i) => (
+                            <li key={i}>{step.text} <span className="text-cyan-400">{step.time}</span></li>
+                          ))}
+                          <li><span className="text-cyan-400">Repeat</span></li>
+                        </ul>
+                        <p className="text-sm text-slate-400 font-light mt-4 pt-3 border-t border-slate-700/50">
+                          {BREATH_INSTRUCTIONS[tool.breathType].why}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Stop — pinned to bottom during active breathing */}
+            {isActive && (
               <div className="fixed bottom-0 left-0 right-0 pb-10 pt-4 flex justify-center z-20">
                 <button
-                  onClick={() => setIsActive(false)}
+                  onClick={() => { setIsActive(false); setCycleCount(0); }}
                   className="text-sm text-slate-400 hover:text-white transition-colors font-light"
                 >
                   Stop
                 </button>
-              </div>
-            ) : (
-              <div className="w-full max-w-xs space-y-3 mb-6">
-                {completed ? (
-                  <>
-                    <Button
-                      onClick={() => router.push(ROUTES.TOOLS)}
-                      className="w-full"
-                      size="lg"
-                    >
-                      Back to Tools
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={handleStartAnother}
-                      className="w-full"
-                      size="lg"
-                    >
-                      Start Another Session
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      onClick={() => setIsActive(!isActive)}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {cycleCount > 0 ? 'Start Again' : 'Start Practice'}
-                    </Button>
-                    {cycleCount > 0 && (
-                      <button
-                        onClick={() => setSelectedDuration(null)}
-                        className="w-full text-sm text-slate-400 hover:text-white transition-colors"
-                      >
-                        Change duration
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* How-to — collapsible, hidden during active breathing */}
-            {tool.breathType && BREATH_INSTRUCTIONS[tool.breathType] && (
-              <div className={`w-full max-w-xs relative transition-opacity duration-500 ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                <div className="rounded-xl bg-slate-800/30 border border-slate-700/50 overflow-hidden">
-                  <button
-                    onClick={() => setShowHowTo(!showHowTo)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/30 transition-colors"
-                  >
-                    <span className="text-sm text-white font-light">{BREATH_INSTRUCTIONS[tool.breathType].question}</span>
-                    <span className="flex items-center gap-2 text-xs text-indigo-400">
-                      How to do it
-                      {showHowTo
-                        ? <ChevronDown className="w-4 h-4" />
-                        : <ChevronUp className="w-4 h-4" />
-                      }
-                    </span>
-                  </button>
-                </div>
-
-                {showHowTo && (
-                  <div
-                    className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-sm"
-                    style={{ animation: 'fadeIn 0.3s ease-out' }}
-                  >
-                    <div className="px-4 py-4">
-                      <ul className="text-sm text-slate-300 font-light space-y-2">
-                        {BREATH_INSTRUCTIONS[tool.breathType].steps.map((step, i) => (
-                          <li key={i}>{step.text} <span className="text-cyan-400">{step.time}</span></li>
-                        ))}
-                        <li><span className="text-cyan-400">Repeat</span></li>
-                      </ul>
-                      <p className="text-sm text-slate-400 font-light mt-4 pt-3 border-t border-slate-700/50">
-                        {BREATH_INSTRUCTIONS[tool.breathType].why}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>

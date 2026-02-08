@@ -74,7 +74,7 @@ export default function TriggersPage() {
       JSON.stringify({ ...existingData, triggers: selected })
     );
     setSubmitted(true);
-    setTimeout(() => router.push(ROUTES.ONBOARDING_PROFILE), 2000);
+    setTimeout(() => router.push(ROUTES.ONBOARDING_PROFILE), 1597);
   };
 
   const handleSkip = () => {
@@ -92,7 +92,7 @@ export default function TriggersPage() {
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
-                animation: `fadeIn 0.3s ease-out ${i * 0.04}s forwards`,
+                animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -145,7 +145,7 @@ export default function TriggersPage() {
                 key={trigger}
                 onClick={() => toggleTrigger(trigger)}
                 className={`
-                  px-4 py-2.5 rounded-full text-sm font-light transition-all duration-200
+                  px-4 py-2.5 rounded-full text-sm font-light transition-all duration-[233ms]
                   ${isSelected
                     ? 'bg-indigo-500/30 border border-indigo-400/50 text-white shadow-[0_0_12px_rgba(99,102,241,0.2)]'
                     : 'bg-slate-800/40 border border-slate-700/50 text-slate-300 hover:border-slate-600'
@@ -161,7 +161,7 @@ export default function TriggersPage() {
           {!showCustomInput && (
             <button
               onClick={() => setShowCustomInput(true)}
-              className="px-4 py-2.5 rounded-full text-sm font-light transition-all duration-200
+              className="px-4 py-2.5 rounded-full text-sm font-light transition-all duration-[233ms]
                 bg-slate-800/20 border border-dashed border-slate-700/50 text-slate-300
                 hover:border-slate-600 hover:text-slate-300 flex items-center gap-1.5"
             >
@@ -173,7 +173,7 @@ export default function TriggersPage() {
 
         {/* Custom trigger input */}
         {showCustomInput && (
-          <div className="flex items-center gap-2 max-w-xs mb-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+          <div className="flex items-center gap-2 max-w-xs mb-4" style={{ animation: 'fadeIn 0.377s ease-out' }}>
             <input
               type="text"
               value={customTrigger}

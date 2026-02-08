@@ -73,10 +73,10 @@ export default function FirstPracticePage() {
       setCompleted(false);
     } else if (feedback === 'same') {
       setFeedbackMessage("That's okay. It gets easier with practice.");
-      setTimeout(() => handleContinue(), 2000);
+      setTimeout(() => handleContinue(), 1597);
     } else if (feedback === 'calmer') {
       setFeedbackMessage('This is the power of breathwork.');
-      setTimeout(() => handleContinue(), 2000);
+      setTimeout(() => handleContinue(), 1597);
     }
   };
 
@@ -108,7 +108,7 @@ export default function FirstPracticePage() {
                     style={{
                       fontFamily: "'Josefin Sans', sans-serif",
                       fontWeight: 200,
-                      animation: `fadeIn 0.3s ease-out ${i * 0.04}s forwards`,
+                      animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                       width: char === ' ' ? '0.4em' : undefined,
                     }}
                   >
@@ -169,7 +169,7 @@ export default function FirstPracticePage() {
           /* ─── Practice Screen ─── */
           <div className="flex-1 flex flex-col items-center">
             {/* Header text — fades back when breathing is active */}
-            <div className={`text-center max-w-md w-full transition-opacity duration-500 ${isActive ? 'opacity-40' : 'opacity-100'}`}>
+            <div className={`text-center max-w-md w-full transition-opacity duration-[610ms] ${isActive ? 'opacity-40' : 'opacity-100'}`}>
               <p
                 className="text-xl text-white leading-relaxed mb-2"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
@@ -240,7 +240,7 @@ export default function FirstPracticePage() {
               </div>
 
               {/* 4-7-8 Breathing info with collapsible instructions — hidden during breathwork */}
-              <div className={`relative transition-opacity duration-500 ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <div className={`relative transition-opacity duration-[610ms] ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <div className="rounded-xl bg-slate-800/30 border border-slate-700/50 overflow-hidden">
                   <button
                     onClick={() => setShowInstructions(!showInstructions)}
@@ -260,7 +260,7 @@ export default function FirstPracticePage() {
                 {showInstructions && (
                   <div
                     className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-sm"
-                    style={{ animation: 'fadeIn 0.3s ease-out' }}
+                    style={{ animation: 'fadeIn 0.377s ease-out' }}
                   >
                     <div className="px-4 py-4">
                       <ul className="text-sm text-slate-300 font-light space-y-2">

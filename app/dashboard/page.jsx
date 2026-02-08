@@ -18,7 +18,7 @@ const DAILY_MESSAGES = [
   'You showed up. That matters.',
   "Whenever you need this, it's here.",
   "A moment of calm, whenever you're ready.",
-  'Welcome back. This space was waiting for you.',
+  'Welcome back. Take what you need today.',
   'You carry more than most people see.',
   'We trust you. Completely.',
 ];
@@ -96,12 +96,13 @@ export default function DashboardPage() {
           </div>
 
           {/* Find my calm — the heart of the sanctuary */}
-          <div className="relative mb-8 w-full">
-            {/* Ambient glow — breathes slowly */}
+          <div className="relative w-full" style={{ marginBottom: '26px' }}>
+            {/* Ambient glow — toroidal field: vertically elongated, energy flows up and down */}
             <div
-              className="absolute -inset-6 rounded-3xl pointer-events-none"
+              className="absolute rounded-3xl pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.25) 0%, rgba(99,102,241,0.1) 45%, transparent 70%)',
+                top: '-2rem', bottom: '-2rem', left: '-1.5rem', right: '-1.5rem',
+                background: 'radial-gradient(ellipse 90% 140% at center, rgba(139,92,246,0.25) 0%, rgba(99,102,241,0.1) 45%, transparent 70%)',
                 filter: 'blur(24px)',
                 animation: 'glow-breathe 8s ease-in-out infinite',
               }}
@@ -148,7 +149,7 @@ export default function DashboardPage() {
           <Card
             variant="interactive"
             onClick={() => router.push(ROUTES.TOOLS)}
-            className="w-full mb-3"
+            className="w-full mb-2.5"
           >
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center shrink-0">

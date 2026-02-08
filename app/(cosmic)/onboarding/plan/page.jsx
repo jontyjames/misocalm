@@ -46,7 +46,7 @@ export default function PlanPage() {
 
   // Reveal content after letter animation finishes
   useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 2200);
+    const timer = setTimeout(() => setShowContent(true), 2584);
     return () => clearTimeout(timer);
   }, []);
 
@@ -108,7 +108,7 @@ export default function PlanPage() {
     <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: 'fadeIn 1.6s ease-out' }}>
       {/* Soft radial glow — lights coming on with content */}
       <div
-        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-[987ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}
         style={{
           background: 'radial-gradient(ellipse at center 45%, rgba(139,92,246,0.12) 0%, rgba(34,211,238,0.06) 40%, transparent 70%)',
         }}
@@ -131,7 +131,7 @@ export default function PlanPage() {
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
                 textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
-                animation: `fadeIn 0.3s ease-out ${0.4 + i * 0.04}s forwards`,
+                animation: `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -147,7 +147,7 @@ export default function PlanPage() {
             <Logo size="xl" />
           </div>
 
-          <div className={`transition-opacity duration-1200 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`transition-opacity duration-[1597ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
           {/* Header */}
           <h1
             className="text-[2rem] text-white mb-3"

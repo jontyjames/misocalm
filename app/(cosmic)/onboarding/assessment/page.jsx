@@ -82,7 +82,7 @@ export default function AssessmentPage() {
     );
 
     // Navigate after a brief moment
-    setTimeout(() => router.push(ROUTES.ONBOARDING_PLAN), 400);
+    setTimeout(() => router.push(ROUTES.ONBOARDING_PLAN), 377);
   };
 
   if (authLoading) {
@@ -123,7 +123,7 @@ export default function AssessmentPage() {
               key={option.value}
               onClick={() => handleSelect(option.value)}
               className={`
-                w-full text-left p-4 rounded-xl transition-all duration-200
+                w-full text-left p-4 rounded-xl transition-all duration-[233ms]
                 ${selected === option.value
                   ? 'bg-indigo-500/30 border border-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.2)]'
                   : 'bg-slate-800/40 border border-slate-700/50 hover:border-slate-600'
