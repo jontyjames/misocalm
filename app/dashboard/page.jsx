@@ -7,7 +7,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Settings } from 'lucide-react';
+import { Settings, BookOpen } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Card } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
@@ -15,10 +15,12 @@ import { ROUTES } from '@/lib/constants';
 
 const DAILY_MESSAGES = [
   'Your space is ready.',
-  'One breath at a time.',
-  'Your sanctuary is here whenever you need it.',
+  'You showed up. That matters.',
+  "Whenever you need this, it's here.",
   "A moment of calm, whenever you're ready.",
   'Welcome back. This space was waiting for you.',
+  'You carry more than most people see.',
+  'We trust you. Completely.',
 ];
 
 function getDailyMessage() {
@@ -93,32 +95,52 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Find my calm — main CTA */}
+          {/* Find my calm — the heart of the sanctuary */}
           <div className="relative mb-8 w-full">
+            {/* Ambient glow — breathes slowly */}
             <div
-              className="absolute -inset-3 rounded-2xl pointer-events-none"
+              className="absolute -inset-6 rounded-3xl pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, rgba(99,102,241,0.06) 50%, transparent 70%)',
-                filter: 'blur(16px)',
+                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.25) 0%, rgba(99,102,241,0.1) 45%, transparent 70%)',
+                filter: 'blur(24px)',
+                animation: 'glow-breathe 8s ease-in-out infinite',
               }}
             />
             <button
-              onClick={() => router.push('/tools/3')}
+              onClick={() => router.push('/calm')}
               className="
-                relative w-full py-5 rounded-2xl
-                border border-indigo-500/30
-                text-lg text-white
-                transition-all duration-300
-                hover:border-indigo-400/50 hover:shadow-lg hover:shadow-indigo-500/10
+                relative w-full py-8 rounded-2xl overflow-hidden
+                border border-violet-500/25
+                backdrop-blur-sm
+                transition-all duration-500
+                hover:border-violet-400/40
               "
               style={{
-                fontFamily: "'Josefin Sans', sans-serif",
-                fontWeight: 200,
-                letterSpacing: '0.04em',
-                background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)',
+                background: 'linear-gradient(160deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.1) 40%, rgba(124,58,237,0.08) 100%)',
               }}
             >
-              Find my calm
+              {/* Slow shimmer */}
+              <div
+                className="absolute inset-0 pointer-events-none rounded-2xl"
+                style={{
+                  background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.02) 42%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.02) 58%, transparent 65%)',
+                  backgroundSize: '250% 100%',
+                  animation: 'shimmer 14s ease-in-out infinite',
+                }}
+              />
+              <span
+                className="relative block text-2xl text-white mb-2"
+                style={{
+                  fontFamily: "'Josefin Sans', sans-serif",
+                  fontWeight: 400,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                Find my calm
+              </span>
+              <span className="relative block text-sm text-slate-300 font-light">
+                A guided breathing practice, ready when you are
+              </span>
             </button>
           </div>
 
@@ -126,7 +148,7 @@ export default function DashboardPage() {
           <Card
             variant="interactive"
             onClick={() => router.push(ROUTES.TOOLS)}
-            className="w-full"
+            className="w-full mb-3"
           >
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center shrink-0">
@@ -135,6 +157,23 @@ export default function DashboardPage() {
               <div className="flex-1 min-w-0 text-left">
                 <h3 className="text-white font-light mb-0.5">Today's Practice</h3>
                 <p className="text-sm text-slate-400 font-light">4-7-8 Breathing · 5 min</p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Journal a response */}
+          <Card
+            variant="interactive"
+            onClick={() => router.push(ROUTES.JOURNAL)}
+            className="w-full"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5 text-violet-400" />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <h3 className="text-white font-light mb-0.5">Journal a Response</h3>
+                <p className="text-sm text-slate-400 font-light">Log a misophonia moment</p>
               </div>
             </div>
           </Card>

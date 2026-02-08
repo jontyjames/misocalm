@@ -170,18 +170,22 @@ export default function FirstPracticePage() {
           <div className="flex-1 flex flex-col items-center">
             {/* Header text — fades back when breathing is active */}
             <div className={`text-center max-w-md w-full transition-opacity duration-500 ${isActive ? 'opacity-40' : 'opacity-100'}`}>
-              <h1
-                className="text-2xl text-white mb-2"
+              <p
+                className="text-xl text-white leading-relaxed mb-2"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
               >
-                Let's breathe together
+                Controlled breathing helps you find calm<br />
+                when sounds feel too much
+              </p>
+              <p className="text-sm text-indigo-300 font-light mb-4">
+                So let's try a practice now
+              </p>
+              <h1
+                className="text-lg text-slate-200"
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+              >
+                Introducing the 4-7-8 breathing technique
               </h1>
-              <p className="text-sm text-slate-400 font-light mb-1">
-                Your first practice — a simple path back to calm
-              </p>
-              <p className="text-base text-indigo-400 font-light">
-                The 4-7-8 breathing technique
-              </p>
             </div>
 
             {/* Breathing Circle — centred in available space */}

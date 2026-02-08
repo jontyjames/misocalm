@@ -140,13 +140,14 @@ export default function PlanPage() {
           ))}
         </div>
 
-        {/* Everything below fades in after letter animation */}
-        <div className={`transition-opacity duration-700 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-          {/* Logo */}
+        {/* Everything below fades in together after letter animation */}
+
+          {/* Logo — always visible */}
           <div className="mb-10 flex justify-center">
             <Logo size="xl" />
           </div>
 
+          <div className={`transition-opacity duration-1200 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
           {/* Header */}
           <h1
             className="text-[2rem] text-white mb-3"
@@ -180,7 +181,7 @@ export default function PlanPage() {
               Enter MisoMind
             </Button>
           </div>
-        </div>
+          </div>
       </div>
 
       {/* Disclaimer */}

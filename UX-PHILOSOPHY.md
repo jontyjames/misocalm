@@ -284,6 +284,15 @@ If no, don't send it.
 
 ## Language & Tone Guide
 
+### The Way We Speak
+
+We speak to our users like we love them. Every word carries full acceptance
+of who they are and where they are in their process. We are compassionate
+about their experience, never clinical about their condition. And underneath
+everything we write is a deep, unwavering trust that they can get through this.
+
+Not hope. Trust. We already believe in them.
+
 ### Voice: Calm Companion
 Imagine someone who:
 - Has misophonia themselves
@@ -291,6 +300,7 @@ Imagine someone who:
 - Is a few steps ahead on the journey
 - Would never say "just ignore it"
 - Speaks quietly and clearly
+- Loves the person on the other side of the screen
 
 ### Words We Use
 
