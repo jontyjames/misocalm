@@ -110,31 +110,63 @@ The onboarding is the first impression. It must communicate:
 - Peak-End Rule: The experience ends on a high (personalized plan),
   so they remember the whole onboarding positively.
 
+### The Sanctuary Model
+
+The dashboard is not a control panel. It is the centre of a sanctuary.
+
+Inspired by trauma-informed design: a safe internal space with doors to
+other spaces. Each space has a purpose. You enter when you're ready. You
+leave when you choose. The centre is always here.
+
+**Spaces, not features.** Every tool in the app is framed as a space
+the user can step into — not a task to complete. Language uses "space"
+(open, soft) rather than "room" (walls, closed).
+
+| Feature | Space name | Purpose |
+|---------|-----------|---------|
+| Breathing | The Breathing Space | Find calm, ground yourself |
+| Trigger logging | The Reflection Space | Process what happened |
+| Soundscapes | The Sound Space | Immerse in calm |
+| AI companion | The Guide | A companion who walks with you |
+| Tools/learning | The Learning Space | Grow at your own pace |
+
+**Design rules:**
+- Every space has a clear doorway back to the centre (home)
+- Transitions between spaces are smooth, never jarring
+- The centre (dashboard) is minimal — a greeting, one invitation,
+  one suggestion. Nothing demands action.
+- No space should feel like a dead end
+
+**The welcome message speaks, not asks:**
+- "Your space is ready." — not "How are you feeling?"
+- The app gives before it asks. Always.
+
 ### The Daily Return
 
 Why does someone come back tomorrow?
 
-1. **In crisis:** "I'm triggered right now" — breathing in under 5 seconds
+1. **In crisis:** "I'm triggered right now" — calm in under 5 seconds
 2. **Proactive:** Morning practice, building a habit
 3. **Reflective:** Logging a trigger after the fact, seeing patterns
-4. **Curious:** "What tool should I try next?"
+4. **Curious:** "What space should I explore next?"
 
 Design the dashboard to serve ALL four reasons without clutter.
 
-### The "I'm Triggered Right Now" Flow
+### The "Find My Calm" Flow
 
-This is the killer feature. The moment of need. Getting from phone → calm
-in the shortest path possible.
+The moment of need. Getting from phone to calm in the shortest path
+possible. Framed as an empowering choice, not a cry for help.
 
 ```
-Open app → Big visible button: "I need calm now"
+Open app → "Find my calm" (prominent, warm, inviting)
          → Breathing starts immediately (no instructions screen)
          → After breathing: "What happened?" (optional log)
          → "You handled that." (validation)
+         → Doorway back to the centre
 ```
 
 This flow should be accessible from:
-- Dashboard (prominent button)
+- Dashboard (prominent invitation)
 - PWA home screen shortcut
 - Notification action (if we add notifications)
 

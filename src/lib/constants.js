@@ -83,6 +83,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   TOOLS: '/tools',
   LOG: '/log',
+  JOURNAL: '/log',
   LOG_SUCCESS: '/log/success',
   LOG_SUPPORT: '/log/support',
   CHAT: '/chat',

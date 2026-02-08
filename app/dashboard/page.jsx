@@ -1,64 +1,32 @@
 /**
- * Dashboard Page
- * Main home screen with stats and quick actions
+ * Dashboard — The Sanctuary Centre
+ * A calm, minimal home screen with one clear invitation
  */
 
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Flame, TrendingUp, MessageCircle, Plus, Music, Shield } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Card, Badge } from '@/components/ui';
+import { Card } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
-const quickActions = [
-  {
-    icon: MessageCircle,
-    label: 'AI Support',
-    subtitle: 'Chat with Miso',
-    href: ROUTES.CHAT,
-    gradient: 'from-indigo-600/30 via-indigo-500/20 to-purple-600/30',
-    iconBg: 'bg-indigo-500/30',
-    iconColor: 'text-indigo-300',
-    glowColor: 'shadow-indigo-500/20',
-    emoji: '💬'
-  },
-  {
-    icon: Plus,
-    label: 'Log Trigger',
-    subtitle: 'Track moments',
-    href: ROUTES.LOG,
-    gradient: 'from-cyan-600/30 via-cyan-500/20 to-blue-600/30',
-    iconBg: 'bg-cyan-500/30',
-    iconColor: 'text-cyan-300',
-    glowColor: 'shadow-cyan-500/20',
-    emoji: '📝'
-  },
-  {
-    icon: Music,
-    label: 'Soundscapes',
-    subtitle: 'Find calm',
-    href: ROUTES.SOUNDSCAPES,
-    gradient: 'from-purple-600/30 via-purple-500/20 to-pink-600/30',
-    iconBg: 'bg-purple-500/30',
-    iconColor: 'text-purple-300',
-    glowColor: 'shadow-purple-500/20',
-    emoji: '🎧'
-  },
-  {
-    icon: Shield,
-    label: 'Boundaries',
-    subtitle: 'Scripts & tips',
-    href: ROUTES.BOUNDARIES,
-    gradient: 'from-emerald-600/30 via-emerald-500/20 to-teal-600/30',
-    iconBg: 'bg-emerald-500/30',
-    iconColor: 'text-emerald-300',
-    glowColor: 'shadow-emerald-500/20',
-    emoji: '🛡️'
-  },
+const DAILY_MESSAGES = [
+  'Your space is ready.',
+  'One breath at a time.',
+  'Your sanctuary is here whenever you need it.',
+  "A moment of calm, whenever you're ready.",
+  'Welcome back. This space was waiting for you.',
 ];
+
+function getDailyMessage() {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
+  );
+  return DAILY_MESSAGES[dayOfYear % DAILY_MESSAGES.length];
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -78,7 +46,7 @@ export default function DashboardPage() {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
-          <Logo size="md" animate />
+          <Logo size="md" />
         </div>
       </AppLayout>
     );
@@ -86,103 +54,91 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="px-6 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <Logo size="sm" animate={false} />
-          <span className="text-xl font-thin text-white">MisoMind</span>
-        </div>
-
-        {/* Greeting */}
-        <h1 className="text-2xl font-thin text-white mb-1">
-          Welcome back, <span className="text-gradient">{profile.name}</span>
-        </h1>
-        <p className="text-slate-300 font-light mb-8">
-          How are you feeling today?
-        </p>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          {/* Streak Card */}
-          <Card variant="highlighted" className="animate-fade-in-up stagger-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Flame className="w-5 h-5 text-amber-400" />
-              <span className="text-xs text-slate-300 uppercase tracking-wider">
-                Streak
-              </span>
-            </div>
-            <div className="text-3xl font-thin text-white">0</div>
-            <div className="text-xs text-slate-400">Days</div>
-          </Card>
-
-          {/* Progress Card */}
-          <Card variant="highlighted" className="animate-fade-in-up stagger-2">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-emerald-400" />
-              <span className="text-xs text-slate-300 uppercase tracking-wider">
-                Progress
-              </span>
-            </div>
-            <div className="text-3xl font-thin text-white">--</div>
-            <div className="text-xs text-slate-400">Getting started</div>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <h2 className="text-lg font-light text-white mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-3 mb-8">
-          {quickActions.map((action, index) => (
-            <button
-              key={action.label}
-              onClick={() => router.push(action.href)}
-              className={`
-                relative overflow-hidden rounded-2xl p-4
-                bg-gradient-to-br ${action.gradient}
-                border border-white/10
-                hover:border-white/20 hover:shadow-lg ${action.glowColor}
-                transition-all duration-300 hover:scale-[1.02]
-                text-left group
-                animate-fade-in-up stagger-${index + 1}
-              `}
+      <div className="flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out', height: 'calc(100vh - 6rem)' }}>
+        {/* Header — pinned to top */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-end gap-2">
+            <img
+              src="/icons/MisoMind-logo-v1.png"
+              alt="MisoMind"
+              className="w-5 h-5 translate-y-[-3px]"
+            />
+            <span
+              className="text-xl text-white leading-none"
+              style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
             >
-              {/* Decorative glow */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-white/5 blur-xl group-hover:bg-white/10 transition-colors" />
-
-              {/* Emoji */}
-              <div className="text-2xl mb-3">{action.emoji}</div>
-
-              {/* Content */}
-              <h3 className="text-white font-medium text-sm mb-0.5">{action.label}</h3>
-              <p className="text-slate-400 text-xs font-light">{action.subtitle}</p>
-            </button>
-          ))}
-        </div>
-
-        {/* Today's Practice */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-light text-white">Today's Practice</h2>
+              MisoMind
+            </span>
+          </div>
           <button
-            onClick={() => router.push(ROUTES.TOOLS)}
-            className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+            onClick={() => router.push(ROUTES.PROFILE)}
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
           >
-            View all
+            <Settings className="w-5 h-5" />
           </button>
         </div>
 
-        <Card variant="interactive" onClick={() => router.push(ROUTES.TOOLS)} className="animate-fade-in-up stagger-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
-              <span className="text-2xl">🧘</span>
-            </div>
-            <div className="flex-1 min-w-0 pt-1">
-              <h3 className="text-white font-light mb-1">4-7-8 Breathing</h3>
-              <div className="flex items-center gap-2">
-                <Badge color="indigo" size="sm">Breathwork</Badge>
-                <span className="text-xs text-slate-400">5 min</span>
+        {/* Content — vertically centred */}
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          {/* Greeting */}
+          <div className="mb-10">
+            <h1
+              className="text-2xl text-white mb-2"
+              style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+            >
+              Welcome back, {profile.name}
+            </h1>
+            <p className="text-base text-slate-300 font-light">
+              {getDailyMessage()}
+            </p>
+          </div>
+
+          {/* Find my calm — main CTA */}
+          <div className="relative mb-8 w-full">
+            <div
+              className="absolute -inset-3 rounded-2xl pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, rgba(99,102,241,0.06) 50%, transparent 70%)',
+                filter: 'blur(16px)',
+              }}
+            />
+            <button
+              onClick={() => router.push('/tools/3')}
+              className="
+                relative w-full py-5 rounded-2xl
+                border border-indigo-500/30
+                text-lg text-white
+                transition-all duration-300
+                hover:border-indigo-400/50 hover:shadow-lg hover:shadow-indigo-500/10
+              "
+              style={{
+                fontFamily: "'Josefin Sans', sans-serif",
+                fontWeight: 200,
+                letterSpacing: '0.04em',
+                background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)',
+              }}
+            >
+              Find my calm
+            </button>
+          </div>
+
+          {/* Today's Practice */}
+          <Card
+            variant="interactive"
+            onClick={() => router.push(ROUTES.TOOLS)}
+            className="w-full"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center shrink-0">
+                <span className="text-xl">🫁</span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <h3 className="text-white font-light mb-0.5">Today's Practice</h3>
+                <p className="text-sm text-slate-400 font-light">4-7-8 Breathing · 5 min</p>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
     </AppLayout>
   );

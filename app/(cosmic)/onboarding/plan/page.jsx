@@ -39,7 +39,7 @@ function ProgressDots({ current, total }) {
 
 export default function PlanPage() {
   const router = useRouter();
-  const { user, upsertProfile, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, upsertProfile, refreshProfile, isAuthenticated, loading: authLoading } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -91,8 +91,8 @@ export default function PlanPage() {
     localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
     localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
 
-    // Brief delay to let auth context update before navigating
-    await new Promise((r) => setTimeout(r, 100));
+    // Refresh profile so dashboard sees onboarding_completed: true
+    await refreshProfile();
     router.push(ROUTES.DASHBOARD);
   };
 
