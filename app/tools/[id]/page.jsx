@@ -91,7 +91,7 @@ const BREATH_INSTRUCTIONS = {
   '478': {
     title: '4-7-8 Breathing',
     question: 'What is 4-7-8 breathing?',
-    context: 'Used by therapists worldwide, 4-7-8 is a foundation technique for calm and relaxation.',
+    why: 'The extended exhale activates your parasympathetic nervous system, shifting your body from stress into calm. Used by therapists worldwide.',
     steps: [
       { text: 'Breathe in through your nose for', time: '4 seconds' },
       { text: 'Hold your breath for', time: '7 seconds' },
@@ -101,7 +101,7 @@ const BREATH_INSTRUCTIONS = {
   'box': {
     title: 'Box Breathing',
     question: 'What is box breathing?',
-    context: 'Used by first responders to stay calm under pressure. The equal rhythm brings your body back to balance.',
+    why: 'The equal rhythm resets your autonomic nervous system, bringing your body back to balance. Used by first responders and Navy SEALs under pressure.',
     steps: [
       { text: 'Breathe in through your nose for', time: '4 seconds' },
       { text: 'Hold your breath for', time: '4 seconds' },
@@ -112,11 +112,11 @@ const BREATH_INSTRUCTIONS = {
   'sigh': {
     title: 'Physiological Sigh',
     question: 'What is a physiological sigh?',
-    context: 'Discovered by Stanford neuroscientists, this is the fastest known way to calm your body in real time.',
+    why: 'The double inhale reinflates the tiny air sacs in your lungs, triggering an immediate calming signal to your brain. Discovered by Stanford neuroscientists.',
     steps: [
-      { text: 'Take a deep breath in for', time: '2 seconds' },
-      { text: 'Sip in a bit more air for', time: '1 second' },
-      { text: 'Long slow exhale through mouth for', time: '6 seconds' },
+      { text: 'Deep breath in through nose for', time: '2 seconds' },
+      { text: 'Sip in more air through nose for', time: '1 second' },
+      { text: 'Slow exhale through mouth for', time: '6 seconds' },
     ],
   },
 };
@@ -165,14 +165,28 @@ export default function ToolPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
   const [tool, setTool] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [cycleCount, setCycleCount] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [showHowTo, setShowHowTo] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
+
+  // Favorites stored as array of tool IDs on user profile
+  const favoriteTools = profile?.favorite_tools || [];
+  const isFavorite = tool && favoriteTools.includes(tool.id);
+
+  const toggleFavorite = async () => {
+    if (!tool) return;
+    const current = profile?.favorite_tools || [];
+    const updated = current.includes(tool.id)
+      ? current.filter((id) => id !== tool.id)
+      : [...current, tool.id];
+    await upsertProfile({ favorite_tools: updated });
+    await refreshProfile();
+  };
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -232,7 +246,7 @@ export default function ToolPage() {
     return (
       <AppLayout>
         <div className="min-h-screen flex flex-col">
-          {/* Header */}
+          {/* Header with title */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
             <button
               onClick={() => router.push(ROUTES.TOOLS)}
@@ -240,8 +254,9 @@ export default function ToolPage() {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
+            <span className="text-white font-light">{tool.title}</span>
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={toggleFavorite}
               className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}
             >
               <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
@@ -249,7 +264,6 @@ export default function ToolPage() {
           </div>
 
           <div className="flex-1 px-4 py-6">
-            <h1 className="text-2xl font-thin text-white mb-2">{tool.title}</h1>
             <p className="text-slate-300 font-light mb-6">{tool.description}</p>
 
             {/* Breathing Instructions - Dynamic based on breath type */}
@@ -269,24 +283,31 @@ export default function ToolPage() {
             <h2 className="text-lg font-light text-white mb-4">Choose your session</h2>
 
             <div className="space-y-3">
-              {(DURATION_OPTIONS_BY_TYPE[tool.breathType] || DURATION_OPTIONS_BY_TYPE['478']).map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelectDuration(option)}
-                  className="w-full p-4 rounded-xl bg-slate-800/50 border border-slate-700
-                    hover:border-indigo-500/40 hover:bg-slate-800/70
-                    transition-all duration-150 text-left"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <p className="text-white font-light text-lg">{option.name}</p>
-                    <span className="text-sm text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full">
-                      {option.time}
-                    </span>
-                  </div>
-                  <p className="text-sm text-slate-400 mb-2">{option.description}</p>
-                  <p className="text-xs text-slate-500">{option.rounds} rounds</p>
-                </button>
-              ))}
+              {(DURATION_OPTIONS_BY_TYPE[tool.breathType] || DURATION_OPTIONS_BY_TYPE['478']).map((option, i) => {
+                const colors = [
+                  { bg: 'rgba(99,102,241,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-indigo-400 bg-indigo-400/10' },
+                  { bg: 'rgba(139,92,246,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-violet-400 bg-violet-400/10' },
+                  { bg: 'rgba(34,211,238,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-cyan-400 bg-cyan-400/10' },
+                ][i];
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelectDuration(option)}
+                    className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40
+                      transition-all duration-150 text-left"
+                    style={{ background: colors.bg, boxShadow: colors.glow }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <p className="text-white font-light text-lg">{option.name}</p>
+                      <span className={`text-sm ${colors.badge} px-2 py-0.5 rounded-full`}>
+                        {option.time}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-200 mb-2">{option.description}</p>
+                    <p className="text-xs text-slate-300">{option.rounds} rounds</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -295,7 +316,7 @@ export default function ToolPage() {
   }
 
   return (
-    <AppLayout>
+    <AppLayout showNav={!selectedDuration}>
       <div className="min-h-screen flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
@@ -307,7 +328,7 @@ export default function ToolPage() {
           </button>
           <span className="text-white font-light">{tool.title}</span>
           <button
-            onClick={() => setIsFavorite(!isFavorite)}
+            onClick={toggleFavorite}
             className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}
           >
             <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
@@ -394,46 +415,57 @@ export default function ToolPage() {
               </div>
             )}
 
-            {/* Controls */}
-            <div className="w-full max-w-xs space-y-3 mb-6">
-              {completed ? (
-                <>
-                  <Button
-                    onClick={() => router.push(ROUTES.TOOLS)}
-                    className="w-full"
-                    size="lg"
-                  >
-                    Back to Tools
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={handleStartAnother}
-                    className="w-full"
-                    size="lg"
-                  >
-                    Start Another Session
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    onClick={() => setIsActive(!isActive)}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {isActive ? 'Pause' : cycleCount > 0 ? 'Resume' : 'Start Practice'}
-                  </Button>
-                  {!isActive && cycleCount > 0 && (
-                    <button
-                      onClick={() => setSelectedDuration(null)}
-                      className="w-full text-sm text-slate-400 hover:text-white transition-colors"
+            {/* Controls — pinned to bottom when actively breathing */}
+            {isActive ? (
+              <div className="fixed bottom-0 left-0 right-0 pb-10 pt-4 flex justify-center z-20">
+                <button
+                  onClick={() => setIsActive(false)}
+                  className="text-sm text-slate-400 hover:text-white transition-colors font-light"
+                >
+                  Stop
+                </button>
+              </div>
+            ) : (
+              <div className="w-full max-w-xs space-y-3 mb-6">
+                {completed ? (
+                  <>
+                    <Button
+                      onClick={() => router.push(ROUTES.TOOLS)}
+                      className="w-full"
+                      size="lg"
                     >
-                      Change duration
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
+                      Back to Tools
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={handleStartAnother}
+                      className="w-full"
+                      size="lg"
+                    >
+                      Start Another Session
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => setIsActive(!isActive)}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {cycleCount > 0 ? 'Start Again' : 'Start Practice'}
+                    </Button>
+                    {cycleCount > 0 && (
+                      <button
+                        onClick={() => setSelectedDuration(null)}
+                        className="w-full text-sm text-slate-400 hover:text-white transition-colors"
+                      >
+                        Change duration
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
 
             {/* How-to — collapsible, hidden during active breathing */}
             {tool.breathType && BREATH_INSTRUCTIONS[tool.breathType] && (
@@ -467,7 +499,7 @@ export default function ToolPage() {
                         <li><span className="text-cyan-400">Repeat</span></li>
                       </ul>
                       <p className="text-sm text-slate-400 font-light mt-4 pt-3 border-t border-slate-700/50">
-                        {BREATH_INSTRUCTIONS[tool.breathType].context}
+                        {BREATH_INSTRUCTIONS[tool.breathType].why}
                       </p>
                     </div>
                   </div>

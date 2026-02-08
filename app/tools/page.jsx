@@ -23,6 +23,7 @@ const sampleTools = [
     level: 'basic',
     duration_minutes: 5,
     type: 'practice',
+    breathType: '478',
     completed: false,
     times_completed: 0,
   },
@@ -34,6 +35,7 @@ const sampleTools = [
     level: 'basic',
     duration_minutes: 4,
     type: 'practice',
+    breathType: 'box',
     completed: false,
     times_completed: 0,
   },
@@ -45,6 +47,7 @@ const sampleTools = [
     level: 'basic',
     duration_minutes: 2,
     type: 'practice',
+    breathType: 'sigh',
     completed: false,
     times_completed: 0,
   },
@@ -98,10 +101,11 @@ const filterTabs = ['All', 'Favorites', 'Breathwork', 'Somatic'];
 
 export default function ToolsPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
   const [activeFilter, setActiveFilter] = useState('All');
   const [tools] = useState(sampleTools);
-  const [favorites, setFavorites] = useState([]);
+
+  const favoriteTools = profile?.favorite_tools || [];
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -119,15 +123,20 @@ export default function ToolsPage() {
     return lvl || { label: level, color: 'slate' };
   };
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
+  const toggleFavorite = async (toolId) => {
+    const current = profile?.favorite_tools || [];
+    const updated = current.includes(toolId)
+      ? current.filter((id) => id !== toolId)
+      : [...current, toolId];
+    await upsertProfile({ favorite_tools: updated });
+    await refreshProfile();
   };
+
+  const isToolFavorite = (tool) => favoriteTools.includes(tool.id);
 
   const filteredTools = tools.filter((tool) => {
     if (activeFilter === 'All') return true;
-    if (activeFilter === 'Favorites') return favorites.includes(tool.id);
+    if (activeFilter === 'Favorites') return isToolFavorite(tool);
     return tool.category.toLowerCase() === activeFilter.toLowerCase();
   });
 
@@ -210,7 +219,7 @@ export default function ToolsPage() {
                 <ToolCard
                   key={tool.id}
                   tool={tool}
-                  isFavorite={favorites.includes(tool.id)}
+                  isFavorite={isToolFavorite(tool)}
                   onToggleFavorite={() => toggleFavorite(tool.id)}
                   getCategoryColor={getCategoryColor}
                 />
@@ -235,7 +244,7 @@ export default function ToolsPage() {
                   key={tool.id}
                   tool={tool}
                   locked={!canAccessIntermediate}
-                  isFavorite={favorites.includes(tool.id)}
+                  isFavorite={isToolFavorite(tool)}
                   onToggleFavorite={() => toggleFavorite(tool.id)}
                   getCategoryColor={getCategoryColor}
                 />
