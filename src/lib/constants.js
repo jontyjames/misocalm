@@ -1,5 +1,5 @@
 /**
- * MisoMind Application Constants
+ * MisoCalm Application Constants
  */
 
 // API & Timeouts
@@ -82,10 +82,11 @@ export const ROUTES = {
   ONBOARDING_TRIGGERS: '/onboarding/triggers',
   DASHBOARD: '/dashboard',
   TOOLS: '/tools',
-  LOG: '/log',
-  JOURNAL: '/log',
-  LOG_SUCCESS: '/log/success',
+  LOG: '/journal/new',
+  JOURNAL: '/journal',
+  LOG_SUCCESS: '/journal/saved',
   LOG_SUPPORT: '/log/support',
+  JOURNAL_DEEPER: '/journal/deeper',
   CHAT: '/chat',
   SOUNDSCAPES: '/soundscapes',
   BOUNDARIES: '/boundaries',
@@ -152,8 +153,8 @@ export const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];
 
 // Storage keys
 export const STORAGE_KEYS = {
-  PENDING_EMAIL: 'misomind_pending_email',
-  ONBOARDING_DATA: 'misomind_onboarding',
+  PENDING_EMAIL: 'misocalm_pending_email',
+  ONBOARDING_DATA: 'misocalm_onboarding',
 };
 
 // Misophonia Response Levels (0-10 clinical scale)

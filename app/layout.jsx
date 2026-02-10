@@ -3,13 +3,13 @@ import { AuthProvider } from '@/context/AuthContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 
 export const metadata = {
-  title: 'MisoMind - Your Companion for Thriving with Misophonia',
+  title: 'MisoCalm - Your Companion for Thriving with Misophonia',
   description: 'Track triggers, build coping skills, and find support on your misophonia journey.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'MisoMind',
+    title: 'MisoCalm',
   },
 }
 

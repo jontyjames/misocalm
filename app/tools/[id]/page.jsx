@@ -7,18 +7,18 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Clock, Star, Check, ChevronUp, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Clock, Star, Check, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Badge, Card } from '@/components/ui';
+import { Button, Badge, Card, Spinner } from '@/components/ui';
 import { AppLayout, BreathingCircle, BreathingBox } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
-// Duration options by breathing type
+// Duration options by breathing type — names reflect each technique's purpose
 const DURATION_OPTIONS_BY_TYPE = {
   '478': [
     {
       id: 'quick',
-      name: 'A Moment',
+      name: 'A Soft Reset',
       rounds: 4,
       time: '~1.5 min',
       description: 'A few breaths to bring you back to centre'
@@ -32,56 +32,56 @@ const DURATION_OPTIONS_BY_TYPE = {
     },
     {
       id: 'full',
-      name: 'Deep Practice',
+      name: 'Deep Stillness',
       rounds: 16,
       time: '~5 min',
-      description: 'A full session to find steady ground'
+      description: 'A full session to sink into calm'
     },
   ],
   'box': [
     {
       id: 'quick',
-      name: 'A Moment',
+      name: 'Finding Ground',
       rounds: 4,
       time: '~1.5 min',
-      description: 'A few breaths to bring you back to centre'
+      description: 'A few breaths to steady yourself'
     },
     {
       id: 'deep',
-      name: 'Settling In',
+      name: 'Steady State',
       rounds: 8,
       time: '~3 min',
-      description: 'Enough space to let your body fully calm'
+      description: 'Enough space to build real balance'
     },
     {
       id: 'full',
-      name: 'Deep Practice',
+      name: 'Full Anchor',
       rounds: 12,
       time: '~4 min',
-      description: 'A full session to find steady ground'
+      description: 'A full session to find unshakeable ground'
     },
   ],
   'sigh': [
     {
       id: 'quick',
-      name: 'A Moment',
+      name: 'Quick Release',
       rounds: 3,
       time: '~30 sec',
       description: 'A quick breath to take the edge off'
     },
     {
       id: 'medium',
-      name: 'Settling In',
+      name: 'Letting Go',
       rounds: 6,
       time: '~1 min',
-      description: 'Enough space to let the tension go'
+      description: 'Enough space to let the tension leave'
     },
     {
       id: 'full',
-      name: 'Deep Practice',
+      name: 'Complete Unwind',
       rounds: 10,
       time: '~1.5 min',
-      description: 'A full session to find steady ground'
+      description: 'A full session to fully release'
     },
   ],
 };
@@ -235,7 +235,7 @@ export default function ToolPage() {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
-          <div className="text-slate-300">Loading...</div>
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );
@@ -285,26 +285,37 @@ export default function ToolPage() {
             <div className="space-y-3">
               {(DURATION_OPTIONS_BY_TYPE[tool.breathType] || DURATION_OPTIONS_BY_TYPE['478']).map((option, i) => {
                 const colors = [
-                  { bg: 'rgba(99,102,241,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-indigo-400 bg-indigo-400/10' },
-                  { bg: 'rgba(139,92,246,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-violet-400 bg-violet-400/10' },
-                  { bg: 'rgba(34,211,238,0.08)', glow: '0 0 12px rgba(255,255,255,0.06)', badge: 'text-cyan-400 bg-cyan-400/10' },
+                  { color: 'rgba(99,102,241,', breathe: 'solfeggio-breathe-528 5.28s ease-in-out infinite', badge: 'text-indigo-400 bg-indigo-400/10' },
+                  { color: 'rgba(139,92,246,', breathe: 'solfeggio-breathe-852 3.7s ease-in-out infinite', badge: 'text-violet-400 bg-violet-400/10' },
+                  { color: 'rgba(34,211,238,', breathe: 'solfeggio-breathe-741 5.3s ease-in-out infinite', badge: 'text-cyan-400 bg-cyan-400/10' },
                 ][i];
                 return (
                   <button
                     key={option.id}
                     onClick={() => handleSelectDuration(option)}
-                    className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40
-                      transition-all duration-150 text-left"
-                    style={{ background: colors.bg, boxShadow: colors.glow }}
+                    className="relative w-full p-4 rounded-xl overflow-hidden border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms] text-left"
+                    style={{
+                      background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, ${colors.color}0.08) 100%)`,
+                      boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px ${colors.color}0.12), 0 4px 20px rgba(0,0,0,0.25)`,
+                    }}
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    {/* Sacred Glass overlays */}
+                    <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }} />
+                    <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
+                    <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${colors.color}0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${colors.color}0.06) 0%, transparent 60%)` }} />
+                    <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 120% 80% at 50% 50%, ${colors.color}0.08) 0%, transparent 70%)`, backgroundSize: '100% 200%', animation: colors.breathe }} />
+
+                    {/* Content */}
+                    <div className="relative flex items-start justify-between mb-2">
                       <p className="text-white font-light text-lg">{option.name}</p>
                       <span className={`text-sm ${colors.badge} px-2 py-0.5 rounded-full`}>
                         {option.time}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-200 mb-2">{option.description}</p>
-                    <p className="text-xs text-slate-300">{option.rounds} rounds</p>
+                    <div className="relative">
+                      <p className="text-sm text-slate-200 mb-2">{option.description}</p>
+                      <p className="text-xs text-slate-300">{option.rounds} rounds</p>
+                    </div>
                   </button>
                 );
               })}
@@ -344,7 +355,7 @@ export default function ToolPage() {
                 <p className="text-lg font-light text-white">
                   Round <span className="text-cyan-400">{cycleCount + 1}</span> of {selectedDuration.rounds}
                 </p>
-                <p className="text-sm text-slate-400">{selectedDuration.name}</p>
+                <p className="text-sm text-slate-300">{selectedDuration.name}</p>
               </div>
             )}
 
@@ -402,7 +413,7 @@ export default function ToolPage() {
                       style={{ width: `${(cycleCount / selectedDuration.rounds) * 100}%` }}
                     />
                   </div>
-                  <p className="text-xs text-slate-400 text-center mt-2">
+                  <p className="text-xs text-slate-300 text-center mt-2">
                     {cycleCount} of {selectedDuration.rounds} rounds
                   </p>
                 </div>
@@ -420,7 +431,7 @@ export default function ToolPage() {
                   >
                     Practice Complete
                   </p>
-                  <p className="text-slate-400 text-sm font-light">{selectedDuration.rounds} rounds completed</p>
+                  <p className="text-slate-300 text-sm font-light">{selectedDuration.rounds} rounds completed</p>
                 </div>
               )}
 
@@ -430,7 +441,7 @@ export default function ToolPage() {
                   {completed ? (
                     <>
                       <Button
-                        onClick={() => router.push(ROUTES.JOURNAL)}
+                        onClick={() => router.push(ROUTES.LOG)}
                         className="w-full"
                         size="lg"
                       >
@@ -463,7 +474,7 @@ export default function ToolPage() {
                       {cycleCount > 0 && (
                         <button
                           onClick={() => setSelectedDuration(null)}
-                          className="w-full text-sm text-slate-400 hover:text-white transition-colors"
+                          className="w-full text-sm text-slate-300 hover:text-white transition-colors"
                         >
                           Change duration
                         </button>
@@ -494,7 +505,7 @@ export default function ToolPage() {
 
                   {showHowTo && (
                     <div
-                      className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-sm"
+                      className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-xl"
                       style={{ animation: 'fadeIn 0.3s ease-out' }}
                     >
                       <div className="px-4 py-4">
@@ -528,12 +539,38 @@ export default function ToolPage() {
           </div>
         )}
 
-        {/* Placeholder for other types */}
+        {/* Coming Soon for non-practice tools */}
         {tool.type !== 'practice' && (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-slate-400">
-              {tool.type === 'video' ? 'Video player coming soon' : 'Audio player coming soon'}
+          <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+            <div
+              className="w-20 h-20 rounded-full border-2 border-violet-500/30 flex items-center justify-center mb-8"
+              style={{
+                background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
+                boxShadow: '0 0 30px rgba(139,92,246,0.15)',
+              }}
+            >
+              <Sparkles className="w-8 h-8 text-violet-400" />
+            </div>
+            <h2
+              className="text-xl text-white mb-3"
+              style={{
+                fontFamily: "'Josefin Sans', sans-serif",
+                fontWeight: 200,
+                textShadow: '0 0 20px rgba(139,92,246,0.3)',
+              }}
+            >
+              Coming soon to MisoCalm
+            </h2>
+            <p className="text-sm text-slate-300 font-light max-w-xs mb-8">
+              This tool is being carefully crafted. When it arrives, it will be here waiting for you.
             </p>
+            <button
+              onClick={() => router.push(ROUTES.TOOLS)}
+              className="px-6 py-2.5 rounded-full text-sm font-light border-2 border-white/[0.33] hover:border-white/40 text-white transition-all duration-150"
+              style={{ background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+            >
+              Back to tools
+            </button>
           </div>
         )}
       </div>

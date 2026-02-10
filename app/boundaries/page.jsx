@@ -90,7 +90,7 @@ export default function BoundariesPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" className="text-indigo-400" />
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );
@@ -111,7 +111,7 @@ export default function BoundariesPage() {
         </div>
 
         {/* Intro */}
-        <p className="text-slate-400 font-light mb-8">
+        <p className="text-slate-300 font-light mb-8">
           Ready-to-use scripts for communicating your needs with compassion.
           These are starting points—adapt them to fit your situation and voice.
         </p>
@@ -181,8 +181,8 @@ export default function BoundariesPage() {
 
                             {/* Tips */}
                             <div className="p-3 rounded-lg bg-slate-800/50">
-                              <p className="text-xs text-slate-400">
-                                <strong className="text-slate-300">Tip:</strong> {script.tips}
+                              <p className="text-xs text-slate-300">
+                                <strong className="text-slate-200">Tip:</strong> {script.tips}
                               </p>
                             </div>
                           </div>

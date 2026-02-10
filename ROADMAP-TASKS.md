@@ -1,4 +1,4 @@
-# MisoMind Development Roadmap
+# MisoCalm Development Roadmap
 
 Organized tasks from your notes, categorized by complexity.
 
@@ -32,7 +32,7 @@ Organized tasks from your notes, categorized by complexity.
 
 | Task | Description | File(s) |
 |------|-------------|---------|
-| **Attribution question** | Add "How did you find MisoMind?" question to onboarding (options: Skool community, Social media, Friend/family, Therapist, Search engine, Other) | `app/onboarding/profile/page.jsx` |
+| **Attribution question** | Add "How did you find MisoCalm?" question to onboarding (options: Skool community, Social media, Friend/family, Therapist, Search engine, Other) | `app/onboarding/profile/page.jsx` |
 
 ---
 
@@ -173,7 +173,7 @@ Organized tasks from your notes, categorized by complexity.
 
 **Share formats:**
 - Copy-to-clipboard templates formatted for Skool
-- Example: "Day 7 of my breathing practice streak! The 4-7-8 technique is becoming second nature. #MisoMindWin"
+- Example: "Day 7 of my breathing practice streak! The 4-7-8 technique is becoming second nature. #MisoCalmWin"
 - Include relevant emoji and hashtags
 
 **Implementation:**
@@ -237,12 +237,12 @@ Organized tasks from your notes, categorized by complexity.
 **Time estimate:** Strategy session
 
 **Current state:**
-- App: MisoMind
+- App: MisoCalm
 - Community: Thriving With Misophonia
 
 **Options to consider:**
-1. Keep both names (MisoMind app feeds into Thriving With Misophonia)
-2. Rename community to "MisoMind Community"
+1. Keep both names (MisoCalm app feeds into Thriving With Misophonia)
+2. Rename community to "MisoCalm Community"
 3. Rename app to "Thriving With Misophonia" (app)
 4. Create umbrella brand that houses both
 
@@ -284,7 +284,7 @@ Based on your notes, here's what's essential for launch in ~1 month:
 
 **User should feel when opening app:** Understood. That there is a way through this.
 
-**Positioning:** "MisoMind is the first app that supports Misophonia-affected people to find balance and calm in a noisy world"
+**Positioning:** "MisoCalm is the first app that supports Misophonia-affected people to find balance and calm in a noisy world"
 
 **Core tenant:** Nervous system regulation - teaching users to cultivate internal safety through basic exercises
 
@@ -292,4 +292,60 @@ Based on your notes, here's what's essential for launch in ~1 month:
 
 ---
 
+---
+
+## Ecosystem Alignment Priorities (Course + App)
+
+These priorities align MisoCalm development with the 5-stage course launch.
+
+### Phase 1: Support Stage 2 (Finding Ground)
+The course starts with regulation. The app must fully support this.
+
+| Task | Description | Priority |
+|------|-------------|----------|
+| **Butterfly tapping tool** | New somatic tool with bilateral stimulation animation and timer | HIGH |
+| **Havening tool** | Self-touch guided practice with step-by-step instructions | HIGH |
+| **Expanded physiological sigh** | Add guided variations and "in the moment" quick-access version | MEDIUM |
+| **Tool categorization by situation** | Tag tools by when to use them (crisis, daily, before sleep, after trigger) | MEDIUM |
+
+### Phase 2: Support Stage 3 (Healing the Roots)
+Guided journal prompts that walk alongside the course content.
+
+| Task | Description | Priority |
+|------|-------------|----------|
+| **Guided journal prompt sets** | Pre-written prompt sequences mapped to course stages (safety, forgiveness, inner child) | HIGH |
+| **Deeper processing flow** | Expand post-log journaling with stage-specific reflection questions | MEDIUM |
+| **AI companion stage awareness** | Miso adjusts tone/prompts based on which course stage user is in | LOW |
+
+### Phase 3: Community Bridge
+Soft introduction to the Skool community from within the app.
+
+| Task | Description | Priority |
+|------|-------------|----------|
+| **Community bridge moment** | After key milestones, gently surface "others are walking this path too" with Skool link | HIGH |
+| **Share a win flow** | Copy-to-clipboard templates for posting wins to Skool | MEDIUM |
+| **Community manifesto in app** | Display manifesto in a dedicated space (settings or about) | LOW |
+
+### Phase 4: Milestone Celebrations
+Gentle progress acknowledgment using sacred numbers.
+
+| Task | Description | Priority |
+|------|-------------|----------|
+| **Sacred number milestones** | Celebrate at divine number counts (3, 7, 11, 23, 37 practices) | HIGH |
+| **Quiet stats** | "You've shown up for yourself X times" style, visible but not pushy | MEDIUM |
+| **Stage completion markers** | Visual indicator of course stage progress (if user is on Skool) | LOW |
+
+### Phase 5: Nourishing + Thriving Features
+Later stages of the course, built as content is written.
+
+| Task | Description | Priority |
+|------|-------------|----------|
+| **Wellness check-in** | Simple daily/weekly body + mood check (not a score, a noticing) | MEDIUM |
+| **Insights dashboard** | Patterns over time: triggers, intensity trends, regulation usage | MEDIUM |
+| **Communication scripts** | Practical scripts for telling partner/parent/friend about misophonia | LOW |
+| **Progress visualization** | Visual journey from Stage 1 to 5 showing where they've been | LOW |
+
+---
+
 *Document created from notes - February 2026*
+*Updated with ecosystem alignment - February 2026*

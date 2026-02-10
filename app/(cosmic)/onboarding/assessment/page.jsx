@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Spinner } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
 const TOTAL_ONBOARDING_STEPS = 6;
@@ -88,7 +89,7 @@ export default function AssessmentPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-300 font-light">Loading...</div>
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -123,15 +124,28 @@ export default function AssessmentPage() {
               key={option.value}
               onClick={() => handleSelect(option.value)}
               className={`
-                w-full text-left p-4 rounded-xl transition-all duration-[233ms]
+                relative w-full text-left p-4 rounded-xl overflow-hidden
+                border border-white/[0.18] backdrop-blur-2xl
+                hover:border-white/30 transition-all duration-[233ms]
                 ${selected === option.value
-                  ? 'bg-indigo-500/30 border border-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.2)]'
-                  : 'bg-slate-800/40 border border-slate-700/50 hover:border-slate-600'
+                  ? '!border-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                  : ''
                 }
               `}
+              style={{
+                background: selected === option.value
+                  ? 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(99,102,241,0.15) 100%)'
+                  : 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, rgba(99,102,241,0.05) 100%)',
+                boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.25)',
+              }}
             >
-              <p className="text-lg text-white font-light">{option.label}</p>
-              <p className="text-sm text-indigo-300 font-light mt-1">{option.description}</p>
+              {/* Glass overlays */}
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)' }} />
+              <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 20%, transparent 45%)' }} />
+
+              {/* Text content above glass layers */}
+              <p className="relative text-lg text-white font-light">{option.label}</p>
+              <p className="relative text-sm text-indigo-300 font-light mt-1">{option.description}</p>
             </button>
           ))}
         </div>

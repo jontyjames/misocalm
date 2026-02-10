@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart, ChevronRight, Star, Lock, Check, X, Bell, Settings, User, Home, Plus, MessageCircle, BookOpen, Wind, Moon, Zap, TrendingUp, Gift, Search, Eye, EyeOff } from 'lucide-react';
 
-const MisoMindStyleGuide = () => {
+const MisoCalmStyleGuide = () => {
   // Color definitions
   const colors = {
     primary: [
@@ -153,12 +153,12 @@ const MisoMindStyleGuide = () => {
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-thin">MisoMind</h1>
+              <h1 className="text-3xl font-thin">MisoCalm</h1>
               <p className="text-slate-500 text-sm font-light">Design System & Style Guide</p>
             </div>
           </div>
           <p className="text-slate-400 font-light max-w-2xl">
-            Cosmic Serenity theme — A calming, ethereal dark mode design system for the MisoMind wellness application.
+            Cosmic Serenity theme — A calming, ethereal dark mode design system for the MisoCalm wellness application.
           </p>
         </div>
       </div>
@@ -646,10 +646,10 @@ const MisoMindStyleGuide = () => {
         {/* Footer */}
         <footer className="pt-8 border-t border-slate-800/50 text-center">
           <p className="text-slate-600 font-light text-sm">
-            MisoMind Design System v1.0 — Cosmic Serenity Theme
+            MisoCalm Design System v1.0 — Cosmic Serenity Theme
           </p>
           <p className="text-slate-700 text-xs mt-2">
-            Created with 💜 for the MisoMind wellness app
+            Created with 💜 for the MisoCalm wellness app
           </p>
         </footer>
       </div>
@@ -657,4 +657,4 @@ const MisoMindStyleGuide = () => {
   );
 };
 
-export default MisoMindStyleGuide;
+export default MisoCalmStyleGuide;

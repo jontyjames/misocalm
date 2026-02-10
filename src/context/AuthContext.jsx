@@ -73,9 +73,9 @@ export function AuthProvider({ children }) {
   }, [fetchProfile]);
 
   // Send magic link
-  const sendMagicLink = useCallback(async (email) => {
+  const sendMagicLink = useCallback(async (email, redirectTo) => {
     setError(null);
-    const result = await auth.sendMagicLink(email);
+    const result = await auth.sendMagicLink(email, redirectTo);
     if (result.error) {
       setError(result.error);
     }

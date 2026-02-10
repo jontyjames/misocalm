@@ -65,7 +65,7 @@ export const triggerLogService = {
     const { data, error } = await db.query((supabase) =>
       supabase
         .from('trigger_logs')
-        .select('triggers, intensity, source, created_at')
+        .select('triggers, intensity, source, created_at, body_responses, time_of_day, deeper_processing')
         .eq('user_id', userId)
         .gte('created_at', startDate.toISOString())
         .order('created_at', { ascending: false })
@@ -82,30 +82,54 @@ export const triggerLogService = {
       triggerCounts: {},
       sourceCounts: {},
       byDay: {},
+      bodyResponseCounts: {},
+      timeOfDayCounts: {},
+      triggerSourcePairs: {},
+      deeperCount: 0,
     };
 
     if (data.length > 0) {
       let totalIntensity = 0;
 
       data.forEach((log) => {
-        // Average intensity
         totalIntensity += log.intensity || 0;
 
-        // Count triggers
         if (Array.isArray(log.triggers)) {
           log.triggers.forEach((trigger) => {
             stats.triggerCounts[trigger] = (stats.triggerCounts[trigger] || 0) + 1;
+
+            // Track trigger + source pairs
+            if (log.source) {
+              const pair = `${trigger}::${log.source}`;
+              if (!stats.triggerSourcePairs[pair]) {
+                stats.triggerSourcePairs[pair] = { count: 0, totalIntensity: 0 };
+              }
+              stats.triggerSourcePairs[pair].count += 1;
+              stats.triggerSourcePairs[pair].totalIntensity += log.intensity || 0;
+            }
           });
         }
 
-        // Count sources
         if (log.source) {
           stats.sourceCounts[log.source] = (stats.sourceCounts[log.source] || 0) + 1;
         }
 
-        // Group by day
         const day = log.created_at.split('T')[0];
         stats.byDay[day] = (stats.byDay[day] || 0) + 1;
+
+        if (Array.isArray(log.body_responses)) {
+          log.body_responses.forEach((br) => {
+            stats.bodyResponseCounts[br] = (stats.bodyResponseCounts[br] || 0) + 1;
+          });
+        }
+
+        if (log.time_of_day) {
+          stats.timeOfDayCounts[log.time_of_day] = (stats.timeOfDayCounts[log.time_of_day] || 0) + 1;
+        }
+
+        if (log.deeper_processing) {
+          stats.deeperCount += 1;
+        }
       });
 
       stats.averageIntensity = Math.round((totalIntensity / data.length) * 10) / 10;

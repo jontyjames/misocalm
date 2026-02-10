@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui';
+import { Button, Input, Spinner } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
@@ -18,10 +18,32 @@ const SUBTITLE_DELAY = INTRO_TEXT.length * 0.05 + 0.3;
 
 export default function WelcomePage() {
   const router = useRouter();
-  const { isAuthenticated, hasCompletedOnboarding, loading } = useAuth();
+  const { isAuthenticated, hasCompletedOnboarding, loading, sendMagicLink } = useAuth();
   const [introStarted, setIntroStarted] = useState(false);
   const [introDone, setIntroDone] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInSending, setSignInSending] = useState(false);
+  const [signInSent, setSignInSent] = useState(false);
+  const [signInError, setSignInError] = useState(null);
+
+  const handleSignIn = async () => {
+    if (!signInEmail.trim() || signInSending) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signInEmail)) {
+      setSignInError('Please enter a valid email');
+      return;
+    }
+    setSignInSending(true);
+    setSignInError(null);
+    const { error } = await sendMagicLink(signInEmail, `${window.location.origin}/dashboard`);
+    if (error) {
+      setSignInError(error);
+      setSignInSending(false);
+    } else {
+      setSignInSent(true);
+    }
+  };
 
   // Redirect authenticated users
   useEffect(() => {
@@ -59,10 +81,8 @@ export default function WelcomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative flex flex-col items-center px-6">
-        <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '28%' }}>
-          <Logo size="xl" />
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -133,7 +153,7 @@ export default function WelcomePage() {
           className={`text-[3rem] text-white transition-all duration-1200 ease-in-out ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, letterSpacing: '0.12em' }}
         >
-          MisoMind
+          MisoCalm
         </h1>
 
         {/* Tagline — fades in after intro */}
@@ -151,6 +171,48 @@ export default function WelcomePage() {
           >
             Begin Your Journey
           </Button>
+
+          {/* Sign back in */}
+          {!showSignIn && !signInSent && (
+            <button
+              onClick={() => setShowSignIn(true)}
+              className="block mx-auto mt-5 text-sm text-slate-300 font-light hover:text-white transition-colors"
+            >
+              Already with us? Sign back in
+            </button>
+          )}
+
+          {showSignIn && !signInSent && (
+            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 0.233s ease-out' }}>
+              <Input
+                type="email"
+                placeholder="Your email address"
+                value={signInEmail}
+                onChange={(e) => setSignInEmail(e.target.value)}
+                error={signInError}
+                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+              />
+              <Button
+                onClick={handleSignIn}
+                loading={signInSending}
+                disabled={!signInEmail.trim()}
+                className="w-full mt-3"
+                size="md"
+                variant="secondary"
+              >
+                Send magic link
+              </Button>
+            </div>
+          )}
+
+          {signInSent && (
+            <p
+              className="mt-5 text-sm text-cyan-400 font-light text-center"
+              style={{ animation: 'fadeIn 0.377s ease-out' }}
+            >
+              Check your email for a magic link
+            </p>
+          )}
         </div>
       </div>
 
@@ -174,7 +236,7 @@ export default function WelcomePage() {
 
       {/* Subtle footer */}
       <div className={`absolute bottom-8 text-center transition-opacity duration-500 ${introDone && !transitioning ? 'opacity-100' : 'opacity-0'}`}>
-        <p className="text-xs text-slate-400 font-light">
+        <p className="text-xs text-slate-300 font-light">
           A Thriving With Misophonia App
         </p>
       </div>

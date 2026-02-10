@@ -1,5 +1,5 @@
 /**
- * MisoMind Checkbox Component
+ * MisoCalm Checkbox Component
  * Cosmic Serenity theme
  */
 

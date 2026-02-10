@@ -1,5 +1,5 @@
 /**
- * MisoMind Input Component
+ * MisoCalm Input Component
  * Cosmic Serenity theme - dark inputs with glowing focus
  */
 

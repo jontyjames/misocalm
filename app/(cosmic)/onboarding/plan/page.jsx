@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { userTriggerService } from '@/services';
-import { Button } from '@/components/ui';
+import { Button, Spinner } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
@@ -99,7 +99,7 @@ export default function PlanPage() {
   if (authLoading || !onboardingData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-300 font-light">Loading...</div>
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -175,10 +175,11 @@ export default function PlanPage() {
               onClick={handleEnter}
               loading={saving}
               shape="pill"
-              className="relative w-64"
+              className="relative w-64 !border-2 !border-white/[0.33] hover:!border-white/40"
               size="lg"
+              style={{ boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
             >
-              Enter MisoMind
+              Enter MisoCalm
             </Button>
           </div>
           </div>
@@ -187,7 +188,7 @@ export default function PlanPage() {
       {/* Disclaimer */}
       <div className="text-center pb-4">
         <p className="text-xs text-slate-300 font-light">
-          MisoMind is a wellness tool, not a substitute for professional support
+          MisoCalm is a wellness tool, not a substitute for professional support
         </p>
       </div>
     </div>

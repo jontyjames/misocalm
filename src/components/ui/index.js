@@ -1,5 +1,5 @@
 /**
- * UI Components - MisoMind Design System
+ * UI Components - MisoCalm Design System
  * Export all shared UI primitives
  */
 
@@ -12,3 +12,4 @@ export { default as Slider } from './Slider';
 export { default as Checkbox } from './Checkbox';
 export { default as Spinner } from './Spinner';
 export { Pagination, LoadMoreButton } from './Pagination';
+export { default as TriggerChips } from './TriggerChips';

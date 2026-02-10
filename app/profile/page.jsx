@@ -1,23 +1,34 @@
 /**
  * Profile Page
- * User settings and account management
+ * User settings, triggers, gentle stats, community
  */
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogOut, ChevronRight, Star, BarChart3, BookOpen, Download, AlertCircle, Users, ExternalLink } from 'lucide-react';
+import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Sparkles, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Card, Badge, Spinner } from '@/components/ui';
+import { useUserTriggers } from '@/hooks/useUserTriggers';
+import { useTriggerStats } from '@/hooks/useTriggerLogs';
+import { useToolStats } from '@/hooks/useTools';
+import { Button, Spinner } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
+
+const IMPACT_LABELS = {
+  mild: 'A little',
+  moderate: 'Quite a bit',
+  significant: 'Significantly',
+  unsure: 'Still figuring it out',
+};
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, profile, isAuthenticated, loading, signOut } = useAuth();
-  // TODO: Load actual triggers from database
-  const [userTriggers] = useState(['Chewing', 'Sniffing', 'Typing']);
+  const { triggers } = useUserTriggers(user?.id);
+  const { stats } = useTriggerStats(user?.id, 90);
+  const { stats: toolStats } = useToolStats(user?.id);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -34,166 +45,171 @@ export default function ProfilePage() {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" className="text-indigo-400" />
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );
   }
 
   const initial = profile.name?.charAt(0)?.toUpperCase() || '?';
+  const totalLogs = stats?.totalLogs || 0;
+  const practicesCompleted = toolStats?.totalCompletions || 0;
+  const impactLabel = IMPACT_LABELS[profile.impact_level] || null;
 
   return (
     <AppLayout>
-      <div className="px-6 py-8">
+      <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
         {/* Avatar & Name */}
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-10">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
             <span className="text-3xl font-light text-white">{initial}</span>
           </div>
-          <h1 className="text-2xl font-thin text-white mb-1">{profile.name}</h1>
-          <p className="text-slate-500">{user?.email}</p>
+          <h1
+            className="text-2xl text-white mb-1"
+            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+          >
+            {profile.name}
+          </h1>
+          <p className="text-sm text-slate-300 font-light">{user?.email}</p>
         </div>
 
-        {/* Severity Level */}
-        <Card className="mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-400 mb-1">Severity Level</p>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-thin text-white">
-                  {profile.severity_level || '--'}
-                </span>
-                <span className="text-slate-500">/10</span>
+        {/* Impact Level */}
+        {impactLabel && (
+          <button
+            onClick={() => router.push(ROUTES.ONBOARDING_ASSESSMENT)}
+            className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+            style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-slate-300 font-light mb-1">How misophonia affects you</p>
+                <p className="text-white font-light">{impactLabel}</p>
               </div>
+              <span className="text-xs text-indigo-300 font-light">Retake</span>
             </div>
-            <button
-              onClick={() => router.push(ROUTES.ONBOARDING_ASSESSMENT)}
-              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              Retake Assessment
-            </button>
-          </div>
-        </Card>
+          </button>
+        )}
 
         {/* My Triggers */}
-        <Card className="mb-4">
-          <div className="flex items-center justify-between mb-3">
+        <button
+          onClick={() => router.push('/profile/triggers')}
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+          style={{ background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+        >
+          <div className="flex items-center justify-between mb-2">
             <p className="text-white font-light">My Triggers</p>
-            <button
-              onClick={() => router.push(ROUTES.ONBOARDING_ASSESSMENT)}
-              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              Edit
-            </button>
+            <ChevronRight className="w-4 h-4 text-slate-300" />
           </div>
-          {userTriggers.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {userTriggers.map((trigger) => (
-                <Badge key={trigger} color="slate">{trigger}</Badge>
+          {triggers.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {triggers.slice(0, 7).map((trigger) => (
+                <span
+                  key={trigger}
+                  className="px-2.5 py-0.5 rounded-full text-xs font-light bg-indigo-500/15 border border-indigo-500/25 text-indigo-300"
+                >
+                  {trigger}
+                </span>
               ))}
+              {triggers.length > 7 && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-light bg-slate-800/50 border border-slate-700/50 text-slate-300">
+                  +{triggers.length - 7} more
+                </span>
+              )}
             </div>
           ) : (
-            <p className="text-sm text-slate-400 font-light">
-              No triggers set. Tap Edit to add your trigger sounds.
+            <p className="text-sm text-slate-300 font-light">
+              Tap to add your trigger sounds
             </p>
           )}
-        </Card>
+        </button>
 
-        {/* Stats */}
-        <Card className="mb-4">
-          <p className="text-white font-light mb-4">Statistics</p>
-          <div className="grid grid-cols-3 gap-4">
+        {/* Gentle Stats */}
+        <div
+          className="p-5 rounded-xl border-2 border-white/[0.33] mb-3"
+          style={{ background: 'rgba(34,211,238,0.06)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+        >
+          <div className="grid grid-cols-2 gap-6">
             <div className="text-center">
-              <BarChart3 className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
-              <p className="text-xl font-thin text-white">0</p>
-              <p className="text-xs text-slate-500">Triggers Logged</p>
+              <BookOpen className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
+              <p
+                className="text-2xl text-white mb-0.5"
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+              >
+                {totalLogs}
+              </p>
+              <p className="text-xs text-slate-300 font-light">Moments logged</p>
             </div>
             <div className="text-center">
-              <Star className="w-5 h-5 text-amber-400 mx-auto mb-2" />
-              <p className="text-xl font-thin text-white">0</p>
-              <p className="text-xs text-slate-500">Day Streak</p>
-            </div>
-            <div className="text-center">
-              <BookOpen className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
-              <p className="text-xl font-thin text-white">0</p>
-              <p className="text-xs text-slate-500">Tools Used</p>
+              <Wind className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
+              <p
+                className="text-2xl text-white mb-0.5"
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+              >
+                {practicesCompleted}
+              </p>
+              <p className="text-xs text-slate-300 font-light">Practices completed</p>
             </div>
           </div>
-        </Card>
+        </div>
 
-        {/* Favorites Link */}
-        <Card
-          onClick={() => router.push('/tools?filter=favorites')}
-          className="mb-4"
+        {/* Join Community */}
+        <button
+          onClick={() => window.open('https://www.skool.com/thriving-with-misophonia', '_blank')}
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+          style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
+              <Users className="w-5 h-5 text-indigo-400" />
+            </div>
+            <div className="flex-1 min-w-0 pt-0.5">
+              <p className="text-white font-light mb-0.5">Join Our Community</p>
+              <p className="text-sm text-slate-300 font-light">Thriving With Misophonia</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-slate-300 shrink-0 mt-3" />
+          </div>
+        </button>
+
+        {/* Export Data */}
+        <button
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-8"
+          style={{ background: 'rgba(30,41,59,0.3)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Star className="w-5 h-5 text-amber-400" />
-              <span className="text-white font-light">Favorites</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge color="slate" size="sm">0</Badge>
-              <ChevronRight className="w-5 h-5 text-slate-600" />
-            </div>
-          </div>
-        </Card>
-
-        {/* Join Community */}
-        <Card
-          variant="highlighted"
-          className="mb-4 cursor-pointer"
-          onClick={() => window.open('https://www.skool.com/thriving-with-misophonia', '_blank')}
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
-              <Users className="w-6 h-6 text-indigo-400" />
-            </div>
-            <div className="flex-1 min-w-0 pt-1">
-              <span className="text-white font-light block mb-1">Join Our Community</span>
-              <span className="text-sm text-slate-400 font-light">Thriving With Misophonia</span>
-            </div>
-            <ExternalLink className="w-5 h-5 text-indigo-400 shrink-0 mt-3" />
-          </div>
-        </Card>
-
-        {/* Export Data */}
-        <Card className="mb-4">
-          <button className="w-full flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Download className="w-5 h-5 text-slate-400" />
+              <Download className="w-5 h-5 text-slate-300" />
               <span className="text-white font-light">Export My Data</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-slate-600" />
-          </button>
-        </Card>
+            <span className="text-xs text-slate-400 font-light">Coming soon</span>
+          </div>
+        </button>
 
         {/* Sign Out */}
         <Button
           variant="danger"
           onClick={handleSignOut}
-          className="w-full mt-8"
+          className="w-full"
         >
-          <LogOut className="w-4 h-4 mr-2" />
-          Log Out
+          <span className="flex items-center justify-center gap-2">
+            <LogOut className="w-4 h-4" />
+            Log Out
+          </span>
         </Button>
 
         {/* Disclaimer */}
         <div className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
           <div className="flex gap-3">
-            <AlertCircle className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs text-slate-400 font-light leading-relaxed">
-                MisoMind is a wellness tool designed to support self-regulation and awareness.
-                It is not a substitute for professional mental health support. If you're experiencing
-                severe distress, please reach out to a qualified healthcare provider.
-              </p>
-            </div>
+            <AlertCircle className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-slate-300 font-light leading-relaxed">
+              MisoCalm is a wellness tool designed to support self-regulation and awareness.
+              It is not a substitute for professional mental health support.
+            </p>
           </div>
         </div>
 
         {/* Version */}
-        <p className="text-center text-xs text-slate-600 mt-6">
-          MisoMind v0.1.0
+        <p className="text-center text-xs text-slate-400 mt-6 font-light">
+          MisoCalm v0.1.0
         </p>
       </div>
     </AppLayout>

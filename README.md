@@ -1,4 +1,4 @@
-# MisoMind
+# MisoCalm
 
 A calming sanctuary for understanding, tracking, and healing from sound sensitivity (misophonia).
 

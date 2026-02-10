@@ -111,8 +111,8 @@ export default function Navigation() {
                   "
                 >
                   <img
-                    src="/icons/MisoMind-logo-v1.png"
-                    alt="MisoMind"
+                    src="/icons/MisoCalm-logo-v1.png"
+                    alt="MisoCalm"
                     className="w-14 h-14"
                     style={{ filter: 'drop-shadow(0 0 12px rgba(139,92,246,0.4)) drop-shadow(0 0 24px rgba(139,92,246,0.15))' }}
                   />

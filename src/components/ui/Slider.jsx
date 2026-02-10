@@ -1,5 +1,5 @@
 /**
- * MisoMind Slider Component
+ * MisoCalm Slider Component
  * Cosmic Serenity theme - gradient range slider
  */
 
@@ -73,7 +73,7 @@ export default function Slider({
       </div>
 
       {(leftLabel || rightLabel) && (
-        <div className="flex justify-between text-xs text-slate-400 font-light">
+        <div className="flex justify-between text-xs text-slate-300 font-light">
           <span>{leftLabel}</span>
           <span>{rightLabel}</span>
         </div>

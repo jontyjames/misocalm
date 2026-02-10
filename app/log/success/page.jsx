@@ -68,7 +68,7 @@ export default function LogSuccessPage() {
           <p className="text-slate-300 font-light mb-2 animate-fade-in-up stagger-2">
             You've taken an important step.
           </p>
-          <p className="text-slate-400 font-light mb-8 animate-fade-in-up stagger-3">
+          <p className="text-slate-300 font-light mb-8 animate-fade-in-up stagger-3">
             Awareness is the foundation of change. By recognizing and logging your triggers, you're building the self-understanding needed to thrive.
           </p>
 

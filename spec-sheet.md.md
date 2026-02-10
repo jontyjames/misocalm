@@ -1,9 +1,9 @@
-# MisoMind - Spec Sheet (v2 - Revised)
+# MisoCalm - Spec Sheet (v2 - Revised)
 
 ## Layer 1: Product Spec
 
 ### Problem It Solves
-People with misophonia have no dedicated tool to track their triggers, access coping techniques in the moment, or get 24/7 support when they're struggling. MisoMind provides a calming sanctuary for understanding, tracking, and healing from sound sensitivity.
+People with misophonia have no dedicated tool to track their triggers, access coping techniques in the moment, or get 24/7 support when they're struggling. MisoCalm provides a calming sanctuary for understanding, tracking, and healing from sound sensitivity.
 
 ### Users
 Adults (18-45) diagnosed with or experiencing misophonia symptoms who want to better manage their reactions, track patterns, and access evidence-based coping tools. Secondary: Family members/partners wanting to understand and support someone with misophonia.
@@ -342,18 +342,18 @@ Any of these actions updates `last_activity_date` to today and increments `curre
 ### Pages/Routes
 | Page | What's on it |
 |------|-------------|
-| `/` | **Welcome screen:** Animated logo (spinning gradient ring with heart icon), app name "MisoMind", tagline "Your sanctuary awaits", "Begin Your Journey" CTA button, starfield background |
+| `/` | **Welcome screen:** Animated logo (spinning gradient ring with heart icon), app name "MisoCalm", tagline "Your sanctuary awaits", "Begin Your Journey" CTA button, starfield background |
 | `/onboarding/profile` | **Profile setup:** Back button, "Let's get to know you" heading, name text input, email text input, privacy notice card, "Continue" button (disabled until both fields filled) |
 | `/onboarding/verify` | **Email verification:** "Check your email" heading, email icon, "We sent a magic link to {email}" text, "Resend email" link, "Use different email" link |
 | `/onboarding/assessment` | **Trigger assessment:** Back button, severity slider (1-10) with "Mild/Severe" labels and large number display, trigger selection grid (2 columns, 9 default triggers), "Add custom trigger" input with Add button, "Continue" button (disabled until ≥1 trigger selected) |
 | `/onboarding/plan` | **Plan summary:** Checkmark icon, "You're all set, {name}!" heading, personalized plan card (references severity level), feature list with checkmarks (AI support, tracking, tools, community), "Try Your First Practice" button |
 | `/onboarding/first-practice` | **Breathing intro:** "Your First Practice" heading, animated breathing circle (scales up/down with inhale/exhale), phase text ("Breathe In..."/"Breathe Out..."), Start/Pause button, breath count display, "Continue to Dashboard" button |
-| `/dashboard` | **Home screen:** Logo + "MisoMind" header, "Welcome back, {name}" greeting, 2-column stats grid (Streak card with days + flame icon, Progress card with % improvement + trend icon), 4 quick action buttons in 2x2 grid (AI Support → /chat, Log Trigger → /log, Soundscapes → /soundscapes, Boundaries → /boundaries), "Today's Practice" card with recommended tool + "View all" link |
+| `/dashboard` | **Home screen:** Logo + "MisoCalm" header, "Welcome back, {name}" greeting, 2-column stats grid (Streak card with days + flame icon, Progress card with % improvement + trend icon), 4 quick action buttons in 2x2 grid (AI Support → /chat, Log Trigger → /log, Soundscapes → /soundscapes, Boundaries → /boundaries), "Today's Practice" card with recommended tool + "View all" link |
 | `/tools` | **Tools library:** "Tools & Practices" heading, "Unlock" button (opens modal), journey progress bar with "X/2 basics completed", filter tabs (All, Favorites, Breathwork, Somatic), 3 sections: Basic Tools (green "Essential" badge), Intermediate Tools (amber "Level Up" badge, locked if basics incomplete), Advanced Tools (purple "Advanced" badge, locked with module codes). Each tool card shows: title, checkmark if completed, description, category badge, duration, type, favorite star, "Start"/"Practice Again" button, "Practiced X times" if >0 |
 | `/tools/[id]` | **Tool player:** Back button, tool title, category + duration + type badges, full description text, content area (varies by type): Practice = animated breathing/body scan with instructions, Video = embedded video player with play/pause/progress, Guided = audio player with transcript. "Mark Complete" button, "Add to Favorites" toggle |
 | `/log` | **Trigger logger:** Back button → dashboard, "Log a Trigger" heading, trigger selection grid (user's triggers from assessment), source dropdown (10 options), intensity slider (1-10), location text input (free text, placeholder "e.g., At home, in the office..."), response dropdown (6 options), "Would you like support?" checkbox, "Save Entry" button (or "Save & Get Support" if checkbox checked) |
 | `/log/support` | **Support selection:** "Choose Your Support" heading, 4 option cards stacked vertically (Breathing Technique → inline breathing exercise, Calming Mantra → shows mantra text, Soothing Soundscape → /soundscapes, Talk to AI → /chat), "I'm Good For Now" button → dashboard |
-| `/chat` | **AI chat:** Back button, header with Miso avatar (animated ring), "MisoMind AI" title, "● Online" status indicator, scrollable message list (AI messages left-aligned in slate bubble, user messages right-aligned in indigo gradient bubble), fixed bottom input bar with text input + send button, loading indicator when AI is responding |
+| `/chat` | **AI chat:** Back button, header with Miso avatar (animated ring), "MisoCalm AI" title, "● Online" status indicator, scrollable message list (AI messages left-aligned in slate bubble, user messages right-aligned in indigo gradient bubble), fixed bottom input bar with text input + send button, loading indicator when AI is responding |
 | `/soundscapes` | **Sound player:** Back button, "Sound Sanctuary" heading, 6 soundscape cards in 2-column grid (Rain, Ocean Waves, Forest, White Noise, Night Ambience, Fireplace), each card shows icon + name + duration. Tapping opens player overlay: large icon, sound name, play/pause button, volume slider, loop toggle, timer dropdown (15/30/60 min or continuous), close button |
 | `/boundaries` | **Boundary scripts:** Back button, "Gentle Boundaries" heading, intro text explaining purpose, 3 expandable accordion sections: "With Family" (3 scripts), "At Work" (3 scripts), "With Friends" (3 scripts). Each script card shows: situation title, expand arrow. Expanded shows: full script text, "Copy to clipboard" button, tips for delivery |
 | `/profile` | **User profile:** Avatar circle with initial, name, email (editable), severity level display with "Retake Assessment" link, "My Triggers" section showing selected triggers with edit option, "Favorites" count linking to /tools?filter=favorites, stats summary (total logs, streak record, tools completed), "Export My Data" button, "Log Out" button, app version |
@@ -394,10 +394,10 @@ ANTHROPIC_API_KEY=sk-ant-xxxxx
 
 # Email (Resend)
 RESEND_API_KEY=re_xxxxx
-RESEND_FROM_EMAIL=MisoMind <hello@misomind.app>
+RESEND_FROM_EMAIL=MisoCalm <hello@misocalm.app>
 
 # App Config
-NEXT_PUBLIC_APP_URL=https://misomind.app
+NEXT_PUBLIC_APP_URL=https://misocalm.app
 NEXT_PUBLIC_ENVIRONMENT=production
 ```
 

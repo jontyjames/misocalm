@@ -1,5 +1,5 @@
 /**
- * MisoMind Badge Component
+ * MisoCalm Badge Component
  * Cosmic Serenity theme - colored tags/badges
  */
 

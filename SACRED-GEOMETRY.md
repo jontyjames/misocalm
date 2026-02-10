@@ -1,18 +1,18 @@
 # Sacred Geometry & Harmonic Design System
 
 > The nervous system operates on harmonic frequencies, golden ratio proportions, and toroidal energy flow.
-> By building MisoMind on these same principles, the structure itself becomes therapeutic.
+> By building MisoCalm on these same principles, the structure itself becomes therapeutic.
 > Not decoration. Foundation.
 
 ---
 
 ## Why This Matters for Misophonia
 
-Misophonia is a nervous system disorder. The amygdala fires a threat response to specific sounds, hijacking the autonomic nervous system into fight-or-flight. Everything in MisoMind is designed to speak directly to the nervous system, beneath conscious awareness.
+Misophonia is a nervous system disorder. The amygdala fires a threat response to specific sounds, hijacking the autonomic nervous system into fight-or-flight. Everything in MisoCalm is designed to speak directly to the nervous system, beneath conscious awareness.
 
 The nervous system doesn't read text. It reads rhythm, proportion, and flow. When these align with the body's own geometry, the nervous system recognises safety. When they don't, something feels "off" even if the user can't name it.
 
-This document defines the mathematical foundation that makes MisoMind feel like a living, breathing space rather than an app.
+This document defines the mathematical foundation that makes MisoCalm feel like a living, breathing space rather than an app.
 
 ---
 
@@ -133,7 +133,7 @@ Prime numbers cannot be divided evenly by anything except 1 and themselves. This
 
 Tesla said: "If you only knew the magnificence of 3, 6, and 9, you would have a key to the universe."
 
-In MisoMind:
+In MisoCalm:
 - **3** core actions from dashboard (Find calm, Today's practice, Journal)
 - **3** breathing techniques, **3** session lengths each
 - **6px** base spacing unit (foundation of the phi scale)

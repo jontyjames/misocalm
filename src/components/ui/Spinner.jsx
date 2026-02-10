@@ -1,35 +1,69 @@
 /**
- * MisoMind Spinner Component
- * Loading indicator
+ * Neon Ring Spinner
+ * Cyan-violet rotating ring with glow
  */
 
 const sizes = {
-  sm: 'w-4 h-4',
-  md: 'w-6 h-6',
-  lg: 'w-8 h-8',
-  xl: 'w-12 h-12',
+  sm: 24,
+  md: 32,
+  lg: 44,
+  xl: 56,
 };
 
-export default function Spinner({ size = 'md', className = '' }) {
+export default function Spinner({ size = 'md' }) {
+  const s = sizes[size] || sizes.md;
+  const strokeWidth = s < 32 ? 2.5 : 3;
+  const r = (s - strokeWidth * 2) / 2;
+  const circumference = 2 * Math.PI * r;
+
   return (
-    <svg
-      className={`animate-spin ${sizes[size]} ${className}`}
-      viewBox="0 0 24 24"
-      fill="none"
+    <div
+      className="relative"
+      style={{ width: s, height: s }}
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
+      {/* Glow layer */}
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
+          filter: 'blur(8px)',
+        }}
       />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
+      <svg
+        width={s}
+        height={s}
+        viewBox={`0 0 ${s} ${s}`}
+        className="relative"
+        style={{ animation: 'spin 1.6s linear infinite' }}
+      >
+        <defs>
+          <linearGradient id={`neon-ring-${s}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(34,211,238,0.9)" />
+            <stop offset="50%" stopColor="rgba(139,92,246,0.9)" />
+            <stop offset="100%" stopColor="rgba(34,211,238,0.1)" />
+          </linearGradient>
+        </defs>
+        {/* Faint track */}
+        <circle
+          cx={s / 2}
+          cy={s / 2}
+          r={r}
+          fill="none"
+          stroke="rgba(148,163,184,0.08)"
+          strokeWidth={strokeWidth}
+        />
+        {/* Neon arc */}
+        <circle
+          cx={s / 2}
+          cy={s / 2}
+          r={r}
+          fill="none"
+          stroke={`url(#neon-ring-${s})`}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={`${circumference * 0.65} ${circumference * 0.35}`}
+        />
+      </svg>
+    </div>
   );
 }

@@ -1,22 +1,22 @@
-# MisoMind UX Philosophy
+# MisoCalm UX Philosophy
 
 > This document is the soul of MisoMind. Every feature, every screen, every word
 > should be measured against these principles. Read this before building anything.
 
 ---
 
-## What MisoMind Is
+## What MisoCalm Is
 
 A safe house. A sanctuary someone can reach for in their worst moments and find
 calm, safety, and grounding. Not a game. Not a social platform. A place that
 feels like it was built by someone who truly understands.
 
-**When someone opens MisoMind, they should feel:**
+**When someone opens MisoCalm, they should feel:**
 - Understood — "This was made for people like me"
 - Safe — "Nothing here will judge me or make me feel worse"
 - Capable — "I can handle this. I have tools."
 
-**MisoMind is NOT:**
+**MisoCalm is NOT:**
 - A clinical tool pretending to be an app
 - A gamified habit tracker with points and badges
 - A social platform where you perform wellness for others
@@ -177,14 +177,14 @@ This flow should be accessible from:
 ### Hook Loop — For Healing, Not Addiction
 
 Traditional: Trigger → Action → Variable Reward → Investment
-MisoMind version:
+MisoCalm version:
 
 - **Trigger:** Real-world misophonia moment OR gentle notification
 - **Action:** Log it, breathe, talk to Miso (always under 30 seconds to start)
 - **Reward:** Relief, insight, validation, progress
 - **Investment:** Their data, patterns, streak, personalized experience
 
-The goal is not "more screen time." The goal is "they think of MisoMind
+The goal is not "more screen time." The goal is "they think of MisoCalm
 when they need help, and it actually helps."
 
 ### Reward Design

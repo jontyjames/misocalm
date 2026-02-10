@@ -153,7 +153,7 @@ export default function ToolsPage() {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" className="text-indigo-400" />
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );
@@ -175,7 +175,7 @@ export default function ToolsPage() {
         <div className="mb-6 animate-fade-in-up">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-slate-300">Journey Progress</span>
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-slate-300">
               {completedBasics}/{totalBasics} basics completed
             </span>
           </div>
@@ -212,7 +212,7 @@ export default function ToolsPage() {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Badge color="emerald">Essential</Badge>
-              <span className="text-sm text-slate-400">Basic Tools</span>
+              <span className="text-sm text-slate-300">Basic Tools</span>
             </div>
             <div className="space-y-3">
               {basicTools.map((tool) => (
@@ -233,7 +233,7 @@ export default function ToolsPage() {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Badge color="amber">Level Up</Badge>
-              <span className="text-sm text-slate-400">Intermediate Tools</span>
+              <span className="text-sm text-slate-300">Intermediate Tools</span>
               {!canAccessIntermediate && (
                 <Lock className="w-4 h-4 text-slate-600" />
               )}
@@ -274,19 +274,19 @@ function ToolCard({ tool, locked, isFavorite, onToggleFavorite, getCategoryColor
               <Check className="w-4 h-4 text-emerald-400 shrink-0" />
             )}
           </h3>
-          <p className="text-sm text-slate-400 font-light mb-2 truncate">
+          <p className="text-sm text-slate-300 font-light mb-2 truncate">
             {tool.description}
           </p>
           <div className="flex items-center gap-3">
             <Badge color={getCategoryColor(tool.category)} size="sm">
               {tool.category}
             </Badge>
-            <span className="text-xs text-slate-400 flex items-center gap-1">
+            <span className="text-xs text-slate-300 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {tool.duration_minutes} min
             </span>
             {tool.times_completed > 0 && (
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-300">
                 {tool.times_completed}x
               </span>
             )}

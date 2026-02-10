@@ -1,5 +1,5 @@
 /**
- * MisoMind Button Component
+ * MisoCalm Button Component
  * Cosmic Serenity theme - dark mode with gradient accents
  */
 

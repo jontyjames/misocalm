@@ -1,4 +1,4 @@
-const CACHE_NAME = 'misomind-v1';
+const CACHE_NAME = 'misocalm-v1';
 const OFFLINE_URL = '/';
 
 // Assets to cache on install

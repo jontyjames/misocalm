@@ -271,6 +271,42 @@ body {
   }
 }  /* 8s duration (Fibonacci), phi-based opacity & scale */
 
+/* Solfeggio breathing glass — each frequency has its own rhythm
+   528Hz (indigo) = 5.28s, 852Hz (violet) = 3.7s (prime), 741Hz (cyan) = 5.3s (prime)
+   Torus flow: light gathers at top, flows outward and down, returns through bottom */
+@keyframes solfeggio-breathe-528 {
+  0%, 100% {
+    opacity: 0.618;
+    background-position: 50% 0%;
+  }
+  50% {
+    opacity: 1;
+    background-position: 50% 100%;
+  }
+}
+
+@keyframes solfeggio-breathe-852 {
+  0%, 100% {
+    opacity: 0.618;
+    background-position: 50% 0%;
+  }
+  50% {
+    opacity: 1;
+    background-position: 50% 100%;
+  }
+}
+
+@keyframes solfeggio-breathe-741 {
+  0%, 100% {
+    opacity: 0.618;
+    background-position: 50% 0%;
+  }
+  50% {
+    opacity: 1;
+    background-position: 50% 100%;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 610ms ease-out forwards;
 }

@@ -1,5 +1,5 @@
 /**
- * MisoMind Modal Component
+ * MisoCalm Modal Component
  * Cosmic Serenity theme - dark overlay with glass-morphism modal
  */
 

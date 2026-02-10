@@ -81,7 +81,7 @@ export default function SupportPage() {
         <h1 className="text-2xl font-thin text-white mb-2">
           Choose Your Support
         </h1>
-        <p className="text-slate-400 font-light mb-8">
+        <p className="text-slate-300 font-light mb-8">
           What would help you right now?
         </p>
 
@@ -109,7 +109,7 @@ export default function SupportPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white font-light text-base">{option.title}</h3>
-                  <p className="text-sm text-slate-400 font-light truncate">{option.description}</p>
+                  <p className="text-sm text-slate-300 font-light truncate">{option.description}</p>
                 </div>
               </div>
             </button>

@@ -203,7 +203,7 @@ export default function FirstPracticePage() {
               <div className="mb-6" style={{ minHeight: '2.5rem' }}>
                 {isActive && (
                   <>
-                    <p className="text-sm font-light text-slate-400 mb-3">
+                    <p className="text-sm font-light text-slate-300 mb-3">
                       Round <span className="text-cyan-400">{cycleCount + 1}</span> of {targetCycles}
                     </p>
                     <div className="flex justify-center gap-3">
@@ -269,7 +269,7 @@ export default function FirstPracticePage() {
                         <li>Breathe out through your mouth for <span className="text-cyan-400">8 seconds</span></li>
                         <li><span className="text-cyan-400">Repeat</span></li>
                       </ul>
-                      <p className="text-sm text-slate-400 font-light mt-4 pt-3 border-t border-slate-700/50">
+                      <p className="text-sm text-slate-300 font-light mt-4 pt-3 border-t border-slate-700/50">
                         Used by therapists worldwide, 4-7-8 is a foundation technique for calm and relaxation.
                       </p>
                     </div>

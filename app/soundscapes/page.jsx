@@ -52,7 +52,7 @@ export default function SoundscapesPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" className="text-indigo-400" />
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );

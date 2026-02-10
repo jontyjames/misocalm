@@ -246,13 +246,13 @@ export const auth = {
   /**
    * Send magic link
    */
-  async sendMagicLink(email) {
+  async sendMagicLink(email, redirectTo) {
     try {
       const { error } = await withTimeout(
         supabase.auth.signInWithOtp({
           email,
           options: {
-            emailRedirectTo: `${window.location.origin}/onboarding/assessment`,
+            emailRedirectTo: redirectTo || `${window.location.origin}/onboarding/assessment`,
           },
         })
       );

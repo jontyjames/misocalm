@@ -1,5 +1,5 @@
 /**
- * MisoMind Logo Component
+ * MisoCalm Logo Component
  * Uses the star/waves logo image with glow effect
  */
 
@@ -16,8 +16,8 @@ export default function Logo({ size = 'md', showText = false }) {
   return (
     <div className="flex items-center gap-3">
       <img
-        src="/icons/MisoMind-logo-v1.png"
-        alt="MisoMind"
+        src="/icons/MisoCalm-logo-v1.png"
+        alt="MisoCalm"
         className={`${s.img} ${s.glow} brightness-110`}
       />
 
@@ -26,7 +26,7 @@ export default function Logo({ size = 'md', showText = false }) {
           className={`${s.text} tracking-wide text-white`}
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 100 }}
         >
-          MisoMind
+          MisoCalm
         </span>
       )}
     </div>

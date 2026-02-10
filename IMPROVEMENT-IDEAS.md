@@ -1,4 +1,4 @@
-# MisoMind Improvement Ideas
+# MisoCalm Improvement Ideas
 
 A collection of feature ideas and enhancements for future development.
 

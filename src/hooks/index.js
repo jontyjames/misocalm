@@ -4,3 +4,6 @@ export { useTriggerLogs, useTriggerStats } from './useTriggerLogs';
 export { useChat } from './useChat';
 export { useTools, useTool, useToolStats, useFavoriteTools } from './useTools';
 export { useStreak } from './useStreak';
+export { useUserTriggers } from './useUserTriggers';
+export { useLogForm } from './useLogForm';
+export { useInsights } from './useInsights';

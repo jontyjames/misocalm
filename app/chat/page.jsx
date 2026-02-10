@@ -61,7 +61,7 @@ export default function ChatPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" className="text-indigo-400" />
+          <Spinner size="lg" />
         </div>
       </AppLayout>
     );
@@ -80,7 +80,7 @@ export default function ChatPage() {
           </button>
           <Logo size="sm" animate />
           <div className="flex-1">
-            <h1 className="text-white font-light">MisoMind AI</h1>
+            <h1 className="text-white font-light">MisoCalm AI</h1>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-emerald-400" />
               <span className="text-xs text-slate-400">Online</span>
