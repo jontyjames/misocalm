@@ -85,7 +85,7 @@ export default function JournalPage() {
             />
             <button
               onClick={() => router.push(ROUTES.LOG)}
-              className="relative w-full py-8 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-xl transition-all duration-500 hover:border-white/30"
+              className="relative w-full py-8 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-xl transition-all duration-[610ms] hover:border-white/30"
               style={{
                 background: 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(139,92,246,0.1) 60%, rgba(139,92,246,0.06) 100%)',
                 boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.18), inset 0 -1px 0 0 rgba(255,255,255,0.04), 0 0 30px rgba(139,92,246,0.2), 0 8px 32px rgba(0,0,0,0.3)',

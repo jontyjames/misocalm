@@ -19,15 +19,14 @@ export const DEFAULT_TRIGGERS = [
   'Throat clearing',
   'Coughing',
   'Crunching',
+  'Whispering',
 ];
 
 // Enums matching database
 export const SOURCE_OPTIONS = [
   { value: 'partner', label: 'Partner/Spouse' },
-  { value: 'parent_mum', label: 'Parent - Mum' },
-  { value: 'parent_dad', label: 'Parent - Dad' },
-  { value: 'step_mum', label: 'Step Mum' },
-  { value: 'step_dad', label: 'Step Dad' },
+  { value: 'parent', label: 'Parent' },
+  { value: 'step_parent', label: 'Step Parent' },
   { value: 'sibling', label: 'Sibling' },
   { value: 'child', label: 'Child' },
   { value: 'friend', label: 'Friend' },
@@ -36,6 +35,7 @@ export const SOURCE_OPTIONS = [
   { value: 'self', label: 'Self' },
   { value: 'pet', label: 'Pet' },
   { value: 'environment', label: 'Environment' },
+  { value: 'media', label: 'Media/TV/Radio' },
   { value: 'other', label: 'Other' },
 ];
 
@@ -53,6 +53,7 @@ export const SUPPORT_TYPES = [
   { value: 'breathing', label: 'Breathing Technique', icon: 'Wind' },
   { value: 'mantra', label: 'Calming Mantra', icon: 'Heart' },
   { value: 'soundscape', label: 'Soothing Soundscape', icon: 'Music' },
+  { value: 'grounding', label: 'Grounding Exercise', icon: 'Anchor' },
   { value: 'ai_chat', label: 'Talk to AI', icon: 'MessageCircle' },
 ];
 
@@ -61,7 +62,6 @@ export const TOOL_CATEGORIES = [
   { value: 'somatic', label: 'Somatic', color: 'cyan' },
   { value: 'cognitive', label: 'Cognitive', color: 'purple' },
   { value: 'education', label: 'Education', color: 'emerald' },
-  { value: 'therapeutic', label: 'Therapeutic', color: 'pink' },
   { value: 'communication', label: 'Communication', color: 'amber' },
 ];
 
@@ -101,6 +101,7 @@ export const ATTRIBUTION_OPTIONS = [
   { value: 'friend_family', label: 'Friend or Family' },
   { value: 'therapist', label: 'Therapist/Healthcare Provider' },
   { value: 'search', label: 'Search Engine' },
+  { value: 'podcast', label: 'Podcast or Video' },
   { value: 'other', label: 'Other' },
 ];
 
@@ -235,4 +236,5 @@ export const SOUNDSCAPES = [
   { id: 'white-noise', name: 'White Noise', icon: 'Radio', duration: '∞' },
   { id: 'night', name: 'Night Ambience', icon: 'Moon', duration: '∞' },
   { id: 'fireplace', name: 'Fireplace', icon: 'Flame', duration: '∞' },
+  { id: 'stream', name: 'Gentle Stream', icon: 'Droplets', duration: '∞' },
 ];

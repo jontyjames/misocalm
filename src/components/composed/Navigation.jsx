@@ -69,7 +69,7 @@ export default function Navigation() {
           style={{
             background: 'rgba(3,7,18,0.85)',
             backdropFilter: 'blur(8px)',
-            animation: 'fadeIn 0.4s ease-out',
+            animation: 'fadeIn 377ms ease-out',
           }}
         >
           <p
@@ -107,7 +107,7 @@ export default function Navigation() {
                   className="
                     flex flex-col items-center justify-center
                     px-4 py-2
-                    transition-all duration-200
+                    transition-all duration-[233ms]
                   "
                 >
                   <img
@@ -129,8 +129,8 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 className={`
-                  flex flex-col items-center gap-1 px-4 py-2
-                  transition-colors duration-150
+                  flex flex-col items-center gap-[6px] px-4 py-2
+                  transition-colors duration-[144ms]
                   ${isActive
                     ? 'text-cyan-400'
                     : 'text-slate-300 hover:text-white'

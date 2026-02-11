@@ -146,7 +146,7 @@ export default function DashboardPage() {
                 relative w-full py-8 rounded-2xl overflow-hidden
                 border border-white/[0.18]
                 backdrop-blur-xl
-                transition-all duration-500
+                transition-all duration-[610ms]
                 hover:border-white/30
               "
               style={{

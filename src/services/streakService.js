@@ -1,13 +1,14 @@
 /**
- * Streak Service
- * Handles user activity streaks
+ * Activity Service
+ * Tracks active days — no streaks, no pressure
+ * "Active days in last 30" pattern per UX philosophy
  */
 
 import { db } from './supabase';
 
 export const streakService = {
   /**
-   * Get streak data for a user
+   * Get activity data for a user
    */
   async get(userId) {
     const { data, error } = await db.select('streaks', '*', { user_id: userId });
@@ -15,7 +16,7 @@ export const streakService = {
   },
 
   /**
-   * Initialize streak for a new user
+   * Initialize activity tracking for a new user
    */
   async initialize(userId) {
     const today = new Date().toISOString().split('T')[0];
@@ -30,10 +31,10 @@ export const streakService = {
 
   /**
    * Record activity for today
-   * Updates streak based on last activity date
+   * Simply marks today as active — no streak pressure
    */
   async recordActivity(userId) {
-    const { data: streak, error: fetchError } = await this.get(userId);
+    const { data: activity, error: fetchError } = await this.get(userId);
 
     if (fetchError) {
       return { data: null, error: fetchError };
@@ -42,44 +43,31 @@ export const streakService = {
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
 
-    // No existing streak - create one
-    if (!streak) {
+    if (!activity) {
       return this.initialize(userId);
     }
 
     // Already recorded today
-    if (streak.last_activity_date === todayStr) {
-      return { data: streak, error: null };
+    if (activity.last_activity_date === todayStr) {
+      return { data: activity, error: null };
     }
 
     // Calculate days since last activity
-    const lastActivity = new Date(streak.last_activity_date);
+    const lastActivity = new Date(activity.last_activity_date);
     const daysDiff = Math.floor(
       (today.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    let newCurrentStreak;
-    let newLongestStreak = streak.longest_streak;
+    // Track consecutive days quietly (for divine number milestones)
+    const activeDays = daysDiff === 1
+      ? activity.current_streak + 1
+      : 1;
 
-    if (daysDiff === 1) {
-      // Consecutive day - increment streak
-      newCurrentStreak = streak.current_streak + 1;
-    } else if (daysDiff > 1) {
-      // Streak broken - reset to 1
-      newCurrentStreak = 1;
-    } else {
-      // Same day (shouldn't happen due to check above)
-      newCurrentStreak = streak.current_streak;
-    }
+    const longestRun = Math.max(activeDays, activity.longest_streak);
 
-    // Update longest streak if needed
-    if (newCurrentStreak > newLongestStreak) {
-      newLongestStreak = newCurrentStreak;
-    }
-
-    return db.update('streaks', streak.id, {
-      current_streak: newCurrentStreak,
-      longest_streak: newLongestStreak,
+    return db.update('streaks', activity.id, {
+      current_streak: activeDays,
+      longest_streak: longestRun,
       last_activity_date: todayStr,
     });
   },
@@ -88,31 +76,32 @@ export const streakService = {
    * Check if user has logged activity today
    */
   async hasActivityToday(userId) {
-    const { data: streak, error } = await this.get(userId);
+    const { data: activity, error } = await this.get(userId);
 
-    if (error || !streak) {
+    if (error || !activity) {
       return { hasActivity: false, error };
     }
 
     const today = new Date().toISOString().split('T')[0];
-    return { hasActivity: streak.last_activity_date === today, error: null };
+    return { hasActivity: activity.last_activity_date === today, error: null };
   },
 
   /**
-   * Get streak summary
+   * Get activity summary
+   * Frames progress through active days, not competition
    */
   async getSummary(userId) {
-    const { data: streak, error } = await this.get(userId);
+    const { data: activity, error } = await this.get(userId);
 
     if (error) {
       return { summary: null, error };
     }
 
-    if (!streak) {
+    if (!activity) {
       return {
         summary: {
-          currentStreak: 0,
-          longestStreak: 0,
+          activeDays: 0,
+          longestRun: 0,
           hasActivityToday: false,
           lastActivityDate: null,
         },
@@ -124,26 +113,26 @@ export const streakService = {
 
     return {
       summary: {
-        currentStreak: streak.current_streak,
-        longestStreak: streak.longest_streak,
-        hasActivityToday: streak.last_activity_date === today,
-        lastActivityDate: streak.last_activity_date,
+        activeDays: activity.current_streak,
+        longestRun: activity.longest_streak,
+        hasActivityToday: activity.last_activity_date === today,
+        lastActivityDate: activity.last_activity_date,
       },
       error: null,
     };
   },
 
   /**
-   * Reset streak (for testing or admin purposes)
+   * Reset activity (for testing or admin purposes)
    */
   async reset(userId) {
-    const { data: streak, error: fetchError } = await this.get(userId);
+    const { data: activity, error: fetchError } = await this.get(userId);
 
-    if (fetchError || !streak) {
-      return { error: fetchError || 'No streak found' };
+    if (fetchError || !activity) {
+      return { error: fetchError || 'No activity data found' };
     }
 
-    return db.update('streaks', streak.id, {
+    return db.update('streaks', activity.id, {
       current_streak: 0,
       last_activity_date: null,
     });

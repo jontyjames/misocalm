@@ -120,12 +120,17 @@ export function AuthProvider({ children }) {
 
     if (result.error) {
       setError(result.error);
-    } else if (result.data?.[0]) {
-      setProfile(result.data[0]);
+    }
+
+    // Always refresh from DB to get the latest profile state
+    // Supabase upsert may not always return data reliably
+    const freshProfile = await fetchProfile(user.id);
+    if (freshProfile) {
+      setProfile(freshProfile);
     }
 
     return result;
-  }, [user]);
+  }, [user, fetchProfile]);
 
   // Refresh profile from database
   const refreshProfile = useCallback(async () => {

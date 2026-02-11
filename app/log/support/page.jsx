@@ -94,7 +94,7 @@ export default function SupportPage() {
                 w-full text-left p-4 rounded-xl
                 bg-slate-800/50 border border-slate-700
                 hover:border-indigo-500/40 hover:bg-slate-800/70
-                transition-all duration-150
+                transition-all duration-[144ms]
                 animate-fade-in-up stagger-${index + 1}
               `}
             >

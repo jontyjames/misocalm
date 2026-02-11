@@ -27,7 +27,7 @@ export default function TriggerGrid({
             onClick={() => onToggle(trigger)}
             className={`
               p-4 rounded-xl border text-left
-              transition-all duration-150
+              transition-all duration-[144ms]
               ${isSelected
                 ? 'bg-indigo-500/20 border-indigo-500/40 text-white'
                 : 'bg-slate-800/50 border-slate-700 text-slate-300 hover:border-indigo-500/40 hover:text-white'

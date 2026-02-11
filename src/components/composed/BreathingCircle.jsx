@@ -160,7 +160,7 @@ export default function BreathingCircle({
       >
         {/* Phi outermost ring — third ring for torus cross-section */}
         <div
-          className="absolute -inset-2 rounded-full pointer-events-none"
+          className="absolute -inset-[10px] rounded-full pointer-events-none"
           style={{
             border: '1px solid rgba(139,92,246,0.04)',
             background: 'radial-gradient(circle, transparent 65%, rgba(99,102,241,0.03) 100%)',
@@ -194,12 +194,12 @@ export default function BreathingCircle({
         </svg>
 
         {/* Inner gradient ring */}
-        <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-400 via-purple-500 to-cyan-400 opacity-70" />
+        <div className="absolute inset-[10px] rounded-full bg-gradient-to-br from-indigo-400 via-purple-500 to-cyan-400 opacity-70" />
 
         {/* Center content */}
         <div
           className={`
-            absolute inset-6 rounded-full bg-slate-900 flex flex-col items-center justify-center
+            absolute inset-[26px] rounded-full bg-slate-900 flex flex-col items-center justify-center
             ${!isActive && onStart ? 'cursor-pointer hover:bg-slate-800 transition-colors' : ''}
           `}
           onClick={!isActive && onStart ? onStart : undefined}

@@ -14,7 +14,7 @@ import { ROUTES } from '@/lib/constants';
 
 const INTRO_TEXT = 'Welcome';
 const SUBTITLE_TEXT = 'This is a space for you';
-const SUBTITLE_DELAY = INTRO_TEXT.length * 0.05 + 0.3;
+const SUBTITLE_DELAY = INTRO_TEXT.length * 0.034 + 0.377;
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -59,9 +59,9 @@ export default function WelcomePage() {
   // Start intro letter animation after a brief pause
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      const startTimer = setTimeout(() => setIntroStarted(true), 400);
-      // Welcome + subtitle animate, hold, then fade to reveal MisoMind
-      const doneTimer = setTimeout(() => setIntroDone(true), 4600);
+      const startTimer = setTimeout(() => setIntroStarted(true), 377);
+      // Welcome + subtitle animate, hold, then fade to reveal MisoCalm
+      const doneTimer = setTimeout(() => setIntroDone(true), 4181);
       return () => {
         clearTimeout(startTimer);
         clearTimeout(doneTimer);
@@ -74,7 +74,7 @@ export default function WelcomePage() {
     if (transitioning) {
       const timer = setTimeout(() => {
         router.push(ROUTES.ONBOARDING_FIRST_PRACTICE);
-      }, 2400);
+      }, 2584);
       return () => clearTimeout(timer);
     }
   }, [transitioning, router]);
@@ -97,7 +97,7 @@ export default function WelcomePage() {
       {/* "Welcome" — letter by letter, above the logo */}
       <div
         className={`
-          absolute z-20 left-0 right-0 flex items-center justify-center transition-opacity duration-700 ease-in-out
+          absolute z-20 left-0 right-0 flex items-center justify-center transition-opacity duration-[610ms] ease-in-out
           ${introDone ? 'opacity-0' : 'opacity-100'}
         `}
         style={{ top: '20%' }}
@@ -110,7 +110,7 @@ export default function WelcomePage() {
               fontFamily: "'Josefin Sans', sans-serif",
               fontWeight: 200,
               letterSpacing: '0.05em',
-              animation: `fadeIn 0.3s ease-out ${i * 0.05}s forwards`,
+              animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
               width: char === ' ' ? '0.4em' : undefined,
             }}
           >
@@ -123,7 +123,7 @@ export default function WelcomePage() {
       {introStarted && (
         <div
           className={`
-            absolute z-20 left-0 right-0 flex items-center justify-center flex-wrap transition-opacity duration-500 ease-in-out
+            absolute z-20 left-0 right-0 flex items-center justify-center flex-wrap transition-opacity duration-[610ms] ease-in-out
             ${introDone ? 'opacity-0' : 'opacity-100'}
           `}
           style={{ top: 'calc(28% + 13rem)' }}
@@ -136,7 +136,7 @@ export default function WelcomePage() {
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
                 letterSpacing: '0.04em',
-                animation: `fadeIn 0.3s ease-out ${SUBTITLE_DELAY + i * 0.04}s forwards`,
+                animation: `fadeIn 0.377s ease-out ${SUBTITLE_DELAY + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -150,19 +150,19 @@ export default function WelcomePage() {
 
         {/* App name — fades in after intro */}
         <h1
-          className={`text-[3rem] text-white transition-all duration-1200 ease-in-out ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}
+          className={`text-[3rem] text-white transition-all duration-[987ms] ease-in-out ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, letterSpacing: '0.12em' }}
         >
           MisoCalm
         </h1>
 
         {/* Tagline — fades in after intro */}
-        <p className={`text-base font-light text-slate-300 leading-relaxed transition-all duration-1200 ease-in-out delay-300 ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
+        <p className={`text-base font-light text-slate-300 leading-relaxed transition-all duration-[987ms] ease-in-out delay-[377ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
           A space to understand misophonia, regulate<br />your system, and find steadier ground.
         </p>
 
         {/* CTA Button — fades in after intro */}
-        <div className={`mt-4 transition-all duration-1200 ease-in-out delay-500 ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
+        <div className={`mt-4 transition-all duration-[987ms] ease-in-out delay-[610ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
           <Button
             size="lg"
             shape="pill"
@@ -183,7 +183,7 @@ export default function WelcomePage() {
           )}
 
           {showSignIn && !signInSent && (
-            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 0.233s ease-out' }}>
+            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 233ms ease-out' }}>
               <Input
                 type="email"
                 placeholder="Your email address"
@@ -224,7 +224,7 @@ export default function WelcomePage() {
               key={i}
               className="text-2xl font-thin text-white opacity-0"
               style={{
-                animation: `fadeIn 0.3s ease-out ${0.4 + i * 0.04}s forwards`,
+                animation: `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.5em' : undefined,
               }}
             >
@@ -235,7 +235,7 @@ export default function WelcomePage() {
       )}
 
       {/* Subtle footer */}
-      <div className={`absolute bottom-8 text-center transition-opacity duration-500 ${introDone && !transitioning ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute bottom-8 text-center transition-opacity duration-[610ms] ${introDone && !transitioning ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-xs text-slate-300 font-light">
           A Thriving With Misophonia App
         </p>

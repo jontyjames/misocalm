@@ -32,7 +32,7 @@ export default function Checkbox({
         />
         <div
           className={`
-            w-5 h-5 rounded-md border-2 transition-all duration-150
+            w-5 h-5 rounded-md border-2 transition-all duration-[144ms]
             flex items-center justify-center
             ${checked
               ? 'bg-indigo-500 border-indigo-500'

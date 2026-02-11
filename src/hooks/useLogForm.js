@@ -38,7 +38,7 @@ export function useLogForm(userId) {
 
   // Core fields
   const [selectedTriggers, setSelectedTriggers] = useState([]);
-  const [source, setSource] = useState('');
+  const [sources, setSources] = useState([]);
   const [intensity, setIntensity] = useState(5);
 
   // Optional fields
@@ -56,6 +56,14 @@ export function useLogForm(userId) {
       prev.includes(trigger)
         ? prev.filter(t => t !== trigger)
         : [...prev, trigger]
+    );
+  }, []);
+
+  const toggleSource = useCallback((value) => {
+    setSources(prev =>
+      prev.includes(value)
+        ? prev.filter(s => s !== value)
+        : [...prev, value]
     );
   }, []);
 
@@ -82,7 +90,7 @@ export function useLogForm(userId) {
     const { data, error: saveError } = await triggerLogService.create({
       user_id: userId,
       triggers: selectedTriggers,
-      source: source || null,
+      source: sources.length > 0 ? sources : null,
       intensity,
       time_of_day: timeOfDay,
       body_responses: bodyResponses.length > 0 ? bodyResponses : null,
@@ -98,7 +106,7 @@ export function useLogForm(userId) {
     track(EVENTS.TRIGGER_LOGGED, {
       triggerCount: selectedTriggers.length,
       intensity,
-      source,
+      sources,
       hasBodyResponses: bodyResponses.length > 0,
     });
 
@@ -107,7 +115,7 @@ export function useLogForm(userId) {
     // Get the created entry ID for the deeper processing flow
     const entryId = data?.[0]?.id;
     router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
-  }, [userId, selectedTriggers, source, intensity, timeOfDay, bodyResponses, notes, router]);
+  }, [userId, selectedTriggers, sources, intensity, timeOfDay, bodyResponses, notes, router]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);
@@ -123,7 +131,7 @@ export function useLogForm(userId) {
   return {
     // Core state
     selectedTriggers, toggleTrigger,
-    source, setSource,
+    sources, toggleSource,
     intensity, setIntensity,
     // Optional state
     timeOfDay, setTimeOfDay,

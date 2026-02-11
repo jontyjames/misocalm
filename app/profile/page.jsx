@@ -77,7 +77,7 @@ export default function ProfilePage() {
         {impactLabel && (
           <button
             onClick={() => router.push(ROUTES.ONBOARDING_ASSESSMENT)}
-            className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+            className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
             style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
           >
             <div className="flex items-center justify-between">
@@ -93,7 +93,7 @@ export default function ProfilePage() {
         {/* My Triggers */}
         <button
           onClick={() => router.push('/profile/triggers')}
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
           style={{ background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-center justify-between mb-2">
@@ -155,7 +155,7 @@ export default function ProfilePage() {
         {/* Join Community */}
         <button
           onClick={() => window.open('https://www.skool.com/thriving-with-misophonia', '_blank')}
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-3"
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
           style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-start gap-4">
@@ -172,7 +172,7 @@ export default function ProfilePage() {
 
         {/* Export Data */}
         <button
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-150 text-left mb-8"
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-8"
           style={{ background: 'rgba(30,41,59,0.3)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-center justify-between">

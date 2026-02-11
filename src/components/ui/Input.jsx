@@ -38,7 +38,7 @@ export default function Input({
           className={`
             w-full px-4 py-3 rounded-xl text-sm font-light
             bg-slate-800/50 text-white placeholder-slate-500
-            border transition-all duration-150
+            border transition-all duration-[144ms]
             ${Icon ? 'pl-11' : ''}
             ${error
               ? 'border-rose-500/50 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
@@ -88,7 +88,7 @@ Input.Textarea = function Textarea({
         className={`
           w-full px-4 py-3 rounded-xl text-sm font-light
           bg-slate-800/50 text-white placeholder-slate-500
-          border transition-all duration-150 resize-none
+          border transition-all duration-[144ms] resize-none
           ${error
             ? 'border-rose-500/50 focus:border-rose-400'
             : 'border-slate-700 focus:border-indigo-500/50'
@@ -134,7 +134,7 @@ Input.Select = function Select({
         className={`
           w-full px-4 py-3 rounded-xl text-sm font-light
           bg-slate-800/50 text-white
-          border transition-all duration-150 appearance-none
+          border transition-all duration-[144ms] appearance-none
           ${error
             ? 'border-rose-500/50 focus:border-rose-400'
             : 'border-slate-700 focus:border-indigo-500/50'

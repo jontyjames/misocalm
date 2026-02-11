@@ -59,7 +59,7 @@ export default function Button({
       onClick={onClick}
       disabled={isDisabled}
       className={`
-        font-light transition-all duration-150 focus-ring
+        font-light transition-all duration-[144ms] focus-ring
         ${shapes[shape]}
         ${sizes[size]}
         ${isDisabled ? variants.disabled : variants[variant]}

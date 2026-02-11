@@ -41,7 +41,7 @@ body {
 /* Phone frame styling for desktop */
 @media (min-width: 448px) {
   body {
-    padding: 20px 0;
+    padding: 16px 0;
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
   }
 }
@@ -114,7 +114,7 @@ body {
 
 /* Breathing animation */
 .breathing-circle {
-  transition: transform 4s ease-in-out;
+  transition: transform 2584ms ease-in-out;
 }
 
 .breathing-circle.inhale {
@@ -132,7 +132,7 @@ body {
 }
 
 .animate-spin-slow {
-  animation: spin 8s linear infinite;
+  animation: spin 8.987s linear infinite;
 }
 
 /* Sacred geometry: slow counter-rotation for torus hint (89s = Fibonacci) */
@@ -211,20 +211,20 @@ body {
   }
 }
 
-/* Sanctuary text: wait 0.4s, fade in 0.3s, hold 0.6s, fade out 0.3s = 1.6s total */
+/* Sanctuary text: wait 0.377s, fade in 0.377s, hold 0.610s, fade out 0.233s = 1.597s total */
 @keyframes sanctuary {
   0%   { opacity: 0; }
-  25%  { opacity: 0; }  /* 0.4s delay */
-  44%  { opacity: 1; }  /* fade in by 0.7s */
-  81%  { opacity: 1; }  /* hold until 1.3s */
-  100% { opacity: 0; }  /* fade out by 1.6s */
+  24%  { opacity: 0; }  /* 0.377s delay */
+  47%  { opacity: 1; }  /* fade in by 0.754s */
+  85%  { opacity: 1; }  /* hold until 1.364s */
+  100% { opacity: 0; }  /* fade out by 1.597s */
 }
 
-/* Screen fade: wait 1.2s, then fade in over 0.4s = 1.6s total */
+/* Screen fade: wait 0.987s, then fade in over 0.610s = 1.597s total */
 @keyframes screenFade {
   0%   { opacity: 0; }
-  75%  { opacity: 0; }  /* 1.2s delay */
-  100% { opacity: 1; }  /* fade in by 1.6s */
+  62%  { opacity: 0; }  /* 0.987s delay */
+  100% { opacity: 1; }  /* fade in by 1.597s */
 }
 
 @keyframes fadeInUp {
@@ -316,17 +316,17 @@ body {
   opacity: 0;
 }
 
-/* Words appear one at a time: 0.4s delay between welcome fadeout and first word */
+/* Words appear one at a time: 0.377s delay between welcome fadeout and first word */
 .animate-word-1 {
-  animation: fadeIn 0.3s ease-out 0.4s forwards;
+  animation: fadeIn 0.377s ease-out 0.377s forwards;
 }
 
 .animate-word-2 {
-  animation: fadeIn 0.3s ease-out 0.7s forwards;
+  animation: fadeIn 0.377s ease-out 0.610s forwards;
 }
 
 .animate-word-3 {
-  animation: fadeIn 0.3s ease-out 1.0s forwards;
+  animation: fadeIn 0.377s ease-out 0.987s forwards;
 }
 
 .animate-fade-in-up {

@@ -8,7 +8,7 @@ export default function Card({
   variant = 'default',
   className = '',
   onClick,
-  padding = 'p-5',
+  padding = 'p-4',
 }) {
   const Component = onClick ? 'button' : 'div';
   const isInteractive = !!onClick;

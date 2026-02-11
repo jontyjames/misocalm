@@ -137,7 +137,7 @@ export default function EditTriggersPage() {
           <button
             onClick={handleSave}
             disabled={saving || selected.length === 0}
-            className={`w-full py-4 rounded-full text-base font-light transition-all duration-150 border-2 ${
+            className={`w-full py-4 rounded-full text-base font-light transition-all duration-[144ms] border-2 ${
               selected.length === 0
                 ? 'border-slate-700 bg-slate-900/30 text-slate-600 cursor-not-allowed'
                 : 'border-white/[0.33] hover:border-white/40 bg-primary-cta text-white active:scale-[0.98]'

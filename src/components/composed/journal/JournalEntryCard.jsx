@@ -52,7 +52,10 @@ export default function JournalEntryCard({ entry }) {
           <div className="space-y-2 pt-1">
             {entry.source && (
               <p className="text-sm text-slate-300 font-light">
-                {getSourceLabel(entry.source)}
+                {Array.isArray(entry.source)
+                  ? entry.source.map(getSourceLabel).join(', ')
+                  : getSourceLabel(entry.source)
+                }
               </p>
             )}
             <p className="text-sm text-slate-400 font-light">

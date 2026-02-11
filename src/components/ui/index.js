@@ -13,3 +13,4 @@ export { default as Checkbox } from './Checkbox';
 export { default as Spinner } from './Spinner';
 export { Pagination, LoadMoreButton } from './Pagination';
 export { default as TriggerChips } from './TriggerChips';
+export { default as ProgressDots } from './ProgressDots';

@@ -22,7 +22,7 @@ export default function LogFormContainer() {
 
   const {
     selectedTriggers, toggleTrigger,
-    source, setSource,
+    sources, toggleSource,
     intensity, setIntensity,
     timeOfDay, setTimeOfDay,
     bodyResponses, toggleBodyResponse,
@@ -100,7 +100,7 @@ export default function LogFormContainer() {
       {/* 2. Source */}
       <section className="mb-[26px]">
         <h2 className="text-sm text-slate-300 font-light mb-[10px]">Who or what was the source?</h2>
-        <SourceSelector value={source} onChange={setSource} />
+        <SourceSelector selected={sources} onToggle={toggleSource} />
       </section>
 
       {/* 3. Intensity */}

@@ -195,7 +195,7 @@ export default function ToolsPage() {
               onClick={() => setActiveFilter(tab)}
               className={`
                 px-4 py-2 rounded-full text-sm font-light whitespace-nowrap
-                transition-all duration-150 active:scale-95
+                transition-all duration-[144ms] active:scale-95
                 ${activeFilter === tab
                   ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/50'

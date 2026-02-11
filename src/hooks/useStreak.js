@@ -1,6 +1,6 @@
 /**
  * useStreak Hook
- * Manages user activity streaks
+ * Tracks active days — no pressure, no "streak broken" language
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -9,9 +9,9 @@ import { streakService } from '@/services';
 export function useStreak(userId, options = {}) {
   const { autoFetch = true } = options;
 
-  const [streak, setStreak] = useState({
-    currentStreak: 0,
-    longestStreak: 0,
+  const [activity, setActivity] = useState({
+    activeDays: 0,
+    longestRun: 0,
     hasActivityToday: false,
     lastActivityDate: null,
   });
@@ -29,7 +29,7 @@ export function useStreak(userId, options = {}) {
     if (fetchError) {
       setError(fetchError);
     } else if (summary) {
-      setStreak(summary);
+      setActivity(summary);
     }
 
     setLoading(false);
@@ -47,7 +47,6 @@ export function useStreak(userId, options = {}) {
     if (result.error) {
       setError(result.error);
     } else {
-      // Refresh to get updated streak
       await fetch();
     }
 
@@ -72,7 +71,7 @@ export function useStreak(userId, options = {}) {
   }, [autoFetch, userId, fetch]);
 
   return {
-    ...streak,
+    ...activity,
     loading,
     error,
     fetch,

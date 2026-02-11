@@ -99,20 +99,22 @@ export const triggerLogService = {
             stats.triggerCounts[trigger] = (stats.triggerCounts[trigger] || 0) + 1;
 
             // Track trigger + source pairs
-            if (log.source) {
-              const pair = `${trigger}::${log.source}`;
+            const sources = Array.isArray(log.source) ? log.source : (log.source ? [log.source] : []);
+            sources.forEach((src) => {
+              const pair = `${trigger}::${src}`;
               if (!stats.triggerSourcePairs[pair]) {
                 stats.triggerSourcePairs[pair] = { count: 0, totalIntensity: 0 };
               }
               stats.triggerSourcePairs[pair].count += 1;
               stats.triggerSourcePairs[pair].totalIntensity += log.intensity || 0;
-            }
+            });
           });
         }
 
-        if (log.source) {
-          stats.sourceCounts[log.source] = (stats.sourceCounts[log.source] || 0) + 1;
-        }
+        const sources = Array.isArray(log.source) ? log.source : (log.source ? [log.source] : []);
+        sources.forEach((src) => {
+          stats.sourceCounts[src] = (stats.sourceCounts[src] || 0) + 1;
+        });
 
         const day = log.created_at.split('T')[0];
         stats.byDay[day] = (stats.byDay[day] || 0) + 1;

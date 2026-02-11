@@ -8,32 +8,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, X, Lock } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button, ProgressDots } from '@/components/ui';
 import { DEFAULT_TRIGGERS, ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 2;
-
-function ProgressDots({ current, total }) {
-  return (
-    <div className="flex items-center gap-2">
-      {Array.from({ length: total }, (_, i) => (
-        <div
-          key={i}
-          className={`
-            w-2 h-2 rounded-full transition-all duration-300
-            ${i + 1 === current
-              ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]'
-              : i + 1 < current
-                ? 'bg-cyan-400/50'
-                : 'bg-slate-700'
-            }
-          `}
-        />
-      ))}
-    </div>
-  );
-}
 
 const THANK_YOU_MESSAGE = 'Thank you for trusting us with this.';
 

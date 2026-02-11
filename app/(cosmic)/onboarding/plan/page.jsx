@@ -9,33 +9,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { userTriggerService } from '@/services';
-import { Button, Spinner } from '@/components/ui';
+import { Button, Spinner, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 6;
-
-function ProgressDots({ current, total }) {
-  return (
-    <div className="flex items-center gap-2">
-      {Array.from({ length: total }, (_, i) => (
-        <div
-          key={i}
-          className={`
-            w-2 h-2 rounded-full transition-all duration-300
-            ${i + 1 === current
-              ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]'
-              : i + 1 < current
-                ? 'bg-cyan-400/50'
-                : 'bg-slate-700'
-            }
-          `}
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function PlanPage() {
   const router = useRouter();
