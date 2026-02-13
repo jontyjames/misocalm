@@ -7,6 +7,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Sparkles, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
@@ -207,8 +208,19 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Legal Links */}
+        <div className="flex justify-center gap-4 mt-6">
+          <Link href={ROUTES.PRIVACY} className="text-xs text-indigo-400 hover:text-indigo-300 font-light transition-colors">
+            Privacy Policy
+          </Link>
+          <span className="text-slate-600">|</span>
+          <Link href={ROUTES.TERMS} className="text-xs text-indigo-400 hover:text-indigo-300 font-light transition-colors">
+            Terms of Service
+          </Link>
+        </div>
+
         {/* Version */}
-        <p className="text-center text-xs text-slate-400 mt-6 font-light">
+        <p className="text-center text-xs text-slate-400 mt-4 font-light">
           MisoCalm v0.1.0
         </p>
       </div>
