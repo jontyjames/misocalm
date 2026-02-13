@@ -3,6 +3,10 @@
  * Cosmic Serenity theme - dark inputs with glowing focus
  */
 
+'use client';
+
+import { useId } from 'react';
+
 export default function Input({
   label,
   error,
@@ -16,10 +20,13 @@ export default function Input({
   icon: Icon,
   ...props
 }) {
+  const inputId = useId();
+  const errorId = useId();
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="text-sm font-light text-slate-300">
+        <label htmlFor={inputId} className="text-sm font-light text-slate-300">
           {label}
           {required && <span className="text-rose-400 ml-1">*</span>}
         </label>
@@ -29,12 +36,15 @@ export default function Input({
           <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
         )}
         <input
+          id={inputId}
           type={type}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           disabled={disabled}
           required={required}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           className={`
             w-full px-4 py-3 rounded-xl text-sm font-light
             bg-slate-800/50 text-white placeholder-slate-500
@@ -51,7 +61,7 @@ export default function Input({
         />
       </div>
       {error && (
-        <span className="text-xs text-rose-400 font-light">{error}</span>
+        <span id={errorId} className="text-xs text-rose-400 font-light" role="alert">{error}</span>
       )}
     </div>
   );
@@ -70,21 +80,27 @@ Input.Textarea = function Textarea({
   rows = 4,
   ...props
 }) {
+  const textareaId = useId();
+  const errorId = useId();
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="text-sm font-light text-slate-300">
+        <label htmlFor={textareaId} className="text-sm font-light text-slate-300">
           {label}
           {required && <span className="text-rose-400 ml-1">*</span>}
         </label>
       )}
       <textarea
+        id={textareaId}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         disabled={disabled}
         required={required}
         rows={rows}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={`
           w-full px-4 py-3 rounded-xl text-sm font-light
           bg-slate-800/50 text-white placeholder-slate-500
@@ -99,7 +115,7 @@ Input.Textarea = function Textarea({
         {...props}
       />
       {error && (
-        <span className="text-xs text-rose-400 font-light">{error}</span>
+        <span id={errorId} className="text-xs text-rose-400 font-light" role="alert">{error}</span>
       )}
     </div>
   );
@@ -118,19 +134,25 @@ Input.Select = function Select({
   className = '',
   ...props
 }) {
+  const selectId = useId();
+  const errorId = useId();
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="text-sm font-light text-slate-300">
+        <label htmlFor={selectId} className="text-sm font-light text-slate-300">
           {label}
           {required && <span className="text-rose-400 ml-1">*</span>}
         </label>
       )}
       <select
+        id={selectId}
         value={value}
         onChange={onChange}
         disabled={disabled}
         required={required}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={`
           w-full px-4 py-3 rounded-xl text-sm font-light
           bg-slate-800/50 text-white
@@ -152,7 +174,7 @@ Input.Select = function Select({
         ))}
       </select>
       {error && (
-        <span className="text-xs text-rose-400 font-light">{error}</span>
+        <span id={errorId} className="text-xs text-rose-400 font-light" role="alert">{error}</span>
       )}
     </div>
   );

@@ -5,8 +5,9 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useId } from 'react';
 import { X } from 'lucide-react';
+import useFocusTrap from '@/hooks/useFocusTrap';
 
 const sizes = {
   sm: 'max-w-sm',
@@ -24,6 +25,11 @@ export default function Modal({
   size = 'md',
   showClose = true,
 }) {
+  const modalRef = useRef(null);
+  const titleId = useId();
+
+  useFocusTrap(modalRef, isOpen);
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e) => {
@@ -49,10 +55,15 @@ export default function Modal({
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal */}
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
         className={`
           relative w-full ${sizes[size]}
           bg-slate-900 border border-slate-800
@@ -65,11 +76,12 @@ export default function Modal({
         {(title || showClose) && (
           <div className="flex items-center justify-between mb-4">
             {title && (
-              <h2 className="text-xl font-light text-white">{title}</h2>
+              <h2 id={titleId} className="text-xl font-light text-white">{title}</h2>
             )}
             {showClose && (
               <button
                 onClick={onClose}
+                aria-label="Close"
                 className="
                   p-2 rounded-lg text-slate-500
                   hover:text-white hover:bg-slate-800

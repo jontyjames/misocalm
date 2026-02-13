@@ -52,7 +52,7 @@ export class ErrorBoundary extends Component {
 
       // Default fallback UI
       return (
-        <div className="min-h-[200px] flex items-center justify-center p-4">
+        <div role="alert" aria-live="assertive" className="min-h-[200px] flex items-center justify-center p-4">
           <Card className="max-w-md w-full text-center">
             <div className="flex justify-center mb-4">
               <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center">
@@ -83,7 +83,7 @@ export class ErrorBoundary extends Component {
  */
 export function ErrorFallback({ error, reset, title, message }) {
   return (
-    <div className="min-h-[200px] flex items-center justify-center p-4">
+    <div role="alert" aria-live="assertive" className="min-h-[200px] flex items-center justify-center p-4">
       <Card className="max-w-md w-full text-center">
         <div className="flex justify-center mb-4">
           <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center">

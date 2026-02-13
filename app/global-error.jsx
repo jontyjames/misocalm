@@ -17,7 +17,7 @@ export default function GlobalError({ error, reset }) {
     <html lang="en">
       <body className="bg-slate-950 text-white min-h-screen flex justify-center">
         <div className="w-full max-w-md min-h-screen relative bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] shadow-2xl flex items-center justify-center p-6">
-          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 max-w-md w-full text-center">
+          <div role="alert" aria-live="assertive" className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 max-w-md w-full text-center">
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center">
                 <svg

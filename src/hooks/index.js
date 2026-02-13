@@ -11,3 +11,5 @@ export { default as useReducedMotion } from './useReducedMotion';
 export { default as useTouchGlow } from './useTouchGlow';
 export { default as useHaptic } from './useHaptic';
 export { default as useLongPress } from './useLongPress';
+export { default as useFocusTrap } from './useFocusTrap';
+export { default as useCapacitor } from './useCapacitor';

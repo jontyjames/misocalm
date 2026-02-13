@@ -20,7 +20,7 @@ export default function Error({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]">
+    <div role="alert" aria-live="assertive" className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]">
       <Card className="max-w-md w-full text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center">
