@@ -14,6 +14,9 @@ import { AppLayout } from '@/components/composed';
 import DurationSelector, { DURATION_OPTIONS_BY_TYPE } from '@/components/composed/tools/DurationSelector';
 import BreathingPlayer from '@/components/composed/tools/BreathingPlayer';
 import ComingSoon from '@/components/composed/tools/ComingSoon';
+import TimerSetup from '@/components/composed/tools/TimerSetup';
+import TimerPlayer from '@/components/composed/tools/TimerPlayer';
+import LaunchSequence from '@/components/composed/tools/LaunchSequence';
 import { ROUTES } from '@/lib/constants';
 
 // Tool data (would come from database)
@@ -22,6 +25,7 @@ const toolsData = {
   '2': { id: '2', title: 'Body Scan', description: 'A body scan meditation helps you release physical tension that often accompanies misophonia reactions. By systematically focusing on each part of your body, you can identify and release stored stress.', category: 'somatic', level: 'basic', duration_minutes: 10, type: 'guided' },
   '3': { id: '3', title: 'Box Breathing', description: 'Box breathing is a simple yet powerful technique used by Navy SEALs to stay calm under pressure. The equal 4-4-4-4 rhythm creates a meditative focus that helps redirect attention away from trigger sounds.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'box' },
   '4': { id: '4', title: 'Physiological Sigh', description: 'Discovered by Stanford neuroscientists, the physiological sigh is the fastest known way to calm your nervous system in real-time. Perfect for acute trigger moments when you need immediate relief.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'sigh' },
+  '5': { id: '5', title: 'Interval Timer', description: 'A meditation timer that keeps you informed without pulling you out of stillness. Gentle bells mark each interval so you never need to move or check your phone.', category: 'somatic', level: 'basic', type: 'timer' },
 };
 
 export default function ToolPage() {
@@ -31,6 +35,8 @@ export default function ToolPage() {
   const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
   const [tool, setTool] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
+  const [timerConfig, setTimerConfig] = useState(null);
+  const [timerPhase, setTimerPhase] = useState('setup');
 
   const favoriteTools = profile?.favorite_tools || [];
   const isFavorite = tool && favoriteTools.includes(tool.id);
@@ -99,12 +105,59 @@ export default function ToolPage() {
             tool={tool}
             selectedDuration={selectedDuration}
             onChangeDuration={() => setSelectedDuration(null)}
-            onJournal={() => router.push(ROUTES.LOG)}
+            onJournal={() => router.push(`${ROUTES.CHECK_IN}?from=breathwork`)}
             onReturnHome={() => router.push(ROUTES.DASHBOARD)}
           />
         </div>
       </AppLayout>
     );
+  }
+
+  // Timer — three-phase flow: setup -> launching -> playing
+  if (tool.type === 'timer') {
+    const handleTimerStart = (config) => {
+      setTimerConfig(config);
+      setTimerPhase('launching');
+    };
+
+    if (timerPhase === 'setup') {
+      return (
+        <AppLayout showNav={false}>
+          <TimerSetup
+            tool={tool}
+            isFavorite={isFavorite}
+            onToggleFavorite={toggleFavorite}
+            onBack={() => router.push(ROUTES.TOOLS)}
+            onStart={handleTimerStart}
+          />
+        </AppLayout>
+      );
+    }
+
+    if (timerPhase === 'launching') {
+      return (
+        <AppLayout showNav={false}>
+          <LaunchSequence onComplete={() => setTimerPhase('playing')} />
+        </AppLayout>
+      );
+    }
+
+    if (timerPhase === 'playing') {
+      return (
+        <AppLayout showNav={false}>
+          <div className="min-h-screen flex flex-col">
+            <TimerPlayer
+              tool={tool}
+              config={{ ...timerConfig, skipCountdown: true }}
+              onBack={() => { setTimerConfig(null); setTimerPhase('setup'); }}
+              onJournal={() => router.push(`${ROUTES.CHECK_IN}?from=timer`)}
+              onReturnHome={() => router.push(ROUTES.DASHBOARD)}
+              onPracticeAgain={() => { setTimerConfig(null); setTimerPhase('setup'); }}
+            />
+          </div>
+        </AppLayout>
+      );
+    }
   }
 
   // Non-practice tools (coming soon)
