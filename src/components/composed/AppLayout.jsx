@@ -7,6 +7,7 @@
 
 import Starfield from './Starfield';
 import Navigation from './Navigation';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function AppLayout({ children, showNav = true }) {
   return (
@@ -16,9 +17,11 @@ export default function AppLayout({ children, showNav = true }) {
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-nebula-cyan pointer-events-none" />
 
       {/* Main content — starfield inside same stacking context so backdrop-blur can see it */}
-      <main className={`relative ${showNav ? 'pb-20' : ''}`}>
+      <main id="main-content" className={`relative ${showNav ? 'pb-20' : ''}`}>
         <Starfield />
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
       </main>
 
       {/* Bottom navigation */}

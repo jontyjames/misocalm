@@ -56,10 +56,12 @@ function getAuraColour(pathname) {
   return 'rgba(99,102,241,0.12)';                                       // indigo 528Hz (home/chat)
 }
 
-function NavItem({ href, icon: Icon, isActive }) {
+function NavItem({ href, icon: Icon, label, isActive }) {
   return (
     <Link
       href={href}
+      aria-label={label}
+      aria-current={isActive ? 'page' : undefined}
       className={`
         relative flex items-center justify-center
         w-10 h-10 rounded-full
@@ -107,6 +109,8 @@ export default function Navigation() {
       {/* Mantra overlay */}
       {showMantra && (
         <div
+          role="dialog"
+          aria-label="Mantra"
           className="fixed inset-0 z-[60] flex items-center justify-center px-8"
           onClick={() => setShowMantra(false)}
           style={{
@@ -167,6 +171,7 @@ export default function Navigation() {
               key={item.href}
               href={item.href}
               icon={item.icon}
+              label={item.label}
               isActive={isActive(item.href)}
             />
           ))}
@@ -182,6 +187,7 @@ export default function Navigation() {
               key={item.href}
               href={item.href}
               icon={item.icon}
+              label={item.label}
               isActive={isActive(item.href)}
             />
           ))}
