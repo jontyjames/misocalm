@@ -1,0 +1,26 @@
+{
+  "appId": "com.misocalm.app",
+  "appName": "MisoCalm",
+  "webDir": "out",
+  "server": {
+    "url": "https://misocalm.app",
+    "cleartext": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1597,
+      "launchAutoHide": true,
+      "backgroundColor": "#030712",
+      "showSpinner": false,
+      "launchFadeOutDuration": 610
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#030712"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "resizeOnFullScreen": true
+    }
+  }
+}

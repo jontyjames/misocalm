@@ -22,3 +22,8 @@ Thumbs.db
 
 # supabase local
 supabase/.temp/
+
+# capacitor native
+ios/App/Pods/
+android/.gradle/
+android/app/build/
