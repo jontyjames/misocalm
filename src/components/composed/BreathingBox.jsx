@@ -1,6 +1,6 @@
 /**
  * Breathing Box Animation
- * Box breathing with animated border that fills/unwinds around the perimeter
+ * Box breathing with animated border fills and soft ambient glow
  */
 
 'use client';
@@ -20,6 +20,7 @@ const SEQUENCE = ['GET_READY', 'INHALE', 'HOLD_IN', 'EXHALE', 'HOLD_OUT'];
 export default function BreathingBox({
   isActive = false,
   onCycleComplete,
+  onPhaseChange,
   onStart,
   size = 220,
 }) {
@@ -35,12 +36,17 @@ export default function BreathingBox({
     onCycleCompleteRef.current = onCycleComplete;
   }, [onCycleComplete]);
 
+  // Notify parent of phase changes to drive ambient effects
+  useEffect(() => {
+    if (onPhaseChange) {
+      onPhaseChange(phase, 1.0);
+    }
+  }, [phase, isActive, onPhaseChange]);
+
   const strokeWidth = 12;
   const padding = 2;
   const innerSize = size - padding * 2;
   const sideLen = innerSize - strokeWidth;
-
-  // Cosmic green color for the animated fill
   const fillColor = '#00ff9d';
 
   // Reset when becoming inactive
@@ -61,7 +67,6 @@ export default function BreathingBox({
   useEffect(() => {
     if (!isActive) return;
 
-
     const currentPhaseData = PHASES[phase];
     const phaseDurationMs = currentPhaseData.duration * 1000;
     phaseStartTimeRef.current = performance.now();
@@ -69,20 +74,17 @@ export default function BreathingBox({
     const tick = (now) => {
       const elapsed = now - phaseStartTimeRef.current;
       const rawProgress = Math.min(elapsed / phaseDurationMs, 1);
-
       const newProgress = currentPhaseData.countdown ? (1 - rawProgress) : rawProgress;
       setProgress(newProgress);
 
       const currentSecond = currentPhaseData.countdown
         ? Math.ceil(currentPhaseData.duration - (elapsed / 1000))
         : Math.floor(elapsed / 1000) + 1;
-
       setSecondCount(Math.max(1, Math.min(currentSecond, currentPhaseData.duration)));
 
       if (rawProgress >= 1) {
         const currentIndex = SEQUENCE.indexOf(phase);
         const nextIndex = currentIndex + 1;
-
         if (nextIndex >= SEQUENCE.length) {
           onCycleCompleteRef.current?.();
           setPhase('INHALE');
@@ -98,11 +100,8 @@ export default function BreathingBox({
     };
 
     animationRef.current = requestAnimationFrame(tick);
-
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [isActive, phase]);
 
@@ -111,8 +110,6 @@ export default function BreathingBox({
   // Calculate fill lengths for each side
   const getFills = () => {
     if (phase === 'GET_READY') {
-      // Countdown: progress goes from 1 to 0
-      // totalFilled goes from 4 to 0
       const totalFilled = progress * 4;
       return {
         bottom: Math.min(1, Math.max(0, totalFilled)) * sideLen,
@@ -121,32 +118,51 @@ export default function BreathingBox({
         left: Math.min(1, Math.max(0, totalFilled - 3)) * sideLen,
       };
     }
-
-    // Breathing phases
     const phaseIndex = SEQUENCE.indexOf(phase);
     const fills = { left: 0, top: 0, right: 0, bottom: 0 };
-
-    // Completed sides stay filled
     if (phaseIndex > 1) fills.left = sideLen;
     if (phaseIndex > 2) fills.top = sideLen;
     if (phaseIndex > 3) fills.right = sideLen;
-
-    // Current side fills with progress
     if (phase === 'INHALE') fills.left = progress * sideLen;
     else if (phase === 'HOLD_IN') fills.top = progress * sideLen;
     else if (phase === 'EXHALE') fills.right = progress * sideLen;
     else if (phase === 'HOLD_OUT') fills.bottom = progress * sideLen;
-
     return fills;
   };
 
   const fills = getFills();
-
-  // Coordinates for the box corners
   const x1 = padding + strokeWidth / 2;
   const y1 = padding + strokeWidth / 2;
   const x2 = x1 + sideLen;
   const y2 = y1 + sideLen;
+
+  // Helper to render a fill line for a given side
+  const renderFill = (side) => {
+    if (fills[side] <= 0) return null;
+    const isReady = phase === 'GET_READY';
+    const coords = {
+      bottom: isReady
+        ? { x1: x1, y1: y2, x2: x1 + fills.bottom, y2: y2 }
+        : { x1: x2, y1: y2, x2: x2 - fills.bottom, y2: y2 },
+      right: isReady
+        ? { x1: x2, y1: y2, x2: x2, y2: y2 - fills.right }
+        : { x1: x2, y1: y1, x2: x2, y2: y1 + fills.right },
+      top: isReady
+        ? { x1: x2, y1: y1, x2: x2 - fills.top, y2: y1 }
+        : { x1: x1, y1: y1, x2: x1 + fills.top, y2: y1 },
+      left: isReady
+        ? { x1: x1, y1: y1, x2: x1, y2: y1 + fills.left }
+        : { x1: x1, y1: y2, x2: x1, y2: y2 - fills.left },
+    };
+    return (
+      <line
+        {...coords[side]}
+        stroke={fillColor}
+        strokeWidth={strokeWidth}
+        strokeLinecap="square"
+      />
+    );
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -155,128 +171,39 @@ export default function BreathingBox({
         style={{ width: size, height: size }}
         onClick={!isActive && onStart ? onStart : undefined}
       >
+        {/* Soft ambient glow behind the box */}
+        <div
+          className="absolute -inset-[16px] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)',
+            animation: 'solfeggio-breathe-741 5.3s ease-in-out infinite',
+          }}
+        />
+
+        {/* SVG breathing animation layer */}
         <svg
           width={size}
           height={size}
           viewBox={`0 0 ${size} ${size}`}
-          className="absolute inset-0"
+          className="absolute inset-0 z-10"
         >
           {/* Box outline */}
           <rect
-            x={x1}
-            y={y1}
-            width={sideLen}
-            height={sideLen}
+            x={x1} y={y1}
+            width={sideLen} height={sideLen}
             fill="none"
             stroke="rgba(100, 116, 139, 0.4)"
             strokeWidth={strokeWidth}
           />
-
           {/* Animated sides - cosmic green fill */}
-
-          {/* Bottom side */}
-          {fills.bottom > 0 && (
-            phase === 'GET_READY' ? (
-              <line
-                x1={x1}
-                y1={y2}
-                x2={x1 + fills.bottom}
-                y2={y2}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            ) : (
-              <line
-                x1={x2}
-                y1={y2}
-                x2={x2 - fills.bottom}
-                y2={y2}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            )
-          )}
-
-          {/* Right side */}
-          {fills.right > 0 && (
-            phase === 'GET_READY' ? (
-              <line
-                x1={x2}
-                y1={y2}
-                x2={x2}
-                y2={y2 - fills.right}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            ) : (
-              <line
-                x1={x2}
-                y1={y1}
-                x2={x2}
-                y2={y1 + fills.right}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            )
-          )}
-
-          {/* Top side */}
-          {fills.top > 0 && (
-            phase === 'GET_READY' ? (
-              <line
-                x1={x2}
-                y1={y1}
-                x2={x2 - fills.top}
-                y2={y1}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            ) : (
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x1 + fills.top}
-                y2={y1}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            )
-          )}
-
-          {/* Left side */}
-          {fills.left > 0 && (
-            phase === 'GET_READY' ? (
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x1}
-                y2={y1 + fills.left}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            ) : (
-              <line
-                x1={x1}
-                y1={y2}
-                x2={x1}
-                y2={y2 - fills.left}
-                stroke={fillColor}
-                strokeWidth={strokeWidth}
-                strokeLinecap="square"
-              />
-            )
-          )}
+          {renderFill('bottom')}
+          {renderFill('right')}
+          {renderFill('top')}
+          {renderFill('left')}
         </svg>
 
         {/* Center content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer">
           {isActive ? (
             <>
               <span className="text-5xl font-thin text-white mb-2">

@@ -1,0 +1,25 @@
+/**
+ * useReducedMotion — respects user's motion preferences
+ * Returns true if the user prefers reduced motion
+ */
+
+'use client';
+
+import { useState, useEffect } from 'react';
+
+const QUERY = '(prefers-reduced-motion: reduce)';
+
+export default function useReducedMotion() {
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(QUERY);
+    setPrefersReduced(mql.matches);
+
+    const handler = (e) => setPrefersReduced(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  return prefersReduced;
+}

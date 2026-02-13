@@ -17,6 +17,21 @@ const LEVEL_COLORS = {
   rose: 'border-rose-500/30 bg-rose-500/10',
 };
 
+// Intensity gradient backgrounds: cool indigo → deeper violet → warm rose
+const INTENSITY_GRADIENTS = [
+  'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(99,102,241,0.04) 100%)',  // 0
+  'linear-gradient(135deg, rgba(99,102,241,0.10) 0%, rgba(99,102,241,0.06) 100%)',  // 1
+  'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(99,102,241,0.08) 100%)',  // 2
+  'linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(139,92,246,0.06) 100%)',  // 3
+  'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.10) 100%)',  // 4
+  'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.08) 100%)',  // 5
+  'linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(244,63,94,0.06) 100%)',   // 6
+  'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(244,63,94,0.10) 100%)',   // 7
+  'linear-gradient(135deg, rgba(244,63,94,0.10) 0%, rgba(244,63,94,0.06) 100%)',    // 8
+  'linear-gradient(135deg, rgba(244,63,94,0.14) 0%, rgba(244,63,94,0.08) 100%)',    // 9
+  'linear-gradient(135deg, rgba(244,63,94,0.18) 0%, rgba(244,63,94,0.10) 100%)',    // 10
+];
+
 const LEVEL_TEXT_COLORS = {
   emerald: 'text-emerald-400',
   amber: 'text-amber-400',
@@ -29,7 +44,15 @@ export default function IntensitySelector({ value, onChange, className = '' }) {
   const level = MISOPHONIA_LEVELS[value] || MISOPHONIA_LEVELS[5];
 
   return (
-    <div className={className}>
+    <div
+      className={className}
+      style={{
+        background: INTENSITY_GRADIENTS[value] || INTENSITY_GRADIENTS[5],
+        borderRadius: '16px',
+        padding: '16px',
+        transition: 'background 610ms ease-in-out',
+      }}
+    >
       <Slider
         label="How intense?"
         value={value}

@@ -8,7 +8,8 @@
 import { useState } from 'react';
 import { Check, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui';
-import { BreathingCircle, BreathingBox } from '@/components/composed';
+import { BreathingCircle, BreathingBox, BreathingAura, ExpansionBloom } from '@/components/composed';
+import useWakeLock from '@/hooks/useWakeLock';
 import { BREATH_INSTRUCTIONS } from './DurationSelector';
 
 export default function BreathingPlayer({
@@ -23,6 +24,17 @@ export default function BreathingPlayer({
   const [cycleCount, setCycleCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [showHowTo, setShowHowTo] = useState(false);
+  const [showBloom, setShowBloom] = useState(false);
+
+  // Keep screen on during practice
+  useWakeLock(isActive);
+  const [breathPhase, setBreathPhase] = useState('GET_READY');
+  const [breathScale, setBreathScale] = useState(1);
+
+  const handlePhaseChange = (phase, scale) => {
+    setBreathPhase(phase);
+    setBreathScale(scale);
+  };
 
   const handleCycleComplete = () => {
     const newCount = cycleCount + 1;
@@ -30,8 +42,7 @@ export default function BreathingPlayer({
 
     if (newCount >= selectedDuration.rounds) {
       setIsActive(false);
-      setCompleted(true);
-      onComplete?.();
+      setShowBloom(true);
     }
   };
 
@@ -43,8 +54,16 @@ export default function BreathingPlayer({
 
   const instructions = tool.breathType && BREATH_INSTRUCTIONS[tool.breathType];
 
+  const handleBloomComplete = () => {
+    setShowBloom(false);
+    setCompleted(true);
+    onComplete?.();
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center px-6 py-8">
+      <ExpansionBloom active={showBloom} solfeggio="cyan" onComplete={handleBloomComplete} />
+
       {/* Round Counter */}
       {!completed && (
         <div className="text-center mb-8 mt-4">
@@ -55,13 +74,19 @@ export default function BreathingPlayer({
         </div>
       )}
 
-      {/* Breathing visualization */}
+      {/* Breathing visualization with ambient aura */}
       <div className="flex-1 flex items-center justify-center">
-        <div className="mb-8">
+        <BreathingAura
+          phase={breathPhase}
+          isActive={isActive}
+          breathScale={breathScale}
+          shape={tool.breathType === 'box' ? 'box' : 'circle'}
+        >
           {tool.breathType === 'box' ? (
             <BreathingBox
               isActive={isActive}
               onCycleComplete={handleCycleComplete}
+              onPhaseChange={handlePhaseChange}
               onStart={() => setIsActive(true)}
               size={220}
             />
@@ -69,11 +94,12 @@ export default function BreathingPlayer({
             <BreathingCircle
               isActive={isActive}
               onCycleComplete={handleCycleComplete}
+              onPhaseChange={handlePhaseChange}
               onStart={() => setIsActive(true)}
               breathType={tool.breathType || '478'}
             />
           )}
-        </div>
+        </BreathingAura>
       </div>
 
       {/* Bottom section */}

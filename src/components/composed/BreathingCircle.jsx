@@ -51,6 +51,7 @@ const DEFAULT_PHASES = BREATH_PATTERNS['478'].phases;
 export default function BreathingCircle({
   isActive = false,
   onCycleComplete,
+  onPhaseChange,
   onStart,
   size = 'lg',
   breathType = '478',
@@ -143,11 +144,19 @@ export default function BreathingCircle({
     }
   }, [isActive, breathType, PHASES]);
 
+  // Notify parent of phase changes so it can drive ambient effects
+  useEffect(() => {
+    if (onPhaseChange) {
+      const currentScale = isActive ? (PHASES[phase]?.scale || 1) : 1;
+      onPhaseChange(phase, currentScale);
+    }
+  }, [phase, isActive, onPhaseChange, PHASES]);
+
   const currentPhase = PHASES[phase];
 
   return (
     <div className="flex flex-col items-center">
-      {/* Circle */}
+      {/* Circle — soft glowing orb */}
       <div
         className={`
           ${sizes[size]} rounded-full relative
@@ -167,11 +176,23 @@ export default function BreathingCircle({
           }}
         />
 
-        {/* Outer glow */}
+        {/* Outer glow — soft radial, not a hard border */}
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(99,102,241,0.4) 0%, rgba(139,92,246,0.25) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, rgba(139,92,246,0.2) 50%, transparent 70%)',
+          }}
+        />
+
+        {/* Torus Flow — violet 852Hz energy field, breathing independently */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 50% at 50% -10%, rgba(139,92,246,0.10) 0%, transparent 60%),
+              radial-gradient(ellipse 80% 50% at 50% 110%, rgba(139,92,246,0.05) 0%, transparent 60%)
+            `,
+            animation: 'solfeggio-breathe-852 3.7s ease-in-out infinite',
           }}
         />
 
@@ -218,7 +239,7 @@ export default function BreathingCircle({
               <span className="text-2xl font-thin text-white mb-1">
                 Ready
               </span>
-              <span className="text-xs font-light text-slate-400">
+              <span className="text-xs font-light text-slate-300">
                 Tap to Start
               </span>
             </>

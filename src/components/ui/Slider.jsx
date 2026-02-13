@@ -40,6 +40,10 @@ export default function Slider({
           step={step}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
+          aria-label={label}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
           className="
             w-full h-2 rounded-full appearance-none cursor-pointer
             bg-slate-800

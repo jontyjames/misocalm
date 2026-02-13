@@ -1,7 +1,12 @@
 /**
  * MisoCalm Card Component
- * Sacred Glass treatment for interactive cards
+ * Sacred Glass treatment with touch response for interactive cards
  */
+
+'use client';
+
+import { useState, useCallback } from 'react';
+import useReducedMotion from '@/hooks/useReducedMotion';
 
 export default function Card({
   children,
@@ -9,14 +14,52 @@ export default function Card({
   className = '',
   onClick,
   padding = 'p-4',
+  solfeggio = 'indigo',
 }) {
   const Component = onClick ? 'button' : 'div';
   const isInteractive = !!onClick;
+  const prefersReduced = useReducedMotion();
+  const [springStyle, setSpringStyle] = useState({});
+  const [glowPos, setGlowPos] = useState(null);
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePointerDown = useCallback((e) => {
+    if (!isInteractive) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setIsPressed(true);
+    if (!prefersReduced) {
+      setSpringStyle({
+        transform: 'scale(0.98)',
+        transition: 'transform 89ms cubic-bezier(0.2, 0, 0.4, 1)',
+      });
+    }
+  }, [isInteractive, prefersReduced]);
+
+  const handlePointerUp = useCallback(() => {
+    setIsPressed(false);
+    setTimeout(() => setGlowPos(null), 377);
+    if (!prefersReduced) {
+      setSpringStyle({
+        transform: 'scale(1)',
+        transition: 'transform 233ms cubic-bezier(0.34, 1.4, 0.64, 1)',
+      });
+    }
+  }, [prefersReduced]);
+
+  const GLOW_COLORS = {
+    indigo: 'rgba(99,102,241,0.2)',
+    violet: 'rgba(139,92,246,0.2)',
+    cyan: 'rgba(34,211,238,0.2)',
+  };
 
   if (isInteractive) {
     return (
       <Component
         onClick={onClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
         className={`
           relative rounded-xl ${padding} text-left w-full overflow-hidden
           border border-white/[0.18] backdrop-blur-2xl
@@ -27,6 +70,7 @@ export default function Card({
         style={{
           background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, rgba(99,102,241,0.05) 100%)',
           boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.25)',
+          ...springStyle,
         }}
       >
         {/* Glass top highlight */}
@@ -39,6 +83,17 @@ export default function Card({
           className="absolute inset-0 pointer-events-none rounded-xl"
           style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.03) 40%, transparent 65%)' }}
         />
+        {/* Touch glow overlay */}
+        {glowPos && (
+          <span
+            className="absolute inset-0 pointer-events-none rounded-xl"
+            style={{
+              background: `radial-gradient(circle 100px at ${glowPos.x}px ${glowPos.y}px, ${GLOW_COLORS[solfeggio] || GLOW_COLORS.indigo}, transparent)`,
+              opacity: isPressed ? 1 : 0,
+              transition: isPressed ? 'none' : 'opacity 377ms ease-out',
+            }}
+          />
+        )}
         <div className="relative">
           {children}
         </div>

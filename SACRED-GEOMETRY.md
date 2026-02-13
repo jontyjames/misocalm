@@ -89,6 +89,23 @@ All animation durations, delays, and transitions must use these values:
 
 **Never use arbitrary timing values.** The nervous system will feel the difference even when the conscious mind doesn't notice.
 
+### Micro-Interaction Timing
+
+Specific Fibonacci values assigned to interaction types. See MICRO-INTERACTIONS.md for the full interaction vocabulary.
+
+| Interaction | Fibonacci value | Name | Why this value |
+|-------------|----------------|------|---------------|
+| Button press response | 89ms | fib-snap | One saccade. Feels instant. Trustworthy. |
+| Element stagger | 34-55ms | fib-micro/fib-fast | Organic cascade, not mechanical sync. |
+| Card hover transition | 144ms | fib-shift | Pre-attentive window. Seamless. |
+| Glow dissipation | 377ms | fib-flow | One micro-exhale. The ripple fades naturally. |
+| Navigation fade | 610ms | fib-ease | Orienting response duration. |
+| Completion (star dissolve) | 987ms | fib-breathe | One heartbeat. Release takes one full beat. |
+| Completion (expansion bloom) | 1597ms | fib-ceremony | Emotional integration window. |
+| Long press activation | 377ms | fib-flow | One exhale to distinguish from tap. |
+| Long press glow pulse | 3.7s | Prime | Natural breathing cadence. |
+| Ambient colour breathing | 89s | fib-snap (scaled) | Imperceptible but prevents habituation. |
+
 ### Letter-by-Letter Animation (Specific Values)
 
 Letter-by-letter text is used for emotional transition moments. The timing is critical:

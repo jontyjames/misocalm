@@ -1,6 +1,6 @@
 # MisoCalm UX Philosophy
 
-> This document is the soul of MisoMind. Every feature, every screen, every word
+> This document is the soul of MisoCalm. Every feature, every screen, every word
 > should be measured against these principles. Read this before building anything.
 
 ---
@@ -261,7 +261,7 @@ Instead of levels and XP, frame everything as personal growth:
 
 - **After a gap (3+ days):** "Your sanctuary is here when you need it."
   (One message. Not repeated daily.)
-- **Morning of a new milestone:** "Something's waiting for you in MisoMind."
+- **Morning of a new milestone:** "Something's waiting for you in MisoCalm."
   (Curiosity, not pressure.)
 - **After a high-intensity log:** Next morning → "How are you feeling today?"
   (Care, not engagement-farming.)

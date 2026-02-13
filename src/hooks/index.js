@@ -7,3 +7,7 @@ export { useStreak } from './useStreak';
 export { useUserTriggers } from './useUserTriggers';
 export { useLogForm } from './useLogForm';
 export { useInsights } from './useInsights';
+export { default as useReducedMotion } from './useReducedMotion';
+export { default as useTouchGlow } from './useTouchGlow';
+export { default as useHaptic } from './useHaptic';
+export { default as useLongPress } from './useLongPress';

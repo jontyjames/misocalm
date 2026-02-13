@@ -1,6 +1,11 @@
 /**
  * PostLogIntegration - Beautiful post-log page
- * Affirmation + three paths forward (deeper, breathe, sanctuary)
+ * Affirmation + paths forward, following the torus journey model
+ *
+ * Context-aware via search params:
+ *   ?type=check_in        - after a check-in (vs trigger log)
+ *   ?from=breathwork       - check-in was post-practice (cycle complete, return to centre)
+ *   ?entry={id}            - links deeper processing to original entry
  */
 
 'use client';
@@ -9,8 +14,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Layers, Wind, Home } from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
+import StarDissolve from './StarDissolve';
 
-const AFFIRMATIONS = [
+const TRIGGER_AFFIRMATIONS = [
   'Noticing is not judging',
   'You deserve the same compassion you give others',
   'Awareness is a quiet kind of strength',
@@ -20,7 +26,17 @@ const AFFIRMATIONS = [
   'What you feel is valid',
 ];
 
-// Daily practices for the "Breathe" path (same as dashboard)
+const CHECK_IN_AFFIRMATIONS = [
+  'You showed up for yourself',
+  'Stillness is its own kind of strength',
+  'Awareness without pressure',
+  'Breathing is always a good answer',
+  'The calm you feel is yours to keep',
+  'You gave yourself space, that matters',
+  'A moment of peace, well earned',
+];
+
+// Daily practices for the "Breathe" path
 const PRACTICES = [
   { id: '1', duration: 'quick',  time: '~1.5 min' },
   { id: '1', duration: 'deep',   time: '~2.5 min' },
@@ -42,52 +58,108 @@ export default function PostLogIntegration() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const entryId = searchParams.get('entry');
+  const isCheckIn = searchParams.get('type') === 'check_in';
+  const fromBreathwork = searchParams.get('from') === 'breathwork';
+
+  const affirmations = isCheckIn ? CHECK_IN_AFFIRMATIONS : TRIGGER_AFFIRMATIONS;
 
   const affirmation = useMemo(() => {
     const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    return AFFIRMATIONS[day % AFFIRMATIONS.length];
-  }, []);
+    return affirmations[day % affirmations.length];
+  }, [affirmations]);
 
   const practice = useMemo(() => getRandomPractice(), []);
 
   // Letter-by-letter animation state
   const [visibleChars, setVisibleChars] = useState(0);
   const [showPaths, setShowPaths] = useState(false);
+  const [showStarDissolve, setShowStarDissolve] = useState(true);
 
   useEffect(() => {
     if (visibleChars < affirmation.length) {
       const timer = setTimeout(() => setVisibleChars(v => v + 1), 34);
       return () => clearTimeout(timer);
     } else {
-      // After affirmation completes, show paths
       const timer = setTimeout(() => setShowPaths(true), 987);
       return () => clearTimeout(timer);
     }
   }, [visibleChars, affirmation.length]);
 
-  const paths = [
-    {
-      title: 'Go a little deeper',
-      description: 'Explore what this moment meant to you. Guided prompts help you understand the emotions and patterns beneath the surface.',
-      icon: Layers,
-      accent: 'violet',
-      onClick: () => router.push(`${ROUTES.JOURNAL_DEEPER}${entryId ? `?entry=${entryId}` : ''}`),
-    },
-    {
-      title: 'Breathe',
-      description: 'Go straight into a calming practice',
-      icon: Wind,
-      accent: 'cyan',
-      onClick: () => router.push(`/tools/${practice.id}?duration=${practice.duration}`),
-    },
-    {
-      title: 'Return to sanctuary',
-      description: 'Head back when you are ready',
-      icon: Home,
-      accent: 'indigo',
-      onClick: () => router.push(ROUTES.DASHBOARD),
-    },
-  ];
+  // Build paths based on context (torus journey model)
+  const deeperRoute = `${ROUTES.JOURNAL_DEEPER}${entryId ? `?entry=${entryId}` : ''}`;
+
+  let paths;
+
+  if (isCheckIn && fromBreathwork) {
+    // Post-breathwork check-in: cycle is complete, return to centre
+    // No "practice again" (that creates a loop)
+    paths = [
+      {
+        title: 'Return to sanctuary',
+        description: 'Head back when you are ready',
+        icon: Home,
+        accent: 'indigo',
+        onClick: () => router.push(ROUTES.DASHBOARD),
+      },
+      {
+        title: 'Go a little deeper',
+        description: 'Explore what this moment meant to you',
+        icon: Layers,
+        accent: 'violet',
+        onClick: () => router.push(deeperRoute),
+      },
+    ];
+  } else if (isCheckIn) {
+    // Standalone check-in (from journal hub): offer depth, breathe, or home
+    paths = [
+      {
+        title: 'Go a little deeper',
+        description: 'Explore what this moment meant to you',
+        icon: Layers,
+        accent: 'violet',
+        onClick: () => router.push(deeperRoute),
+      },
+      {
+        title: 'Breathe',
+        description: 'Go straight into a calming practice',
+        icon: Wind,
+        accent: 'cyan',
+        onClick: () => router.push(`/tools/${practice.id}?duration=${practice.duration}`),
+      },
+      {
+        title: 'Return to sanctuary',
+        description: 'Head back when you are ready',
+        icon: Home,
+        accent: 'indigo',
+        onClick: () => router.push(ROUTES.DASHBOARD),
+      },
+    ];
+  } else {
+    // Trigger log: offer depth, breathe, or home
+    paths = [
+      {
+        title: 'Go a little deeper',
+        description: 'Explore what this moment meant to you. Guided prompts help you understand the emotions and patterns beneath the surface.',
+        icon: Layers,
+        accent: 'violet',
+        onClick: () => router.push(deeperRoute),
+      },
+      {
+        title: 'Breathe',
+        description: 'Go straight into a calming practice',
+        icon: Wind,
+        accent: 'cyan',
+        onClick: () => router.push(`/tools/${practice.id}?duration=${practice.duration}`),
+      },
+      {
+        title: 'Return to sanctuary',
+        description: 'Head back when you are ready',
+        icon: Home,
+        accent: 'indigo',
+        onClick: () => router.push(ROUTES.DASHBOARD),
+      },
+    ];
+  }
 
   const colorMap = {
     violet: 'rgba(139,92,246,',
@@ -103,14 +175,19 @@ export default function PostLogIntegration() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
-      <div className="max-w-sm w-full text-center">
+      <div className="max-w-sm w-full text-center relative">
+        {/* Star dissolution celebration */}
+        <StarDissolve active={showStarDissolve} color={isCheckIn ? 'cyan' : 'violet'} />
+
         {/* Affirmation - letter by letter */}
         <h1
           className="text-2xl leading-relaxed mb-16"
           style={{
             fontFamily: "'Josefin Sans', sans-serif",
             fontWeight: 200,
-            textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
+            textShadow: isCheckIn
+              ? '0 0 20px rgba(34,211,238,0.4), 0 0 40px rgba(34,211,238,0.15)'
+              : '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
             minHeight: '4rem',
           }}
         >
@@ -142,7 +219,7 @@ export default function PostLogIntegration() {
           })()}
         </h1>
 
-        {/* Three paths forward */}
+        {/* Paths forward */}
         {showPaths && (
           <div
             className="space-y-4"

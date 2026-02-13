@@ -84,6 +84,7 @@ export const ROUTES = {
   TOOLS: '/tools',
   LOG: '/journal/new',
   JOURNAL: '/journal',
+  CHECK_IN: '/journal/check-in',
   LOG_SUCCESS: '/journal/saved',
   LOG_SUPPORT: '/log/support',
   JOURNAL_DEEPER: '/journal/deeper',
@@ -92,6 +93,7 @@ export const ROUTES = {
   BOUNDARIES: '/boundaries',
   PROFILE: '/profile',
   DEBUG: '/debug',
+  PREMIUM: '/premium',
 };
 
 // Attribution options (how did you find us)
@@ -227,6 +229,17 @@ export const MISOPHONIA_LEVELS = [
     color: 'rose',
   },
 ];
+
+// Check-in scales (7 steps = prime)
+export const CHECK_IN_SCALES = {
+  energy: { min: 0, max: 6, leftLabel: 'Low energy', rightLabel: 'High energy' },
+  pleasantness: { min: 0, max: 6, leftLabel: 'Unpleasant', rightLabel: 'Pleasant' },
+};
+
+// Interval Timer options (Sacred Geometry compliant)
+export const TIMER_DURATIONS = [5, 10, 15, 20, 25, 30, 40]; // 7 options (prime)
+export const TIMER_REMINDERS = [0, 2, 5]; // 3 options (Tesla's 3) — 0 = none
+export const TIMER_ROUNDS = [1, 2, 3]; // 3 options (Tesla's 3)
 
 // Soundscapes
 export const SOUNDSCAPES = [
