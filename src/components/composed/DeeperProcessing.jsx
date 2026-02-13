@@ -217,7 +217,7 @@ export default function DeeperProcessing() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push(ROUTES.JOURNAL)}
           className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

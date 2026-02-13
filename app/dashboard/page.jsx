@@ -242,13 +242,13 @@ export default function DashboardPage() {
             </div>
           </button>
 
-          {/* Log a moment */}
+          {/* Go inward */}
           <button
-            onClick={() => router.push(ROUTES.LOG)}
+            onClick={() => router.push(ROUTES.JOURNAL)}
             className="relative overflow-hidden w-full p-5 rounded-xl border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms] text-left"
             style={{
-              background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(139,92,246,0.08) 100%)',
-              boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px rgba(139,92,246,0.12), 0 4px 20px rgba(0,0,0,0.25)',
+              background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(34,211,238,0.08) 100%)',
+              boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px rgba(34,211,238,0.12), 0 4px 20px rgba(0,0,0,0.25)',
             }}
           >
             {/* Glass top highlight */}
@@ -256,14 +256,14 @@ export default function DashboardPage() {
             {/* Phi opacity layers */}
             <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
             {/* Torus flow */}
-            <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(139,92,246,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(139,92,246,0.06) 0%, transparent 60%)' }} />
+            <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(34,211,238,0.06) 0%, transparent 60%)' }} />
             <div className="relative flex items-center gap-4">
-              <div className="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center shrink-0">
-                <BookOpen className="w-5 h-5 text-violet-400" />
+              <div className="w-11 h-11 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5 text-cyan-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-light mb-0.5">Log a moment</h3>
-                <p className="text-sm text-violet-400 font-light">Notice what triggered you</p>
+                <h3 className="text-white font-light mb-0.5">Go inward</h3>
+                <p className="text-sm text-cyan-400 font-light">Reflect, log, or check in with yourself</p>
               </div>
             </div>
           </button>

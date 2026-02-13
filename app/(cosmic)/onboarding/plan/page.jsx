@@ -105,7 +105,7 @@ export default function PlanPage() {
           {'Well done for choosing this path'.split('').map((char, i) => (
             <span
               key={i}
-              className="text-lg text-white/80 opacity-0"
+              className="text-2xl text-white/80 opacity-0"
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
@@ -143,23 +143,23 @@ export default function PlanPage() {
           </p>
 
           <div className="relative flex justify-center">
-            <div
-              className="absolute -inset-4 rounded-full pointer-events-none"
-              style={{
-                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)',
-                filter: 'blur(12px)',
-              }}
-            />
-            <Button
+            <button
               onClick={handleEnter}
-              loading={saving}
-              shape="pill"
-              className="relative w-64 !border-2 !border-white/[0.33] hover:!border-white/40"
-              size="lg"
-              style={{ boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+              disabled={saving}
+              className="relative overflow-hidden w-64 py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
+              style={{
+                background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)`,
+                boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)`,
+                animation: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
+              }}
             >
-              Enter MisoCalm
-            </Button>
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.5) 50%, transparent 90%)' }} />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)' }} />
+              <span className="relative z-10 font-light text-white text-base" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
+                {saving ? 'Preparing...' : 'Enter MisoCalm'}
+              </span>
+            </button>
           </div>
           </div>
       </div>

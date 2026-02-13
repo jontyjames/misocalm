@@ -1,6 +1,7 @@
 /**
- * Bottom Navigation Bar
- * 5 tabs: Home, Journal, Logo (mantra), Tools, Chat
+ * Floating Bottom Navigation - Gem in Ring
+ * Pill-shaped nav with logo gem elevated in centre.
+ * Sacred glass material, context-aware aura, icons only.
  */
 
 'use client';
@@ -10,14 +11,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, BookOpen, Wrench, MessageCircle } from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
-
-const navItems = [
-  { href: ROUTES.DASHBOARD, icon: Home, label: 'Home' },
-  { href: ROUTES.JOURNAL, icon: BookOpen, label: 'Journal' },
-  { isLogo: true },
-  { href: ROUTES.TOOLS, icon: Wrench, label: 'Tools' },
-  { href: ROUTES.CHAT, icon: MessageCircle, label: 'Chat' },
-];
+import NavLogoGem from './NavLogoGem';
 
 const MANTRAS = [
   'You are not your triggers.',
@@ -45,6 +39,50 @@ const MANTRAS = [
   'What you are building here, no one can take from you.',
 ];
 
+const leftNav = [
+  { href: ROUTES.DASHBOARD, icon: Home, label: 'Home' },
+  { href: ROUTES.JOURNAL, icon: BookOpen, label: 'Journal' },
+];
+
+const rightNav = [
+  { href: ROUTES.TOOLS, icon: Wrench, label: 'Tools' },
+  { href: ROUTES.CHAT, icon: MessageCircle, label: 'Chat' },
+];
+
+/** Map pathname prefix to aura colour (solfeggio-mapped) */
+function getAuraColour(pathname) {
+  if (pathname.startsWith('/journal')) return 'rgba(139,92,246,0.15)';  // violet 852Hz
+  if (pathname.startsWith('/tools'))   return 'rgba(34,211,238,0.12)';  // cyan 741Hz
+  return 'rgba(99,102,241,0.12)';                                       // indigo 528Hz (home/chat)
+}
+
+function NavItem({ href, icon: Icon, isActive }) {
+  return (
+    <Link
+      href={href}
+      className={`
+        relative flex items-center justify-center
+        w-10 h-10 rounded-full
+        transition-colors duration-[144ms]
+        ${isActive ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}
+      `}
+    >
+      <Icon className="w-5 h-5" />
+      {isActive && (
+        <span
+          className="absolute -bottom-1.5 rounded-full"
+          style={{
+            width: 6,
+            height: 6,
+            backgroundColor: '#22d3ee',
+            animation: 'nav-dot-glow 987ms ease-in-out infinite',
+          }}
+        />
+      )}
+    </Link>
+  );
+}
+
 export default function Navigation() {
   const pathname = usePathname();
   const [showMantra, setShowMantra] = useState(false);
@@ -58,6 +96,11 @@ export default function Navigation() {
     lastIndex.current = idx;
     setShowMantra(true);
   };
+
+  const isActive = (href) =>
+    pathname === href || (href !== ROUTES.DASHBOARD && pathname.startsWith(href));
+
+  const auraColour = getAuraColour(pathname);
 
   return (
     <>
@@ -85,63 +128,63 @@ export default function Navigation() {
         </div>
       )}
 
-      {/* Navigation bar */}
-      <nav
-        className="
-          fixed bottom-0 left-1/2 -translate-x-1/2 z-50
-          w-full max-w-md
-          border-t border-slate-800
-          safe-area-bottom
-        "
+      {/* Context-aware aura glow beneath nav */}
+      <div
+        className="fixed z-[49] left-1/2 -translate-x-1/2 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(3,7,18,1) 100%)',
+          bottom: 0,
+          width: '80%',
+          maxWidth: '380px',
+          height: 42,
+          borderRadius: '9999px',
+          background: `radial-gradient(ellipse at 50% 80%, ${auraColour} 0%, transparent 70%)`,
+          transition: 'background 610ms ease-in-out',
         }}
+      />
+
+      {/* Floating pill navigation */}
+      <nav
+        className="fixed z-50 left-1/2 -translate-x-1/2 safe-area-bottom"
+        style={{ bottom: 26 }}
+        aria-label="Main navigation"
       >
-        <div className="flex justify-around items-center py-2 px-4">
-          {navItems.map((item, i) => {
-            if (item.isLogo) {
-              return (
-                <button
-                  key="logo"
-                  onClick={openMantra}
-                  className="
-                    flex flex-col items-center justify-center
-                    px-4 py-2
-                    transition-all duration-[233ms]
-                  "
-                >
-                  <img
-                    src="/icons/MisoCalm-logo-v1.png"
-                    alt="MisoCalm"
-                    className="w-14 h-14"
-                    style={{ filter: 'drop-shadow(0 0 12px rgba(139,92,246,0.4)) drop-shadow(0 0 24px rgba(139,92,246,0.15))' }}
-                  />
-                </button>
-              );
-            }
+        <div
+          className="
+            flex items-center justify-center gap-2
+            rounded-full border overflow-visible
+            backdrop-blur-2xl
+          "
+          style={{
+            padding: '6px 10px',
+            borderColor: 'rgba(255,255,255,0.18)',
+            background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(30,41,59,0.85) 40%, rgba(3,7,18,0.92) 100%)',
+            boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 16px rgba(99,102,241,0.1), 0 4px 20px rgba(0,0,0,0.3)',
+          }}
+        >
+          {/* Left nav items */}
+          {leftNav.map((item) => (
+            <NavItem
+              key={item.href}
+              href={item.href}
+              icon={item.icon}
+              isActive={isActive(item.href)}
+            />
+          ))}
 
-            const isActive = pathname === item.href ||
-              (item.href !== ROUTES.DASHBOARD && pathname.startsWith(item.href));
-            const Icon = item.icon;
+          {/* Centre logo gem */}
+          <div className="mx-2">
+            <NavLogoGem onTap={openMantra} />
+          </div>
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`
-                  flex flex-col items-center gap-[6px] px-4 py-2
-                  transition-colors duration-[144ms]
-                  ${isActive
-                    ? 'text-cyan-400'
-                    : 'text-slate-300 hover:text-white'
-                  }
-                `}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-[10px] font-light">{item.label}</span>
-              </Link>
-            );
-          })}
+          {/* Right nav items */}
+          {rightNav.map((item) => (
+            <NavItem
+              key={item.href}
+              href={item.href}
+              icon={item.icon}
+              isActive={isActive(item.href)}
+            />
+          ))}
         </div>
       </nav>
     </>

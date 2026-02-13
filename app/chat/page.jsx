@@ -9,8 +9,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { usePremiumContext } from '@/context/PremiumContext';
 import { useChat } from '@/hooks';
-import { Button, Input, Spinner } from '@/components/ui';
+import { Button, Input, Spinner, PremiumGate } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
@@ -57,12 +58,31 @@ export default function ChatPage() {
     });
   };
 
-  if (authLoading || chatLoading) {
+  const { isPremium, isLoading: premiumLoading } = usePremiumContext();
+
+  if (authLoading || chatLoading || premiumLoading) {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
           <Spinner size="lg" />
         </div>
+      </AppLayout>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <AppLayout showNav={false}>
+        <div className="flex items-center gap-4 px-4 py-3 border-b border-slate-800">
+          <button
+            onClick={() => router.push(ROUTES.DASHBOARD)}
+            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-white font-light">MisoCalm AI</h1>
+        </div>
+        <PremiumGate feature="AI companion chat" />
       </AppLayout>
     );
   }

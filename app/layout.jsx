@@ -1,5 +1,6 @@
 import './globals.css'
 import { AuthProvider } from '@/context/AuthContext'
+import { PremiumProvider } from '@/context/PremiumContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 
 export const metadata = {
@@ -46,7 +47,9 @@ export default function RootLayout({ children }) {
         <div className="w-full max-w-md min-h-screen relative bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] shadow-2xl">
           <QueryProvider>
             <AuthProvider>
-              {children}
+              <PremiumProvider>
+                {children}
+              </PremiumProvider>
             </AuthProvider>
           </QueryProvider>
         </div>

@@ -8,21 +8,27 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { usePremiumContext } from '@/context/PremiumContext';
 import { useInsights } from '@/hooks/useInsights';
-import { Spinner } from '@/components/ui';
+import { Spinner, PremiumGate } from '@/components/ui';
 import InsightCard from './InsightCard';
 
 export default function JournalInsights() {
   const { user } = useAuth();
+  const { isPremium, isLoading: premiumLoading } = usePremiumContext();
   const { insights, stats, loading } = useInsights(user?.id, 30);
   const [showWhy, setShowWhy] = useState(false);
 
-  if (loading) {
+  if (loading || premiumLoading) {
     return (
       <div className="flex justify-center py-16">
         <Spinner size="md" />
       </div>
     );
+  }
+
+  if (!isPremium) {
+    return <PremiumGate feature="Pattern insights" />;
   }
 
   if (!stats || stats.totalLogs < 2) {

@@ -9,7 +9,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Spinner } from '@/components/ui';
+import { usePremiumContext } from '@/context/PremiumContext';
+import { Card, Spinner, PremiumGate } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
@@ -86,12 +87,31 @@ export default function BoundariesPage() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  if (loading) {
+  const { isPremium, isLoading: premiumLoading } = usePremiumContext();
+
+  if (loading || premiumLoading) {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
           <Spinner size="lg" />
         </div>
+      </AppLayout>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <AppLayout showNav={false}>
+        <div className="flex items-center gap-4 px-6 py-8 mb-0">
+          <button
+            onClick={() => router.push(ROUTES.DASHBOARD)}
+            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-2xl font-thin text-white">Gentle Boundaries</h1>
+        </div>
+        <PremiumGate feature="Boundary scripts" />
       </AppLayout>
     );
   }

@@ -14,6 +14,7 @@ import { Button, TriggerChips } from '@/components/ui';
 import { IntensitySelector, SourceSelector, CrisisModal } from '@/components/composed';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { useLogForm, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/hooks/useLogForm';
+import { ROUTES } from '@/lib/constants';
 
 export default function LogFormContainer() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function LogFormContainer() {
     bodyResponses, toggleBodyResponse,
     notes, setNotes,
     handleSave, handleCrisisContinue, handleCrisisSupport,
-    saving, showCrisisModal, setShowCrisisModal,
+    saving, error, showCrisisModal, setShowCrisisModal,
   } = useLogForm(user?.id);
 
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -49,7 +50,7 @@ export default function LogFormContainer() {
     <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <button onClick={() => router.back()} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
+        <button onClick={() => router.push(ROUTES.JOURNAL)} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
@@ -162,6 +163,11 @@ export default function LogFormContainer() {
           </button>
         )}
       </section>
+
+      {/* Error display */}
+      {error && (
+        <p className="text-sm text-rose-400 font-light mb-4">{error.message || 'Something went wrong'}</p>
+      )}
 
       {/* Fixed save button */}
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent">

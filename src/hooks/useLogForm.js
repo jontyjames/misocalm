@@ -76,6 +76,7 @@ export function useLogForm(userId) {
   }, []);
 
   const handleSave = useCallback(async (skipCrisisCheck = false) => {
+    if (saving) return;
     if (selectedTriggers.length === 0) return;
 
     // Show crisis modal for high intensity (9-10)
@@ -115,7 +116,7 @@ export function useLogForm(userId) {
     // Get the created entry ID for the deeper processing flow
     const entryId = data?.[0]?.id;
     router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
-  }, [userId, selectedTriggers, sources, intensity, timeOfDay, bodyResponses, notes, router]);
+  }, [userId, selectedTriggers, sources, intensity, timeOfDay, bodyResponses, notes, saving, router]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);

@@ -8,6 +8,7 @@ export const EVENTS = {
   // Trigger events
   TRIGGER_LOGGED: 'trigger_logged',
   TRIGGER_DELETED: 'trigger_deleted',
+  CHECK_IN_LOGGED: 'check_in_logged',
 
   // Chat events
   CHAT_SENT: 'chat_sent',

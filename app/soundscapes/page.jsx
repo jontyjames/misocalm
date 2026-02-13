@@ -9,7 +9,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Play, Pause, Volume2, Repeat, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Card, Slider, Spinner } from '@/components/ui';
+import { usePremiumContext } from '@/context/PremiumContext';
+import { Button, Card, Slider, Spinner, PremiumGate } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES, SOUNDSCAPES } from '@/lib/constants';
 
@@ -48,12 +49,31 @@ export default function SoundscapesPage() {
     setPlaying(null);
   };
 
-  if (loading) {
+  const { isPremium, isLoading: premiumLoading } = usePremiumContext();
+
+  if (loading || premiumLoading) {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center">
           <Spinner size="lg" />
         </div>
+      </AppLayout>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <AppLayout showNav={false}>
+        <div className="flex items-center gap-4 px-6 py-8 mb-0">
+          <button
+            onClick={() => router.push(ROUTES.DASHBOARD)}
+            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-2xl font-thin text-white">Sound Sanctuary</h1>
+        </div>
+        <PremiumGate feature="Sound Sanctuary" />
       </AppLayout>
     );
   }

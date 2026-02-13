@@ -16,7 +16,7 @@ export default function AppLayout({ children, showNav = true }) {
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-nebula-cyan pointer-events-none" />
 
       {/* Main content — starfield inside same stacking context so backdrop-blur can see it */}
-      <main className={`relative ${showNav ? 'pb-24' : ''}`}>
+      <main className={`relative ${showNav ? 'pb-20' : ''}`}>
         <Starfield />
         {children}
       </main>

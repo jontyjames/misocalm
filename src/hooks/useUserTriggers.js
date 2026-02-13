@@ -21,26 +21,25 @@ export function useUserTriggers(userId) {
       // Load user's triggers from database
       const { data: dbTriggers } = await userTriggerService.getUserTriggers(userId);
 
-      let allTriggers = [...DEFAULT_TRIGGERS];
+      let allTriggers;
 
       if (dbTriggers && dbTriggers.length > 0) {
-        const userTriggerNames = dbTriggers.map(t => t.name);
-        const remainingDefaults = DEFAULT_TRIGGERS.filter(
-          t => !userTriggerNames.includes(t)
-        );
-        allTriggers = [...userTriggerNames, ...remainingDefaults];
+        // User has saved triggers - show only those
+        allTriggers = dbTriggers.map(t => t.name);
       } else {
-        // Fallback to localStorage for users who onboarded before DB save
+        // Fallback to localStorage for users mid-onboarding
         try {
           const raw = localStorage.getItem(STORAGE_KEYS.ONBOARDING_DATA);
           const onboardingData = raw ? JSON.parse(raw) : {};
           if (onboardingData.triggers?.length > 0) {
-            const remaining = DEFAULT_TRIGGERS.filter(
-              t => !onboardingData.triggers.includes(t)
-            );
-            allTriggers = [...onboardingData.triggers, ...remaining];
+            allTriggers = [...onboardingData.triggers];
           }
         } catch { /* ignore parse errors */ }
+
+        // Safety net: no DB triggers and no localStorage triggers
+        if (!allTriggers) {
+          allTriggers = [...DEFAULT_TRIGGERS];
+        }
       }
 
       // Sort by frequency (most used first)

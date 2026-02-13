@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button, ProgressDots } from '@/components/ui';
-import { BreathingCircle } from '@/components/composed';
+import { BreathingCircle, BreathingAura } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
 const TOTAL_ONBOARDING_STEPS = 6;
@@ -23,6 +23,13 @@ export default function FirstPracticePage() {
   const [completed, setCompleted] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [breathPhase, setBreathPhase] = useState('GET_READY');
+  const [breathScale, setBreathScale] = useState(1);
+
+  const handlePhaseChange = (phase, scale) => {
+    setBreathPhase(phase);
+    setBreathScale(scale);
+  };
 
   const handleStart = () => {
     setIsActive(true);
@@ -169,11 +176,14 @@ export default function FirstPracticePage() {
 
             {/* Breathing Circle — centred in available space */}
             <div className="flex-1 flex items-center justify-center w-full">
-              <BreathingCircle
-                isActive={isActive}
-                onCycleComplete={handleCycleComplete}
-                onStart={handleStart}
-              />
+              <BreathingAura phase={breathPhase} isActive={isActive} breathScale={breathScale} shape="circle">
+                <BreathingCircle
+                  isActive={isActive}
+                  onCycleComplete={handleCycleComplete}
+                  onPhaseChange={handlePhaseChange}
+                  onStart={handleStart}
+                />
+              </BreathingAura>
             </div>
 
             {/* Bottom section */}

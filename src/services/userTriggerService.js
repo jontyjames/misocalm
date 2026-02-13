@@ -75,7 +75,9 @@ export const userTriggerService = {
       }
 
       // Delete existing user_triggers for this user
-      await db.delete('user_triggers', { user_id: userId });
+      await db.query((supabase) =>
+        supabase.from('user_triggers').delete().eq('user_id', userId)
+      );
 
       // Insert new user_triggers
       for (const triggerId of triggerIds) {
@@ -104,6 +106,13 @@ export const userTriggerService = {
     );
 
     if (existing && existing.length > 0) {
+      // Link existing trigger to user in junction table
+      await db.query((supabase) =>
+        supabase.from('user_triggers').upsert(
+          { user_id: userId, trigger_id: existing[0].id },
+          { onConflict: 'user_id,trigger_id' }
+        )
+      );
       return { data: existing[0], error: null };
     }
 
@@ -113,6 +122,17 @@ export const userTriggerService = {
       is_custom: true,
       user_id: userId,
     });
+
+    // Link new trigger to user in junction table
+    const triggerId = data?.[0]?.id;
+    if (triggerId) {
+      await db.query((supabase) =>
+        supabase.from('user_triggers').upsert(
+          { user_id: userId, trigger_id: triggerId },
+          { onConflict: 'user_id,trigger_id' }
+        )
+      );
+    }
 
     return { data: data?.[0], error };
   },
