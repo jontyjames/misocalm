@@ -5,7 +5,7 @@
 // API & Timeouts
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export const API_TIMEOUT = 10000; // 10 seconds for Supabase calls
-export const DEBOUNCE_DELAY = 300;
+export const DEBOUNCE_DELAY = 233; // Fibonacci: fib-move
 
 // Top 10 most commonly reported triggers (based on misophonia research)
 export const DEFAULT_TRIGGERS = [
@@ -94,6 +94,8 @@ export const ROUTES = {
   PROFILE: '/profile',
   DEBUG: '/debug',
   PREMIUM: '/premium',
+  PRIVACY: '/privacy',
+  TERMS: '/terms',
 };
 
 // Attribution options (how did you find us)

@@ -110,8 +110,8 @@ class Analytics {
     // Add to queue for batching
     this.queue.push(event);
 
-    // TODO: Send to analytics service
-    // this.sendToService(event);
+    // Analytics service pending selection (Mixpanel, Amplitude, or PostHog).
+    // Events are queued locally until a provider is configured.
   }
 
   /**
@@ -171,8 +171,9 @@ class Analytics {
     const events = [...this.queue];
     this.queue = [];
 
-    // TODO: Send batched events to analytics service
-    if (this.debug) {
+    // Batched send pending analytics provider selection.
+    // Events are captured and discarded until a service is configured.
+    if (process.env.NODE_ENV === 'development') {
       console.log('[Analytics] Flushing', events.length, 'events');
     }
   }
