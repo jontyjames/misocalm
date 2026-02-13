@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button, TriggerChips } from '@/components/ui';
 import { IntensitySelector, SourceSelector, CrisisModal } from '@/components/composed';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { useLogForm, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/hooks/useLogForm';
 import { ROUTES } from '@/lib/constants';
@@ -182,13 +183,30 @@ export default function LogFormContainer() {
         </Button>
       </div>
 
-      {/* Crisis Modal */}
-      <CrisisModal
-        isOpen={showCrisisModal}
-        onContinue={handleCrisisContinue}
-        onGetSupport={handleCrisisSupport}
-        onClose={() => setShowCrisisModal(false)}
-      />
+      {/* Crisis Modal - wrapped in ErrorBoundary so 988 number is always accessible */}
+      <ErrorBoundary fallback={() => (
+        <div role="alert" className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80">
+          <div className="text-center max-w-sm">
+            <p className="text-white font-light mb-4">If you are in crisis, please reach out for support.</p>
+            <a
+              href="tel:988"
+              className="inline-block px-8 py-4 rounded-full bg-rose-600 text-white text-lg font-light"
+            >
+              Call 988
+            </a>
+            <p className="text-slate-400 text-sm font-light mt-4">
+              Suicide and Crisis Lifeline - available 24/7
+            </p>
+          </div>
+        </div>
+      )}>
+        <CrisisModal
+          isOpen={showCrisisModal}
+          onContinue={handleCrisisContinue}
+          onGetSupport={handleCrisisSupport}
+          onClose={() => setShowCrisisModal(false)}
+        />
+      </ErrorBoundary>
     </div>
   );
 }

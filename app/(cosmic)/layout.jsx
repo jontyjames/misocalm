@@ -4,7 +4,29 @@
  * welcome page and onboarding flow. Stays stable during navigation.
  */
 
+'use client';
+
 import { Starfield } from '@/components/composed';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+function CosmicErrorFallback({ error, reset }) {
+  return (
+    <div role="alert" aria-live="assertive" className="min-h-screen flex items-center justify-center p-6">
+      <div className="max-w-sm text-center">
+        <p className="text-xl font-thin text-white mb-3">Something went wrong</p>
+        <p className="text-sm text-slate-400 font-light mb-6">
+          {error?.message || 'An unexpected error occurred'}
+        </p>
+        <button
+          onClick={reset}
+          className="px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-light transition-colors text-sm"
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function CosmicLayout({ children }) {
   return (
@@ -16,7 +38,9 @@ export default function CosmicLayout({ children }) {
       <Starfield />
 
       <div className="relative z-10 min-h-screen">
-        {children}
+        <ErrorBoundary fallback={(props) => <CosmicErrorFallback {...props} />}>
+          {children}
+        </ErrorBoundary>
       </div>
     </div>
   );
