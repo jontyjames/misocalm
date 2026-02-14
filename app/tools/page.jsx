@@ -164,7 +164,7 @@ export default function ToolsPage() {
       <div className="px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-thin text-white">Tools & Practices</h1>
+          <h1 className="text-2xl font-thin text-white">Practices</h1>
           <Button variant="secondary" size="sm">
             <Lock className="w-4 h-4 mr-2" />
             Unlock
