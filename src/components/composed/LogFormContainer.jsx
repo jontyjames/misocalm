@@ -1,7 +1,7 @@
 /**
- * LogFormContainer - Simplified trigger log form
- * 3 core fields + optional body response + optional notes
- * Completable in under 30 seconds
+ * LogFormContainer - Trigger log form with per-trigger intensity
+ * Each selected trigger expands into a sacred glass card with its own slider
+ * Environment replaces source. Completable in under 10 seconds.
  */
 
 'use client';
@@ -11,21 +11,20 @@ import { ArrowLeft, Plus, X, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button, TriggerChips } from '@/components/ui';
-import { IntensitySelector, SourceSelector, CrisisModal } from '@/components/composed';
+import { ExpandingTriggerCard, CrisisModal } from '@/components/composed';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { useLogForm, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/hooks/useLogForm';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, ENVIRONMENT_OPTIONS } from '@/lib/constants';
 
 export default function LogFormContainer() {
   const router = useRouter();
   const { user } = useAuth();
-  const { triggers: userTriggers, addCustomTrigger } = useUserTriggers(user?.id);
+  const { triggers: userTriggers, isUsingDefaults, addCustomTrigger } = useUserTriggers(user?.id);
 
   const {
-    selectedTriggers, toggleTrigger,
-    sources, toggleSource,
-    intensity, setIntensity,
+    triggerEntries, toggleTrigger, setTriggerIntensity,
+    environment, setEnvironment,
     timeOfDay, setTimeOfDay,
     bodyResponses, toggleBodyResponse,
     notes, setNotes,
@@ -35,16 +34,23 @@ export default function LogFormContainer() {
 
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customTrigger, setCustomTrigger] = useState('');
+  const [addedMessage, setAddedMessage] = useState(null);
   const [showBody, setShowBody] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+
+  const selectedNames = Object.keys(triggerEntries);
+  const unselected = userTriggers.filter(t => !selectedNames.includes(t));
 
   const handleAddCustom = async () => {
     const trimmed = customTrigger.trim();
     if (!trimmed) return;
-    await addCustomTrigger(trimmed);
+    const result = await addCustomTrigger(trimmed);
+    if (result?.error) return;
     toggleTrigger(trimmed);
     setCustomTrigger('');
     setShowCustomInput(false);
+    setAddedMessage('Added to your sounds');
+    setTimeout(() => setAddedMessage(null), 1597);
   };
 
   return (
@@ -59,14 +65,40 @@ export default function LogFormContainer() {
         </h1>
       </div>
 
-      {/* 1. Triggers */}
+      {/* 1. Triggers — selected as expanding cards, unselected as chips */}
       <section className="mb-[26px]">
-        <h2 className="text-sm text-slate-300 font-light mb-[10px]">What triggered you?</h2>
+        <h2 className="text-sm text-slate-300 font-light mb-[10px]">What sounds affected you?</h2>
+
+        {isUsingDefaults && (
+          <p className="text-xs text-slate-400 font-light mb-[10px]"
+             style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            These are common triggers. You can personalise them in your profile.
+          </p>
+        )}
+
+        {/* Selected triggers as expanding cards */}
+        {selectedNames.length > 0 && (
+          <div className="space-y-[10px] mb-[10px]">
+            {selectedNames.map(name => (
+              <ExpandingTriggerCard
+                key={name}
+                name={name}
+                intensity={triggerEntries[name]}
+                onIntensityChange={setTriggerIntensity}
+                onRemove={toggleTrigger}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Unselected triggers as chips */}
         <TriggerChips
-          items={userTriggers}
-          selected={selectedTriggers}
+          items={unselected}
+          selected={[]}
           onToggle={toggleTrigger}
+          searchable
         />
+
         {/* Add custom trigger */}
         <div className="flex justify-center mt-3">
           {showCustomInput ? (
@@ -77,6 +109,7 @@ export default function LogFormContainer() {
                 onChange={(e) => setCustomTrigger(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
                 placeholder="Type a trigger..."
+                maxLength={50}
                 autoFocus
                 className="px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
               />
@@ -97,20 +130,28 @@ export default function LogFormContainer() {
             </button>
           )}
         </div>
+
+        {/* Added confirmation */}
+        {addedMessage && (
+          <p className="text-sm text-indigo-400 font-light text-center mt-2"
+             style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            {addedMessage}
+          </p>
+        )}
       </section>
 
-      {/* 2. Source */}
+      {/* 2. Environment (replaces Source) */}
       <section className="mb-[26px]">
-        <h2 className="text-sm text-slate-300 font-light mb-[10px]">Who or what was the source?</h2>
-        <SourceSelector selected={sources} onToggle={toggleSource} />
+        <h2 className="text-sm text-slate-300 font-light mb-[10px]">Where were you?</h2>
+        <TriggerChips
+          items={ENVIRONMENT_OPTIONS}
+          selected={environment}
+          onToggle={setEnvironment}
+          multiSelect={false}
+        />
       </section>
 
-      {/* 3. Intensity */}
-      <section className="mb-[26px]">
-        <IntensitySelector value={intensity} onChange={setIntensity} />
-      </section>
-
-      {/* 4. Time of day */}
+      {/* 3. Time of day */}
       <section className="mb-[26px]">
         <h2 className="text-sm text-slate-300 font-light mb-[10px]">When?</h2>
         <TriggerChips
@@ -121,7 +162,7 @@ export default function LogFormContainer() {
         />
       </section>
 
-      {/* 5. Body response (optional, expandable) */}
+      {/* 4. Body response (optional, expandable) */}
       <section className="mb-[26px]">
         <button
           onClick={() => setShowBody(!showBody)}
@@ -142,7 +183,7 @@ export default function LogFormContainer() {
         )}
       </section>
 
-      {/* 6. Notes (optional, expandable) */}
+      {/* 5. Notes (optional, expandable) */}
       <section className="mb-[26px]">
         {showNotes ? (
           <div style={{ animation: 'fadeIn 0.377s ease-out' }}>
@@ -165,9 +206,12 @@ export default function LogFormContainer() {
         )}
       </section>
 
-      {/* Error display */}
+      {/* Error display (slate-300, not alarming) */}
       {error && (
-        <p className="text-sm text-rose-400 font-light mb-4">{error.message || 'Something went wrong'}</p>
+        <p className="text-sm text-slate-300 font-light mb-4"
+           style={{ animation: 'fadeIn 0.377s ease-out' }}>
+          {error.message || 'Something went wrong. Your data is safe.'}
+        </p>
       )}
 
       {/* Fixed save button */}
@@ -175,7 +219,7 @@ export default function LogFormContainer() {
         <Button
           onClick={() => handleSave()}
           loading={saving}
-          disabled={selectedTriggers.length === 0}
+          disabled={selectedNames.length === 0}
           className="w-full"
           size="lg"
         >
@@ -183,7 +227,7 @@ export default function LogFormContainer() {
         </Button>
       </div>
 
-      {/* Crisis Modal - wrapped in ErrorBoundary so 988 number is always accessible */}
+      {/* Crisis Modal — wrapped in ErrorBoundary so 988 number is always accessible */}
       <ErrorBoundary fallback={() => (
         <div role="alert" className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80">
           <div className="text-center max-w-sm">
@@ -195,7 +239,7 @@ export default function LogFormContainer() {
               Call 988
             </a>
             <p className="text-slate-400 text-sm font-light mt-4">
-              Suicide and Crisis Lifeline - available 24/7
+              Suicide and Crisis Lifeline — available 24/7
             </p>
           </div>
         </div>

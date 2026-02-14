@@ -5,6 +5,10 @@ import {
   FIBONACCI_TIMING,
   SACRED,
   PRIME_DURATIONS,
+  DEFAULT_TRIGGERS,
+  ENVIRONMENT_OPTIONS,
+  TIME_OF_DAY_OPTIONS,
+  BODY_RESPONSE_OPTIONS,
 } from '../constants';
 
 // Helper to check if a number is in the Fibonacci sequence
@@ -52,6 +56,33 @@ describe('Sacred Geometry Constants', () => {
     PRIME_DURATIONS.forEach((d) => {
       expect(typeof d).toBe('number');
       expect(d).toBeGreaterThan(0);
+    });
+  });
+
+  it('DEFAULT_TRIGGERS count is prime (11)', () => {
+    expect(DEFAULT_TRIGGERS.length).toBe(11);
+    expect(isPrime(DEFAULT_TRIGGERS.length)).toBe(true);
+  });
+
+  it('ENVIRONMENT_OPTIONS count is prime (5)', () => {
+    expect(ENVIRONMENT_OPTIONS.length).toBe(5);
+    expect(isPrime(ENVIRONMENT_OPTIONS.length)).toBe(true);
+  });
+
+  it('TIME_OF_DAY_OPTIONS count is prime (5)', () => {
+    expect(TIME_OF_DAY_OPTIONS.length).toBe(5);
+    expect(isPrime(TIME_OF_DAY_OPTIONS.length)).toBe(true);
+  });
+
+  it('BODY_RESPONSE_OPTIONS count is prime (11)', () => {
+    expect(BODY_RESPONSE_OPTIONS.length).toBe(11);
+    expect(isPrime(BODY_RESPONSE_OPTIONS.length)).toBe(true);
+  });
+
+  it('ENVIRONMENT_OPTIONS have value and label', () => {
+    ENVIRONMENT_OPTIONS.forEach(opt => {
+      expect(opt.value).toBeTruthy();
+      expect(opt.label).toBeTruthy();
     });
   });
 });

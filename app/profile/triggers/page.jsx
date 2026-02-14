@@ -1,6 +1,6 @@
 /**
  * Profile - Edit Triggers
- * Manage trigger sounds: view, add custom, remove
+ * Manage trigger sounds: your sounds first, available defaults below
  */
 
 'use client';
@@ -14,17 +14,20 @@ import { userTriggerService } from '@/services';
 import { TriggerChips } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { DEFAULT_TRIGGERS, ROUTES } from '@/lib/constants';
+import { isValidTriggerName } from '@/lib/validators';
 
 export default function EditTriggersPage() {
   const router = useRouter();
   const { user, isAuthenticated, loading } = useAuth();
-  const { triggers: savedTriggers, addCustomTrigger } = useUserTriggers(user?.id);
+  const { triggers: savedTriggers, addCustomTrigger, refresh: refreshTriggers } = useUserTriggers(user?.id);
 
   const [selected, setSelected] = useState([]);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customTrigger, setCustomTrigger] = useState('');
+  const [inputError, setInputError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [allTriggers, setAllTriggers] = useState([]);
+  const [saved, setSaved] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -32,17 +35,14 @@ export default function EditTriggersPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Sync saved triggers into local state
   useEffect(() => {
     if (savedTriggers.length > 0) {
       setSelected([...savedTriggers]);
-      // Build full list: saved triggers + any defaults not already included
-      const remaining = DEFAULT_TRIGGERS.filter(t => !savedTriggers.includes(t));
-      setAllTriggers([...savedTriggers, ...remaining]);
-    } else {
-      setAllTriggers([...DEFAULT_TRIGGERS]);
     }
   }, [savedTriggers]);
+
+  // Available defaults not already selected
+  const availableDefaults = DEFAULT_TRIGGERS.filter(t => !selected.includes(t));
 
   const handleToggle = (trigger) => {
     setSelected(prev =>
@@ -53,23 +53,52 @@ export default function EditTriggersPage() {
   };
 
   const handleAddCustom = async () => {
+    const { valid, error } = isValidTriggerName(customTrigger);
+    if (!valid) {
+      setInputError(error);
+      return;
+    }
     const trimmed = customTrigger.trim();
-    if (!trimmed || allTriggers.includes(trimmed)) return;
-
+    if (selected.includes(trimmed)) {
+      setInputError('Already in your list');
+      return;
+    }
     await addCustomTrigger(trimmed);
-    setAllTriggers(prev => [trimmed, ...prev]);
     setSelected(prev => [...prev, trimmed]);
     setCustomTrigger('');
     setShowCustomInput(false);
+    setInputError(null);
   };
 
   const handleSave = async () => {
     if (!user?.id) return;
     setSaving(true);
-    await userTriggerService.saveUserTriggers(user.id, selected);
+    setErrorMsg(null);
+    const { error } = await userTriggerService.saveUserTriggers(user.id, selected);
+    if (error) {
+      setErrorMsg('Something went wrong. Your triggers are safe.');
+      setSaving(false);
+      return;
+    }
+    await refreshTriggers();
     setSaving(false);
-    router.back();
+    setSaved(true);
+    setTimeout(() => router.back(), 1597);
   };
+
+  // Save confirmation screen
+  if (saved) {
+    return (
+      <AppLayout showNav={false}>
+        <div className="min-h-screen flex items-center justify-center px-6">
+          <p className="text-lg text-indigo-300 font-light"
+             style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, animation: 'fadeIn 0.377s ease-out' }}>
+            Triggers updated
+          </p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout showNav={false}>
@@ -90,36 +119,66 @@ export default function EditTriggersPage() {
           </h1>
         </div>
 
-        <p className="text-slate-300 font-light mb-6">
-          Select the sounds that affect you. Tap to add or remove.
+        <p className="text-slate-300 font-light mb-[26px]">
+          These are the sounds you're working with. You can update them anytime.
         </p>
 
-        {/* Trigger chips */}
-        <TriggerChips
-          items={allTriggers}
-          selected={selected}
-          onToggle={handleToggle}
-        />
+        {/* Error display */}
+        {errorMsg && (
+          <p className="text-sm text-slate-300 font-light text-center mb-4"
+             style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            {errorMsg}
+          </p>
+        )}
+
+        {/* Your sounds */}
+        <div className="mb-[26px]">
+          <h2 className="text-sm text-slate-300 font-light mb-[10px]">Your sounds</h2>
+          <TriggerChips
+            items={selected}
+            selected={selected}
+            onToggle={handleToggle}
+            searchable
+          />
+        </div>
+
+        {/* Available defaults */}
+        {availableDefaults.length > 0 && (
+          <div className="mb-[26px]">
+            <h2 className="text-sm text-slate-300 font-light mb-[10px]">Add more</h2>
+            <TriggerChips
+              items={availableDefaults}
+              selected={selected}
+              onToggle={handleToggle}
+            />
+          </div>
+        )}
 
         {/* Add custom */}
-        <div className="flex justify-center mt-4 mb-8">
+        <div className="flex justify-center mt-4 mb-[26px]">
           {showCustomInput ? (
-            <div className="flex items-center gap-2" style={{ animation: 'fadeIn 0.377s ease-out' }}>
-              <input
-                type="text"
-                value={customTrigger}
-                onChange={(e) => setCustomTrigger(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
-                placeholder="Type a trigger..."
-                autoFocus
-                className="px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:border-indigo-500/50 focus:outline-none"
-              />
-              <button onClick={handleAddCustom} className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
-                <Plus className="w-4 h-4" />
-              </button>
-              <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); }} className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-300">
-                <X className="w-4 h-4" />
-              </button>
+            <div style={{ animation: 'fadeIn 0.377s ease-out' }}>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={customTrigger}
+                  onChange={(e) => { setCustomTrigger(e.target.value); setInputError(null); }}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
+                  placeholder="Type a trigger..."
+                  maxLength={50}
+                  autoFocus
+                  className="px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:border-indigo-500/50 focus:outline-none"
+                />
+                <button onClick={handleAddCustom} className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
+                  <Plus className="w-4 h-4" />
+                </button>
+                <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); setInputError(null); }} className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-300">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {inputError && (
+                <p className="text-xs text-slate-300 font-light mt-2 text-center">{inputError}</p>
+              )}
             </div>
           ) : (
             <button
@@ -131,6 +190,10 @@ export default function EditTriggersPage() {
             </button>
           )}
         </div>
+
+        <p className="text-xs text-slate-400 font-light text-center">
+          Changes here update your logging form
+        </p>
 
         {/* Fixed save button */}
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent">

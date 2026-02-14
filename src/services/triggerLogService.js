@@ -80,7 +80,7 @@ export const triggerLogService = {
     const { data, error } = await db.query((supabase) =>
       supabase
         .from('trigger_logs')
-        .select('triggers, intensity, source, created_at, body_responses, time_of_day, deeper_processing, entry_type')
+        .select('triggers, intensity, trigger_intensities, source, environment, created_at, body_responses, time_of_day, deeper_processing, entry_type')
         .eq('user_id', userId)
         .gte('created_at', startDate.toISOString())
         .order('created_at', { ascending: false })
@@ -99,24 +99,56 @@ export const triggerLogService = {
       averageIntensity: 0,
       triggerCounts: {},
       sourceCounts: {},
+      environmentCounts: {},
       byDay: {},
       bodyResponseCounts: {},
       timeOfDayCounts: {},
       triggerSourcePairs: {},
       deeperCount: 0,
+      // Per-trigger intensity tracking
+      triggerIntensityHistory: {},    // { triggerName: [{ date, intensity }] }
+      averageIntensityByTrigger: {}, // { triggerName: number }
     };
 
     if (triggerData.length > 0) {
       let totalIntensity = 0;
+      const triggerIntensitySums = {};
+      const triggerIntensityCounts = {};
 
       triggerData.forEach((log) => {
         totalIntensity += log.intensity || 0;
+        const logDate = log.created_at.split('T')[0];
 
-        if (Array.isArray(log.triggers)) {
+        // Per-trigger intensity from JSONB (new format)
+        if (log.trigger_intensities && typeof log.trigger_intensities === 'object') {
+          Object.entries(log.trigger_intensities).forEach(([trigger, intensity]) => {
+            stats.triggerCounts[trigger] = (stats.triggerCounts[trigger] || 0) + 1;
+
+            // Track intensity history
+            if (!stats.triggerIntensityHistory[trigger]) {
+              stats.triggerIntensityHistory[trigger] = [];
+            }
+            stats.triggerIntensityHistory[trigger].push({ date: logDate, intensity });
+
+            // Sum for averages
+            triggerIntensitySums[trigger] = (triggerIntensitySums[trigger] || 0) + intensity;
+            triggerIntensityCounts[trigger] = (triggerIntensityCounts[trigger] || 0) + 1;
+          });
+        } else if (Array.isArray(log.triggers)) {
+          // Fallback: old format (triggers array + single intensity)
           log.triggers.forEach((trigger) => {
             stats.triggerCounts[trigger] = (stats.triggerCounts[trigger] || 0) + 1;
 
-            // Track trigger + source pairs
+            if (log.intensity != null) {
+              if (!stats.triggerIntensityHistory[trigger]) {
+                stats.triggerIntensityHistory[trigger] = [];
+              }
+              stats.triggerIntensityHistory[trigger].push({ date: logDate, intensity: log.intensity });
+              triggerIntensitySums[trigger] = (triggerIntensitySums[trigger] || 0) + log.intensity;
+              triggerIntensityCounts[trigger] = (triggerIntensityCounts[trigger] || 0) + 1;
+            }
+
+            // Track trigger + source pairs (old data only)
             const sources = Array.isArray(log.source) ? log.source : (log.source ? [log.source] : []);
             sources.forEach((src) => {
               const pair = `${trigger}::${src}`;
@@ -129,13 +161,18 @@ export const triggerLogService = {
           });
         }
 
+        // Environment counts (new field)
+        if (log.environment) {
+          stats.environmentCounts[log.environment] = (stats.environmentCounts[log.environment] || 0) + 1;
+        }
+
+        // Source counts (old field, for backward compat)
         const sources = Array.isArray(log.source) ? log.source : (log.source ? [log.source] : []);
         sources.forEach((src) => {
           stats.sourceCounts[src] = (stats.sourceCounts[src] || 0) + 1;
         });
 
-        const day = log.created_at.split('T')[0];
-        stats.byDay[day] = (stats.byDay[day] || 0) + 1;
+        stats.byDay[logDate] = (stats.byDay[logDate] || 0) + 1;
 
         if (Array.isArray(log.body_responses)) {
           log.body_responses.forEach((br) => {
@@ -153,6 +190,13 @@ export const triggerLogService = {
       });
 
       stats.averageIntensity = Math.round((totalIntensity / triggerData.length) * 10) / 10;
+
+      // Compute per-trigger averages
+      Object.keys(triggerIntensitySums).forEach(trigger => {
+        stats.averageIntensityByTrigger[trigger] = Math.round(
+          (triggerIntensitySums[trigger] / triggerIntensityCounts[trigger]) * 10
+        ) / 10;
+      });
     }
 
     return { stats, error: null };

@@ -1,45 +1,24 @@
 /**
  * useLogForm Hook
  * Manages trigger log form state, submission, and crisis detection
+ * Per-trigger intensity model: each trigger gets its own 0-10 intensity
  */
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { triggerLogService } from '@/services';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 
-const TIME_OF_DAY_OPTIONS = [
-  { value: 'now', label: 'Just now' },
-  { value: 'morning', label: 'Morning' },
-  { value: 'midday', label: 'Midday' },
-  { value: 'afternoon', label: 'Afternoon' },
-  { value: 'evening', label: 'Evening' },
-];
-
-const BODY_RESPONSE_OPTIONS = [
-  'Jaw tension',
-  'Chest tightness',
-  'Heat or flushing',
-  'Urge to escape',
-  'Stomach knot',
-  'Shallow breathing',
-  'Heart racing',
-  'Fists clenching',
-  'Muscle tension',
-  'Numbness',
-  'Trembling',
-];
-
+// Re-export from constants for backward compat
 export { TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS };
 
 export function useLogForm(userId) {
   const router = useRouter();
 
-  // Core fields
-  const [selectedTriggers, setSelectedTriggers] = useState([]);
-  const [sources, setSources] = useState([]);
-  const [intensity, setIntensity] = useState(5);
+  // Core fields — per-trigger intensity map: { "Chewing": 7, "Sniffing": 4 }
+  const [triggerEntries, setTriggerEntries] = useState({});
+  const [environment, setEnvironment] = useState(null);
 
   // Optional fields
   const [timeOfDay, setTimeOfDay] = useState('now');
@@ -51,20 +30,24 @@ export function useLogForm(userId) {
   const [error, setError] = useState(null);
   const [showCrisisModal, setShowCrisisModal] = useState(false);
 
-  const toggleTrigger = useCallback((trigger) => {
-    setSelectedTriggers(prev =>
-      prev.includes(trigger)
-        ? prev.filter(t => t !== trigger)
-        : [...prev, trigger]
-    );
+  // Toggle a trigger on/off (default intensity 5 when adding)
+  const toggleTrigger = useCallback((name) => {
+    setTriggerEntries(prev => {
+      if (name in prev) {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      }
+      return { ...prev, [name]: 5 };
+    });
   }, []);
 
-  const toggleSource = useCallback((value) => {
-    setSources(prev =>
-      prev.includes(value)
-        ? prev.filter(s => s !== value)
-        : [...prev, value]
-    );
+  // Set intensity for a specific trigger
+  const setTriggerIntensity = useCallback((name, value) => {
+    setTriggerEntries(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   }, []);
 
   const toggleBodyResponse = useCallback((response) => {
@@ -77,10 +60,13 @@ export function useLogForm(userId) {
 
   const handleSave = useCallback(async (skipCrisisCheck = false) => {
     if (saving) return;
-    if (selectedTriggers.length === 0) return;
 
-    // Show crisis modal for high intensity (9-10)
-    if (!skipCrisisCheck && intensity >= 9) {
+    const triggerNames = Object.keys(triggerEntries);
+    if (triggerNames.length === 0) return;
+
+    // Crisis check: any trigger intensity >= 9
+    const maxIntensity = Math.max(...Object.values(triggerEntries));
+    if (!skipCrisisCheck && maxIntensity >= 9) {
       setShowCrisisModal(true);
       return;
     }
@@ -88,11 +74,18 @@ export function useLogForm(userId) {
     setSaving(true);
     setError(null);
 
+    // Backward-compatible average intensity
+    const avgIntensity = Math.round(
+      triggerNames.reduce((sum, t) => sum + triggerEntries[t], 0) / triggerNames.length
+    );
+
     const { data, error: saveError } = await triggerLogService.create({
       user_id: userId,
-      triggers: selectedTriggers,
-      source: sources.length > 0 ? sources : null,
-      intensity,
+      triggers: triggerNames,                    // backward compat
+      intensity: avgIntensity,                   // backward compat
+      trigger_intensities: triggerEntries,       // new: per-trigger
+      environment: environment || null,          // new: replaces source
+      source: null,                              // deprecated
       time_of_day: timeOfDay,
       body_responses: bodyResponses.length > 0 ? bodyResponses : null,
       notes: notes.trim() || null,
@@ -105,10 +98,10 @@ export function useLogForm(userId) {
     }
 
     track(EVENTS.TRIGGER_LOGGED, {
-      triggerCount: selectedTriggers.length,
-      intensity,
-      sources,
+      triggerCount: triggerNames.length,
+      intensity: avgIntensity,
       hasBodyResponses: bodyResponses.length > 0,
+      environment,
     });
 
     setSaving(false);
@@ -116,7 +109,7 @@ export function useLogForm(userId) {
     // Get the created entry ID for the deeper processing flow
     const entryId = data?.[0]?.id;
     router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
-  }, [userId, selectedTriggers, sources, intensity, timeOfDay, bodyResponses, notes, saving, router]);
+  }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, saving, router]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);
@@ -126,14 +119,13 @@ export function useLogForm(userId) {
   const handleCrisisSupport = useCallback(() => {
     setShowCrisisModal(false);
     handleSave(true);
-    // Will be redirected to support page after save
   }, [handleSave]);
 
   return {
-    // Core state
-    selectedTriggers, toggleTrigger,
-    sources, toggleSource,
-    intensity, setIntensity,
+    // Core state — per-trigger intensity
+    triggerEntries, toggleTrigger, setTriggerIntensity,
+    // Environment (replaces sources)
+    environment, setEnvironment,
     // Optional state
     timeOfDay, setTimeOfDay,
     bodyResponses, toggleBodyResponse,

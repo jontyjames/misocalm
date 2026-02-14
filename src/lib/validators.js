@@ -64,6 +64,20 @@ export function isRequired(value) {
 }
 
 /**
+ * Validate a trigger name
+ * @param {string} name
+ * @returns {{ valid: boolean, error: string|null }}
+ */
+export function isValidTriggerName(name) {
+  if (!name || typeof name !== 'string') return { valid: false, error: 'Name is required' };
+  const trimmed = name.trim();
+  if (trimmed.length === 0) return { valid: false, error: 'Name cannot be empty' };
+  if (trimmed.length > 50) return { valid: false, error: 'Name is too long' };
+  if (trimmed.length < 2) return { valid: false, error: 'Name is too short' };
+  return { valid: true, error: null };
+}
+
+/**
  * Create a form validator
  * @param {Object} rules - { fieldName: [validatorFn, errorMessage] }
  * @returns {function} - returns { valid: boolean, errors: { field: message } }

@@ -4,17 +4,20 @@
  */
 
 import { db } from './supabase';
+import { isValidTriggerName } from '@/lib/validators';
 
 export const userTriggerService = {
   /**
    * Get all available triggers for a user (system + their custom)
    */
   async getAvailableTriggers(userId) {
-    // Get system triggers (user_id is null) and user's custom triggers
-    const { data, error } = await db.query(
-      `SELECT * FROM triggers
-       WHERE user_id IS NULL OR user_id = '${userId}'
-       ORDER BY is_custom ASC, name ASC`
+    const { data, error } = await db.query((supabase) =>
+      supabase
+        .from('triggers')
+        .select('*')
+        .or(`user_id.is.null,user_id.eq.${userId}`)
+        .order('is_custom', { ascending: true })
+        .order('name', { ascending: true })
     );
 
     if (error) return { data: null, error };
@@ -25,11 +28,12 @@ export const userTriggerService = {
    * Get user's selected triggers
    */
   async getUserTriggers(userId) {
-    const { data, error } = await db.query(
-      `SELECT t.* FROM triggers t
-       INNER JOIN user_triggers ut ON t.id = ut.trigger_id
-       WHERE ut.user_id = '${userId}'
-       ORDER BY t.name ASC`
+    const { data, error } = await db.query((supabase) =>
+      supabase
+        .from('triggers')
+        .select('*, user_triggers!inner(user_id)')
+        .eq('user_triggers.user_id', userId)
+        .order('name', { ascending: true })
     );
 
     if (error) return { data: null, error };
@@ -43,15 +47,29 @@ export const userTriggerService = {
    */
   async saveUserTriggers(userId, triggerNames) {
     try {
+      // Validate input
+      if (!Array.isArray(triggerNames)) {
+        return { error: 'Trigger names must be an array' };
+      }
+
+      // Filter out invalid names
+      const validNames = triggerNames.filter(name => {
+        const { valid } = isValidTriggerName(name);
+        return valid;
+      });
+
       // First, get or create triggers by name
       const triggerIds = [];
 
-      for (const name of triggerNames) {
+      for (const name of validNames) {
         // Check if trigger exists (system or user's custom)
-        const { data: existing } = await db.query(
-          `SELECT id FROM triggers
-           WHERE name = '${name.replace(/'/g, "''")}'
-           AND (user_id IS NULL OR user_id = '${userId}')`
+        const { data: existing } = await db.query((supabase) =>
+          supabase
+            .from('triggers')
+            .select('id')
+            .eq('name', name)
+            .or(`user_id.is.null,user_id.eq.${userId}`)
+            .limit(1)
         );
 
         if (existing && existing.length > 0) {
@@ -79,12 +97,19 @@ export const userTriggerService = {
         supabase.from('user_triggers').delete().eq('user_id', userId)
       );
 
-      // Insert new user_triggers
-      for (const triggerId of triggerIds) {
-        await db.insert('user_triggers', {
+      // Batch insert new user_triggers
+      if (triggerIds.length > 0) {
+        const rows = triggerIds.map((triggerId) => ({
           user_id: userId,
           trigger_id: triggerId,
-        });
+        }));
+        const { error: insertError } = await db.query((supabase) =>
+          supabase.from('user_triggers').insert(rows)
+        );
+        if (insertError) {
+          console.error('Failed to insert user_triggers:', insertError);
+          return { error: insertError };
+        }
       }
 
       return { error: null };
@@ -99,10 +124,13 @@ export const userTriggerService = {
    */
   async addCustomTrigger(userId, triggerName) {
     // Check if it already exists
-    const { data: existing } = await db.query(
-      `SELECT id FROM triggers
-       WHERE name = '${triggerName.replace(/'/g, "''")}'
-       AND (user_id IS NULL OR user_id = '${userId}')`
+    const { data: existing } = await db.query((supabase) =>
+      supabase
+        .from('triggers')
+        .select('id')
+        .eq('name', triggerName)
+        .or(`user_id.is.null,user_id.eq.${userId}`)
+        .limit(1)
     );
 
     if (existing && existing.length > 0) {
@@ -135,5 +163,30 @@ export const userTriggerService = {
     }
 
     return { data: data?.[0], error };
+  },
+
+  /**
+   * Remove a single trigger from user's selection by trigger ID
+   */
+  async removeUserTrigger(userId, triggerId) {
+    return db.query((supabase) =>
+      supabase.from('user_triggers').delete().eq('user_id', userId).eq('trigger_id', triggerId)
+    );
+  },
+
+  /**
+   * Remove a single trigger from user's selection by name
+   */
+  async removeUserTriggerByName(userId, triggerName) {
+    const { data: trigger } = await db.query((supabase) =>
+      supabase
+        .from('triggers')
+        .select('id')
+        .eq('name', triggerName)
+        .or(`user_id.is.null,user_id.eq.${userId}`)
+        .limit(1)
+    );
+    if (!trigger?.length) return { error: 'Trigger not found' };
+    return this.removeUserTrigger(userId, trigger[0].id);
   },
 };

@@ -22,7 +22,40 @@ export const DEFAULT_TRIGGERS = [
   'Whispering',
 ];
 
-// Enums matching database
+// Environment options (replaces SOURCE_OPTIONS — 5, prime)
+export const ENVIRONMENT_OPTIONS = [
+  { value: 'home', label: 'Home' },
+  { value: 'work', label: 'Work' },
+  { value: 'public', label: 'Public' },
+  { value: 'social', label: 'Social' },
+  { value: 'other', label: 'Other' },
+];
+
+// Time of day options (5, prime)
+export const TIME_OF_DAY_OPTIONS = [
+  { value: 'now', label: 'Just now' },
+  { value: 'morning', label: 'Morning' },
+  { value: 'midday', label: 'Midday' },
+  { value: 'afternoon', label: 'Afternoon' },
+  { value: 'evening', label: 'Evening' },
+];
+
+// Body response options (11, prime)
+export const BODY_RESPONSE_OPTIONS = [
+  'Jaw tension',
+  'Chest tightness',
+  'Heat or flushing',
+  'Urge to escape',
+  'Stomach knot',
+  'Shallow breathing',
+  'Heart racing',
+  'Fists clenching',
+  'Muscle tension',
+  'Numbness',
+  'Trembling',
+];
+
+// @deprecated — kept for backward compat with existing data, use ENVIRONMENT_OPTIONS instead
 export const SOURCE_OPTIONS = [
   { value: 'partner', label: 'Partner/Spouse' },
   { value: 'parent', label: 'Parent' },

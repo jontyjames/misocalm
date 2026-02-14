@@ -58,19 +58,34 @@ export default function PlanPage() {
       });
 
       // Save triggers to database
+      let triggersSaved = false;
       if (user?.id && onboardingData.triggers && onboardingData.triggers.length > 0) {
-        await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
+        const { error } = await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
+        if (!error) {
+          triggersSaved = true;
+        } else {
+          // Retry once after ceremony delay
+          await new Promise(r => setTimeout(r, 1597));
+          const { error: retryError } = await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
+          if (!retryError) triggersSaved = true;
+        }
+      } else {
+        triggersSaved = true; // No triggers to save
       }
+
+      // Only clear localStorage after confirmed DB save
+      if (triggersSaved) {
+        localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
+        localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
+      }
+      // If triggers failed to save, localStorage persists as backup
+      // useUserTriggers has localStorage fallback to cover this case
     } catch (err) {
-      // Continue to dashboard even if save fails
       console.error('Error saving onboarding data:', err);
+      // Don't clear localStorage on failure — it's the backup
     }
 
-    // Clean up storage
-    localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
-    localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
-
-    // Refresh profile so dashboard sees onboarding_completed: true
+    // Always navigate to dashboard (localStorage fallback covers the user)
     await refreshProfile();
     router.push(ROUTES.DASHBOARD);
   };

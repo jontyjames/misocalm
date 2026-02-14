@@ -3,71 +3,93 @@
  * Loads user triggers from database, merges with defaults, sorts by frequency
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { triggerLogService, userTriggerService } from '@/services';
 import { DEFAULT_TRIGGERS, STORAGE_KEYS } from '@/lib/constants';
+import { isValidTriggerName } from '@/lib/validators';
 
 export function useUserTriggers(userId) {
   const [triggers, setTriggers] = useState(DEFAULT_TRIGGERS);
   const [loading, setLoading] = useState(true);
+  const [isUsingDefaults, setIsUsingDefaults] = useState(true);
 
-  useEffect(() => {
-    const load = async () => {
-      if (!userId) { setLoading(false); return; }
+  // Ref to avoid stale closure in addCustomTrigger
+  const triggersRef = useRef(triggers);
+  useEffect(() => { triggersRef.current = triggers; }, [triggers]);
 
-      // Get frequency stats for sorting
-      const { stats } = await triggerLogService.getStats(userId, 90);
+  const load = useCallback(async () => {
+    if (!userId) { setLoading(false); return; }
 
-      // Load user's triggers from database
-      const { data: dbTriggers } = await userTriggerService.getUserTriggers(userId);
+    setLoading(true);
 
-      let allTriggers;
+    // Load user's triggers from database
+    const { data: dbTriggers } = await userTriggerService.getUserTriggers(userId);
 
-      if (dbTriggers && dbTriggers.length > 0) {
-        // User has saved triggers - show only those
-        allTriggers = dbTriggers.map(t => t.name);
-      } else {
-        // Fallback to localStorage for users mid-onboarding
-        try {
-          const raw = localStorage.getItem(STORAGE_KEYS.ONBOARDING_DATA);
-          const onboardingData = raw ? JSON.parse(raw) : {};
-          if (onboardingData.triggers?.length > 0) {
-            allTriggers = [...onboardingData.triggers];
-          }
-        } catch { /* ignore parse errors */ }
+    let allTriggers;
+    let usingDefaults = true;
 
-        // Safety net: no DB triggers and no localStorage triggers
-        if (!allTriggers) {
-          allTriggers = [...DEFAULT_TRIGGERS];
+    if (dbTriggers && dbTriggers.length > 0) {
+      // User has saved triggers - show only those
+      allTriggers = dbTriggers.map(t => t.name);
+      usingDefaults = false;
+    } else {
+      // Fallback to localStorage for users mid-onboarding
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.ONBOARDING_DATA);
+        const onboardingData = raw ? JSON.parse(raw) : {};
+        if (onboardingData.triggers?.length > 0) {
+          allTriggers = [...onboardingData.triggers];
+          usingDefaults = false;
         }
-      }
+      } catch { /* ignore parse errors */ }
 
-      // Sort by frequency (most used first)
+      // Safety net: no DB triggers and no localStorage triggers
+      if (!allTriggers) {
+        allTriggers = [...DEFAULT_TRIGGERS];
+      }
+    }
+
+    // Only fetch stats for sorting if user has DB triggers
+    if (!usingDefaults) {
+      const { stats } = await triggerLogService.getStats(userId, 90);
       if (stats?.triggerCounts) {
         allTriggers.sort((a, b) =>
           (stats.triggerCounts[b] || 0) - (stats.triggerCounts[a] || 0)
         );
       }
+    }
 
-      setTriggers(allTriggers);
-      setLoading(false);
-    };
-
-    load();
+    setTriggers(allTriggers);
+    setIsUsingDefaults(usingDefaults);
+    setLoading(false);
   }, [userId]);
 
-  const addCustomTrigger = useCallback(async (name) => {
-    const trimmed = name.trim();
-    if (!trimmed || triggers.includes(trimmed)) return;
+  useEffect(() => {
+    load();
+  }, [load]);
 
-    // Add to local list immediately (at the front)
+  const addCustomTrigger = useCallback(async (name) => {
+    const { valid, error } = isValidTriggerName(name);
+    if (!valid) return { error };
+
+    const trimmed = name.trim();
+    if (triggersRef.current.includes(trimmed)) return { error: 'Already in your list' };
+
+    // Optimistic update
     setTriggers(prev => [trimmed, ...prev]);
 
     // Save to database in background
     if (userId) {
-      await userTriggerService.addCustomTrigger(userId, trimmed);
+      const { error: dbError } = await userTriggerService.addCustomTrigger(userId, trimmed);
+      if (dbError) {
+        // Rollback on failure
+        setTriggers(prev => prev.filter(t => t !== trimmed));
+        return { error: 'Could not save. You can try again when ready.' };
+      }
     }
-  }, [userId, triggers]);
 
-  return { triggers, loading, addCustomTrigger };
+    return { error: null };
+  }, [userId]);
+
+  return { triggers, loading, isUsingDefaults, addCustomTrigger, refresh: load };
 }
