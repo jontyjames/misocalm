@@ -244,15 +244,15 @@ export const db = {
  */
 export const auth = {
   /**
-   * Send magic link
+   * Send OTP code to email (no magic link redirect)
    */
-  async sendMagicLink(email, redirectTo) {
+  async sendOtp(email) {
     try {
       const { error } = await withTimeout(
         supabase.auth.signInWithOtp({
           email,
           options: {
-            emailRedirectTo: redirectTo || `${window.location.origin}/onboarding/assessment`,
+            shouldCreateUser: true,
           },
         })
       );
@@ -260,8 +260,29 @@ export const auth = {
       if (error) throw error;
       return { error: null };
     } catch (error) {
-      console.error('Auth magic link error:', error);
-      return { error: error.message || 'Failed to send magic link' };
+      console.error('Auth OTP error:', error);
+      return { error: error.message || 'Failed to send code' };
+    }
+  },
+
+  /**
+   * Verify OTP code entered by user
+   */
+  async verifyOtp(email, token) {
+    try {
+      const { data, error } = await withTimeout(
+        supabase.auth.verifyOtp({
+          email,
+          token,
+          type: 'email',
+        })
+      );
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error('Auth verify OTP error:', error);
+      return { data: null, error: error.message || 'Invalid code' };
     }
   },
 

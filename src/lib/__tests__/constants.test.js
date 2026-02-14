@@ -9,6 +9,9 @@ import {
   ENVIRONMENT_OPTIONS,
   TIME_OF_DAY_OPTIONS,
   BODY_RESPONSE_OPTIONS,
+  DEEPER_PROMPTS_TRIGGER,
+  DEEPER_PROMPTS_CHECKIN,
+  DEEPER_PROMPTS_BREATHWORK,
 } from '../constants';
 
 // Helper to check if a number is in the Fibonacci sequence
@@ -84,5 +87,20 @@ describe('Sacred Geometry Constants', () => {
       expect(opt.value).toBeTruthy();
       expect(opt.label).toBeTruthy();
     });
+  });
+
+  it('DEEPER_PROMPTS_TRIGGER count is prime (23)', () => {
+    expect(DEEPER_PROMPTS_TRIGGER.length).toBe(23);
+    expect(isPrime(DEEPER_PROMPTS_TRIGGER.length)).toBe(true);
+  });
+
+  it('DEEPER_PROMPTS_CHECKIN count is prime (11)', () => {
+    expect(DEEPER_PROMPTS_CHECKIN.length).toBe(11);
+    expect(isPrime(DEEPER_PROMPTS_CHECKIN.length)).toBe(true);
+  });
+
+  it('DEEPER_PROMPTS_BREATHWORK count is prime (7)', () => {
+    expect(DEEPER_PROMPTS_BREATHWORK.length).toBe(7);
+    expect(isPrime(DEEPER_PROMPTS_BREATHWORK.length)).toBe(true);
   });
 });

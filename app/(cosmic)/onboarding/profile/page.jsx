@@ -15,11 +15,11 @@ import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 3;
 
-const MAGIC_LINK_MESSAGE = 'A magic link is on its way.';
+const CODE_MESSAGE = 'Check your email for a code.';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { sendMagicLink, error: authError, clearError } = useAuth();
+  const { sendOtp, error: authError, clearError } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,8 +48,8 @@ export default function ProfilePage() {
     localStorage.setItem(STORAGE_KEYS.PENDING_EMAIL, email);
     localStorage.setItem(STORAGE_KEYS.ONBOARDING_DATA, JSON.stringify({ name }));
 
-    // Send magic link
-    const { error } = await sendMagicLink(email);
+    // Send OTP code
+    const { error } = await sendOtp(email);
 
     if (error) {
       setErrors({ submit: error });
@@ -64,7 +64,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
         <div className="flex items-center justify-center flex-wrap">
-          {MAGIC_LINK_MESSAGE.split('').map((char, i) => (
+          {CODE_MESSAGE.split('').map((char, i) => (
             <span
               key={i}
               className="text-2xl text-white opacity-0"
@@ -149,7 +149,7 @@ export default function ProfilePage() {
         <div className="flex items-center justify-center gap-1.5">
           <Lock className="w-3 h-3 text-slate-300" />
           <p className="text-xs text-slate-300 font-light">
-            We'll send a magic link — no password needed
+            We'll send a code — no password needed
           </p>
         </div>
       </div>

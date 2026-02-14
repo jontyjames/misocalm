@@ -86,7 +86,12 @@ export default function PostLogIntegration() {
   }, [visibleChars, affirmation.length]);
 
   // Build paths based on context (torus journey model)
-  const deeperRoute = `${ROUTES.JOURNAL_DEEPER}${entryId ? `?entry=${entryId}` : ''}`;
+  // Forward all context params so DeeperProcessing knows the origin
+  const deeperParams = new URLSearchParams();
+  if (entryId) deeperParams.set('entry', entryId);
+  if (isCheckIn) deeperParams.set('type', 'check_in');
+  if (fromBreathwork) deeperParams.set('from', 'breathwork');
+  const deeperRoute = `${ROUTES.JOURNAL_DEEPER}?${deeperParams.toString()}`;
 
   let paths;
 

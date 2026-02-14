@@ -18,7 +18,7 @@ const SUBTITLE_DELAY = INTRO_TEXT.length * 0.034 + 0.377;
 
 export default function WelcomePage() {
   const router = useRouter();
-  const { isAuthenticated, hasCompletedOnboarding, loading, sendMagicLink } = useAuth();
+  const { isAuthenticated, hasCompletedOnboarding, loading, sendOtp, verifyOtp } = useAuth();
   const [introStarted, setIntroStarted] = useState(false);
   const [introDone, setIntroDone] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -27,6 +27,8 @@ export default function WelcomePage() {
   const [signInSending, setSignInSending] = useState(false);
   const [signInSent, setSignInSent] = useState(false);
   const [signInError, setSignInError] = useState(null);
+  const [signInCode, setSignInCode] = useState('');
+  const [signInVerifying, setSignInVerifying] = useState(false);
 
   const handleSignIn = async () => {
     if (!signInEmail.trim() || signInSending) return;
@@ -36,13 +38,27 @@ export default function WelcomePage() {
     }
     setSignInSending(true);
     setSignInError(null);
-    const { error } = await sendMagicLink(signInEmail, `${window.location.origin}/dashboard`);
+    const { error } = await sendOtp(signInEmail);
     if (error) {
       setSignInError(error);
       setSignInSending(false);
     } else {
       setSignInSent(true);
+      setSignInSending(false);
     }
+  };
+
+  const handleVerifyCode = async () => {
+    if (signInCode.length !== 6 || signInVerifying) return;
+    setSignInVerifying(true);
+    setSignInError(null);
+    const { error } = await verifyOtp(signInEmail, signInCode);
+    if (error) {
+      setSignInError('That code didn\'t work. Check your email and try again.');
+      setSignInVerifying(false);
+      setSignInCode('');
+    }
+    // On success, onAuthStateChange fires and redirect happens
   };
 
   // Redirect authenticated users
@@ -211,18 +227,36 @@ export default function WelcomePage() {
                 size="md"
                 variant="secondary"
               >
-                Send magic link
+                Send code
               </Button>
             </div>
           )}
 
           {signInSent && (
-            <p
-              className="mt-5 text-sm text-cyan-400 font-light text-center"
-              style={{ animation: 'fadeIn 0.377s ease-out' }}
-            >
-              Check your email for a magic link
-            </p>
+            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+              <p className="text-sm text-slate-200 font-light text-center mb-3">
+                Enter the code we sent to your email
+              </p>
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="6-digit code"
+                value={signInCode}
+                onChange={(e) => setSignInCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                error={signInError}
+                onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
+              />
+              <Button
+                onClick={handleVerifyCode}
+                loading={signInVerifying}
+                disabled={signInCode.length !== 6}
+                className="w-full mt-3"
+                size="md"
+                variant="secondary"
+              >
+                Sign in
+              </Button>
+            </div>
           )}
         </div>
       </div>

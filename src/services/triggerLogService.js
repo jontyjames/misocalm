@@ -33,10 +33,29 @@ export const triggerLogService = {
    * Create a new trigger log
    */
   async create(data) {
-    return db.insert('trigger_logs', {
+    const payload = {
       ...data,
       created_at: new Date().toISOString(),
-    });
+    };
+
+    // Try with new columns first
+    const result = await db.insert('trigger_logs', payload);
+
+    // If new columns don't exist yet, retry without them
+    if (result.error && !this._schemaChecked) {
+      const { trigger_intensities, environment, ...legacyPayload } = payload;
+      const retryResult = await db.insert('trigger_logs', legacyPayload);
+      if (!retryResult.error) {
+        this._schemaChecked = false; // still need migration
+        return retryResult;
+      }
+    }
+
+    if (!result.error) {
+      this._schemaChecked = true;
+    }
+
+    return result;
   },
 
   /**

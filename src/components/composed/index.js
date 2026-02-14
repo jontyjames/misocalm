@@ -20,6 +20,7 @@ export { default as LogFormContainer } from './LogFormContainer';
 export { default as OnboardingTriggerSelector } from './OnboardingTriggerSelector';
 export { default as PostLogIntegration } from './PostLogIntegration';
 export { default as BreathworkCheckIn } from './BreathworkCheckIn';
+export { default as DeeperClosing } from './DeeperClosing';
 export { default as DeeperProcessing } from './DeeperProcessing';
 export { default as StarDissolve } from './StarDissolve';
 export { default as ExpansionBloom } from './ExpansionBloom';

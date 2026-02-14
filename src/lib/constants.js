@@ -189,6 +189,65 @@ export const SACRED = {
 // Prime-based durations for organic rhythm (never sync mechanically)
 export const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];
 
+// Deeper processing prompt pools (contextual, sacred counts)
+// After a trigger log (23 prompts, prime)
+export const DEEPER_PROMPTS_TRIGGER = [
+  // Body awareness
+  'Where did you feel it in your body?',
+  'What did your body want to do in that moment?',
+  'Has the tension shifted since then? Where is it now?',
+  'If the feeling had a shape or weight, what would it be?',
+  'What does your body need right now?',
+  // Self-compassion
+  'What would you say to a friend who felt this way?',
+  'What part of you was trying to protect you just then?',
+  'Is there something you need to hear right now?',
+  'What would it feel like to let this moment be enough?',
+  'You showed up. What does that tell you about yourself?',
+  // Patterns and noticing
+  'Have you noticed this feeling before? When?',
+  'Was there a moment just before the trigger where something shifted?',
+  'What were you hoping for in that space?',
+  'If this trigger had less power over you, what would be different?',
+  'What time of day does this tend to find you?',
+  // Environment and context
+  'What was the space like around you?',
+  'Was there anything about the situation that made it harder?',
+  'Were you already carrying something before this happened?',
+  'What would have made that moment a little easier?',
+  'Is there a version of that space where you feel safe?',
+  // Moving forward
+  'What helped you get through it?',
+  'Is there one small thing you could do for yourself right now?',
+  'What would you like to remember about how you handled this?',
+];
+
+// After a standalone check-in (11 prompts, prime)
+export const DEEPER_PROMPTS_CHECKIN = [
+  'What is on your mind right now?',
+  'Is there something you have been carrying today?',
+  'What does this feeling want you to know?',
+  'If you could change one thing about today, what would it be?',
+  'What has been taking up space lately?',
+  'What would feel good to let go of right now?',
+  'Is there something you are looking forward to?',
+  'What is one thing that went well today?',
+  'What do you need more of right now?',
+  'How does this moment compare to how you started the day?',
+  'What would you like tomorrow to feel like?',
+];
+
+// After breathwork (7 prompts, prime)
+export const DEEPER_PROMPTS_BREATHWORK = [
+  'What shifted during the practice?',
+  'Where does the calm sit in your body right now?',
+  'What feels different compared to before you started?',
+  'Is there anything you noticed while breathing that surprised you?',
+  'What would it feel like to carry this stillness with you?',
+  'What was the hardest part of staying present?',
+  'What do you want to hold onto from this moment?',
+];
+
 // Storage keys
 export const STORAGE_KEYS = {
   PENDING_EMAIL: 'misocalm_pending_email',

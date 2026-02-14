@@ -72,10 +72,20 @@ export function AuthProvider({ children }) {
     return () => subscription?.unsubscribe();
   }, [fetchProfile]);
 
-  // Send magic link
-  const sendMagicLink = useCallback(async (email, redirectTo) => {
+  // Send OTP code
+  const sendOtp = useCallback(async (email) => {
     setError(null);
-    const result = await auth.sendMagicLink(email, redirectTo);
+    const result = await auth.sendOtp(email);
+    if (result.error) {
+      setError(result.error);
+    }
+    return result;
+  }, []);
+
+  // Verify OTP code
+  const verifyOtp = useCallback(async (email, token) => {
+    setError(null);
+    const result = await auth.verifyOtp(email, token);
     if (result.error) {
       setError(result.error);
     }
@@ -157,12 +167,13 @@ export function AuthProvider({ children }) {
   }), [profile]);
 
   const actionsValue = useMemo(() => ({
-    sendMagicLink,
+    sendOtp,
+    verifyOtp,
     signOut,
     upsertProfile,
     refreshProfile,
     clearError,
-  }), [sendMagicLink, signOut, upsertProfile, refreshProfile, clearError]);
+  }), [sendOtp, verifyOtp, signOut, upsertProfile, refreshProfile, clearError]);
 
   return (
     <AuthStateContext.Provider value={authStateValue}>
