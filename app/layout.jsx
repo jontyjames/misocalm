@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export const metadata = {
   title: 'MisoCalm - Your Companion for Thriving with Misophonia',
-  description: 'Track triggers, build coping skills, and find support on your misophonia journey.',
+  description: 'Track triggers, build coping skills, and find support on your misophonia journey. A personal companion for understanding and managing misophonia.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
