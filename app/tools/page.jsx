@@ -268,12 +268,12 @@ function ToolCard({ tool, locked, isFavorite, onToggleFavorite, getCategoryColor
       <div className="flex items-center gap-4">
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-white font-light flex items-center gap-2 mb-1">
+          <h2 className="text-white font-light flex items-center gap-2 mb-1">
             <span className="truncate">{tool.title}</span>
             {tool.completed && (
               <Check className="w-4 h-4 text-emerald-400 shrink-0" />
             )}
-          </h3>
+          </h2>
           <p className="text-sm text-slate-300 font-light mb-2 truncate">
             {tool.description}
           </p>

@@ -234,7 +234,7 @@ export default function DashboardPage() {
                 <Wind className={`w-5 h-5 ${ACCENT_STYLES[todaysPractice.accent].text}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-light mb-0.5">Today's Practice</h3>
+                <h2 className="text-white font-light mb-0.5">Today's Practice</h2>
                 <p className={`text-sm font-light ${ACCENT_STYLES[todaysPractice.accent].text}`}>
                   {todaysPractice.name} · {todaysPractice.label} · {todaysPractice.time}
                 </p>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                 <BookOpen className="w-5 h-5 text-cyan-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-light mb-0.5">Go inward</h3>
+                <h2 className="text-white font-light mb-0.5">Go inward</h2>
                 <p className="text-sm text-cyan-400 font-light">Reflect, log, or check in with yourself</p>
               </div>
             </div>
