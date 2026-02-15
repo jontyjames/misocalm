@@ -1,282 +1,227 @@
 # MisoCalm Development Roadmap
 
-Organized tasks from your notes, categorized by complexity.
+The course is the main product. MisoCalm is the regulation companion that supports people through the 5-stage journey. All development priorities flow from this.
 
 ---
 
-## Simple Tasks (1-2 hours each)
+## What's Built
 
-### Trigger Logging Improvements
+A summary of everything that's shipped and working.
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Add parent source options** | Add "Parent - Mum", "Parent - Dad", "Step Dad", "Step Mum" to the source dropdown | `lib/constants.js`, `app/log/page.jsx` |
-| **Add "Other" reaction option** | Add "Other" to reaction options with conditional text input that appears when selected | `lib/constants.js`, `app/log/page.jsx` |
-| **Add notes field** | Add "Additional notes" textarea to trigger log form for free-form input | `app/log/page.jsx` |
-| **Thank you screen** | After submitting trigger, show celebration message: "Awareness is key - well done for recognizing and logging this trigger" | `app/log/page.jsx` or new `app/log/success/page.jsx` |
-
-### Severity Scale
-
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Severity info tooltips** | Add info icon next to severity slider that shows what each level means (1-3: Mild discomfort, 4-6: Moderate distress, 7-10: Severe reaction) | `src/components/ui/Slider.jsx`, `app/log/page.jsx` |
-
-### Legal & Safety
-
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Add disclaimers** | Add standard wellness app disclaimer: "This app is not a substitute for professional mental health support" in onboarding and settings | `app/onboarding/`, `app/profile/page.jsx` |
-| **Add Skool link** | Add "Join Community" link in profile page and/or navigation that opens Skool page | `app/profile/page.jsx`, `src/components/composed/Navigation.jsx` |
-
-### Onboarding
-
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Attribution question** | Add "How did you find MisoCalm?" question to onboarding (options: Skool community, Social media, Friend/family, Therapist, Search engine, Other) | `app/onboarding/profile/page.jsx` |
-
----
-
-## Medium Complexity Tasks (2-4 hours each)
+### Auth & Onboarding
+- [x] OTP passwordless authentication (replaced magic links)
+- [x] 6-step onboarding: welcome, first-practice, triggers, profile, verify, plan
+- [x] Retakeable assessment
+- [x] Attribution question ("How did you find MisoCalm?")
+- [x] Persistent login via Supabase session
+- [x] Disclaimers in onboarding
 
 ### Trigger Logging
+- [x] Full 9-field form: trigger, environment, time of day, intensity (1-10), body responses, reaction, notes
+- [x] Notes field
+- [x] "Other" reaction option (RESPONSE_OPTIONS includes it)
+- [x] Severity scale with MISOPHONIA_LEVELS constant (0-10 descriptions)
+- [x] Flexible trigger selection (user's saved triggers + full list)
+- [x] Post-log celebration + integration paths (`/journal/saved`)
+- [x] Deeper processing flow (`/journal/deeper`) with contextual prompts
+- [x] Support page for high-intensity moments (`/log/support`)
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Flexible trigger selection** | Show user's saved triggers prominently, plus "Other triggers" expandable section with full list, plus "Add custom trigger" option | `app/log/page.jsx`, `src/components/composed/TriggerGrid.jsx` |
-| **Post-trigger celebration flow** | Create dedicated success page with: celebration animation, encouraging message, option to share win to Skool (copy template), quick actions (do breathing, go home) | New: `app/log/success/page.jsx` |
+### Breathing & Practices
+- [x] 3 techniques x 3 durations = 9 variants (4-7-8, Box Breathing, Physiological Sigh)
+- [x] Visual feedback (circle, box, aura)
+- [x] Post-completion paths (log, breathe again, go deeper, return home)
+- [x] Duration selector with named sessions
+- [x] Clean session UI (text hidden during active breathing, dots/bar only)
 
-### Authentication
+### Guided Experiences
+- [x] Impermanence experience (sound visualization, 7 phases, colour ribbon, return visits)
+- [x] Experiences Architect agent added to team
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Persistent login** | Configure Supabase session to persist indefinitely on device (no re-authentication needed). User stays logged in until they manually sign out | `src/context/AuthContext.jsx`, `src/services/supabase.js` |
+### Journal System
+- [x] Log a moment (trigger form)
+- [x] Check-in (quick emotional pulse)
+- [x] Journal history + patterns/insights
+- [x] Deeper processing with contextual prompts (trigger, check-in, breathwork)
+- [x] Post-log integration paths
 
-### Soundscapes
+### Tools Library
+- [x] Browse + filter (All, Favorites, Breathwork, Somatic, Experiences)
+- [x] Progressive unlock (basic free, intermediate requires completion)
+- [x] Tool cards with completion tracking
+- [x] Experiences section
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Seamless audio looping** | Implement gapless audio playback using Web Audio API with crossfade between loop points (no silence/clicks between loops) | `app/soundscapes/page.jsx`, new audio utility |
+### AI Chat (Miso) -- Premium
+- [x] Claude API integration with system prompt
+- [x] Rate limiting, message history, typing indicator
 
-### Premium/Monetization UI
+### Soundscapes -- Premium
+- [x] 7 ambient sounds with playback controls
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Locked feature cards** | Create visual treatment for locked premium features (blur/overlay, lock icon, "Unlock with Community" badge) | `app/tools/page.jsx`, new `LockedFeatureCard` component |
-| **Skool redirect flow** | When user taps locked feature, show modal explaining benefits of Thriving With Misophonia community, with CTA button to Skool signup (include 7-day free trial mention) | New: `src/components/composed/PremiumModal.jsx` |
+### Boundaries & Communication Scripts
+- [x] 9 scripts across 3 categories (family, work, friends)
+- [x] Copy to clipboard
 
-### Achievements UI
+### Profile
+- [x] Stats, triggers, community link, sign out
+- [x] Skool community link
+- [x] Export button (UI only, functionality not yet built)
 
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **Achievements page** | Create achievements/milestones page accessible from profile (discrete, not prominent). Show: practice streaks, total completions, response vs reaction wins | New: `app/achievements/page.jsx` |
-| **Milestone celebrations** | Show celebration toast/modal when user hits milestone (7-day streak, 10 practices, first "responded not reacted" log) | New: `src/components/composed/MilestoneToast.jsx` |
+### Premium System
+- [x] Stripe checkout + portal
+- [x] PremiumGate component
+- [x] Feature gating on chat, soundscapes
 
-### Support Resources
-
-| Task | Description | File(s) |
-|------|-------------|---------|
-| **"Need more support?" option** | Add button in log flow and AI chat that surfaces when intensity is high (7+) or user seems distressed, leading to resources page | `app/log/page.jsx`, `app/chat/page.jsx` |
-| **Resources page** | Create page with: crisis hotlines, "find a therapist" resources, link to community support | New: `app/resources/page.jsx` |
-
----
-
-## Longer Tasks (Architecture Required)
-
-### 1. Full Monetization & Community Integration Flow
-
-**Time estimate:** 1-2 days
-
-**Description:** Design and implement the complete free-to-community conversion journey.
-
-**Components:**
-- Define which features are free vs premium (basic tools free, intermediate/advanced locked)
-- Create premium feature gates throughout app
-- Design "soft introduction" to community (when to show, what to say)
-- Implement Skool deep-linking with attribution tracking
-- Create conversion tracking (who clicks, who joins)
-
-**Key decisions needed:**
-- Exact moment to first mention community (after completing basics? after 3 practices?)
-- Which tools are locked vs free
-- How prominent should premium prompts be?
-
-**Files:** Multiple new components, constants update, analytics integration
+### Design System
+- [x] Sacred geometry: Fibonacci timing, phi spacing, solfeggio colours
+- [x] All CSS variables, constants in `src/lib/constants.js`
+- [x] Comprehensive docs (CLAUDE.md, UX-PHILOSOPHY.md, SACRED-GEOMETRY.md, USER-JOURNEYS.md, MICRO-INTERACTIONS.md)
 
 ---
 
-### 2. Comprehensive Achievements & Gamification System
+## V1 Launch Tasks
 
-**Time estimate:** 1-2 days
+What needs to ship before launch. Ordered by impact.
 
-**Description:** Build full achievements system that celebrates progress without creating comparison/competition.
+### Must Ship
 
-**Achievement categories:**
-- **Practice streaks:** 3, 7, 14, 28, 60, 90 days
-- **Total practices:** 10, 25, 50, 100, 250, 500, 1000
-- **By type:** 10 breathing, 10 somatic, 10 meditation, etc.
-- **Trigger awareness:** First log, 10 logs, "Responded not reacted" milestone
-- **Learning:** Completed all basic tools, tried each category
+- [ ] **Severity info tooltips** -- Add info icon on the intensity slider showing what each level means. MISOPHONIA_LEVELS constant already exists, needs a tooltip component wired to the slider UI.
+- [ ] **Crisis modal wiring** -- Connect the crisis/support modal to high-intensity flows (log form at 7+, AI chat distress detection). Component exists but is not connected.
+- [ ] **"Need more support?" surfacing** -- Button in log flow and AI chat that appears when intensity is high (7+), leading to resources/crisis page.
+- [ ] **Resources/crisis page** -- Page with crisis hotlines, "find a therapist" resources, community support link. (`/resources`)
 
-**Implementation:**
-- Database tables for tracking progress
-- Achievement definitions in constants
-- Progress calculation logic
-- Celebration UI components
-- Achievements gallery page
-- Share templates for Skool posting
+### Should Ship
 
-**Design principles:**
-- Discrete (not in-your-face points everywhere)
-- Personal progress only (no leaderboards)
-- Celebrating awareness and consistency over performance
+- [ ] **Locked premium feature cards** -- Visual treatment for locked premium features (blur/overlay, lock icon, "Unlock with Community" badge) in the tools library.
+- [ ] **Skool redirect flow** -- When user taps a locked feature, show modal explaining community benefits with CTA to Skool signup.
+- [ ] **Seamless audio looping** -- Gapless audio playback using Web Audio API with crossfade between loop points for soundscapes.
+- [ ] **Export my data** -- Wire up the existing export button in profile to actually generate and download user data (trigger logs, journal entries, practice history).
 
-**Files:** Database schema, new hooks, multiple UI components
+### Polish
+
+- [ ] **Skeleton loading states** -- Replace Spinner with animated skeleton cards for better perceived performance on dashboard, tools, profile.
+- [ ] **PageHeader component** -- Extract the back button + title pattern used across chat, log, soundscapes, boundaries, tools/[id] into a shared component.
+- [ ] **Persist favorites to database** -- Tools favorites currently use local state only. Add Supabase sync so favorites persist across devices.
 
 ---
 
-### 3. Binaural Beats Integration
+## Course Alignment Tasks
 
-**Time estimate:** 2-3 days
+These build the bridge between the app and the 5-stage course. Organized by course stage.
 
-**Description:** Create breathing exercises and soundscapes using binaural beats at specific harmonic frequencies for enhanced nervous system regulation.
+### Stage 1: Seeing Clearly -- FULLY SUPPORTED
+> "Why do I have this?" answered with compassion.
 
-**Research needed:**
-- Which frequencies for calming (alpha: 8-12Hz, theta: 4-8Hz)
-- How to generate binaural beats (Web Audio API oscillators)
-- Frequency pairings for different purposes (focus, calm, sleep)
+All features built: onboarding, assessment, trigger log, Miso Levels (0-10).
 
-**Implementation:**
-- Audio generation utility using Web Audio API
-- Frequency presets for different states
-- Volume balancing with voice guidance (if any)
-- Option to enable/disable binaural component
-- Combine with existing soundscapes
+### Stage 2: Finding Ground
+> Body-based tools before anything else. The course starts with regulation.
 
-**Considerations:**
-- Headphones required notice (binaural needs stereo)
-- Not suitable for epilepsy disclaimer
-- Quality testing across devices
+- [ ] **Butterfly tapping tool** -- Somatic tool with bilateral stimulation animation and timer. HIGH priority.
+- [ ] **Havening tool** -- Self-touch guided practice with step-by-step visual instructions. HIGH priority.
+- [ ] **Expanded physiological sigh variations** -- Guided variations and "in the moment" quick-access version. MEDIUM priority.
+- [ ] **Tool categorization by situation** -- Tag tools by when to use them: crisis, daily, before sleep, after trigger. MEDIUM priority.
 
----
+### Stage 3: Healing the Roots
+> With safety as anchor, process the past.
 
-### 4. Progress Sharing System
+- [ ] **Guided journal prompt sets** -- Pre-written prompt sequences mapped to course stages (safety, forgiveness, inner child). HIGH priority.
+- [ ] **AI companion stage awareness** -- Miso adjusts tone/prompts based on which course stage the user is in. LOW priority.
 
-**Time estimate:** 1 day
+Note: Deeper processing flow already built (`/journal/deeper`). May need stage-specific reflection questions added.
 
-**Description:** Enable users to share wins and milestones to the Skool community.
+### Stage 4: Nourishing the Whole
+> A regulated, nourished body has more capacity.
 
-**Share triggers:**
-- Completing a practice (optional prompt)
-- Hitting a streak milestone
-- Logging a "responded not reacted" trigger
-- Completing all basic tools
+- [ ] **Wellness check-in expansion** -- Build out the daily/weekly body + mood noticing beyond the current check-in. Frame as gentle awareness, not a score. MEDIUM priority.
+- [ ] **Insights dashboard** -- Patterns over time: trigger frequency, intensity trends, regulation tool usage. MEDIUM priority.
 
-**Share formats:**
-- Copy-to-clipboard templates formatted for Skool
-- Example: "Day 7 of my breathing practice streak! The 4-7-8 technique is becoming second nature. #MisoCalmWin"
-- Include relevant emoji and hashtags
+Note: Basic check-in exists (`/journal/check-in`). Journal patterns view partially built.
 
-**Implementation:**
-- Share button component
-- Template generator based on achievement type
-- Deep link back to app (if possible)
-- Track shares for analytics
+### Stage 5: Thriving
+> From managing misophonia to living fully.
+
+- [x] **Communication scripts** -- 9 scripts across 3 categories. DONE.
+- [ ] **Progress visualization** -- Visual journey from Stage 1 to 5, showing where the user has been. LOW priority.
 
 ---
 
-### 5. Analytics & Insights Dashboard
+## Community Bridge Tasks
 
-**Time estimate:** 2-3 days
+Soft, warm pathways between MisoCalm and the Skool community.
 
-**Description:** Build internal analytics to understand user behavior and app effectiveness.
-
-**Track:**
-- Tool usage (which tools most popular)
-- Completion rates (start vs finish)
-- Drop-off points in onboarding
-- Feature engagement
-- Trigger patterns (anonymized/aggregated)
-- Conversion to Skool clicks
-
-**Privacy considerations:**
-- Anonymize personal data
-- Secure AI conversation data
-- Clear data retention policy
-- User can export/delete their data
-
-**Implementation:**
-- Analytics service integration (Mixpanel, Amplitude, or custom)
-- Event tracking throughout app
-- Admin dashboard (separate from user app)
+- [ ] **Community bridge moment** -- After sacred number milestones, gently surface "others are walking this path too" with Skool link. HIGH priority.
+- [ ] **Share a win flow** -- Copy-to-clipboard templates for posting wins to Skool community. MEDIUM priority.
+- [ ] **Community manifesto in app** -- Display manifesto in a dedicated space (about page or settings). LOW priority.
 
 ---
 
-### 6. Therapist-Compatible Features (Future)
+## Milestone & Progress Tasks
 
-**Time estimate:** Planning phase
+Gentle progress acknowledgment using sacred numbers. No pressure, no competition, no "don't break your streak."
 
-**Description:** Design app to be recommendable by therapists and potentially usable in clinical settings.
-
-**Considerations:**
-- Clean, professional presentation
-- Evidence-based tools with citations
-- Progress reports that could be shared with therapist
-- No gamification that could feel trivializing
-- Clear scope (regulation tool, not therapy replacement)
-- Potential "practitioner mode" in future
-
-**Research needed:**
-- What do therapists need to recommend an app?
-- Any certification or review processes?
-- Privacy requirements for clinical adjacent tools
+- [ ] **Sacred number milestones** -- Celebrate at divine number counts (3, 7, 11, 23, 37 practices). Celebration toast/modal with warm language from UX-PHILOSOPHY.md. HIGH priority.
+- [ ] **Quiet stats** -- "You've shown up for yourself X times" style. Visible on profile/dashboard, never pushy. MEDIUM priority. (Partially done in profile stats.)
+- [ ] **Achievements page** -- Accessible from profile. Show practice counts, regulation wins. Discrete, personal, no leaderboards. Uses sacred number thresholds. MEDIUM priority.
+- [ ] **Stage completion markers** -- Visual indicator of course stage progress for Skool members. LOW priority.
 
 ---
 
-### 7. Brand Coherence: App + Community Naming
+## New Experiences
 
-**Time estimate:** Strategy session
+The Experiences Architect is ready to build more guided experiences.
 
-**Current state:**
-- App: MisoCalm
-- Community: Thriving With Misophonia
-
-**Options to consider:**
-1. Keep both names (MisoCalm app feeds into Thriving With Misophonia)
-2. Rename community to "MisoCalm Community"
-3. Rename app to "Thriving With Misophonia" (app)
-4. Create umbrella brand that houses both
-
-**Decision factors:**
-- SEO and discoverability
-- Brand recognition you've already built
-- Domain availability
-- How users will talk about it
+- [x] **Impermanence** -- Sound visualization, 7 phases, colour ribbon, return visits. DONE.
+- [ ] **Next experience TBD** -- Design and build the next guided experience. Candidates: body scan, sound relationship, inner sanctuary visualization.
 
 ---
 
-## Launch Priorities (V1 Essentials)
+## Future / Backlog
 
-Based on your notes, here's what's essential for launch in ~1 month:
+Valuable but not blocking launch or course alignment. Build when the time is right.
 
-### Must Have
-- [ ] Trigger logging improvements (source options, other reaction, notes)
-- [ ] Thank you/celebration after logging
-- [ ] Persistent login
-- [ ] Basic achievements (streaks, practice counts)
-- [ ] Link to Skool community
-- [ ] Disclaimers
+### App Features
+- [ ] **Binaural beats integration** -- Web Audio API oscillators, frequency presets for different states, headphones-required notice
+- [ ] **Offline mode / PWA offline sync** -- Service worker caching, offline indicator, queue trigger logs for sync
+- [ ] **Notifications system** -- Gentle, non-pressuring notifications following the philosophy in UX-PHILOSOPHY.md
+- [ ] **Haptic feedback** -- Subtle vibration on button press for mobile devices
+- [ ] **Sound toggle for breathing** -- Optional audio cues during breathing phases
+- [ ] **Dark/light mode toggle** -- Currently dark only, add light theme option
 
-### Should Have
-- [ ] Severity level explanations
-- [ ] Locked premium feature UI
-- [ ] Basic milestone celebrations
-- [ ] Attribution tracking ("how did you find us")
+### Business & Analytics
+- [ ] **Full monetization flow** -- Complete free-to-community conversion journey with attribution tracking
+- [ ] **Analytics dashboard (admin)** -- Tool usage, completion rates, conversion tracking, trigger patterns (anonymized)
+- [ ] **Progress sharing to Skool** -- Deep link templates, share tracking
 
-### Nice to Have (V1.1)
-- [ ] Seamless audio looping
-- [ ] Binaural beats
-- [ ] Share to Skool templates
-- [ ] Full achievements gallery
+### Long-Term Vision
+- [ ] **Therapist-compatible features** -- Evidence-based citations, progress reports, professional presentation
+- [ ] **Brand coherence strategy** -- Align MisoCalm and Thriving With Misophonia naming
+- [ ] **Home screen widget** -- PWA shortcut for quick breathing access
+
+### Deprecated / Resolved
+- ~~Parent source options (Mum/Dad/Step)~~ -- Source field was deprecated in favor of environment. No longer needed.
+
+---
+
+## Course-App Ecosystem Map
+
+| Course Stage | App Features | Status |
+|---|---|---|
+| Stage 1: Seeing Clearly | Onboarding, assessment, trigger log, Miso Levels | BUILT |
+| Stage 2: Finding Ground | Breathing tools, somatic tools, "Find My Calm", soundscapes | MOSTLY BUILT (needs butterfly tapping, havening) |
+| Stage 3: Healing the Roots | Journal, deeper processing, AI companion | BUILT (needs guided prompt sets) |
+| Stage 4: Nourishing the Whole | Wellness check-ins, insights dashboard | PARTIAL (basic check-in exists) |
+| Stage 5: Thriving | Boundaries, scripts, progress visualization, Skool bridge | PARTIAL (boundaries built, rest in roadmap) |
+
+### The Ecosystem Loop
+
+1. Triggered in real life
+2. Open MisoCalm, find calm (regulation)
+3. Log the trigger (awareness)
+4. Journal about it (processing)
+5. Share a win in community (connection)
+6. Return to course for next lesson (growth)
+7. Return to life with more capacity
+8. Repeat, spiraling upward
 
 ---
 
@@ -284,68 +229,14 @@ Based on your notes, here's what's essential for launch in ~1 month:
 
 **User should feel when opening app:** Understood. That there is a way through this.
 
-**Positioning:** "MisoCalm is the first app that supports Misophonia-affected people to find balance and calm in a noisy world"
+**Positioning:** "MisoCalm is the first app that supports misophonia-affected people to find balance and calm in a noisy world."
 
-**Core tenant:** Nervous system regulation - teaching users to cultivate internal safety through basic exercises
+**Core tenet:** Nervous system regulation. Teaching users to cultivate internal safety through body-based practices.
 
-**Monetization:** Free app with enough value to use standalone, premium features guide to Skool community ($47/month membership)
+**Monetization:** Free app with genuine standalone value. Premium features and Skool community ($47/month) for those ready to go deeper.
 
----
-
----
-
-## Ecosystem Alignment Priorities (Course + App)
-
-These priorities align MisoCalm development with the 5-stage course launch.
-
-### Phase 1: Support Stage 2 (Finding Ground)
-The course starts with regulation. The app must fully support this.
-
-| Task | Description | Priority |
-|------|-------------|----------|
-| **Butterfly tapping tool** | New somatic tool with bilateral stimulation animation and timer | HIGH |
-| **Havening tool** | Self-touch guided practice with step-by-step instructions | HIGH |
-| **Expanded physiological sigh** | Add guided variations and "in the moment" quick-access version | MEDIUM |
-| **Tool categorization by situation** | Tag tools by when to use them (crisis, daily, before sleep, after trigger) | MEDIUM |
-
-### Phase 2: Support Stage 3 (Healing the Roots)
-Guided journal prompts that walk alongside the course content.
-
-| Task | Description | Priority |
-|------|-------------|----------|
-| **Guided journal prompt sets** | Pre-written prompt sequences mapped to course stages (safety, forgiveness, inner child) | HIGH |
-| **Deeper processing flow** | Expand post-log journaling with stage-specific reflection questions | MEDIUM |
-| **AI companion stage awareness** | Miso adjusts tone/prompts based on which course stage user is in | LOW |
-
-### Phase 3: Community Bridge
-Soft introduction to the Skool community from within the app.
-
-| Task | Description | Priority |
-|------|-------------|----------|
-| **Community bridge moment** | After key milestones, gently surface "others are walking this path too" with Skool link | HIGH |
-| **Share a win flow** | Copy-to-clipboard templates for posting wins to Skool | MEDIUM |
-| **Community manifesto in app** | Display manifesto in a dedicated space (settings or about) | LOW |
-
-### Phase 4: Milestone Celebrations
-Gentle progress acknowledgment using sacred numbers.
-
-| Task | Description | Priority |
-|------|-------------|----------|
-| **Sacred number milestones** | Celebrate at divine number counts (3, 7, 11, 23, 37 practices) | HIGH |
-| **Quiet stats** | "You've shown up for yourself X times" style, visible but not pushy | MEDIUM |
-| **Stage completion markers** | Visual indicator of course stage progress (if user is on Skool) | LOW |
-
-### Phase 5: Nourishing + Thriving Features
-Later stages of the course, built as content is written.
-
-| Task | Description | Priority |
-|------|-------------|----------|
-| **Wellness check-in** | Simple daily/weekly body + mood check (not a score, a noticing) | MEDIUM |
-| **Insights dashboard** | Patterns over time: triggers, intensity trends, regulation usage | MEDIUM |
-| **Communication scripts** | Practical scripts for telling partner/parent/friend about misophonia | LOW |
-| **Progress visualization** | Visual journey from Stage 1 to 5 showing where they've been | LOW |
+**Design philosophy:** Sanctuary, not software. Spaces, not features. Progress without pressure. Sacred geometry throughout.
 
 ---
 
-*Document created from notes - February 2026*
-*Updated with ecosystem alignment - February 2026*
+*Last updated: 15 February 2026*
