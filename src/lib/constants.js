@@ -129,6 +129,7 @@ export const ROUTES = {
   PREMIUM: '/premium',
   PRIVACY: '/privacy',
   TERMS: '/terms',
+  EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
 };
 
 // Attribution options (how did you find us)
@@ -252,7 +253,48 @@ export const DEEPER_PROMPTS_BREATHWORK = [
 export const STORAGE_KEYS = {
   PENDING_EMAIL: 'misocalm_pending_email',
   ONBOARDING_DATA: 'misocalm_onboarding',
+  IMPERMANENCE_VISITS: 'misocalm_impermanence_visits',
+  IMPERMANENCE_LAST_TEACHING: 'misocalm_impermanence_last_teaching',
+  IMPERMANENCE_HUE: 'misocalm_impermanence_hue',
 };
+
+// Impermanence experience teachings (5, prime)
+export const IMPERMANENCE_TEACHINGS = [
+  {
+    lines: [
+      'every sound you have ever feared',
+      'has already gone',
+      'but you are still here',
+    ],
+  },
+  {
+    lines: [
+      'the sound was never the danger',
+      'it was the story your body told about it',
+    ],
+  },
+  {
+    lines: [
+      'you watched it come',
+      'you watched it go',
+      'that is all it ever does',
+    ],
+  },
+  {
+    lines: [
+      'you gave it colour',
+      'you gave it space',
+      'and it gave itself back to silence',
+    ],
+  },
+  {
+    lines: [
+      'nothing that passes through',
+      'can stay',
+      'and you have never been the passing thing',
+    ],
+  },
+];
 
 // Misophonia Response Levels (0-10 clinical scale)
 export const MISOPHONIA_LEVELS = [

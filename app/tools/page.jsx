@@ -97,7 +97,17 @@ const sampleTools = [
   },
 ];
 
-const filterTabs = ['All', 'Favorites', 'Breathwork', 'Somatic'];
+const filterTabs = ['All', 'Favorites', 'Breathwork', 'Somatic', 'Experiences'];
+
+const experiences = [
+  {
+    id: 'impermanence',
+    title: 'Impermanence',
+    description: 'A quiet experiment about sound, and what remains.',
+    duration: '~3 min',
+    route: '/tools/experiences/impermanence',
+  },
+];
 
 export default function ToolsPage() {
   const router = useRouter();
@@ -248,6 +258,34 @@ export default function ToolsPage() {
                   onToggleFavorite={() => toggleFavorite(tool.id)}
                   getCategoryColor={getCategoryColor}
                 />
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Experiences */}
+        {(activeFilter === 'All' || activeFilter === 'Experiences') && experiences.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Badge color="purple">Experiences</Badge>
+              <span className="text-sm text-slate-300">Guided</span>
+            </div>
+            <div className="space-y-3">
+              {experiences.map((exp) => (
+                <Card
+                  key={exp.id}
+                  onClick={() => router.push(exp.route)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-white font-light mb-1">{exp.title}</h2>
+                      <p className="text-sm text-slate-300 font-light mb-2">{exp.description}</p>
+                      <span className="text-xs text-slate-300 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {exp.duration}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
               ))}
             </div>
           </div>

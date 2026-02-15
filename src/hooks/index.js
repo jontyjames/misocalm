@@ -13,3 +13,4 @@ export { default as useHaptic } from './useHaptic';
 export { default as useLongPress } from './useLongPress';
 export { default as useFocusTrap } from './useFocusTrap';
 export { default as useCapacitor } from './useCapacitor';
+export { default as useMicrophone } from './useMicrophone';

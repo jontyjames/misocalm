@@ -163,6 +163,7 @@ body {
   .ambient-particle,
   .star-dissolve-point,
   .expansion-bloom,
+  [data-experience] canvas,
   [aria-label="Show mantra"] *,
   [aria-label="Main navigation"] * {
     animation: none !important;
@@ -433,4 +434,10 @@ body {
   0% { opacity: 0.7; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.06); }
   100% { opacity: 0.7; transform: scale(1); }
+}
+
+/* YouDot: soft breathing glow (5.3s = prime duration) */
+@keyframes youDotBreathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.15); }
 }
