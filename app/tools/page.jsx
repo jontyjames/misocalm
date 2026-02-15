@@ -97,7 +97,7 @@ const sampleTools = [
   },
 ];
 
-const filterTabs = ['All', 'Favorites', 'Breathwork', 'Somatic', 'Experiences'];
+const filterTabs = ['All', 'Breath', 'Body', 'Experiences'];
 
 const experiences = [
   {
@@ -113,6 +113,7 @@ export default function ToolsPage() {
   const router = useRouter();
   const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
   const [activeFilter, setActiveFilter] = useState('All');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [tools] = useState(sampleTools);
 
   const favoriteTools = profile?.favorite_tools || [];
@@ -145,8 +146,12 @@ export default function ToolsPage() {
   const isToolFavorite = (tool) => favoriteTools.includes(tool.id);
 
   const filteredTools = tools.filter((tool) => {
+    // Apply favorites filter (composable with category)
+    if (showFavoritesOnly && !isToolFavorite(tool)) return false;
+    // Apply category filter
     if (activeFilter === 'All') return true;
-    if (activeFilter === 'Favorites') return isToolFavorite(tool);
+    if (activeFilter === 'Breath') return tool.category === 'breathwork';
+    if (activeFilter === 'Body') return tool.category === 'somatic';
     return tool.category.toLowerCase() === activeFilter.toLowerCase();
   });
 
@@ -198,7 +203,22 @@ export default function ToolsPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="flex items-center gap-2 mb-6">
+          {/* Favorites toggle (composable with category) */}
+          <button
+            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+            className={`
+              p-2 rounded-full transition-all duration-[144ms] active:scale-95
+              ${showFavoritesOnly
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                : 'text-slate-500 hover:text-amber-400 hover:bg-slate-800/50'
+              }
+            `}
+            aria-label={showFavoritesOnly ? 'Show all practices' : 'Show favorites only'}
+          >
+            <Star className="w-4 h-4" fill={showFavoritesOnly ? 'currentColor' : 'none'} />
+          </button>
+          {/* Category tabs */}
           {filterTabs.map((tab) => (
             <button
               key={tab}
