@@ -9,10 +9,10 @@ import { useState, useEffect, useRef } from 'react';
 
 const PHASES = {
   GET_READY: { name: 'Get Ready', duration: 3, countdown: true },
-  INHALE: { name: 'Breathe In', duration: 4 },
-  HOLD_IN: { name: 'Hold', duration: 4 },
-  EXHALE: { name: 'Breathe Out', duration: 4 },
-  HOLD_OUT: { name: 'Hold', duration: 4 },
+  INHALE: { name: 'Breathe In', duration: 4, countdown: false },
+  HOLD_IN: { name: 'Hold', duration: 4, countdown: false },
+  EXHALE: { name: 'Breathe Out', duration: 4, countdown: false },
+  HOLD_OUT: { name: 'Hold', duration: 4, countdown: false },
 };
 
 const SEQUENCE = ['GET_READY', 'INHALE', 'HOLD_IN', 'EXHALE', 'HOLD_OUT'];
@@ -74,7 +74,8 @@ export default function BreathingBox({
     const tick = (now) => {
       const elapsed = now - phaseStartTimeRef.current;
       const rawProgress = Math.min(elapsed / phaseDurationMs, 1);
-      const newProgress = currentPhaseData.countdown ? (1 - rawProgress) : rawProgress;
+      // GET_READY fills the perimeter in reverse; breathing phases always fill forward
+      const newProgress = (phase === 'GET_READY') ? (1 - rawProgress) : rawProgress;
       setProgress(newProgress);
 
       const currentSecond = currentPhaseData.countdown

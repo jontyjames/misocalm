@@ -14,8 +14,8 @@ const BREATH_PATTERNS = {
     phases: {
       GET_READY: { name: 'Empty your lungs', duration: 3, scale: 0.8, transitionMs: 3000, countdown: true },
       INHALE: { name: 'Breathe In', duration: 4, scale: 1.4, transitionMs: 4000, countdown: false },
-      HOLD: { name: 'Hold', duration: 7, scale: 1.4, transitionMs: 200, countdown: false },
-      EXHALE: { name: 'Breathe Out', duration: 8, scale: 0.8, transitionMs: 8000, countdown: false },
+      HOLD: { name: 'Hold', duration: 7, scale: 1.4, transitionMs: 200, countdown: true },
+      EXHALE: { name: 'Breathe Out', duration: 8, scale: 0.8, transitionMs: 8000, countdown: true },
     },
     sequence: ['GET_READY', 'INHALE', 'HOLD', 'EXHALE'],
     cycleStart: 'INHALE',
@@ -38,7 +38,7 @@ const BREATH_PATTERNS = {
       GET_READY: { name: 'Get ready', duration: 3, scale: 0.8, transitionMs: 3000, countdown: true },
       INHALE_1: { name: 'Breathe In', duration: 2, scale: 1.2, transitionMs: 2000, countdown: false },
       INHALE_2: { name: 'Sip More Air', duration: 1, scale: 1.4, transitionMs: 1000, countdown: false },
-      EXHALE: { name: 'Long Exhale', duration: 6, scale: 0.8, transitionMs: 6000, countdown: false },
+      EXHALE: { name: 'Long Exhale', duration: 6, scale: 0.8, transitionMs: 6000, countdown: true },
     },
     sequence: ['GET_READY', 'INHALE_1', 'INHALE_2', 'EXHALE'],
     cycleStart: 'INHALE_1',
@@ -80,15 +80,18 @@ export default function BreathingCircle({
     if (nextIndex >= sequence.length) {
       // Completed one full round - callback then start new cycle
       onCycleComplete?.();
+      const cyclePhase = PHASES[cycleStart];
       setPhase(cycleStart);
-      setSecondCount(1);
+      setSecondCount(cyclePhase.countdown ? cyclePhase.duration : 1);
     } else {
-      setPhase(sequence[nextIndex]);
-      setSecondCount(sequence[nextIndex] === 'GET_READY' ? PHASES['GET_READY'].duration : 1);
+      const nextPhaseName = sequence[nextIndex];
+      const nextPhaseData = PHASES[nextPhaseName];
+      setPhase(nextPhaseName);
+      setSecondCount(nextPhaseData.countdown ? nextPhaseData.duration : 1);
     }
   };
 
-  // Handle the second-by-second counting
+  // Handle the second-by-second counting (pure — no side effects in updater)
   useEffect(() => {
     if (!isActive) {
       if (intervalRef.current) {
@@ -103,28 +106,12 @@ export default function BreathingCircle({
       setHasStarted(true);
     }
 
-    intervalRef.current = setInterval(() => {
-      const currentPhaseData = PHASES[phase];
+    const currentPhaseData = PHASES[phase];
 
-      if (currentPhaseData.countdown) {
-        // Countdown (3, 2, 1) for GET_READY
-        setSecondCount((current) => {
-          if (current <= 1) {
-            goToNextPhase();
-            return 1;
-          }
-          return current - 1;
-        });
-      } else {
-        // Count up (1, 2, 3...) for breathing phases
-        setSecondCount((current) => {
-          if (current >= currentPhaseData.duration) {
-            goToNextPhase();
-            return 1;
-          }
-          return current + 1;
-        });
-      }
+    intervalRef.current = setInterval(() => {
+      setSecondCount((current) =>
+        currentPhaseData.countdown ? current - 1 : current + 1
+      );
     }, 1000);
 
     return () => {
@@ -134,6 +121,18 @@ export default function BreathingCircle({
       }
     };
   }, [isActive, phase, hasStarted, PHASES]);
+
+  // Phase transitions — fires after secondCount renders, so user always sees final number
+  useEffect(() => {
+    if (!isActive || !hasStarted) return;
+    const currentPhaseData = PHASES[phase];
+
+    if (currentPhaseData.countdown && secondCount < 1) {
+      goToNextPhase();
+    } else if (!currentPhaseData.countdown && secondCount > currentPhaseData.duration) {
+      goToNextPhase();
+    }
+  }, [secondCount, isActive, hasStarted, phase, PHASES]);
 
   // Reset when becoming inactive or breath type changes
   useEffect(() => {
@@ -228,7 +227,7 @@ export default function BreathingCircle({
           {isActive ? (
             <>
               <span className="text-5xl font-thin text-white mb-1">
-                {secondCount}
+                {currentPhase.countdown ? Math.max(1, secondCount) : secondCount}
               </span>
               <span className={`text-sm font-light text-center px-2 ${phase === 'GET_READY' ? 'text-amber-300' : 'text-cyan-300'}`}>
                 {currentPhase.name}
