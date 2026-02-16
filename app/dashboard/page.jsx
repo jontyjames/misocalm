@@ -67,6 +67,12 @@ export default function DashboardPage() {
       if (!isAuthenticated) {
         router.push(ROUTES.HOME);
       } else if (!hasCompletedOnboarding) {
+        // Don't redirect if we just finished onboarding (context hasn't caught up yet)
+        const justCompleted = sessionStorage.getItem('onboarding_just_completed');
+        if (justCompleted) {
+          sessionStorage.removeItem('onboarding_just_completed');
+          return;
+        }
         router.push(ROUTES.ONBOARDING_ASSESSMENT);
       }
     }

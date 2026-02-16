@@ -95,6 +95,8 @@ export default function PlanPage() {
       console.error('Error saving onboarding data:', err);
     }
 
+    // Flag so dashboard doesn't redirect before context updates
+    sessionStorage.setItem('onboarding_just_completed', 'true');
     router.push(ROUTES.DASHBOARD);
   };
 
