@@ -1,6 +1,6 @@
 /**
  * Onboarding - Verify Email
- * User enters 6-digit OTP code sent to their email
+ * User enters 8-digit OTP code sent to their email
  */
 
 'use client';
@@ -136,7 +136,7 @@ export default function VerifyPage() {
         </h1>
 
         <p className="text-sm text-slate-200 font-light mb-1">
-          We sent a 6-digit code to
+          We sent a code to
         </p>
         <p className="text-sm text-indigo-400 font-light mb-8">
           {email}
