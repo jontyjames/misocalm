@@ -51,11 +51,24 @@ export default function PlanPage() {
 
     try {
       // Save profile to database
-      await upsertProfile({
-        name: onboardingData.name,
+      const profileResult = await upsertProfile({
+        name: onboardingData.name || 'Friend',
         impact_level: onboardingData.impact,
         onboarding_completed: true,
       });
+
+      // Verify it actually saved
+      const freshProfile = await refreshProfile();
+      if (!freshProfile?.onboarding_completed) {
+        // Retry once
+        console.warn('Onboarding save did not persist, retrying...');
+        await upsertProfile({
+          name: onboardingData.name || 'Friend',
+          impact_level: onboardingData.impact,
+          onboarding_completed: true,
+        });
+        await refreshProfile();
+      }
 
       // Save triggers to database
       let triggersSaved = false;
@@ -78,15 +91,10 @@ export default function PlanPage() {
         localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
         localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
       }
-      // If triggers failed to save, localStorage persists as backup
-      // useUserTriggers has localStorage fallback to cover this case
     } catch (err) {
       console.error('Error saving onboarding data:', err);
-      // Don't clear localStorage on failure — it's the backup
     }
 
-    // Always navigate to dashboard (localStorage fallback covers the user)
-    await refreshProfile();
     router.push(ROUTES.DASHBOARD);
   };
 
@@ -117,10 +125,10 @@ export default function PlanPage() {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
         {/* Encouragement — letter by letter */}
         <div className="flex items-center justify-center flex-wrap mb-10">
-          {'Well done for choosing this'.split('').map((char, i) => (
+          {'Well done for choosing this path'.split('').map((char, i) => (
             <span
               key={i}
-              className="text-2xl text-white/80 opacity-0"
+              className="text-xl sm:text-2xl text-white/80 opacity-0"
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
