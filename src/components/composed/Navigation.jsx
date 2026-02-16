@@ -89,14 +89,25 @@ function NavItem({ href, icon: Icon, label, isActive }) {
 export default function Navigation() {
   const pathname = usePathname();
   const [showMantra, setShowMantra] = useState(false);
-  const lastIndex = useRef(-1);
+  const mantraBag = useRef([]);
+  const currentMantra = useRef(0);
 
   const openMantra = () => {
-    let idx;
-    do {
-      idx = Math.floor(Math.random() * MANTRAS.length);
-    } while (idx === lastIndex.current && MANTRAS.length > 1);
-    lastIndex.current = idx;
+    /* Shuffle-bag: cycle through all 23 mantras before any repeats */
+    if (mantraBag.current.length === 0) {
+      const indices = Array.from({ length: MANTRAS.length }, (_, i) => i);
+      /* Fisher-Yates shuffle */
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      /* Avoid repeating the last mantra from previous cycle */
+      if (indices[0] === currentMantra.current && indices.length > 1) {
+        [indices[0], indices[indices.length - 1]] = [indices[indices.length - 1], indices[0]];
+      }
+      mantraBag.current = indices;
+    }
+    currentMantra.current = mantraBag.current.shift();
     setShowMantra(true);
   };
 
@@ -116,7 +127,7 @@ export default function Navigation() {
     <>
       {/* Mantra overlay with sacred geometry */}
       <MantraOverlay
-        mantra={MANTRAS[lastIndex.current]}
+        mantra={MANTRAS[currentMantra.current]}
         visible={showMantra}
         onClose={() => setShowMantra(false)}
       />
