@@ -11,9 +11,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request) {
-  // Block in production even if DEV_BYPASS_CODE is accidentally set
-  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_DEV_AUTH) {
-    return Response.json({ error: 'Dev bypass disabled in production' }, { status: 403 });
+  // Block in production unconditionally — no env var can override this
+  if (process.env.NODE_ENV === 'production') {
+    return Response.json({ error: 'Dev bypass not available in production' }, { status: 403 });
   }
 
   const bypassCode = process.env.DEV_BYPASS_CODE;

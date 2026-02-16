@@ -45,8 +45,11 @@ function PremiumContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, email: user.email }),
       });
-      const { url } = await res.json();
-      if (url) window.location.href = url;
+      if (!res.ok) throw new Error('Checkout request failed');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (!data.url) throw new Error('No checkout URL returned');
+      window.location.href = data.url;
     } catch (err) {
       console.error('Checkout failed:', err);
       setCheckoutError('Something went wrong opening checkout. Please try again.');
