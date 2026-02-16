@@ -161,7 +161,7 @@ export default function SoundscapesPage() {
                 onClick={() => setLooping(!looping)}
                 className={`
                   flex items-center gap-2 mx-auto px-4 py-2 rounded-full
-                  ${looping ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-500'}
+                  ${looping ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400'}
                 `}
               >
                 <Repeat className="w-4 h-4" />
