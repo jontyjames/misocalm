@@ -245,14 +245,10 @@ export const db = {
 export const auth = {
   /**
    * Send OTP code to email (no magic link redirect)
-   * Dev bypass: skip Supabase call entirely, just advance to code entry
+   * Always advances to code entry, even on rate limit errors
    */
   async sendOtp(email) {
     try {
-      if (process.env.NEXT_PUBLIC_DEV_BYPASS === 'true') {
-        return { error: null };
-      }
-
       const { error } = await withTimeout(
         supabase.auth.signInWithOtp({
           email,
@@ -262,11 +258,16 @@ export const auth = {
         })
       );
 
-      if (error) throw error;
+      if (error) {
+        console.warn('OTP send issue:', error.message);
+        // Rate limited or other send error — still advance to code entry
+        // so user can enter a previously sent code or dev bypass
+        return { error: null, warning: error.message };
+      }
       return { error: null };
     } catch (error) {
-      console.error('Auth OTP error:', error);
-      return { error: error.message || 'Failed to send code' };
+      console.warn('OTP send issue:', error.message);
+      return { error: null, warning: error.message || 'Failed to send code' };
     }
   },
 
