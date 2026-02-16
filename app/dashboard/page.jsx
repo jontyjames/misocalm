@@ -219,7 +219,7 @@ export default function DashboardPage() {
                 className="relative block text-2xl text-white mb-2"
                 style={{
                   fontFamily: "'Josefin Sans', sans-serif",
-                  fontWeight: 400,
+                  fontWeight: 200,
                   letterSpacing: '0.04em',
                 }}
               >

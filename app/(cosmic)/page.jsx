@@ -135,7 +135,7 @@ export default function WelcomePage() {
         ))}
       </div>
 
-      {/* "This is a space for you" — letter by letter, where MisoMind will appear */}
+      {/* "This is a space for you" — letter by letter */}
       {introStarted && (
         <div
           className={`

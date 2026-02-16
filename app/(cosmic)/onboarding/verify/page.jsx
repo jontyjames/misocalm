@@ -156,7 +156,8 @@ export default function VerifyPage() {
               onChange={(e) => handleInput(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               disabled={verifying}
-              className="w-11 h-14 text-center text-xl font-light rounded-xl bg-slate-800/50 border border-slate-700/50 text-white focus:border-indigo-500/50 focus:outline-none transition-colors duration-[233ms]"
+              aria-label={`Digit ${i + 1} of ${CODE_LENGTH}`}
+              className="w-11 h-14 text-center text-base font-light rounded-xl bg-slate-800/50 border border-slate-700/50 text-white focus:border-indigo-500/50 focus:outline-none transition-colors duration-[233ms]"
               style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
             />
           ))}
