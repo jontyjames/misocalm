@@ -139,7 +139,7 @@ export default function DashboardPage() {
             </p>
             <p
               className="text-sm text-indigo-300/70 font-light italic mt-3"
-              style={{ animation: 'fadeIn 2.4s ease-out' }}
+              style={{ animation: 'fadeIn 2.584s ease-out' }}
             >
               {getDailyAffirmation()}
             </p>
