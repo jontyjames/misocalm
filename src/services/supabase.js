@@ -245,9 +245,14 @@ export const db = {
 export const auth = {
   /**
    * Send OTP code to email (no magic link redirect)
+   * Dev bypass: skip Supabase call entirely, just advance to code entry
    */
   async sendOtp(email) {
     try {
+      if (process.env.NEXT_PUBLIC_DEV_BYPASS === 'true') {
+        return { error: null };
+      }
+
       const { error } = await withTimeout(
         supabase.auth.signInWithOtp({
           email,
@@ -267,9 +272,28 @@ export const auth = {
 
   /**
    * Verify OTP code entered by user
+   * Supports dev bypass: enter 111111 to skip email verification
    */
   async verifyOtp(email, token) {
     try {
+      // Dev bypass: call server route to generate a real session
+      if (token === '111111') {
+        const res = await fetch('/api/dev-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: token }),
+        });
+        const result = await res.json();
+        if (result.error) throw new Error(result.error);
+
+        const { data, error } = await supabase.auth.verifyOtp({
+          token_hash: result.hashed_token,
+          type: 'magiclink',
+        });
+        if (error) throw error;
+        return { data, error: null };
+      }
+
       const { data, error } = await withTimeout(
         supabase.auth.verifyOtp({
           email,
