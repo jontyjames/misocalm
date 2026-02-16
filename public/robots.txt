@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /profile
+Disallow: /debug
+Disallow: /log
+Disallow: /journal
+Disallow: /chat
+Disallow: /calm
 
 Sitemap: https://misocalm.app/sitemap.xml

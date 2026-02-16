@@ -5,13 +5,50 @@ import { QueryProvider } from '@/providers/QueryProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export const metadata = {
-  title: 'MisoCalm - Your Companion for Thriving with Misophonia',
-  description: 'Track triggers, build coping skills, and find support on your misophonia journey. A personal companion for understanding and managing misophonia.',
+  title: {
+    default: 'MisoCalm - A Space for Living with Misophonia',
+    template: '%s | MisoCalm',
+  },
+  description:
+    'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Free breathwork, journaling, and calming tools.',
+  keywords: [
+    'misophonia',
+    'misophonia app',
+    'misophonia help',
+    'sound sensitivity',
+    'misophonia coping',
+    'breathwork',
+    'nervous system regulation',
+    'calm',
+    'misophonia support',
+    'misophonia tools',
+  ],
+  authors: [{ name: 'Thriving With Misophonia' }],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'MisoCalm',
+  },
+  openGraph: {
+    title: 'MisoCalm - A Space for Living with Misophonia',
+    description:
+      'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
+    url: 'https://misocalm.app',
+    siteName: 'MisoCalm',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MisoCalm - A Space for Living with Misophonia',
+    description:
+      'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
+  },
+  metadataBase: new URL('https://misocalm.app'),
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
@@ -20,6 +57,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
+  themeColor: '#0f172a',
 }
 
 export default function RootLayout({ children }) {
