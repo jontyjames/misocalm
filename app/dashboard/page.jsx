@@ -158,7 +158,7 @@ export default function DashboardPage() {
               }}
             />
             <button
-              onClick={() => router.push('/calm')}
+              onClick={() => router.push(ROUTES.CALM)}
               className="
                 relative w-full py-8 rounded-2xl overflow-hidden
                 border border-white/[0.18]

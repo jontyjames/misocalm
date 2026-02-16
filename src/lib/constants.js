@@ -130,6 +130,7 @@ export const ROUTES = {
   RESOURCES: '/resources',
   PRIVACY: '/privacy',
   TERMS: '/terms',
+  CALM: '/calm',
   EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
   EXPERIENCE_MANDALA: '/tools/experiences/mandala',
   EXPERIENCE_PULSE: '/tools/experiences/pulse',
