@@ -459,3 +459,37 @@ body {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.03); }
 }
+
+/* ─── Mantra Sacred Pattern Animations ─────────────────────────────
+ * Slow, meditative. 23s rotation (prime), 13s pulse (prime).
+ */
+
+/* Eternal rotation - 23s is prime, feels infinite */
+@keyframes sacredRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Gentle scale pulse - 13s is prime */
+@keyframes sacredPulse {
+  0%, 100% { transform: scale(0.97); }
+  50% { transform: scale(1.03); }
+}
+
+/* Pattern fade-in at 610ms (Fibonacci ease) */
+@keyframes sacredPatternIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Reduced motion: disable mantra pattern and overlay animations */
+@media (prefers-reduced-motion: reduce) {
+  .mantra-pattern,
+  .mantra-pattern ~ *,
+  [aria-label="Mantra"] {
+    animation: none !important;
+  }
+  .mantra-pattern {
+    opacity: 1 !important;
+  }
+}

@@ -12,6 +12,7 @@ import { usePathname } from 'next/navigation';
 import { Home, BookOpen, Compass, MessageCircle } from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
 import NavLogoGem from './NavLogoGem';
+import MantraOverlay from './MantraOverlay';
 
 const MANTRAS = [
   'You are not your triggers.',
@@ -113,31 +114,12 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Mantra overlay */}
-      {showMantra && (
-        <div
-          role="dialog"
-          aria-label="Mantra"
-          className="fixed inset-0 z-[60] flex items-center justify-center px-8"
-          onClick={() => setShowMantra(false)}
-          style={{
-            background: 'rgba(3,7,18,0.85)',
-            backdropFilter: 'blur(8px)',
-            animation: 'fadeIn 377ms ease-out',
-          }}
-        >
-          <p
-            className="text-xl text-white/90 text-center leading-relaxed"
-            style={{
-              fontFamily: "'Josefin Sans', sans-serif",
-              fontWeight: 200,
-              textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
-            }}
-          >
-            {MANTRAS[lastIndex.current]}
-          </p>
-        </div>
-      )}
+      {/* Mantra overlay with sacred geometry */}
+      <MantraOverlay
+        mantra={MANTRAS[lastIndex.current]}
+        visible={showMantra}
+        onClose={() => setShowMantra(false)}
+      />
 
       {/* Context-aware aura glow beneath nav */}
       <div
