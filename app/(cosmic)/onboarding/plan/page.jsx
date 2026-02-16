@@ -117,7 +117,7 @@ export default function PlanPage() {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
         {/* Encouragement — letter by letter */}
         <div className="flex items-center justify-center flex-wrap mb-10">
-          {'Well done for choosing this path'.split('').map((char, i) => (
+          {'Well done for choosing this'.split('').map((char, i) => (
             <span
               key={i}
               className="text-2xl text-white/80 opacity-0"
