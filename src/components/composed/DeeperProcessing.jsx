@@ -18,6 +18,7 @@ import {
   DEEPER_PROMPTS_CHECKIN,
   DEEPER_PROMPTS_BREATHWORK,
 } from '@/lib/constants';
+import { getDayOfYear } from '@/lib/dateUtils';
 import DeeperClosing from './DeeperClosing';
 
 const CLOSING_MESSAGES = {
@@ -45,7 +46,7 @@ const PROMPT_POOLS = {
  */
 function selectPrompts(pool) {
   if (!pool || pool.length < 3) return pool || [];
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  const dayOfYear = getDayOfYear();
   const selected = [];
   const stride = Math.max(1, Math.floor(pool.length / 3));
 

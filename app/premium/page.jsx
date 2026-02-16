@@ -27,6 +27,7 @@ function PremiumContent() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { isPremium, subscription, isLoading } = usePremiumContext();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [manageLoading, setManageLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
   const success = searchParams.get('success') === 'true';
 
@@ -59,16 +60,23 @@ function PremiumContent() {
 
   const handleManage = async () => {
     if (!subscription?.stripe_customer_id) return;
+    setCheckoutError(null);
+    setManageLoading(true);
     try {
       const res = await fetch('/api/stripe/portal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customerId: subscription.stripe_customer_id }),
       });
-      const { url } = await res.json();
-      if (url) window.location.href = url;
+      if (!res.ok) throw new Error('Portal request failed');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (!data.url) throw new Error('No portal URL returned');
+      window.location.href = data.url;
     } catch (err) {
       console.error('Portal failed:', err);
+      setCheckoutError('Something went wrong opening the portal. Please try again.');
+      setManageLoading(false);
     }
   };
 
@@ -154,9 +162,10 @@ function PremiumContent() {
             </div>
             <button
               onClick={handleManage}
-              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light"
+              disabled={manageLoading}
+              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light disabled:opacity-50"
             >
-              Manage subscription
+              {manageLoading ? 'Opening portal...' : 'Manage subscription'}
             </button>
           </div>
         ) : (

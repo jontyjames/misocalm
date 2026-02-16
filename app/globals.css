@@ -184,6 +184,15 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Ensure text is readable */
 .text-white { color: #ffffff; }
 .text-slate-300 { color: #cbd5e1; }

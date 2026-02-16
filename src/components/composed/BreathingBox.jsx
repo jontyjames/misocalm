@@ -222,7 +222,7 @@ export default function BreathingBox({
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer">
           {isActive ? (
             <>
-              <span className="text-5xl font-thin text-white mb-2">
+              <span className="text-5xl text-white mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
                 {secondCount}
               </span>
               <span className={`text-base font-light text-center px-4 ${
@@ -233,7 +233,7 @@ export default function BreathingBox({
             </>
           ) : (
             <>
-              <span className="text-2xl font-thin text-white mb-1">
+              <span className="text-2xl text-white mb-1" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
                 Ready
               </span>
               <span className="text-xs font-light text-slate-400">

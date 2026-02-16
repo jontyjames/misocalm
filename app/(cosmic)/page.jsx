@@ -267,8 +267,10 @@ export default function WelcomePage() {
           {'Your sanctuary awaits'.split('').map((char, i) => (
             <span
               key={i}
-              className="text-2xl font-thin text-white opacity-0"
+              className="text-2xl text-white opacity-0"
               style={{
+                fontFamily: "'Josefin Sans', sans-serif",
+                fontWeight: 200,
                 animation: `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.5em' : undefined,
               }}

@@ -6,13 +6,19 @@
 
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import useReducedMotion from './useReducedMotion';
 
 export default function useLongPress(onLongPress, delay = 377) {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const prefersReduced = useReducedMotion();
   const timerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const start = useCallback((e) => {
     timerRef.current = setTimeout(() => {

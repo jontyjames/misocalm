@@ -13,7 +13,7 @@ function CosmicErrorFallback({ error, reset }) {
   return (
     <div role="alert" aria-live="assertive" className="min-h-screen flex items-center justify-center p-6">
       <div className="max-w-sm text-center">
-        <p className="text-xl font-thin text-white mb-3">Something went wrong</p>
+        <p className="text-xl text-white mb-3" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Something went wrong</p>
         <p className="text-sm text-slate-400 font-light mb-6">
           {error?.message || 'An unexpected error occurred'}
         </p>

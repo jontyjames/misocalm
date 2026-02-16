@@ -567,3 +567,18 @@ export const DAILY_AFFIRMATIONS = [
   'Right now, in this breath, you are safe.',
   'Your sensitivity is also your depth. The world needs that.',
 ];
+
+// All 9 breathing sessions (3 techniques x 3 durations)
+// Rotate daily via getDayOfYear(). Labels match the tools page names.
+// Colours: quick=indigo, mid=violet, full=cyan
+export const DAILY_PRACTICES_ROTATION = [
+  { id: '1', name: '4-7-8 Breathing',    label: 'A Soft Reset',     duration: 'quick',  time: '~1.5 min', accent: 'indigo' },
+  { id: '1', name: '4-7-8 Breathing',    label: 'Settling In',      duration: 'deep',   time: '~2.5 min', accent: 'violet' },
+  { id: '1', name: '4-7-8 Breathing',    label: 'Deep Stillness',   duration: 'full',   time: '~5 min',   accent: 'cyan' },
+  { id: '3', name: 'Box Breathing',      label: 'Finding Ground',   duration: 'quick',  time: '~1.5 min', accent: 'indigo' },
+  { id: '3', name: 'Box Breathing',      label: 'Steady State',     duration: 'deep',   time: '~3 min',   accent: 'violet' },
+  { id: '3', name: 'Box Breathing',      label: 'Full Anchor',      duration: 'full',   time: '~4 min',   accent: 'cyan' },
+  { id: '4', name: 'Physiological Sigh', label: 'Quick Release',    duration: 'quick',  time: '~30 sec',  accent: 'indigo' },
+  { id: '4', name: 'Physiological Sigh', label: 'Letting Go',       duration: 'medium', time: '~1 min',   accent: 'violet' },
+  { id: '4', name: 'Physiological Sigh', label: 'Complete Unwind',  duration: 'full',   time: '~1.5 min', accent: 'cyan' },
+];

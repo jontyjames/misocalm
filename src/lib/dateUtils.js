@@ -82,6 +82,16 @@ export function getWeekEnd(date = new Date()) {
 }
 
 /**
+ * Get the day of the year (1-366)
+ * Used to rotate daily content (affirmations, practices, prompts)
+ */
+export function getDayOfYear() {
+  return Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
+  );
+}
+
+/**
  * Check if two dates are the same day
  * @param {Date} date1
  * @param {Date} date2

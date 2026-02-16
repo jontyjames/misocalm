@@ -86,7 +86,7 @@ export default function SupportPage() {
   return (
     <AppLayout showNav={false}>
       <div className="px-6 py-8">
-        <h1 className="text-2xl font-thin text-white mb-2">
+        <h1 className="text-2xl text-white mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
           Choose Your Support
         </h1>
         <p className="text-slate-300 font-light mb-8">

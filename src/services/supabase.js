@@ -33,29 +33,6 @@ function withTimeout(promise, ms = API_TIMEOUT) {
 }
 
 /**
- * Retry a function with exponential backoff
- */
-async function withRetry(fn, { maxRetries = 3, baseDelay = 1000 } = {}) {
-  let lastError;
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error;
-      // Don't retry on auth errors or client errors (4xx)
-      if (error.status >= 400 && error.status < 500) {
-        throw error;
-      }
-      if (attempt < maxRetries - 1) {
-        const delay = baseDelay * Math.pow(2, attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
-  }
-  throw lastError;
-}
-
-/**
  * Database operations with timeout and error handling
  */
 export const db = {
@@ -217,27 +194,6 @@ export const db = {
     }
   },
 
-  /**
-   * Select with retry for resilience
-   */
-  async selectWithRetry(table, query = '*', filters = {}, retryOptions = {}) {
-    return withRetry(async () => {
-      const result = await this.select(table, query, filters);
-      if (result.error) throw new Error(result.error);
-      return result;
-    }, retryOptions);
-  },
-
-  /**
-   * Insert with retry for resilience
-   */
-  async insertWithRetry(table, data, retryOptions = {}) {
-    return withRetry(async () => {
-      const result = await this.insert(table, data);
-      if (result.error) throw new Error(result.error);
-      return result;
-    }, retryOptions);
-  },
 };
 
 /**

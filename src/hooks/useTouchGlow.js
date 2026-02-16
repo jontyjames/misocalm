@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import useReducedMotion from './useReducedMotion';
 
 const SOLFEGGIO_COLORS = {
@@ -21,6 +21,12 @@ export default function useTouchGlow(solfeggio = 'indigo') {
   const [isPressed, setIsPressed] = useState(false);
   const prefersReduced = useReducedMotion();
   const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const onPointerDown = useCallback((e) => {
     if (prefersReduced) return;

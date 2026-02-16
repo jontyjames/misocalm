@@ -55,10 +55,11 @@ export default function PulseGuide() {
         }}
       >
         <p
-          className="font-thin tracking-widest text-slate-200"
+          className="tracking-widest text-slate-200"
           style={{
             fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
             fontFamily: "'Josefin Sans', sans-serif",
+            fontWeight: 200,
             marginBottom: 10,
             opacity: 0,
             animation: 'fadeInUp 1.597s ease-out 0.5s forwards',

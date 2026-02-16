@@ -13,7 +13,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Layers, Wind, Home } from 'lucide-react';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
+import { getDayOfYear } from '@/lib/dateUtils';
 import StarDissolve from './StarDissolve';
 
 const TRIGGER_AFFIRMATIONS = [
@@ -36,22 +37,8 @@ const CHECK_IN_AFFIRMATIONS = [
   'A moment of peace, well earned',
 ];
 
-// Daily practices for the "Breathe" path
-const PRACTICES = [
-  { id: '1', duration: 'quick',  time: '~1.5 min' },
-  { id: '1', duration: 'deep',   time: '~2.5 min' },
-  { id: '1', duration: 'full',   time: '~5 min' },
-  { id: '3', duration: 'quick',  time: '~1.5 min' },
-  { id: '3', duration: 'deep',   time: '~3 min' },
-  { id: '3', duration: 'full',   time: '~4 min' },
-  { id: '4', duration: 'quick',  time: '~30 sec' },
-  { id: '4', duration: 'medium', time: '~1 min' },
-  { id: '4', duration: 'full',   time: '~1.5 min' },
-];
-
-function getRandomPractice() {
-  const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-  return PRACTICES[day % PRACTICES.length];
+function getDailyPractice() {
+  return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
 }
 
 export default function PostLogIntegration() {
@@ -64,11 +51,10 @@ export default function PostLogIntegration() {
   const affirmations = isCheckIn ? CHECK_IN_AFFIRMATIONS : TRIGGER_AFFIRMATIONS;
 
   const affirmation = useMemo(() => {
-    const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    return affirmations[day % affirmations.length];
+    return affirmations[getDayOfYear() % affirmations.length];
   }, [affirmations]);
 
-  const practice = useMemo(() => getRandomPractice(), []);
+  const practice = useMemo(() => getDailyPractice(), []);
 
   // Letter-by-letter animation state
   const [visibleChars, setVisibleChars] = useState(0);

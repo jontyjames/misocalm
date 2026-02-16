@@ -193,7 +193,7 @@ export default function ToolsPage() {
       <div className="px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-thin text-white">Practices</h1>
+          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Practices</h1>
           <Button variant="secondary" size="sm">
             <Lock className="w-4 h-4 mr-2" />
             Unlock
@@ -217,7 +217,7 @@ export default function ToolsPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-hide -mx-6 px-6">
           {/* Favorites toggle (composable with category) */}
           <button
             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}

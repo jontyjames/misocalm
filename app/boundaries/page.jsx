@@ -109,7 +109,7 @@ export default function BoundariesPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-thin text-white">Gentle Boundaries</h1>
+          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Gentle Boundaries</h1>
         </div>
         <PremiumGate feature="Boundary scripts" />
       </AppLayout>
@@ -127,7 +127,7 @@ export default function BoundariesPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-thin text-white">Gentle Boundaries</h1>
+          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Gentle Boundaries</h1>
         </div>
 
         {/* Intro */}

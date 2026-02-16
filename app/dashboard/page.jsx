@@ -11,7 +11,8 @@ import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout } from '@/components/composed';
 import { Spinner } from '@/components/ui';
-import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
+import { ROUTES, DAILY_AFFIRMATIONS, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
+import { getDayOfYear } from '@/lib/dateUtils';
 
 const DAILY_MESSAGES = [
   'Your space is ready.',
@@ -23,26 +24,6 @@ const DAILY_MESSAGES = [
   'We trust you. Completely.',
 ];
 
-// All 9 breathing sessions (3 techniques × 3 durations)
-// Labels match the tools page names. Colours: quick=indigo, mid=violet, full=cyan
-const DAILY_PRACTICES = [
-  { id: '1', name: '4-7-8 Breathing',    label: 'A Soft Reset',     duration: 'quick',  time: '~1.5 min', accent: 'indigo' },
-  { id: '1', name: '4-7-8 Breathing',    label: 'Settling In',      duration: 'deep',   time: '~2.5 min', accent: 'violet' },
-  { id: '1', name: '4-7-8 Breathing',    label: 'Deep Stillness',   duration: 'full',   time: '~5 min',   accent: 'cyan' },
-  { id: '3', name: 'Box Breathing',      label: 'Finding Ground',   duration: 'quick',  time: '~1.5 min', accent: 'indigo' },
-  { id: '3', name: 'Box Breathing',      label: 'Steady State',     duration: 'deep',   time: '~3 min',   accent: 'violet' },
-  { id: '3', name: 'Box Breathing',      label: 'Full Anchor',      duration: 'full',   time: '~4 min',   accent: 'cyan' },
-  { id: '4', name: 'Physiological Sigh', label: 'Quick Release',    duration: 'quick',  time: '~30 sec',  accent: 'indigo' },
-  { id: '4', name: 'Physiological Sigh', label: 'Letting Go',       duration: 'medium', time: '~1 min',   accent: 'violet' },
-  { id: '4', name: 'Physiological Sigh', label: 'Complete Unwind',  duration: 'full',   time: '~1.5 min', accent: 'cyan' },
-];
-
-function getDayOfYear() {
-  return Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
-  );
-}
-
 function getDailyMessage() {
   return DAILY_MESSAGES[getDayOfYear() % DAILY_MESSAGES.length];
 }
@@ -52,7 +33,7 @@ function getDailyAffirmation() {
 }
 
 function getDailyPractice() {
-  return DAILY_PRACTICES[getDayOfYear() % DAILY_PRACTICES.length];
+  return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
 }
 
 const ACCENT_STYLES = {

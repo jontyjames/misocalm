@@ -28,7 +28,7 @@ export default function Error({ error, reset }) {
           </div>
         </div>
 
-        <h1 className="text-2xl font-thin text-white mb-3">
+        <h1 className="text-2xl text-white mb-3" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
           Something went wrong
         </h1>
 

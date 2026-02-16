@@ -72,7 +72,7 @@ export default function SoundscapesPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-thin text-white">Sound Sanctuary</h1>
+          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Sound Sanctuary</h1>
         </div>
         <PremiumGate feature="Sound Sanctuary" />
       </AppLayout>
@@ -90,7 +90,7 @@ export default function SoundscapesPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-thin text-white">Sound Sanctuary</h1>
+          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Sound Sanctuary</h1>
         </div>
 
         {/* Soundscape Grid */}
@@ -129,7 +129,7 @@ export default function SoundscapesPage() {
               <div className="text-8xl mb-6">{iconMap[playing.icon]}</div>
 
               {/* Name */}
-              <h2 className="text-2xl font-thin text-white mb-8">{playing.name}</h2>
+              <h2 className="text-2xl text-white mb-8" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>{playing.name}</h2>
 
               {/* Play/Pause */}
               <button

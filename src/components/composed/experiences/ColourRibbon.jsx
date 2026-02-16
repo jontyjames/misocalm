@@ -130,8 +130,9 @@ export default function ColourRibbon({ onChange, showHint = false, storageKey = 
           opacity: hintVisible ? 0.4 : 0,
           transition: 'opacity 0.987s ease',
           fontFamily: "'Josefin Sans', sans-serif",
+          fontWeight: 200,
         }}
-        className="font-thin text-slate-400"
+        className="text-slate-400"
       >
         try the colours
       </p>

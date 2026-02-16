@@ -36,7 +36,7 @@ export default function GlobalError({ error, reset }) {
               </div>
             </div>
 
-            <h1 className="text-2xl font-thin text-white mb-3">
+            <h1 className="text-2xl text-white mb-3" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
               Critical Error
             </h1>
 

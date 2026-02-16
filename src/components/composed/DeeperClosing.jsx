@@ -8,20 +8,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Wind, Home } from 'lucide-react';
-import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
-
-// Daily practices for the "Breathe" path
-const PRACTICES = [
-  { id: '1', duration: 'quick' },
-  { id: '1', duration: 'deep' },
-  { id: '1', duration: 'full' },
-  { id: '3', duration: 'quick' },
-  { id: '3', duration: 'deep' },
-  { id: '3', duration: 'full' },
-  { id: '4', duration: 'quick' },
-  { id: '4', duration: 'medium' },
-  { id: '4', duration: 'full' },
-];
+import { ROUTES, FIBONACCI_TIMING, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
+import { getDayOfYear } from '@/lib/dateUtils';
 
 export default function DeeperClosing({ message, context }) {
   const router = useRouter();
@@ -29,8 +17,7 @@ export default function DeeperClosing({ message, context }) {
   const [showPaths, setShowPaths] = useState(false);
 
   const practice = useMemo(() => {
-    const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    return PRACTICES[day % PRACTICES.length];
+    return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
   }, []);
 
   useEffect(() => {

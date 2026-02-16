@@ -67,7 +67,7 @@ export default function DebugPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-thin text-white mb-2">Debug Dashboard</h1>
+          <h1 className="text-3xl text-white mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Debug Dashboard</h1>
           <p className="text-slate-400 font-light">
             Verify database connectivity and auth status
           </p>

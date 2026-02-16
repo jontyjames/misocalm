@@ -27,7 +27,7 @@ export default function Slider({
             <label className="text-sm font-light text-slate-300">{label}</label>
           )}
           {showValue && (
-            <span className="text-3xl font-thin text-white">{value}</span>
+            <span className="text-3xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>{value}</span>
           )}
         </div>
       )}

@@ -227,7 +227,7 @@ export default function BreathingCircle({
         >
           {isActive ? (
             <>
-              <span className="text-5xl font-thin text-white mb-1">
+              <span className="text-5xl text-white mb-1" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
                 {currentPhase.countdown ? Math.max(1, secondCount) : secondCount}
               </span>
               <span className={`text-sm font-light text-center px-2 ${phase === 'GET_READY' ? 'text-amber-300' : 'text-cyan-300'}`}>
@@ -236,7 +236,7 @@ export default function BreathingCircle({
             </>
           ) : (
             <>
-              <span className="text-2xl font-thin text-white mb-1">
+              <span className="text-2xl text-white mb-1" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
                 Ready
               </span>
               <span className="text-xs font-light text-slate-300">

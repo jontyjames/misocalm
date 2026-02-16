@@ -40,7 +40,6 @@ export const EVENTS = {
 
   // Streak events
   STREAK_UPDATED: 'streak_updated',
-  STREAK_BROKEN: 'streak_broken',
 };
 
 /**
