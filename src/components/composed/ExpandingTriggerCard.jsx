@@ -61,6 +61,7 @@ export default function ExpandingTriggerCard({
           </span>
           <button
             onClick={() => onRemove(name)}
+            aria-label={`Remove ${name}`}
             className="p-1 text-slate-400 hover:text-white transition-colors duration-[233ms]"
           >
             <X className="w-4 h-4" />
@@ -75,6 +76,10 @@ export default function ExpandingTriggerCard({
           step={1}
           value={intensity}
           onChange={(e) => onIntensityChange(name, parseInt(e.target.value))}
+          aria-label={`${name} intensity`}
+          aria-valuemin={0}
+          aria-valuemax={10}
+          aria-valuenow={intensity}
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md

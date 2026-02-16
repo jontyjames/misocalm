@@ -209,7 +209,7 @@ export default function MandalaGuide() {
                 boxShadow: '0 0 20px rgba(226, 232, 240, 0.2)',
               }}
             />
-            <p className="text-slate-500 text-xs font-light tracking-widest">you</p>
+            <p className="text-slate-400 text-xs font-light tracking-widest">you</p>
           </div>
         </div>
       )}

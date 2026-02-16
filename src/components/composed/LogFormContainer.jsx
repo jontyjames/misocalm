@@ -57,7 +57,7 @@ export default function LogFormContainer() {
     <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <button onClick={() => router.push(ROUTES.JOURNAL)} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
+        <button onClick={() => router.push(ROUTES.JOURNAL)} aria-label="Go back to journal" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
@@ -109,14 +109,15 @@ export default function LogFormContainer() {
                 onChange={(e) => setCustomTrigger(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
                 placeholder="Type a trigger..."
+                aria-label="Custom trigger name"
                 maxLength={50}
                 autoFocus
                 className="px-4 py-2 rounded-full text-base font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
               />
-              <button onClick={handleAddCustom} className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
+              <button onClick={handleAddCustom} aria-label="Add custom trigger" className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
                 <Plus className="w-4 h-4" />
               </button>
-              <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); }} className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-400">
+              <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); }} aria-label="Cancel" className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-400">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -191,6 +192,7 @@ export default function LogFormContainer() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Anything you want to capture..."
+              aria-label="Notes"
               rows={3}
               autoFocus
               className="w-full px-4 py-3 rounded-xl text-base font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none resize-none"

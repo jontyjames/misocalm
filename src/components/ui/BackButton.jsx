@@ -8,6 +8,7 @@ export default function BackButton({ href }) {
   return (
     <button
       onClick={() => href ? router.push(href) : router.back()}
+      aria-label="Go back"
       className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
     >
       <ArrowLeft className="w-5 h-5" />

@@ -133,6 +133,7 @@ export default function DeeperProcessing() {
       <div className="flex items-center gap-3 mb-8">
         <button
           onClick={() => router.push(ROUTES.JOURNAL)}
+          aria-label="Go back to journal"
           className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -169,6 +170,7 @@ export default function DeeperProcessing() {
           value={responses[currentPrompt]}
           onChange={(e) => updateResponse(e.target.value)}
           placeholder="Write here..."
+          aria-label="Your reflection"
           rows={5}
           autoFocus
           className="w-full px-4 py-3 rounded-xl text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:border-violet-500/50 focus:outline-none resize-none mb-6"

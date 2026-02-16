@@ -38,8 +38,8 @@ export default function SymmetrySelector({ value = 11, onChange }) {
           key={n}
           onClick={() => onChange?.(n)}
           style={{
-            width: 32,
-            height: 32,
+            width: 44,
+            height: 44,
             borderRadius: '50%',
             border: `1px solid ${n === value ? 'rgba(165, 180, 252, 0.4)' : 'rgba(148, 163, 184, 0.15)'}`,
             background: n === value ? 'rgba(165, 180, 252, 0.08)' : 'transparent',

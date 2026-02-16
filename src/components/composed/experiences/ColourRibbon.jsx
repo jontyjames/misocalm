@@ -7,7 +7,7 @@
  * Palette: slate → indigo → violet → cyan → soft white
  * (5 anchor points, prime, solfeggio arc)
  *
- * Height: 3px (Tesla's 3). Touch target: 42px (phi-5).
+ * Height: 3px (Tesla's 3). Touch target: 44px (a11y minimum).
  * Fade-in: 2584ms (fib-sacred).
  */
 
@@ -147,7 +147,7 @@ export default function ColourRibbon({ onChange, showHint = false, storageKey = 
         style={{
           width: 'calc(100% - 68px)',
           maxWidth: 'calc(100vw - 4rem)',
-          height: 42,
+          height: 44,
           display: 'flex',
           alignItems: 'center',
           cursor: 'pointer',

@@ -112,6 +112,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
               onChange={(e) => { setCustomTrigger(e.target.value); setInputError(null); }}
               onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
               placeholder="Type a trigger..."
+              aria-label="Custom trigger name"
               maxLength={50}
               autoFocus
               className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-full px-4 py-2.5
@@ -121,6 +122,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
             <button
               onClick={handleAddCustom}
               disabled={!customTrigger.trim()}
+              aria-label="Add custom trigger"
               className="p-2.5 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white
                 hover:bg-indigo-500/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >
@@ -128,6 +130,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
             </button>
             <button
               onClick={() => { setShowCustomInput(false); setCustomTrigger(''); setInputError(null); }}
+              aria-label="Cancel"
               className="p-2.5 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-400
                 hover:text-white transition-all"
             >

@@ -233,7 +233,7 @@ export default function ImpermanenceGuide() {
               }}
             />
             {state.showYouLabel && (
-              <p className="text-slate-500 text-xs font-light tracking-widest">you</p>
+              <p className="text-slate-400 text-xs font-light tracking-widest">you</p>
             )}
           </div>
         </div>

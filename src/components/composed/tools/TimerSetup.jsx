@@ -37,11 +37,11 @@ export default function TimerSetup({
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-        <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
+        <button onClick={onBack} aria-label="Go back" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <span className="text-white font-light">{tool.title}</span>
-        <button onClick={onToggleFavorite} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
+        <button onClick={onToggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
           <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
         </button>
       </div>

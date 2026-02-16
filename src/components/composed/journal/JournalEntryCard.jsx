@@ -38,13 +38,15 @@ export default function JournalEntryCard({ entry }) {
       {/* Collapsed: one quiet line */}
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-label={isCheckIn ? `Check-in, ${timeAgo(entry.created_at)}` : `${triggers}, ${timeAgo(entry.created_at)}`}
         className="w-full flex items-center gap-3 py-3 px-1 text-left group"
       >
         <span className={`w-2 h-2 rounded-full shrink-0 ${isCheckIn ? 'bg-cyan-400/60' : getIntensityColor(entry.intensity)}`} />
         <span className="text-sm text-slate-200 font-light flex-1 truncate">
           {isCheckIn ? 'Check-in' : triggers}
         </span>
-        <span className="text-sm text-slate-500 font-light shrink-0">
+        <span className="text-sm text-slate-400 font-light shrink-0">
           {timeAgo(entry.created_at)}
         </span>
       </button>
