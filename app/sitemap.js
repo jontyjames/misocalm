@@ -3,7 +3,7 @@
  * Next.js App Router generates /sitemap.xml from this file
  */
 export default function sitemap() {
-  const baseUrl = 'https://misocalm.app'
+  const baseUrl = 'https://misocalm.com'
 
   // Public pages that should be indexed
   const publicRoutes = [
@@ -36,6 +36,12 @@ export default function sitemap() {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/resources`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/privacy`,

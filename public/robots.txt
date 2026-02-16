@@ -9,4 +9,4 @@ Disallow: /journal
 Disallow: /chat
 Disallow: /calm
 
-Sitemap: https://misocalm.app/sitemap.xml
+Sitemap: https://misocalm.com/sitemap.xml

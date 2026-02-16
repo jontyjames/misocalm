@@ -42,7 +42,7 @@ export const metadata = {
     title: 'MisoCalm - A Space for Living with Misophonia',
     description:
       'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
-    url: 'https://misocalm.app',
+    url: 'https://misocalm.com',
     siteName: 'MisoCalm',
     type: 'website',
     locale: 'en_US',
@@ -53,7 +53,7 @@ export const metadata = {
     description:
       'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
   },
-  metadataBase: new URL('https://misocalm.app'),
+  metadataBase: new URL('https://misocalm.com'),
   robots: {
     index: true,
     follow: true,
@@ -74,6 +74,30 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebApplication',
+              name: 'MisoCalm',
+              description:
+                'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Free breathwork, journaling, and calming tools.',
+              url: 'https://misocalm.com',
+              applicationCategory: 'HealthApplication',
+              operatingSystem: 'Web',
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+              },
+              creator: {
+                '@type': 'Organization',
+                name: 'MisoCalm',
+              },
+            }),
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
