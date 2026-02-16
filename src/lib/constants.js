@@ -183,6 +183,7 @@ export const SACRED = {
   stars: 37,        // prime
   mantras: 23,      // prime
   dailyMessages: 7, // sacred, prime
+  dailyAffirmations: 37, // prime
   breathTechniques: 3, // Tesla's 3
   sessionsPerTechnique: 3, // Tesla's 3
   baseUnit: 6,      // Tesla's 6
@@ -515,4 +516,52 @@ export const SOUNDSCAPES = [
   { id: 'night', name: 'Night Ambience', icon: 'Moon', duration: '∞' },
   { id: 'fireplace', name: 'Fireplace', icon: 'Flame', duration: '∞' },
   { id: 'stream', name: 'Gentle Stream', icon: 'Droplets', duration: '∞' },
+];
+
+// Daily affirmations — misophonia-specific (37, prime)
+// Rotate daily via getDayOfYear. Validating, warm, never prescriptive.
+export const DAILY_AFFIRMATIONS = [
+  // Acceptance & validation
+  'Your sensitivity is not a flaw.',
+  'You are allowed to need quiet.',
+  'Your reactions are valid, even when others don\'t understand.',
+  'You are more than your triggers.',
+  'What you feel is real. You don\'t need to justify it.',
+  'Your nervous system is doing its best with what it has.',
+  'You are not broken. You are wired differently.',
+  // Strength & resilience
+  'You have survived every difficult sound so far.',
+  'Leaving a space is not weakness. It is wisdom.',
+  'Asking for what you need takes courage.',
+  'You are allowed to protect your peace.',
+  'Setting boundaries is an act of self-respect.',
+  'You don\'t owe anyone an explanation for your limits.',
+  'The fact that you are here says something about your strength.',
+  // Practice & growth
+  'Calm is not something you find. It is something you practice.',
+  'Your nervous system is learning something new today.',
+  'Small steps still carry you forward.',
+  'You don\'t have to be calm all the time to be doing well.',
+  'Progress is not always visible. Trust the process.',
+  'Each breath is a choice to stay present.',
+  'You are building something that no one else can see yet.',
+  // Self-compassion
+  'You deserve the same patience you give to others.',
+  'It is okay to have hard days.',
+  'You are allowed to rest without earning it.',
+  'Being gentle with yourself is not giving up.',
+  'You don\'t have to fight every battle today.',
+  'The part of you that hurts deserves kindness, not criticism.',
+  // Understanding & connection
+  'You are not alone in this, even when it feels that way.',
+  'Someone else in the world is feeling exactly what you feel right now.',
+  'The people who love you are still learning. That is okay.',
+  'Not everyone will understand. That does not make it less real.',
+  // Presence & stillness
+  'This moment will pass. You will still be here.',
+  'There is space between the trigger and your response. You are learning to find it.',
+  'Stillness is not the absence of sound. It is the presence of you.',
+  'You carry more than most people see. And you carry it well.',
+  'Right now, in this breath, you are safe.',
+  'Your sensitivity is also your depth. The world needs that.',
 ];

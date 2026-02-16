@@ -11,7 +11,7 @@ import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout } from '@/components/composed';
 import { Spinner } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
 
 const DAILY_MESSAGES = [
   'Your space is ready.',
@@ -45,6 +45,10 @@ function getDayOfYear() {
 
 function getDailyMessage() {
   return DAILY_MESSAGES[getDayOfYear() % DAILY_MESSAGES.length];
+}
+
+function getDailyAffirmation() {
+  return DAILY_AFFIRMATIONS[getDayOfYear() % DAILY_AFFIRMATIONS.length];
 }
 
 function getDailyPractice() {
@@ -131,6 +135,12 @@ export default function DashboardPage() {
             </h1>
             <p className="text-base text-slate-300 font-light">
               {getDailyMessage()}
+            </p>
+            <p
+              className="text-sm text-indigo-300/70 font-light italic mt-3"
+              style={{ animation: 'fadeIn 2.4s ease-out' }}
+            >
+              {getDailyAffirmation()}
             </p>
           </div>
 
