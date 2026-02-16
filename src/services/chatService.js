@@ -67,7 +67,10 @@ export const chatService = {
   },
 
   /**
-   * Save both user and assistant messages in a single transaction
+   * Save both user and assistant messages as two separate inserts.
+   * Note: This is NOT atomic. If the second insert fails, the first
+   * message will still be persisted. Acceptable for chat history but
+   * callers should be aware of potential partial saves.
    */
   async saveExchange(userId, userMessage, assistantMessage) {
     const userResult = await this.saveUserMessage(userId, userMessage);

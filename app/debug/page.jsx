@@ -6,16 +6,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { testConnection, db } from '@/services/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Button, Card, Badge } from '@/components/ui';
+import { ROUTES } from '@/lib/constants';
 import { RefreshCw, CheckCircle, XCircle, AlertCircle, Database, User, Key } from 'lucide-react';
 
 export default function DebugPage() {
-  const { user, profile, loading: authLoading, error: authError } = useAuth();
+  const router = useRouter();
+  const { user, profile, isAuthenticated, loading: authLoading, error: authError } = useAuth();
   const [connectionStatus, setConnectionStatus] = useState(null);
   const [testing, setTesting] = useState(false);
   const [tables, setTables] = useState({});
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push(ROUTES.HOME);
+    }
+  }, [isAuthenticated, authLoading, router]);
 
   const runConnectionTest = async () => {
     setTesting(true);

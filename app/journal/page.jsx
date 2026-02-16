@@ -166,7 +166,7 @@ export default function JournalPage() {
         {/* Bottom quiet stat */}
         {stats?.totalLogs > 0 && (
           <div className="absolute bottom-6 left-6 right-6 flex justify-center">
-            <p className="text-xs text-slate-500 font-light">
+            <p className="text-xs text-slate-300 font-light">
               {stats.totalLogs} moment{stats.totalLogs !== 1 ? 's' : ''} noticed this week
             </p>
           </div>

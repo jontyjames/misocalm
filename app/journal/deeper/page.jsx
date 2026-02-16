@@ -9,6 +9,7 @@ import { Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout, DeeperProcessing } from '@/components/composed';
+import { Spinner } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
 
 function DeeperContent() {
@@ -27,7 +28,7 @@ export default function JournalDeeperPage() {
 
   return (
     <AppLayout showNav={false}>
-      <Suspense>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>}>
         <DeeperContent />
       </Suspense>
     </AppLayout>

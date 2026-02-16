@@ -99,8 +99,15 @@ export default function Navigation() {
     setShowMantra(true);
   };
 
-  const isActive = (href) =>
-    pathname === href || (href !== ROUTES.DASHBOARD && pathname.startsWith(href));
+  const isActive = (href) => {
+    if (href === ROUTES.DASHBOARD) {
+      return pathname === href || pathname.startsWith('/calm');
+    }
+    if (href === ROUTES.JOURNAL) {
+      return pathname.startsWith(href) || pathname.startsWith('/log');
+    }
+    return pathname === href || pathname.startsWith(href);
+  };
 
   const auraColour = getAuraColour(pathname);
 

@@ -119,7 +119,8 @@ export function useLogForm(userId) {
   const handleCrisisSupport = useCallback(() => {
     setShowCrisisModal(false);
     handleSave(true);
-  }, [handleSave]);
+    router.push(ROUTES.LOG_SUPPORT);
+  }, [handleSave, router]);
 
   return {
     // Core state — per-trigger intensity

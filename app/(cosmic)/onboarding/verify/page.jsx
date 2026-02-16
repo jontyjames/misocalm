@@ -1,6 +1,6 @@
 /**
  * Onboarding - Verify Email
- * User enters 8-digit OTP code sent to their email
+ * User enters 6-digit OTP code sent to their email
  */
 
 'use client';

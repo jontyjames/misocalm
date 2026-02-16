@@ -239,8 +239,8 @@ export default function FirstPracticePage() {
                     <span className="flex items-center gap-2 text-xs text-indigo-400">
                       How to do it
                       {showInstructions
-                        ? <ChevronDown className="w-4 h-4" />
-                        : <ChevronUp className="w-4 h-4" />
+                        ? <ChevronUp className="w-4 h-4" />
+                        : <ChevronDown className="w-4 h-4" />
                       }
                     </span>
                   </button>

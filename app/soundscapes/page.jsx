@@ -22,6 +22,7 @@ const iconMap = {
   Radio: '📻',
   Moon: '🌙',
   Flame: '🔥',
+  Droplets: '💧',
 };
 
 export default function SoundscapesPage() {
@@ -167,8 +168,8 @@ export default function SoundscapesPage() {
               </button>
 
               {/* Note */}
-              <p className="text-sm text-slate-600 mt-8">
-                Note: Audio playback is a placeholder. Connect to audio files for full functionality.
+              <p className="text-sm text-slate-400 mt-8">
+                Sound Sanctuary is coming soon. Audio playback is not yet connected.
               </p>
             </div>
           </div>

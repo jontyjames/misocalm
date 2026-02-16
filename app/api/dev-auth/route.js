@@ -1,7 +1,11 @@
 /**
  * Dev Auth Bypass API Route
  * Generates a real Supabase session without email OTP
- * Only works when DEV_BYPASS_CODE env var is set
+ * Only works when DEV_BYPASS_CODE env var is set.
+ *
+ * Production safety: if DEV_BYPASS_CODE is not set in the environment
+ * (e.g. on Vercel), the early return below returns 403, effectively
+ * disabling the bypass. No additional NODE_ENV guard is needed.
  */
 
 import { createClient } from '@supabase/supabase-js';

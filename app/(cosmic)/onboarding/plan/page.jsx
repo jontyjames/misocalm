@@ -21,6 +21,7 @@ export default function PlanPage() {
   const { user, upsertProfile, refreshProfile, isAuthenticated, loading: authLoading } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   // Reveal content after letter animation finishes
@@ -93,6 +94,9 @@ export default function PlanPage() {
       }
     } catch (err) {
       console.error('Error saving onboarding data:', err);
+      setSaveError(true);
+      setSaving(false);
+      return;
     }
 
     // Flag so dashboard doesn't redirect before context updates
@@ -186,6 +190,16 @@ export default function PlanPage() {
               </span>
             </button>
           </div>
+          {saveError && (
+            <div className="text-center mt-4">
+              <p className="text-sm text-slate-300 font-light mb-3">
+                Something went wrong. Please try again.
+              </p>
+              <Button onClick={handleEnter} variant="secondary" size="md">
+                Try again
+              </Button>
+            </div>
+          )}
           </div>
       </div>
 

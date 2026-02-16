@@ -102,8 +102,8 @@ class Analytics {
       },
     };
 
-    // Log in development
-    if (this.debug) {
+    // Log in development only
+    if (process.env.NODE_ENV !== 'production') {
       console.log('[Analytics]', eventName, properties);
     }
 
@@ -173,7 +173,7 @@ class Analytics {
 
     // Batched send pending analytics provider selection.
     // Events are captured and discarded until a service is configured.
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
       console.log('[Analytics] Flushing', events.length, 'events');
     }
   }

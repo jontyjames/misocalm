@@ -25,10 +25,11 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
  * Wraps a promise with a timeout
  */
 function withTimeout(promise, ms = API_TIMEOUT) {
+  let timer;
   const timeout = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`Request timed out after ${ms}ms`)), ms);
+    timer = setTimeout(() => reject(new Error(`Request timed out after ${ms}ms`)), ms);
   });
-  return Promise.race([promise, timeout]);
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 /**
@@ -140,10 +141,10 @@ export const db = {
     try {
       const result = await withTimeout(callback(supabase));
       if (result.error) throw result.error;
-      return { data: result.data, error: null };
+      return { data: result.data, count: result.count ?? null, error: null };
     } catch (error) {
       console.error('DB query error:', error);
-      return { data: null, error: error.message || 'Query failed' };
+      return { data: null, count: null, error: error.message || 'Query failed' };
     }
   },
 

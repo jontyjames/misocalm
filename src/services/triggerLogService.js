@@ -46,7 +46,7 @@ export const triggerLogService = {
       const { trigger_intensities, environment, ...legacyPayload } = payload;
       const retryResult = await db.insert('trigger_logs', legacyPayload);
       if (!retryResult.error) {
-        this._schemaChecked = false; // still need migration
+        this._schemaChecked = true; // fallback succeeded, skip schema check next time
         return retryResult;
       }
     }

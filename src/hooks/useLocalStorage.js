@@ -8,6 +8,7 @@ import { useState, useCallback } from 'react';
 export function useLocalStorage(key, initialValue) {
   // Get initial value from storage or use default
   const [storedValue, setStoredValue] = useState(() => {
+    if (typeof window === 'undefined') return initialValue;
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;

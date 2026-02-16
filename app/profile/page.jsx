@@ -173,7 +173,8 @@ export default function ProfilePage() {
 
         {/* Export Data */}
         <button
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-8"
+          disabled
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] transition-all duration-[144ms] text-left mb-8 opacity-50 cursor-not-allowed"
           style={{ background: 'rgba(30,41,59,0.3)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-center justify-between">

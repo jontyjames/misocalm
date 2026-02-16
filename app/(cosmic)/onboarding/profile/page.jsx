@@ -1,6 +1,6 @@
 /**
  * Onboarding - Save Your Sanctuary
- * Signup framed as saving progress — value before commitment
+ * Signup framed as saving progress, value before commitment
  */
 
 'use client';
@@ -44,9 +44,10 @@ export default function ProfilePage() {
     setLoading(true);
     clearError();
 
-    // Store data for later
+    // Store data for later (merge with existing to preserve triggers from step 2)
     localStorage.setItem(STORAGE_KEYS.PENDING_EMAIL, email);
-    localStorage.setItem(STORAGE_KEYS.ONBOARDING_DATA, JSON.stringify({ name }));
+    const existingData = JSON.parse(localStorage.getItem(STORAGE_KEYS.ONBOARDING_DATA) || '{}');
+    localStorage.setItem(STORAGE_KEYS.ONBOARDING_DATA, JSON.stringify({ ...existingData, name }));
 
     // Send OTP code
     const { error } = await sendOtp(email);
@@ -90,7 +91,7 @@ export default function ProfilePage() {
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
       </div>
 
-      {/* Content — centred in available space */}
+      {/* Content, centred in available space */}
       <div className="flex-1 flex flex-col items-center justify-center">
         {/* Header */}
         <div className="text-center mb-10">
@@ -149,7 +150,7 @@ export default function ProfilePage() {
         <div className="flex items-center justify-center gap-1.5">
           <Lock className="w-3 h-3 text-slate-300" />
           <p className="text-xs text-slate-300 font-light">
-            We'll send a code — no password needed
+            We'll send a code. No password needed
           </p>
         </div>
       </div>
