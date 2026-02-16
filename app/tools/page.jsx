@@ -107,6 +107,20 @@ const experiences = [
     duration: '~3 min',
     route: '/tools/experiences/impermanence',
   },
+  {
+    id: 'mandala',
+    title: 'Mandala',
+    description: 'Touch the void, and see what you already are.',
+    duration: '~3 min',
+    route: '/tools/experiences/mandala',
+  },
+  {
+    id: 'pulse',
+    title: 'Pulse',
+    description: 'Your heart has been beating this whole time.',
+    duration: '~3 min',
+    route: '/tools/experiences/pulse',
+  },
 ];
 
 export default function ToolsPage() {

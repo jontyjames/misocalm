@@ -130,6 +130,8 @@ export const ROUTES = {
   PRIVACY: '/privacy',
   TERMS: '/terms',
   EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
+  EXPERIENCE_MANDALA: '/tools/experiences/mandala',
+  EXPERIENCE_PULSE: '/tools/experiences/pulse',
 };
 
 // Attribution options (how did you find us)
@@ -256,6 +258,13 @@ export const STORAGE_KEYS = {
   IMPERMANENCE_VISITS: 'misocalm_impermanence_visits',
   IMPERMANENCE_LAST_TEACHING: 'misocalm_impermanence_last_teaching',
   IMPERMANENCE_HUE: 'misocalm_impermanence_hue',
+  MANDALA_VISITS: 'misocalm_mandala_visits',
+  MANDALA_LAST_TEACHING: 'misocalm_mandala_last_teaching',
+  MANDALA_SYMMETRY: 'misocalm_mandala_symmetry',
+  MANDALA_HUE: 'misocalm_mandala_hue',
+  PULSE_VISITS: 'misocalm_pulse_visits',
+  PULSE_LAST_TEACHING: 'misocalm_pulse_last_teaching',
+  PULSE_HUE: 'misocalm_pulse_hue',
 };
 
 // Impermanence experience teachings (5, prime)
@@ -292,6 +301,126 @@ export const IMPERMANENCE_TEACHINGS = [
       'nothing that passes through',
       'can stay',
       'and you have never been the passing thing',
+    ],
+  },
+];
+
+// Mandala experience teachings (7, prime)
+export const MANDALA_TEACHINGS = [
+  {
+    lines: [
+      'you touched the void',
+      'and something beautiful appeared',
+      'that is not a small thing',
+    ],
+  },
+  {
+    lines: [
+      'you did not plan this',
+      'you did not try to get it right',
+      'and it is already perfect',
+    ],
+  },
+  {
+    lines: [
+      'every part of this came from you',
+      'even the parts you did not expect',
+      'especially those',
+    ],
+  },
+  {
+    lines: [
+      'nothing here was forced',
+      'the symmetry was always there',
+      'waiting for your touch to find it',
+    ],
+  },
+  {
+    lines: [
+      'you cannot make this ugly',
+      'no matter where you reach',
+      'beauty follows your hands',
+    ],
+  },
+  {
+    lines: [
+      'wholeness is not something you build',
+      'it is something you already are',
+      'this mandala knew that before you touched it',
+    ],
+  },
+  {
+    lines: [
+      'the centre holds',
+      'no matter how far the pattern reaches',
+      'you are the centre',
+    ],
+  },
+];
+
+// Pulse experience teachings (7, prime — each has 5 lines, prime)
+export const PULSE_TEACHINGS = [
+  {
+    lines: [
+      'your heart has been beating',
+      'this whole time',
+      'through every sound',
+      'through every storm',
+      'it never stopped',
+    ],
+  },
+  {
+    lines: [
+      'you have survived',
+      'every sound',
+      'you have ever heard',
+      'and your heart',
+      'kept beating',
+    ],
+  },
+  {
+    lines: [
+      'this rhythm',
+      'was there before the sounds',
+      'it will be there after',
+      'it does not care',
+      'what the world throws at you',
+    ],
+  },
+  {
+    lines: [
+      'feel this',
+      'this is not fragile',
+      'this has carried you',
+      'through every day',
+      'you thought you could not survive',
+    ],
+  },
+  {
+    lines: [
+      'the sounds come',
+      'and your heart beats',
+      'the sounds go',
+      'and your heart beats',
+      'you are the constant',
+    ],
+  },
+  {
+    lines: [
+      'you did not choose',
+      'to be sensitive',
+      'but you chose',
+      'to keep going',
+      'feel that courage',
+    ],
+  },
+  {
+    lines: [
+      'this pulse',
+      'is proof',
+      'that you are still here',
+      'still whole',
+      'still alive',
     ],
   },
 ];

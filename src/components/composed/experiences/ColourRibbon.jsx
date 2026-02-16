@@ -45,8 +45,8 @@ const GRADIENT = `linear-gradient(to right, ${STOPS.map(
   (s) => `rgb(${s.r},${s.g},${s.b}) ${s.pos * 100}%`
 ).join(', ')})`;
 
-export default function ColourRibbon({ onChange, showHint = false }) {
-  const [savedHue, setSavedHue] = useLocalStorage(STORAGE_KEYS.IMPERMANENCE_HUE, 0.5);
+export default function ColourRibbon({ onChange, showHint = false, storageKey = STORAGE_KEYS.IMPERMANENCE_HUE }) {
+  const [savedHue, setSavedHue] = useLocalStorage(storageKey, 0.5);
   const [position, setPosition] = useState(savedHue);
   const [visible, setVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
