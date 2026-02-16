@@ -210,7 +210,7 @@ export default function WelcomePage() {
           )}
 
           {showSignIn && !signInSent && (
-            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 233ms ease-out' }}>
+            <div className="mt-5 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 233ms ease-out' }}>
               <Input
                 type="email"
                 placeholder="Your email address"
@@ -233,7 +233,7 @@ export default function WelcomePage() {
           )}
 
           {signInSent && (
-            <div className="mt-5 w-64 mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            <div className="mt-5 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
               <p className="text-sm text-slate-200 font-light text-center mb-3">
                 Enter the code we sent to your email
               </p>

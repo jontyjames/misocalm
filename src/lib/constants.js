@@ -7,6 +7,11 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export const API_TIMEOUT = 10000; // 10 seconds for Supabase calls
 export const DEBOUNCE_DELAY = 233; // Fibonacci: fib-move
 
+// Admin access
+export const ADMIN_EMAILS = [
+  'jonty@thrivingwithmisophonia.com',
+];
+
 // Top 10 most commonly reported triggers (based on misophonia research)
 export const DEFAULT_TRIGGERS = [
   'Chewing',

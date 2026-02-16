@@ -36,7 +36,7 @@ export default function MandalaGuide() {
   const activeSymmetry = state.freePlay ? freeSymmetry : state.symmetry;
 
   return (
-    <div style={{ background: '#030712', minHeight: '100vh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
       {/* Canvas always renders */}
       <MandalaCanvas
         symmetry={activeSymmetry}

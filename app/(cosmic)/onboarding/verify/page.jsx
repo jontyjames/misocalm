@@ -143,7 +143,7 @@ export default function VerifyPage() {
         </p>
 
         {/* 6-digit code input */}
-        <div className="flex gap-3 mb-6" onPaste={handlePaste}>
+        <div className="flex gap-2 mb-6" onPaste={handlePaste}>
           {code.map((digit, i) => (
             <input
               key={i}

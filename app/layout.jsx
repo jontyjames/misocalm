@@ -1,8 +1,16 @@
 import './globals.css'
+import { Josefin_Sans } from 'next/font/google'
 import { AuthProvider } from '@/context/AuthContext'
 import { PremiumProvider } from '@/context/PremiumContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+
+const josefinSans = Josefin_Sans({
+  subsets: ['latin'],
+  weight: ['100', '200', '300'],
+  display: 'swap',
+  variable: '--font-josefin',
+})
 
 export const metadata = {
   title: {
@@ -62,13 +70,10 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={josefinSans.variable}>
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300&display=swap" rel="stylesheet" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -15,3 +15,4 @@ export { Pagination, LoadMoreButton } from './Pagination';
 export { default as TriggerChips } from './TriggerChips';
 export { default as ProgressDots } from './ProgressDots';
 export { default as PremiumGate } from './PremiumGate';
+export { default as BackButton } from './BackButton';

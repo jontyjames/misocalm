@@ -31,7 +31,7 @@ export default function PulseGuide() {
   }, [state.clearSeqTimer, router]);
 
   return (
-    <div style={{ background: '#030712', minHeight: '100vh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
       {/* Canvas always renders */}
       <PulseCanvas
         rhythmData={state.rhythmData}

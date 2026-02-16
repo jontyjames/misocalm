@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { testConnection, db } from '@/services/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Button, Card, Badge } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, ADMIN_EMAILS } from '@/lib/constants';
 import { RefreshCw, CheckCircle, XCircle, AlertCircle, Database, User, Key } from 'lucide-react';
 
 export default function DebugPage() {
@@ -20,11 +20,17 @@ export default function DebugPage() {
   const [testing, setTesting] = useState(false);
   const [tables, setTables] = useState({});
 
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email);
+
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push(ROUTES.HOME);
+      } else if (!isAdmin) {
+        router.push(ROUTES.DASHBOARD);
+      }
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [isAuthenticated, authLoading, isAdmin, router]);
 
   const runConnectionTest = async () => {
     setTesting(true);
@@ -50,6 +56,8 @@ export default function DebugPage() {
   useEffect(() => {
     runConnectionTest();
   }, []);
+
+  if (authLoading || !isAdmin) return null;
 
   const requiredTables = [
     'users',

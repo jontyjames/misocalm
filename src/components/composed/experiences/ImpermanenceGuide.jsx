@@ -51,7 +51,7 @@ export default function ImpermanenceGuide() {
   }, [mic, state, router]);
 
   return (
-    <div style={{ background: '#030712', minHeight: '100vh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
       {/* Canvas always renders (starts with just void) */}
       <SoundCanvas
         audioLevel={mic.audioLevel}

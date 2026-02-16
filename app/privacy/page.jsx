@@ -1,20 +1,10 @@
-'use client';
-
-import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { BackButton } from '@/components/ui';
 
 export default function PrivacyPage() {
-  const router = useRouter();
-
   return (
     <div className="px-6 py-8 pb-32 max-w-2xl mx-auto" style={{ animation: 'fadeIn 0.61s ease-out' }}>
       <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => router.back()}
-          className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
+        <BackButton />
         <h1
           className="text-2xl text-white"
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
