@@ -3,7 +3,7 @@
   "appName": "MisoCalm",
   "webDir": "out",
   "server": {
-    "url": "https://misocalm.app",
+    "url": "https://misocalm.com",
     "cleartext": false
   },
   "plugins": {
