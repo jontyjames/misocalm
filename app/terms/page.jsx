@@ -112,8 +112,7 @@ export default function TermsPage() {
 
         <div className="pt-4 border-t border-slate-800">
           <p className="text-xs text-slate-400 font-light leading-relaxed">
-            These terms are provided as a template and should be reviewed by a legal professional
-            before publication.
+            Last reviewed February 2026. If you have questions, reach out at the email above.
           </p>
         </div>
       </div>

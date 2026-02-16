@@ -7,10 +7,22 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
-import MandalaGuide from '@/components/composed/experiences/MandalaGuide';
+
+const MandalaGuide = dynamic(
+  () => import('@/components/composed/experiences/MandalaGuide'),
+  {
+    loading: () => (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Spinner size="lg" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 export default function MandalaPage() {
   const router = useRouter();

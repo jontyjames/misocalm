@@ -2,7 +2,7 @@
   "name": "MisoCalm - A Space for Living with Misophonia",
   "short_name": "MisoCalm",
   "description": "A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Free breathwork, journaling, and calming tools.",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#030712",
   "theme_color": "#0f172a",

@@ -36,7 +36,7 @@ export default function TriggerChips({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search sounds..."
-          className="w-full mb-[10px] px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
+          className="w-full mb-[10px] px-4 py-2 rounded-full text-base font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
         />
       )}
       <div className="flex flex-wrap justify-center gap-[10px]">

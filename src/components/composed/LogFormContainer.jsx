@@ -111,7 +111,7 @@ export default function LogFormContainer() {
                 placeholder="Type a trigger..."
                 maxLength={50}
                 autoFocus
-                className="px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
+                className="px-4 py-2 rounded-full text-base font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none"
               />
               <button onClick={handleAddCustom} className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
                 <Plus className="w-4 h-4" />
@@ -193,7 +193,7 @@ export default function LogFormContainer() {
               placeholder="Anything you want to capture..."
               rows={3}
               autoFocus
-              className="w-full px-4 py-3 rounded-xl text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none resize-none"
+              className="w-full px-4 py-3 rounded-xl text-base font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:border-indigo-500/50 focus:outline-none resize-none"
             />
           </div>
         ) : (
@@ -215,7 +215,7 @@ export default function LogFormContainer() {
       )}
 
       {/* Fixed save button */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent safe-area-bottom">
         <Button
           onClick={() => handleSave()}
           loading={saving}

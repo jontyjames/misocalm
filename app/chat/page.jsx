@@ -89,7 +89,7 @@ export default function ChatPage() {
 
   return (
     <AppLayout showNav={false}>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-[100dvh]">
         {/* Header */}
         <div className="flex items-center gap-4 px-4 py-3 border-b border-slate-800">
           <button

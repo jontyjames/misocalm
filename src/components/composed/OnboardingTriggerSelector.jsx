@@ -115,7 +115,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
               maxLength={50}
               autoFocus
               className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-full px-4 py-2.5
-                text-sm text-white font-light placeholder-slate-500 focus:outline-none
+                text-base text-white font-light placeholder-slate-500 focus:outline-none
                 focus:border-indigo-500/50 transition-colors"
             />
             <button

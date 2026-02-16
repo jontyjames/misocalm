@@ -1,5 +1,5 @@
 const CACHE_NAME = 'misocalm-v1';
-const OFFLINE_URL = '/';
+const OFFLINE_URL = '/offline';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [

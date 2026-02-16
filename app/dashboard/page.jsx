@@ -94,7 +94,7 @@ export default function DashboardPage() {
           <button
             onClick={() => router.push(ROUTES.PROFILE)}
             aria-label="View profile"
-            className="w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center hover:bg-indigo-500/30 transition-all duration-[233ms]"
+            className="w-11 h-11 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center hover:bg-indigo-500/30 transition-all duration-[233ms]"
           >
             <span
               className="text-sm text-indigo-300 leading-none"

@@ -64,7 +64,7 @@ function NavItem({ href, icon: Icon, label, isActive }) {
       aria-current={isActive ? 'page' : undefined}
       className={`
         relative flex items-center justify-center
-        w-10 h-10 rounded-full
+        w-11 h-11 rounded-full
         transition-colors duration-[144ms]
         ${isActive ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}
       `}
