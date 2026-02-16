@@ -169,10 +169,10 @@ export default function EditTriggersPage() {
                   autoFocus
                   className="px-4 py-2 rounded-full text-sm font-light bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:border-indigo-500/50 focus:outline-none"
                 />
-                <button onClick={handleAddCustom} className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
+                <button onClick={handleAddCustom} aria-label="Add custom trigger" className="p-2 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-white">
                   <Plus className="w-4 h-4" />
                 </button>
-                <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); setInputError(null); }} className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-300">
+                <button onClick={() => { setShowCustomInput(false); setCustomTrigger(''); setInputError(null); }} aria-label="Cancel" className="p-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-slate-300">
                   <X className="w-4 h-4" />
                 </button>
               </div>

@@ -119,6 +119,7 @@ export default function SoundscapesPage() {
               {/* Close button */}
               <button
                 onClick={handleClose}
+                aria-label="Close"
                 className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
               >
                 <X className="w-6 h-6" />

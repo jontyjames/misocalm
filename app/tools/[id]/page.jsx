@@ -93,11 +93,11 @@ export default function ToolPage() {
       <AppLayout showNav={false}>
         <div className="min-h-screen flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-            <button onClick={() => setSelectedDuration(null)} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
+            <button onClick={() => setSelectedDuration(null)} aria-label="Go back" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <span className="text-white font-light">{tool.title}</span>
-            <button onClick={toggleFavorite} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
+            <button onClick={toggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
               <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
             </button>
           </div>
@@ -165,11 +165,11 @@ export default function ToolPage() {
     <AppLayout>
       <div className="min-h-screen flex flex-col">
         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-          <button onClick={() => router.push(ROUTES.TOOLS)} className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
+          <button onClick={() => router.push(ROUTES.TOOLS)} aria-label="Go back" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-white font-light">{tool.title}</span>
-          <button onClick={toggleFavorite} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
+          <button onClick={toggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
             <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
         </div>

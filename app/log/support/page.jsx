@@ -140,6 +140,7 @@ export default function SupportPage() {
             {/* Close button */}
             <button
               onClick={() => setShowMantra(false)}
+              aria-label="Close"
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white transition-colors"
             >
               <X className="w-6 h-6" />

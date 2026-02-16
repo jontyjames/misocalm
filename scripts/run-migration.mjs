@@ -80,7 +80,7 @@ async function runMigration() {
 
   if (errorCount > 0) {
     console.log('\nNote: Some statements may need to be run manually in the Supabase SQL Editor.');
-    console.log('Go to: https://supabase.com/dashboard/project/gzzaoxmjdrjswsstmexf/sql');
+    console.log(`Go to: https://supabase.com/dashboard/project/${process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/\/\/([^.]+)/)?.[1] || 'YOUR_PROJECT'}/sql/new`);
   }
 }
 
@@ -118,7 +118,7 @@ async function main() {
     console.log('MANUAL MIGRATION REQUIRED');
     console.log('='.repeat(50));
     console.log('\n1. Go to your Supabase Dashboard:');
-    console.log('   https://supabase.com/dashboard/project/gzzaoxmjdrjswsstmexf/sql/new\n');
+    console.log(`   https://supabase.com/dashboard/project/${process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/\/\/([^.]+)/)?.[1] || 'YOUR_PROJECT'}/sql/new\n`);
     console.log('2. Copy and paste the contents of:');
     console.log('   supabase/migrations/002_enable_rls.sql\n');
     console.log('3. Click "Run" to execute the migration\n');

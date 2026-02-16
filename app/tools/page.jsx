@@ -370,6 +370,7 @@ function ToolCard({ tool, locked, isFavorite, onToggleFavorite, getCategoryColor
             e.stopPropagation();
             onToggleFavorite();
           }}
+          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           className={`p-2 shrink-0 ${isFavorite ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}
         >
           <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />

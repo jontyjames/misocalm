@@ -127,6 +127,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   DEBUG: '/debug',
   PREMIUM: '/premium',
+  RESOURCES: '/resources',
   PRIVACY: '/privacy',
   TERMS: '/terms',
   EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
