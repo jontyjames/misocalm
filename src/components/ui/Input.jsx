@@ -46,7 +46,7 @@ export default function Input({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           className={`
-            w-full px-4 py-3 rounded-xl text-sm font-light
+            w-full px-4 py-3 rounded-xl text-base font-light
             bg-slate-800/50 text-white placeholder-slate-500
             border transition-all duration-[144ms]
             ${Icon ? 'pl-11' : ''}

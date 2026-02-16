@@ -65,7 +65,7 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         className={`
-          relative w-full ${sizes[size]}
+          relative w-[calc(100%-2rem)] ${sizes[size]}
           bg-slate-900 border border-slate-800
           rounded-2xl shadow-2xl shadow-black/50
           p-6 mx-4

@@ -84,7 +84,7 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out', height: 'calc(100vh - 6rem)' }}>
+      <div className="flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out', height: 'calc(100dvh - 6rem)' }}>
         {/* Header — pinned to top */}
         <div className="flex items-center justify-between">
           <div className="flex items-end gap-2">

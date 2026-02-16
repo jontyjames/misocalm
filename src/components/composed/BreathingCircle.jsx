@@ -67,6 +67,7 @@ export default function BreathingCircle({
   const intervalRef = useRef(null);
 
   const sizes = {
+    sm: 'w-32 h-32',
     md: 'w-40 h-40',
     lg: 'w-56 h-56',
     xl: 'w-72 h-72',

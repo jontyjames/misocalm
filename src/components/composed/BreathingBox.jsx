@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 const PHASES = {
   GET_READY: { name: 'Get Ready', duration: 3, countdown: true },
@@ -22,8 +22,23 @@ export default function BreathingBox({
   onCycleComplete,
   onPhaseChange,
   onStart,
-  size = 220,
+  size: sizeProp,
 }) {
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 375
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const size = useMemo(() => {
+    if (sizeProp != null) return sizeProp;
+    return Math.min(220, windowWidth - 120);
+  }, [sizeProp, windowWidth]);
+
   const [phase, setPhase] = useState('GET_READY');
   const [secondCount, setSecondCount] = useState(3);
   const [progress, setProgress] = useState(1);

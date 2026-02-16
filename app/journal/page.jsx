@@ -51,7 +51,7 @@ export default function JournalPage() {
 
   return (
     <AppLayout>
-      <div className="relative flex flex-col px-6 py-8" style={{ height: 'calc(100vh - 6rem)' }}>
+      <div className="relative flex flex-col px-6 py-8" style={{ height: 'calc(100dvh - 6rem)' }}>
         {/* Header */}
         <div className="flex items-center" style={{ minHeight: '36px' }}>
           <h1

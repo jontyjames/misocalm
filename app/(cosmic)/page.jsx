@@ -166,7 +166,7 @@ export default function WelcomePage() {
 
         {/* App name — fades in after intro */}
         <h1
-          className={`text-[3rem] text-white transition-all duration-[987ms] ease-in-out ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}
+          className={`text-[2.25rem] sm:text-[3rem] text-white transition-all duration-[987ms] ease-in-out ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, letterSpacing: '0.12em' }}
         >
           MisoCalm
@@ -181,7 +181,7 @@ export default function WelcomePage() {
         <div className={`mt-4 transition-all duration-[987ms] ease-in-out delay-[610ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
           <button
             onClick={() => setTransitioning(true)}
-            className="relative overflow-hidden w-64 py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
+            className="relative overflow-hidden w-full max-w-[16rem] py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
             style={{
               background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)`,
               boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)`,

@@ -192,6 +192,7 @@ export default function SoundCanvas({ audioLevel = 0, pitch = 0.5, customColor =
     spawnCounter: 0,
   });
   const rafRef = useRef(null);
+  const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
   const propsRef = useRef({ audioLevel, pitch, customColor, showYouDot, showYouLabel });
   propsRef.current = { audioLevel, pitch, customColor, showYouDot, showYouLabel };
@@ -200,8 +201,9 @@ export default function SoundCanvas({ audioLevel = 0, pitch = 0.5, customColor =
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const dpr = dprRef.current;
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
     const cx = W / 2;
     const cy = H / 2;
     const s = stateRef.current;
@@ -249,14 +251,22 @@ export default function SoundCanvas({ audioLevel = 0, pitch = 0.5, customColor =
     rafRef.current = requestAnimationFrame(render);
   }, []);
 
-  // Canvas resize (no DPR scaling to match original 1:1 pixel look)
+  // Canvas resize with DPR scaling for retina sharpness
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      dprRef.current = dpr;
+      const displayW = window.innerWidth;
+      const displayH = window.innerHeight;
+      canvas.width = displayW * dpr;
+      canvas.height = displayH * dpr;
+      canvas.style.width = `${displayW}px`;
+      canvas.style.height = `${displayH}px`;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
     };
     resize();
     window.addEventListener('resize', resize);

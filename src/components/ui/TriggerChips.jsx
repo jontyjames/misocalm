@@ -29,7 +29,7 @@ export default function TriggerChips({
     : items;
 
   return (
-    <div className={className}>
+    <div className={`px-4 ${className}`}>
       {showSearch && (
         <input
           type="text"

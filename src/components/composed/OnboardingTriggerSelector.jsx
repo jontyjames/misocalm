@@ -57,8 +57,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
           Which sounds affect you?
         </h1>
         <p className="text-sm text-slate-200 font-light leading-relaxed mb-3">
-          To support your journey, we need to understand<br />
-          what affects you most
+          To support your journey, we need to understand what affects you most
         </p>
         <p className="text-sm text-indigo-400 font-light mb-2">
           Naming your triggers is the first step to managing them
@@ -69,7 +68,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
       </div>
 
       {/* Trigger chips */}
-      <div className="flex flex-wrap justify-center gap-[10px] mb-[26px] max-w-sm">
+      <div className="flex flex-wrap justify-center gap-[10px] mb-[26px] w-full px-6 max-w-sm">
         {allTriggers.map((trigger) => {
           const isSelected = selected.includes(trigger);
           return (

@@ -145,6 +145,7 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
   const canvasRef = useRef(null);
   const stateRef = useRef({ forms: [], time: 0 });
   const rafRef = useRef(null);
+  const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
   const propsRef = useRef({ symmetry, showYouDot, customColor });
   propsRef.current = { symmetry, showYouDot, customColor };
@@ -157,8 +158,9 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
+    const dpr = dprRef.current;
+    const cx = canvas.width / dpr / 2;
+    const cy = canvas.height / dpr / 2;
 
     const now = Date.now();
     const dt = now - lastPointerRef.current.time;
@@ -183,8 +185,9 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const dpr = dprRef.current;
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
     const cx = W / 2;
     const cy = H / 2;
     const s = stateRef.current;
@@ -215,8 +218,16 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      dprRef.current = dpr;
+      const displayW = window.innerWidth;
+      const displayH = window.innerHeight;
+      canvas.width = displayW * dpr;
+      canvas.height = displayH * dpr;
+      canvas.style.width = `${displayW}px`;
+      canvas.style.height = `${displayH}px`;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
     };
     resize();
     window.addEventListener('resize', resize);

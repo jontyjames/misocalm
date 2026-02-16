@@ -138,7 +138,7 @@ export default function Navigation() {
         style={{
           bottom: 0,
           width: '80%',
-          maxWidth: '380px',
+          maxWidth: 'calc(100vw - 2rem)',
           height: 42,
           borderRadius: '9999px',
           background: `radial-gradient(ellipse at 50% 80%, ${auraColour} 0%, transparent 70%)`,

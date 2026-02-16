@@ -33,11 +33,11 @@ const variants = {
 };
 
 const sizes = {
-  sm: 'py-2 px-4 text-xs',
+  sm: 'py-2 px-4 text-xs min-h-[44px]',
   md: 'py-3 px-6 text-sm',
   lg: 'py-4 px-8 text-base',
   icon: 'w-12 h-12 p-0 flex items-center justify-center',
-  'icon-sm': 'w-10 h-10 p-0 flex items-center justify-center',
+  'icon-sm': 'w-11 h-11 p-0 flex items-center justify-center',
 };
 
 const shapes = {

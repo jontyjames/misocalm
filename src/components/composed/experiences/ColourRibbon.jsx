@@ -109,7 +109,7 @@ export default function ColourRibbon({ onChange, showHint = false, storageKey = 
     <div
       style={{
         position: 'fixed',
-        bottom: 100,
+        bottom: 'max(68px, 12vh)',
         left: 0,
         right: 0,
         zIndex: 4,
@@ -145,7 +145,7 @@ export default function ColourRibbon({ onChange, showHint = false, storageKey = 
         onPointerCancel={handlePointerUp}
         style={{
           width: 'calc(100% - 68px)',
-          maxWidth: 320,
+          maxWidth: 'calc(100vw - 4rem)',
           height: 42,
           display: 'flex',
           alignItems: 'center',
