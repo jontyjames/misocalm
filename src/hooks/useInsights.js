@@ -146,7 +146,7 @@ export function useInsights(userId, days = 30) {
     loading,
     error,
     refresh: fetch,
-    aiSummary: null, // Future AI endpoint placeholder
+    aiSummary: null,
   };
 }
 
