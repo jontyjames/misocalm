@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { STORAGE_KEYS, FIBONACCI_TIMING } from '@/lib/constants';
 
@@ -19,6 +19,9 @@ export default function BetaInstallBanner() {
   const [dismissed, setDismissed] = useLocalStorage(STORAGE_KEYS.BETA_BANNER_DISMISSED, false);
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState('unknown');
+  const buttonRef = useRef(null);
+
+  const dismiss = useCallback(() => setDismissed(true), [setDismissed]);
 
   useEffect(() => {
     if (dismissed) return;
@@ -27,12 +30,39 @@ export default function BetaInstallBanner() {
     return () => clearTimeout(timer);
   }, [dismissed]);
 
+  // Focus the button when modal becomes visible
+  useEffect(() => {
+    if (visible && !dismissed) {
+      buttonRef.current?.focus();
+    }
+  }, [visible, dismissed]);
+
+  // Escape key handler
+  useEffect(() => {
+    if (!visible || dismissed) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') dismiss();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [visible, dismissed, dismiss]);
+
   if (dismissed || !visible) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="beta-banner-title"
       style={{ animation: 'fadeIn 0.61s ease-out' }}
+      onKeyDown={(e) => {
+        // Focus trap: only one focusable element (the button), so trap is implicit
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          buttonRef.current?.focus();
+        }
+      }}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
@@ -46,6 +76,7 @@ export default function BetaInstallBanner() {
         }}
       >
         <h2
+          id="beta-banner-title"
           className="text-cyan-300 text-base mb-2"
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
         >
@@ -70,7 +101,7 @@ export default function BetaInstallBanner() {
             )}
             {platform === 'android' && (
               <p className="text-slate-300 text-sm font-light leading-relaxed">
-                Tap the menu (<span className="text-slate-200">&#8942;</span>) in Chrome, then "Add to Home Screen". This gives you the full app experience.
+                Tap the menu (<span className="text-slate-200" aria-hidden="true">&#8942;</span>) in Chrome, then "Add to Home Screen". This gives you the full app experience.
               </p>
             )}
             {platform === 'desktop' && (
@@ -82,8 +113,10 @@ export default function BetaInstallBanner() {
         )}
 
         <button
-          onClick={() => setDismissed(true)}
-          className="w-full py-3 rounded-xl text-sm text-white font-light transition-all duration-[233ms] border border-white/[0.12] hover:border-white/[0.25]"
+          ref={buttonRef}
+          onClick={dismiss}
+          aria-label="Dismiss welcome banner"
+          className="w-full py-3 rounded-xl text-sm text-slate-200 font-light transition-all duration-[233ms] border border-white/[0.12] hover:border-white/[0.25]"
           style={{
             background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
           }}
