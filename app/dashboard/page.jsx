@@ -9,7 +9,7 @@ import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { AppLayout } from '@/components/composed';
+import { AppLayout, BetaInstallBanner } from '@/components/composed';
 import { Spinner } from '@/components/ui';
 import { ROUTES, DAILY_AFFIRMATIONS, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
@@ -75,6 +75,7 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
+      <BetaInstallBanner />
       <div className="flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out', height: 'calc(100dvh - 6rem)' }}>
         {/* Header — pinned to top */}
         <div className="flex items-center justify-between">

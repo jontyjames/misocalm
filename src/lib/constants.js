@@ -264,6 +264,7 @@ export const DEEPER_PROMPTS_BREATHWORK = [
 export const STORAGE_KEYS = {
   PENDING_EMAIL: 'misocalm_pending_email',
   ONBOARDING_DATA: 'misocalm_onboarding',
+  BETA_BANNER_DISMISSED: 'misocalm_beta_dismissed',
   IMPERMANENCE_VISITS: 'misocalm_impermanence_visits',
   IMPERMANENCE_LAST_TEACHING: 'misocalm_impermanence_last_teaching',
   IMPERMANENCE_HUE: 'misocalm_impermanence_hue',

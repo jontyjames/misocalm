@@ -28,3 +28,4 @@ export { default as AmbientParticles } from './AmbientParticles';
 export { default as TimerPulse } from './tools/TimerPulse';
 export { default as TimerDisplay } from './tools/TimerDisplay';
 export { default as TimerPlayer } from './tools/TimerPlayer';
+export { default as BetaInstallBanner } from './BetaInstallBanner';
