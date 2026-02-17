@@ -136,6 +136,7 @@ export const ROUTES = {
   PRIVACY: '/privacy',
   TERMS: '/terms',
   CALM: '/calm',
+  QUIZ: '/quiz',
   EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
   EXPERIENCE_MANDALA: '/tools/experiences/mandala',
   EXPERIENCE_PULSE: '/tools/experiences/pulse',

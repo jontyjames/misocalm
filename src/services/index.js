@@ -10,3 +10,4 @@ export { toolService } from './toolService';
 export { streakService } from './streakService';
 export { userTriggerService } from './userTriggerService';
 export { api } from './api';
+export { quizService } from './quizService';
