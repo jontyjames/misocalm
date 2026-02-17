@@ -60,24 +60,25 @@ export default function CalmPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+      <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
         {/* Back button */}
         <button
           onClick={() => router.push(ROUTES.DASHBOARD)}
-          className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors self-start mb-8"
+          className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors self-start mb-4"
+          aria-label="Back to dashboard"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
 
         {/* Question */}
-        <div className="flex-1 flex flex-col items-center" style={{ paddingTop: '12vh' }}>
+        <div className="flex-1 flex flex-col items-center justify-center">
           <h1
             className="text-2xl text-white mb-2 text-center"
             style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
           >
             How much do you need right now?
           </h1>
-          <p className="text-sm text-slate-300 font-light mb-12 text-center">
+          <p className="text-sm text-slate-300 font-light mb-8 text-center">
             There is no wrong answer
           </p>
 

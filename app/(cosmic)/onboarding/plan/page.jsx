@@ -113,7 +113,7 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: 'fadeIn 1.597s ease-out' }}>
       {/* Soft radial glow — lights coming on with content */}
       <div
         className={`absolute inset-0 pointer-events-none transition-opacity duration-[987ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}
@@ -167,25 +167,28 @@ export default function PlanPage() {
           <p className="text-lg text-white/70 font-light leading-relaxed mb-3">
             A companion for living with misophonia
           </p>
-          <p className="text-lg text-indigo-300 font-light mb-10">
+          <p className="text-lg text-indigo-300 font-light mb-6">
             All here for you
           </p>
 
-          <div className="relative flex justify-center">
+          <div className="relative flex justify-center my-6">
             <button
               onClick={handleEnter}
               disabled={saving}
-              className="relative overflow-hidden w-64 py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
+              className="relative overflow-hidden w-64 py-4 px-8 rounded-full border border-white/[0.25] backdrop-blur-2xl active:scale-[0.98] hover:border-white/40 transition-all duration-[233ms] cursor-pointer"
               style={{
-                background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)`,
-                boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)`,
+                background: `linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 30%, rgba(99,102,241,0.12) 100%)`,
+                boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.2), inset 0 -1px 0 0 rgba(255,255,255,0.04), 0 0 40px rgba(99,102,241,0.25), 0 0 80px rgba(99,102,241,0.1), 0 8px 32px rgba(0,0,0,0.3)`,
                 animation: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
               }}
             >
-              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.5) 50%, transparent 90%)' }} />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)' }} />
-              <span className="relative z-10 font-light text-white text-base" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.6) 50%, transparent 90%)' }} />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.16) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.08) 0%, transparent 60%)' }} />
+              <span
+                className="relative z-10 font-light text-white text-base"
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, textShadow: '0 0 12px rgba(255,255,255,0.3), 0 0 34px rgba(99,102,241,0.2)' }}
+              >
                 {saving ? 'Preparing...' : 'Enter MisoCalm'}
               </span>
             </button>
@@ -200,11 +203,12 @@ export default function PlanPage() {
               </Button>
             </div>
           )}
+
           </div>
       </div>
 
-      {/* Disclaimer */}
-      <div className="text-center pb-4">
+      {/* Disclaimer — footer */}
+      <div className="relative z-10 text-center pb-4">
         <p className="text-xs text-slate-300 font-light">
           MisoCalm is a wellness tool, not a substitute for professional support
         </p>

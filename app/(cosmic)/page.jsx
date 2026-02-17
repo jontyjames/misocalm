@@ -162,7 +162,7 @@ export default function WelcomePage() {
         </div>
       )}
 
-      <div className="absolute z-10 left-0 right-0 text-center flex flex-col items-center gap-3" style={{ top: 'calc(28% + 12.5rem)' }}>
+      <div className="absolute z-10 left-0 right-0 text-center flex flex-col items-center gap-3 transition-all duration-[377ms] ease-in-out" style={{ top: showSignIn || signInSent ? 'calc(28% + 7rem)' : 'calc(28% + 12.5rem)' }}>
 
         {/* App name — fades in after intro */}
         <h1
@@ -173,92 +173,91 @@ export default function WelcomePage() {
         </h1>
 
         {/* Tagline — fades in after intro */}
-        <p className={`text-base font-light text-slate-300 leading-relaxed transition-all duration-[987ms] ease-in-out delay-[377ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
+        <p className={`text-base font-light text-slate-300 leading-relaxed transition-all duration-[377ms] ease-in-out delay-[377ms] ${introDone && !transitioning && !showSignIn && !signInSent ? 'opacity-100 translate-y-0' : ''} ${!introDone || showSignIn || signInSent ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
           A space to understand misophonia, regulate<br />your system, and find steadier ground.
         </p>
 
-        {/* CTA Button — fades in after intro */}
-        <div className={`mt-4 transition-all duration-[987ms] ease-in-out delay-[610ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
-          <button
-            onClick={() => setTransitioning(true)}
-            className="relative overflow-hidden w-full max-w-[16rem] py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
-            style={{
-              background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)`,
-              boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)`,
-              animation: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
-            }}
-          >
-            {/* Hero top highlight */}
-            <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.5) 50%, transparent 90%)' }} />
-            {/* Phi opacity layers */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-            {/* Torus flow - indigo 528Hz */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)' }} />
-            <span className="relative z-10 font-light text-white text-base" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-              Begin Your Journey
-            </span>
-          </button>
+        {/* CTA Button — fades in after intro, hidden during sign-in */}
+        {!showSignIn && !signInSent && (
+          <div className={`mt-4 transition-all duration-[377ms] ease-in-out delay-[610ms] ${introDone && !transitioning ? 'opacity-100 translate-y-0' : ''} ${!introDone ? 'opacity-0 translate-y-2' : ''} ${transitioning ? 'opacity-0' : ''}`}>
+            <button
+              onClick={() => setTransitioning(true)}
+              className="relative overflow-hidden w-full max-w-[16rem] py-4 px-8 rounded-full border border-white/[0.18] backdrop-blur-2xl active:scale-[0.98] hover:border-white/30 transition-all duration-[233ms] cursor-pointer"
+              style={{
+                background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)`,
+                boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)`,
+                animation: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
+              }}
+            >
+              {/* Hero top highlight */}
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.5) 50%, transparent 90%)' }} />
+              {/* Phi opacity layers */}
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
+              {/* Torus flow - indigo 528Hz */}
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)' }} />
+              <span className="relative z-10 font-light text-white text-base" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
+                Begin Your Journey
+              </span>
+            </button>
 
-          {/* Sign back in */}
-          {!showSignIn && !signInSent && (
             <button
               onClick={() => setShowSignIn(true)}
               className="block mx-auto mt-5 text-sm text-slate-300 font-light hover:text-white transition-colors"
             >
               Already with us? Sign back in
             </button>
-          )}
+          </div>
+        )}
 
-          {showSignIn && !signInSent && (
-            <div className="mt-5 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 233ms ease-out' }}>
-              <Input
-                type="email"
-                placeholder="Your email address"
-                value={signInEmail}
-                onChange={(e) => setSignInEmail(e.target.value)}
-                error={signInError}
-                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-              />
-              <Button
-                onClick={handleSignIn}
-                loading={signInSending}
-                disabled={!signInEmail.trim()}
-                className="w-full mt-3"
-                size="md"
-                variant="secondary"
-              >
-                Send code
-              </Button>
-            </div>
-          )}
+        {showSignIn && !signInSent && (
+          <div className="mt-4 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 233ms ease-out' }}>
+            <Input
+              type="email"
+              placeholder="Your email address"
+              value={signInEmail}
+              onChange={(e) => setSignInEmail(e.target.value)}
+              error={signInError}
+              onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+            />
+            <Button
+              onClick={handleSignIn}
+              loading={signInSending}
+              disabled={!signInEmail.trim()}
+              className="w-full mt-3"
+              size="md"
+              variant="secondary"
+            >
+              Send code
+            </Button>
+          </div>
+        )}
 
-          {signInSent && (
-            <div className="mt-5 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
-              <p className="text-sm text-slate-200 font-light text-center mb-3">
-                Enter the code we sent to your email
-              </p>
-              <Input
-                type="text"
-                inputMode="numeric"
-                placeholder="6-digit code"
-                value={signInCode}
-                onChange={(e) => setSignInCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                error={signInError}
-                onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
-              />
-              <Button
-                onClick={handleVerifyCode}
-                loading={signInVerifying}
-                disabled={signInCode.length !== 6}
-                className="w-full mt-3"
-                size="md"
-                variant="secondary"
-              >
-                Sign in
-              </Button>
-            </div>
-          )}
-        </div>
+        {signInSent && (
+          <div className="mt-4 w-full max-w-[16rem] mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            <p className="text-sm text-slate-200 font-light text-center mb-3">
+              Enter the code we sent to your email
+            </p>
+            <Input
+              type="text"
+              inputMode="numeric"
+              placeholder="6-digit code"
+              value={signInCode}
+              onChange={(e) => setSignInCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              error={signInError}
+              onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
+            />
+            <Button
+              onClick={handleVerifyCode}
+              loading={signInVerifying}
+              disabled={signInCode.length !== 6}
+              className="w-full mt-3"
+              size="md"
+              variant="secondary"
+            >
+              Sign in
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Sanctuary words - letter by letter */}
@@ -282,7 +281,7 @@ export default function WelcomePage() {
       )}
 
       {/* Subtle footer */}
-      <div className={`absolute bottom-8 text-center transition-opacity duration-[610ms] ${introDone && !transitioning ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute bottom-8 text-center transition-opacity duration-[610ms] ${introDone && !transitioning && !showSignIn && !signInSent ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-xs text-slate-300 font-light">
           A Thriving With Misophonia App
         </p>

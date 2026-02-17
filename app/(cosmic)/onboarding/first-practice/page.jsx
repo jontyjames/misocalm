@@ -67,16 +67,16 @@ export default function FirstPracticePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
         {/* Top bar: progress dots + skip */}
         <div className="flex items-center justify-between mb-6">
           <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
           {!completed && (
             <button
               onClick={handleContinue}
-              className="text-sm text-slate-400 hover:text-white transition-colors"
+              className="text-sm text-slate-300 hover:text-white transition-colors"
             >
-              Skip
+              Not now
             </button>
           )}
         </div>
@@ -143,7 +143,7 @@ export default function FirstPracticePage() {
                   </Button>
                   <button
                     onClick={() => handleFeedback('try-again')}
-                    className="w-full text-sm text-slate-400 hover:text-white transition-colors py-3"
+                    className="w-full text-sm text-slate-300 hover:text-white transition-colors py-3"
                   >
                     I'd like to try again
                   </button>
@@ -158,24 +158,23 @@ export default function FirstPracticePage() {
             <div className={`text-center max-w-md w-full transition-opacity duration-[610ms] ${isActive ? 'opacity-40' : 'opacity-100'}`}>
               <p
                 className="text-xl text-white leading-relaxed mb-2"
-                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, textWrap: 'balance' }}
               >
-                Controlled breathing helps you find calm<br />
-                when sounds feel too much
+                Controlled breathing helps you find calm when sounds feel too much
               </p>
               <p className="text-sm text-indigo-300 font-light mb-4">
                 So let's try a practice now
               </p>
-              <h1
+              <p
                 className="text-lg text-slate-200"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
               >
                 Introducing the 4-7-8 breathing technique
-              </h1>
+              </p>
             </div>
 
             {/* Breathing Circle — centred in available space */}
-            <div className="flex-1 flex items-center justify-center w-full">
+            <div className="flex-1 flex items-center justify-center w-full pb-64">
               <BreathingAura phase={breathPhase} isActive={isActive} breathScale={breathScale} shape="circle">
                 <BreathingCircle
                   isActive={isActive}
@@ -186,8 +185,11 @@ export default function FirstPracticePage() {
               </BreathingAura>
             </div>
 
-            {/* Bottom section */}
-            <div className="text-center max-w-md w-full pb-4">
+            {/* Bottom section — fixed to bottom of screen */}
+            <div className="fixed bottom-0 left-0 right-0 z-10 flex flex-col items-center px-6 pb-6 pt-16 text-center"
+              style={{ background: 'linear-gradient(to bottom, transparent, rgba(2,6,23,0.6) 35%, rgb(2,6,23) 65%)' }}
+            >
+            <div className="max-w-md w-full">
               {/* Round progress dots — always takes space to prevent layout shift */}
               <div className="mb-6" style={{ minHeight: '2.5rem' }}>
                 {isActive && (
@@ -200,7 +202,7 @@ export default function FirstPracticePage() {
                         <div
                           key={n}
                           className={`
-                            w-2.5 h-2.5 rounded-full transition-all duration-300
+                            w-2.5 h-2.5 rounded-full transition-all duration-[233ms]
                             ${cycleCount > n
                               ? 'bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]'
                               : cycleCount === n
@@ -265,6 +267,7 @@ export default function FirstPracticePage() {
                   </div>
                 )}
               </div>
+            </div>
             </div>
           </div>
         )}

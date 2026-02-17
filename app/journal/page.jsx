@@ -20,6 +20,33 @@ export default function JournalPage() {
   const { stats } = useTriggerStats(user?.id, 7);
   const [view, setView] = useState('hub');
 
+  // Mark initial history entry as hub so popstate knows the base state
+  useEffect(() => {
+    window.history.replaceState({ view: 'hub' }, '', '/journal');
+  }, []);
+
+  // Listen for browser back (swipe gesture / back button) to sync view with history
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state?.view) {
+        setView(event.state.view);
+      } else {
+        setView('hub');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Switch view and push a history entry so browser back returns to hub
+  const changeView = (newView) => {
+    if (newView === view) return;
+    setView(newView);
+    if (newView !== 'hub') {
+      window.history.pushState({ view: newView }, '', '/journal');
+    }
+  };
+
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push(ROUTES.HOME);
@@ -31,7 +58,7 @@ export default function JournalPage() {
       <AppLayout>
         <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
           <button
-            onClick={() => setView('hub')}
+            onClick={() => window.history.back()}
             className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors duration-[233ms] mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -51,7 +78,7 @@ export default function JournalPage() {
 
   return (
     <AppLayout>
-      <div className="relative flex flex-col px-6 py-8" style={{ height: 'calc(100dvh - 6rem)' }}>
+      <div className="relative flex flex-col px-6 py-8" style={{ height: 'calc(100dvh - 6rem)', animation: 'fadeIn 0.61s ease-out' }}>
         {/* Header */}
         <div className="flex items-center" style={{ minHeight: '36px' }}>
           <h1
@@ -134,7 +161,7 @@ export default function JournalPage() {
           {/* Compact history + patterns row */}
           <div className="w-full flex gap-3">
             <button
-              onClick={() => setView('history')}
+              onClick={() => changeView('history')}
               className="relative overflow-hidden flex-1 p-4 rounded-xl border border-white/[0.12] backdrop-blur-xl hover:border-white/25 transition-all duration-[233ms] text-left"
               style={{
                 background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
@@ -142,13 +169,13 @@ export default function JournalPage() {
               }}
             >
               <div className="relative flex items-center gap-3">
-                <Clock className="w-4 h-4 text-slate-400 shrink-0" />
+                <Clock className="w-4 h-4 text-slate-300 shrink-0" />
                 <span className="text-sm text-slate-300 font-light">Past entries</span>
               </div>
             </button>
 
             <button
-              onClick={() => setView('insights')}
+              onClick={() => changeView('insights')}
               className="relative overflow-hidden flex-1 p-4 rounded-xl border border-white/[0.12] backdrop-blur-xl hover:border-white/25 transition-all duration-[233ms] text-left"
               style={{
                 background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
@@ -156,7 +183,7 @@ export default function JournalPage() {
               }}
             >
               <div className="relative flex items-center gap-3">
-                <Sparkles className="w-4 h-4 text-slate-400 shrink-0" />
+                <Sparkles className="w-4 h-4 text-slate-300 shrink-0" />
                 <span className="text-sm text-slate-300 font-light">Your patterns</span>
               </div>
             </button>

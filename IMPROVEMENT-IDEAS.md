@@ -6,15 +6,19 @@ A collection of feature ideas and enhancements for future development.
 
 ## Medium Effort (1-2 hours each)
 
-### 1. Implement Actual Audio Playback
+### 1. Implement Actual Audio Playback (Research-Backed)
 **File:** `app/soundscapes/page.jsx`
 
 Soundscapes page currently has a placeholder. Integrate Web Audio API or audio files for real playback.
+
+**Why this matters (the science):** A 2024 multisensory study found that positive visual context significantly reduces trigger-sound unpleasantness, with misophonia sufferers experiencing the largest reductions. MisoCalm already provides the visual layer (starfield, sacred geometry, breathing animations). Adding audio completes the multisensory regulation experience. Additionally, a 2024 meta-analysis found nature sounds reduce cortisol by 21%, and a PNAS study (Buxton et al., 2021) showed natural sounds have the greatest effect on the exact autonomic systems dysregulated in misophonia. The app could become a full multisensory regulation tool, not just visual + somatic.
 
 - Add audio files to `/public/sounds/` (rain, ocean, forest, etc.)
 - Use HTML5 Audio API or Howler.js library
 - Implement volume control and loop functionality
 - Add crossfade between tracks
+- Consider ambient background audio option during breathing exercises
+- Consider layering nature sounds with the existing visual environments
 
 ### 2. Create Reusable PageHeader Component
 **Files:** Multiple pages duplicate header pattern
