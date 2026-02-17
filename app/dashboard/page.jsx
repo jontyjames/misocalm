@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -44,24 +44,32 @@ const ACCENT_STYLES = {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { profile, isAuthenticated, loading, hasCompletedOnboarding } = useAuth();
+  const { profile, isAuthenticated, loading, hasCompletedOnboarding, refreshProfile } = useAuth();
   const todaysPractice = useMemo(() => getDailyPractice(), []);
+  const profileFetchAttempted = useRef(false);
 
   useEffect(() => {
-    if (!loading) {
-      if (!isAuthenticated) {
-        router.push(ROUTES.HOME);
-      } else if (!hasCompletedOnboarding) {
-        // Don't redirect if we just finished onboarding (context hasn't caught up yet)
-        const justCompleted = sessionStorage.getItem('onboarding_just_completed');
-        if (justCompleted) {
-          sessionStorage.removeItem('onboarding_just_completed');
-          return;
-        }
-        router.push(ROUTES.ONBOARDING_ASSESSMENT);
-      }
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      router.push(ROUTES.HOME);
+      return;
     }
-  }, [isAuthenticated, hasCompletedOnboarding, loading, router]);
+
+    // Profile not loaded yet — fetch it before making any redirect decisions
+    if (!profile) {
+      if (!profileFetchAttempted.current) {
+        profileFetchAttempted.current = true;
+        refreshProfile();
+      }
+      return;
+    }
+
+    // Only redirect when we have a profile that confirms onboarding isn't done
+    if (!hasCompletedOnboarding) {
+      router.push(ROUTES.ONBOARDING_ASSESSMENT);
+    }
+  }, [isAuthenticated, hasCompletedOnboarding, loading, profile, router, refreshProfile]);
 
   if (loading || !profile) {
     return (

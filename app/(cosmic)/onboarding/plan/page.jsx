@@ -99,8 +99,6 @@ export default function PlanPage() {
       return;
     }
 
-    // Flag so dashboard doesn't redirect before context updates
-    sessionStorage.setItem('onboarding_just_completed', 'true');
     router.push(ROUTES.DASHBOARD);
   };
 
