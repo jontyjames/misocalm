@@ -109,10 +109,10 @@ export default function QuizResult({ result, answers, utmParams, onEmailSubmitte
           <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)' }} />
 
           <p className={`text-lg font-light mb-2 ${accentClass}`} style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-            Get your personalized breakdown and 3 techniques that help
+            Get your personalized guide and 3 techniques that help
           </p>
           <p className="text-sm text-slate-300 font-light mb-4">
-            We&apos;ll send a brief guide based on your responses. No spam, just support.
+            Enter your email and we&apos;ll unlock your guide. No spam, just support.
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -148,21 +148,36 @@ export default function QuizResult({ result, answers, utmParams, onEmailSubmitte
                 fontWeight: 200,
               }}
             >
-              {submitting ? 'Sending...' : 'Send my guide'}
+              {submitting ? 'Unlocking...' : 'Get my guide'}
             </button>
           </form>
         </div>
       )}
 
-      {/* Success message */}
+      {/* Guide link after submit */}
       {submitted && (
         <div
           className="text-center mb-6"
           style={{ animation: 'fadeIn 610ms ease-out' }}
         >
-          <p className={`text-lg font-light ${accentClass}`} style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-            Check your inbox. Welcome to the community.
-          </p>
+          <Link
+            href={`/quiz/guide/${category.key}`}
+            className="
+              inline-block relative overflow-hidden
+              py-4 px-10 rounded-full
+              border border-white/[0.18] backdrop-blur-2xl
+              hover:border-white/30 transition-all duration-[233ms]
+              text-white text-base
+            "
+            style={{
+              fontFamily: "'Josefin Sans', sans-serif",
+              fontWeight: 200,
+              background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)',
+              boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)',
+            }}
+          >
+            View your personalized guide
+          </Link>
         </div>
       )}
 
