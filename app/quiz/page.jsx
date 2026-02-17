@@ -25,7 +25,7 @@ export const metadata = {
     description:
       'A 2-minute self-assessment to understand your sound sensitivity. Discover if you have misophonia and learn what helps.',
     type: 'website',
-    url: 'https://misocalm.com/quiz',
+    url: 'https://misocalm.app/quiz',
   },
   twitter: {
     card: 'summary_large_image',

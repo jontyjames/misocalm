@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 const SHARE_TEXT = 'I just took this misophonia self-assessment. If certain sounds make you feel rage, disgust, or panic, this might help you understand why.';
-const SHARE_URL = 'https://misocalm.com/quiz';
+const SHARE_URL = 'https://misocalm.app/quiz';
 
 /**
  * Share prompt after email submitted

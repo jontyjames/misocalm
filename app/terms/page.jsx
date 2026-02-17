@@ -94,8 +94,8 @@ export default function TermsPage() {
           <h2 className="text-lg text-white font-light mb-3">Contact</h2>
           <p className="text-sm text-slate-200 font-light leading-relaxed">
             If you have questions about these terms, reach out to us at{' '}
-            <a href="mailto:support@misocalm.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-              support@misocalm.com
+            <a href="mailto:support@misocalm.app" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              support@misocalm.app
             </a>
           </p>
         </section>

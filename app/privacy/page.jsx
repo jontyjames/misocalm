@@ -79,8 +79,8 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-3 text-sm text-slate-200 font-light leading-relaxed">
             To request data deletion, reach out to{' '}
-            <a href="mailto:support@misocalm.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-              support@misocalm.com
+            <a href="mailto:support@misocalm.app" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              support@misocalm.app
             </a>
           </p>
         </section>
@@ -107,8 +107,8 @@ export default function PrivacyPage() {
           <h2 className="text-lg text-white font-light mb-3">Contact</h2>
           <p className="text-sm text-slate-200 font-light leading-relaxed">
             If you have any questions about this policy or your data, please reach out to us at{' '}
-            <a href="mailto:support@misocalm.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-              support@misocalm.com
+            <a href="mailto:support@misocalm.app" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              support@misocalm.app
             </a>
           </p>
         </section>

@@ -263,7 +263,7 @@ When seeking a professional, ask specifically about their experience with misoph
 
 ### MisoCalm App (Free)
 
-MisoCalm is a free app designed specifically for people with misophonia. It includes guided breathwork exercises, journaling tools for tracking triggers and emotions, and calming techniques your child can use in the moment. It's built with care and understanding, not clinical detachment. Available for free at misocalm.com.
+MisoCalm is a free app designed specifically for people with misophonia. It includes guided breathwork exercises, journaling tools for tracking triggers and emotions, and calming techniques your child can use in the moment. It's built with care and understanding, not clinical detachment. Available for free at misocalm.app.
 
 ### Thriving With Misophonia Community
 
@@ -304,7 +304,7 @@ You're not alone in this. And neither are they.
 
 ---
 
-*This guide is brought to you by Thriving With Misophonia. For free breathwork and journaling tools, download the MisoCalm app at misocalm.com. To connect with a community that gets it, visit thrivingwithmisophonia.com.*
+*This guide is brought to you by Thriving With Misophonia. For free breathwork and journaling tools, download the MisoCalm app at misocalm.app. To connect with a community that gets it, visit thrivingwithmisophonia.com.*
 
 ---
 

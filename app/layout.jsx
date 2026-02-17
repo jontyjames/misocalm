@@ -42,7 +42,7 @@ export const metadata = {
     title: 'MisoCalm - A Space for Living with Misophonia',
     description:
       'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
-    url: 'https://misocalm.com',
+    url: 'https://misocalm.app',
     siteName: 'MisoCalm',
     type: 'website',
     locale: 'en_US',
@@ -53,7 +53,7 @@ export const metadata = {
     description:
       'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
   },
-  metadataBase: new URL('https://misocalm.com'),
+  metadataBase: new URL('https://misocalm.app'),
   robots: {
     index: true,
     follow: true,
@@ -83,7 +83,7 @@ export default function RootLayout({ children }) {
               name: 'MisoCalm',
               description:
                 'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Free breathwork, journaling, and calming tools.',
-              url: 'https://misocalm.com',
+              url: 'https://misocalm.app',
               applicationCategory: 'HealthApplication',
               operatingSystem: 'Web',
               offers: {
