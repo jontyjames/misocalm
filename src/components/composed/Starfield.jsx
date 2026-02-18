@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useMemo, useEffect, useState } from 'react';
+import { memo, useMemo, useEffect, useRef } from 'react';
 import useReducedMotion from '@/hooks/useReducedMotion';
 
 // Prime-based durations so stars never blink in unison
@@ -23,16 +23,16 @@ const ANCHOR_POSITIONS = Array.from({ length: 6 }, (_, i) => {
   };
 });
 
-export default function Starfield({ count = 37 }) {
+export default memo(function Starfield({ count = 37 }) {
   const prefersReduced = useReducedMotion();
-  const [scrollY, setScrollY] = useState(0);
+  const containerRef = useRef(null);
 
-  // Parallax scroll listener
+  // Parallax scroll listener — ref-based DOM update, no state/re-render
   useEffect(() => {
     if (prefersReduced) return;
 
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      containerRef.current?.style.setProperty('--scroll-y', `${window.scrollY}`);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -53,7 +53,7 @@ export default function Starfield({ count = 37 }) {
   }, [count]);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div ref={containerRef} className="fixed inset-0 overflow-hidden pointer-events-none z-0" style={{ '--scroll-y': '0' }}>
       {/* Cosmic drift: 89s ambient colour breathing (Fibonacci) */}
       {!prefersReduced && (
         <div
@@ -75,10 +75,11 @@ export default function Starfield({ count = 37 }) {
             top: star.top,
             '--delay': star.delay,
             '--duration': star.duration,
+            '--depth': star.depth,
             opacity: star.opacity,
             animationDelay: star.delay,
             animationDuration: star.duration,
-            transform: prefersReduced ? 'none' : `translateY(${scrollY * star.depth * -0.03}px)`,
+            transform: prefersReduced ? 'none' : `translateY(calc(var(--scroll-y) * ${star.depth} * -0.03px))`,
             willChange: prefersReduced ? 'auto' : 'transform',
           }}
         />
@@ -98,7 +99,7 @@ export default function Starfield({ count = 37 }) {
             animationDuration: `${PRIME_DURATIONS[(i + 3) % PRIME_DURATIONS.length]}s`,
             boxShadow: '0 0 3px rgba(139,92,246,0.3)',
             // Anchors move less (they're fixed reference points)
-            transform: prefersReduced ? 'none' : `translateY(${scrollY * 0.01}px)`,
+            transform: prefersReduced ? 'none' : `translateY(calc(var(--scroll-y) * 0.01px))`,
           }}
         />
       ))}
@@ -118,4 +119,4 @@ export default function Starfield({ count = 37 }) {
       />
     </div>
   );
-}
+})

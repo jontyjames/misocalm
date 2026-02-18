@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { memo, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, BookOpen, Compass, MessageCircle } from 'lucide-react';
@@ -86,7 +86,7 @@ function NavItem({ href, icon: Icon, label, isActive }) {
   );
 }
 
-export default function Navigation() {
+export default memo(function Navigation() {
   const pathname = usePathname();
   const [showMantra, setShowMantra] = useState(false);
   const mantraBag = useRef([]);
@@ -195,4 +195,4 @@ export default function Navigation() {
       </nav>
     </>
   );
-}
+})

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Star } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -114,12 +114,16 @@ export default function ToolPage() {
   }
 
   // Timer — three-phase flow: setup -> launching -> playing
-  if (tool.type === 'timer') {
-    const handleTimerStart = (config) => {
-      setTimerConfig(config);
-      setTimerPhase('launching');
-    };
+  const handleTimerStart = useCallback((config) => {
+    setTimerConfig(config);
+    setTimerPhase('launching');
+  }, []);
 
+  const handleTimerBack = useCallback(() => { setTimerConfig(null); setTimerPhase('setup'); }, []);
+  const handleTimerJournal = useCallback(() => router.push(`${ROUTES.CHECK_IN}?from=timer`), [router]);
+  const handleTimerHome = useCallback(() => router.push(ROUTES.DASHBOARD), [router]);
+
+  if (tool.type === 'timer') {
     if (timerPhase === 'setup') {
       return (
         <AppLayout showNav={false}>
@@ -145,14 +149,14 @@ export default function ToolPage() {
     if (timerPhase === 'playing') {
       return (
         <AppLayout showNav={false}>
-          <div className="min-h-screen flex flex-col">
+          <div className="fixed inset-0 overflow-hidden flex flex-col">
             <TimerPlayer
               tool={tool}
               config={{ ...timerConfig, skipCountdown: true }}
-              onBack={() => { setTimerConfig(null); setTimerPhase('setup'); }}
-              onJournal={() => router.push(`${ROUTES.CHECK_IN}?from=timer`)}
-              onReturnHome={() => router.push(ROUTES.DASHBOARD)}
-              onPracticeAgain={() => { setTimerConfig(null); setTimerPhase('setup'); }}
+              onBack={handleTimerBack}
+              onJournal={handleTimerJournal}
+              onReturnHome={handleTimerHome}
+              onPracticeAgain={handleTimerBack}
             />
           </div>
         </AppLayout>
