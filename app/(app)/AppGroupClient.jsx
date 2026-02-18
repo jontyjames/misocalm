@@ -6,28 +6,67 @@
 
 'use client';
 
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Starfield from '@/components/composed/Starfield';
 import Navigation from '@/components/composed/Navigation';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useNav } from '@/context/NavContext';
+import useReducedMotion from '@/hooks/useReducedMotion';
+
+const IMMERSIVE_PREFIXES = ['/tools/experiences/'];
+
+function isImmersiveRoute(pathname) {
+  return IMMERSIVE_PREFIXES.some(prefix => pathname.startsWith(prefix));
+}
 
 export default function AppGroupClient({ children }) {
-  const { showNav } = useNav();
+  const { showNav, setShowNav } = useNav();
+  const pathname = usePathname();
+  const reducedMotion = useReducedMotion();
+
+  // Restore nav on bfcache — mobile browsers may restore a cached page
+  // without triggering React mount/unmount, leaving nav hidden.
+  // Only restore if not on an immersive route (experiences handle their own nav state).
+  useEffect(() => {
+    const handlePageShow = (e) => {
+      if (e.persisted && !isImmersiveRoute(pathname)) {
+        setShowNav(true);
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [pathname, setShowNav]);
 
   return (
     <div className="min-h-screen bg-void-black relative">
       {/* Starfield persists across all pages in this group (includes nebula glows) */}
       <Starfield />
 
-      {/* Page content */}
-      <main id="main-content" className={`relative ${showNav ? 'pb-20' : ''}`}>
+      {/* Page content — padding transitions with nav to avoid layout snap */}
+      <main
+        id="main-content"
+        className={`relative ${reducedMotion ? '' : 'transition-[padding] duration-[233ms] ease-out'}`}
+        style={{ paddingBottom: showNav ? '5rem' : 0 }}
+      >
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
       </main>
 
-      {/* Navigation persists across all pages in this group */}
-      {showNav && <Navigation />}
+      {/* Navigation — always mounted, fades in/out via opacity + translate */}
+      <div
+        className={reducedMotion ? '' : 'transition-[opacity,transform] duration-[233ms] ease-out'}
+        style={{
+          opacity: showNav ? 1 : 0,
+          transform: (showNav || reducedMotion) ? 'translateY(0)' : 'translateY(1rem)',
+          pointerEvents: showNav ? 'auto' : 'none',
+        }}
+        aria-hidden={!showNav || undefined}
+        inert={!showNav ? '' : undefined}
+      >
+        <Navigation />
+      </div>
     </div>
   );
 }

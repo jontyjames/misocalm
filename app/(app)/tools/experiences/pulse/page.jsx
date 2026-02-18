@@ -6,12 +6,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useAuth } from '@/context/AuthContext';
+import useAuthGuard from '@/hooks/useAuthGuard';
 import { useNav } from '@/context/NavContext';
 import { Spinner } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
 
 const PulseGuide = dynamic(
   () => import('@/components/composed/experiences/PulseGuide'),
@@ -26,19 +24,14 @@ const PulseGuide = dynamic(
 );
 
 export default function PulsePage() {
-  const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuthGuard();
   const { setShowNav } = useNav();
 
   useEffect(() => {
     setShowNav(false);
   }, [setShowNav]);
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
-  }, [isAuthenticated, loading, router]);
-
-  if (loading) return (
+  if (loading || !isAuthenticated) return (
     <div className="min-h-screen flex items-center justify-center bg-void-black">
       <Spinner size="lg" />
     </div>
