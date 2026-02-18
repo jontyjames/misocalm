@@ -1,33 +1,23 @@
 /**
  * App Layout Component
- * Wraps authenticated pages with navigation and background
+ * Thin wrapper that controls nav visibility via NavContext.
+ * Starfield, Navigation, and background are handled by app/(app)/layout.jsx.
+ *
+ * No cleanup — each page sets its own showNav on mount, avoiding race
+ * conditions between cleanup and mount effects during navigation.
  */
 
 'use client';
 
-import Starfield from './Starfield';
-import Navigation from './Navigation';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { useEffect } from 'react';
+import { useNav } from '@/context/NavContext';
 
-// Not memoized: children prop is always a new JSX reference.
-// Starfield and Navigation protect themselves via their own React.memo.
 export default function AppLayout({ children, showNav = true }) {
-  return (
-    <div className="min-h-screen bg-void-black relative">
-      {/* Nebula glow effects — behind everything */}
-      <div className="absolute top-0 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-indigo pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-cyan pointer-events-none" />
+  const { setShowNav } = useNav();
 
-      {/* Main content — starfield inside same stacking context so backdrop-blur can see it */}
-      <main id="main-content" className={`relative ${showNav ? 'pb-20' : ''}`}>
-        <Starfield />
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
-      </main>
+  useEffect(() => {
+    setShowNav(showNav);
+  }, [showNav, setShowNav]);
 
-      {/* Bottom navigation */}
-      {showNav && <Navigation />}
-    </div>
-  );
+  return children;
 }

@@ -3,6 +3,7 @@ import { Josefin_Sans } from 'next/font/google'
 import { AuthProvider } from '@/context/AuthContext'
 import { PremiumProvider } from '@/context/PremiumContext'
 import { QueryProvider } from '@/providers/QueryProvider'
+import { NavProvider } from '@/context/NavContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 const josefinSans = Josefin_Sans({
@@ -122,9 +123,11 @@ export default function RootLayout({ children }) {
           <QueryProvider>
             <AuthProvider>
               <PremiumProvider>
-                <ErrorBoundary>
-                  {children}
-                </ErrorBoundary>
+                <NavProvider>
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
+                </NavProvider>
               </PremiumProvider>
             </AuthProvider>
           </QueryProvider>
