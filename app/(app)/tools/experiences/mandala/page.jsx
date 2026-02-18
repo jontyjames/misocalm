@@ -29,6 +29,7 @@ export default function MandalaPage() {
 
   useEffect(() => {
     setShowNav(false);
+    return () => setShowNav(true);
   }, [setShowNav]);
 
   if (loading || !isAuthenticated) return (

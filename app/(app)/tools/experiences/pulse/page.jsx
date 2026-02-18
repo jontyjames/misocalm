@@ -29,6 +29,7 @@ export default function PulsePage() {
 
   useEffect(() => {
     setShowNav(false);
+    return () => setShowNav(true);
   }, [setShowNav]);
 
   if (loading || !isAuthenticated) return (

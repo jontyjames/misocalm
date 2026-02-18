@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, Sparkles, MessageCircle, BarChart3, Timer, Palette, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
+import { supabase } from '@/services/supabase';
 import { AppLayout } from '@/components/composed';
 import { Spinner } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
@@ -41,9 +42,13 @@ function PremiumContent() {
     setCheckoutLoading(true);
     setCheckoutError(null);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`,
+        },
         body: JSON.stringify({ userId: user.id, email: user.email }),
       });
       if (!res.ok) throw new Error('Checkout request failed');
@@ -59,14 +64,17 @@ function PremiumContent() {
   };
 
   const handleManage = async () => {
-    if (!subscription?.stripe_customer_id) return;
     setCheckoutError(null);
     setManageLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/stripe/portal', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId: subscription.stripe_customer_id }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`,
+        },
+        body: '{}',
       });
       if (!res.ok) throw new Error('Portal request failed');
       const data = await res.json();

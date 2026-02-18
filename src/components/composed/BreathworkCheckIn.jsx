@@ -94,7 +94,7 @@ export default function BreathworkCheckIn({ userId, fromBreathwork = false }) {
 
       {/* Error */}
       {error && (
-        <p className="text-sm text-rose-400 font-light mb-4">{error.message || 'Something went wrong'}</p>
+        <p className="text-sm text-rose-400 font-light mb-4">{typeof error === 'string' ? error : (error.message || 'Something went wrong')}</p>
       )}
 
       {/* Actions */}

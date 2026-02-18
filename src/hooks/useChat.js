@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { chatService } from '@/services';
+import { supabase } from '@/services/supabase';
 
 export function useChat(userId, options = {}) {
   const { autoLoad = true, messageLimit = 50 } = options;
@@ -14,6 +15,8 @@ export function useChat(userId, options = {}) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const initialLoadDone = useRef(false);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
 
   /**
    * Load chat history from database
@@ -46,13 +49,14 @@ export function useChat(userId, options = {}) {
   /**
    * Add a message locally (for optimistic updates)
    */
-  const addLocalMessage = useCallback((role, content) => {
+  const addLocalMessage = useCallback((role, content, { isError = false } = {}) => {
     const tempId = `temp-${Date.now()}`;
     const message = {
       id: tempId,
       role,
       content,
       createdAt: new Date().toISOString(),
+      isError,
     };
     setMessages((prev) => [...prev, message]);
     return tempId;
@@ -106,12 +110,25 @@ export function useChat(userId, options = {}) {
       }
 
       try {
+        // Build conversation history for context (last 20 messages)
+        const recentMessages = messagesRef.current.slice(-20).map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        }));
+
+        // Get auth token for API call
+        const { data: { session } } = await supabase.auth.getSession();
+
         // Call chat API
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`,
+          },
           body: JSON.stringify({
             message: content,
+            conversationHistory: recentMessages,
             ...apiOptions,
           }),
         });
@@ -138,10 +155,11 @@ export function useChat(userId, options = {}) {
         setError(errorMessage);
         setSending(false);
 
-        // Add error message locally
+        // Add error message locally (marked as error so UI can style differently)
         addLocalMessage(
           'assistant',
-          "I'm sorry, I'm having trouble responding right now. Please try again in a moment."
+          "I'm sorry, I'm having trouble responding right now. Please try again in a moment.",
+          { isError: true }
         );
 
         return { response: null, error: errorMessage };

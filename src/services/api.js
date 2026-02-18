@@ -19,13 +19,14 @@ async function request(endpoint, options = {}) {
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
   try {
+    const { headers: customHeaders, ...restOptions } = options;
     const response = await fetch(`${API_URL}${endpoint}`, {
+      ...restOptions,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...customHeaders,
       },
       signal: controller.signal,
-      ...options,
     });
 
     clearTimeout(timeoutId);

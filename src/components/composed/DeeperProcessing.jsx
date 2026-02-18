@@ -81,10 +81,12 @@ export default function DeeperProcessing() {
   const [currentPrompt, setCurrentPrompt] = useState(0);
   const [responses, setResponses] = useState(['', '', '']);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
   const [showClosing, setShowClosing] = useState(false);
 
   const saveAndExit = async () => {
     setSaving(true);
+    setSaveError(null);
 
     // Store as question + answer pairs (self-documenting)
     const entries = [];
@@ -94,13 +96,25 @@ export default function DeeperProcessing() {
       }
     });
 
-    if (entries.length > 0 && entryId && user?.id) {
-      await triggerLogService.update(entryId, {
+    if (entries.length > 0 && user?.id) {
+      if (!entryId) {
+        setSaving(false);
+        setSaveError('Your reflection could not be linked to an entry. Please copy your writing before leaving this page.');
+        return;
+      }
+
+      const { error: updateError } = await triggerLogService.update(entryId, {
         deeper_processing: {
           context,
           entries,
         },
       });
+
+      if (updateError) {
+        setSaving(false);
+        setSaveError('Your reflection could not be saved. Please try again.');
+        return;
+      }
     }
 
     setSaving(false);
@@ -188,6 +202,11 @@ export default function DeeperProcessing() {
           ))}
         </div>
 
+        {/* Error display */}
+        {saveError && (
+          <p className="text-sm text-rose-400 font-light mb-4">{saveError}</p>
+        )}
+
         {/* Actions */}
         <div className="flex items-center justify-between">
           <button
@@ -203,7 +222,7 @@ export default function DeeperProcessing() {
             disabled={saving}
             className="px-6 py-2.5 rounded-full text-sm font-light bg-violet-500/20 border border-violet-500/40 text-violet-300 hover:bg-violet-500/30 transition-all duration-[233ms]"
           >
-            {currentPrompt < prompts.length - 1 ? 'Next' : 'Finish'}
+            {currentPrompt < prompts.length - 1 ? 'Next' : (saving ? 'Saving...' : 'Finish')}
           </button>
         </div>
       </div>

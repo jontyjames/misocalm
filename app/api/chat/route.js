@@ -43,7 +43,7 @@ export async function POST(request) {
     const authHeader = request.headers.get('authorization');
     const token = authHeader?.replace('Bearer ', '');
 
-    // Verify user authentication via Supabase
+    // Verify user authentication via Bearer token
     let userId = null;
     if (token) {
       const { data: { user }, error } = await supabase.auth.getUser(token);
@@ -52,24 +52,11 @@ export async function POST(request) {
       }
     }
 
-    // If no token in header, try to get from cookies (browser requests)
     if (!userId) {
-      const cookieHeader = request.headers.get('cookie');
-      if (cookieHeader) {
-        // Supabase stores auth in cookies for browser sessions
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          userId = session.user.id;
-        }
-      }
+      return Response.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    // For now, allow unauthenticated requests but use IP for rate limiting
-    // In production, you may want to require authentication
-    const rateLimitKey = userId ||
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      'anonymous';
+    const rateLimitKey = userId;
 
     // Check rate limit
     const rateLimitResult = checkRateLimit(rateLimitKey, chatRateLimit);
@@ -77,33 +64,49 @@ export async function POST(request) {
       return rateLimitResponse(rateLimitResult);
     }
 
-    const { message, userName, severityLevel, triggersList, recentTrigger } = await request.json();
+    const { message, conversationHistory, userName, severityLevel, triggersList, recentTrigger } = await request.json();
 
+    // Input validation - prevent cost amplification
     if (!message) {
       return Response.json({ error: 'Message is required' }, { status: 400 });
     }
+    if (typeof message !== 'string' || message.length > 2000) {
+      return Response.json({ error: 'Message too long (max 2000 characters)' }, { status: 400 });
+    }
+
+    // Validate and truncate conversation history
+    let validHistory = [];
+    if (Array.isArray(conversationHistory)) {
+      validHistory = conversationHistory
+        .slice(-20)
+        .filter(msg => (msg.role === 'user' || msg.role === 'assistant') && typeof msg.content === 'string')
+        .map(msg => ({ role: msg.role, content: msg.content.slice(0, 2000) }));
+    }
+
+    // Truncate context fields
+    const safeName = typeof userName === 'string' ? userName.slice(0, 100) : '';
+    const safeTriggers = typeof triggersList === 'string' ? triggersList.slice(0, 500) : '';
+    const safeRecentTrigger = typeof recentTrigger === 'string' ? recentTrigger.slice(0, 200) : '';
 
     // Build user context
     let userContext = '';
-    if (userName) userContext += `User's name: ${userName}\n`;
+    if (safeName) userContext += `User's name: ${safeName}\n`;
     if (severityLevel) userContext += `Severity level: ${severityLevel}/10\n`;
-    if (triggersList) userContext += `Known triggers: ${triggersList}\n`;
-    if (recentTrigger) userContext += `Recent trigger: ${recentTrigger}\n`;
+    if (safeTriggers) userContext += `Known triggers: ${safeTriggers}\n`;
+    if (safeRecentTrigger) userContext += `Recent trigger: ${safeRecentTrigger}\n`;
 
     const systemMessage = userContext
       ? `${SYSTEM_PROMPT}\n\nUser's profile:\n${userContext}`
       : SYSTEM_PROMPT;
 
+    // Build multi-turn messages from validated history + current message
+    const messages = [...validHistory, { role: 'user', content: message }];
+
     const response = await anthropic.messages.create({
       model: 'claude-3-haiku-20240307',
       max_tokens: 300,
       system: systemMessage,
-      messages: [
-        {
-          role: 'user',
-          content: message,
-        },
-      ],
+      messages,
     });
 
     const assistantMessage = response.content[0]?.text || 'I apologize, but I was unable to generate a response. Please try again.';

@@ -14,7 +14,25 @@ const supabaseAdmin = createClient(
 export async function POST(request) {
   try {
     const stripe = getStripe();
+
+    // Verify authentication
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+    }
+
     const { userId, email } = await request.json();
+
+    // Verify the authenticated user matches the requested userId
+    if (userId !== user.id) {
+      return NextResponse.json({ error: 'User mismatch' }, { status: 403 });
+    }
 
     if (!userId || !email) {
       return NextResponse.json({ error: 'Missing userId or email' }, { status: 400 });

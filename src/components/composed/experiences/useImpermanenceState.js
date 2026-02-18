@@ -45,11 +45,16 @@ export default function useImpermanenceState() {
   const resolveSound = useRef(null);
 
   const seqTimerRef = useRef(null);
+  const interactionTimerRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
     if (seqTimerRef.current) {
       clearTimeout(seqTimerRef.current);
       seqTimerRef.current = null;
+    }
+    if (interactionTimerRef.current) {
+      clearTimeout(interactionTimerRef.current);
+      interactionTimerRef.current = null;
     }
   }, []);
 
@@ -68,12 +73,31 @@ export default function useImpermanenceState() {
   }, []);
 
   // Wait for a sound + silence cycle. Returns a promise.
+  // Times out after 30s so the sequence never hangs forever.
   const listenForSound = useCallback(() => {
     return new Promise((resolve) => {
       waitingForSoundRef.current = true;
       hasBeenLoudRef.current = false;
       silenceCounterRef.current = 0;
-      resolveSound.current = resolve;
+
+      interactionTimerRef.current = setTimeout(() => {
+        if (waitingForSoundRef.current) {
+          waitingForSoundRef.current = false;
+          hasBeenLoudRef.current = false;
+          silenceCounterRef.current = 0;
+          resolveSound.current = null;
+          interactionTimerRef.current = null;
+          resolve();
+        }
+      }, 30000);
+
+      resolveSound.current = () => {
+        if (interactionTimerRef.current) {
+          clearTimeout(interactionTimerRef.current);
+          interactionTimerRef.current = null;
+        }
+        resolve();
+      };
     });
   }, []);
 

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const { profile, isAuthenticated, loading, hasCompletedOnboarding, refreshProfile } = useAuth();
   const todaysPractice = useMemo(() => getDailyPractice(), []);
   const profileFetchAttempted = useRef(false);
+  const [profileFailed, setProfileFailed] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -60,7 +61,9 @@ export default function DashboardPage() {
     if (!profile) {
       if (!profileFetchAttempted.current) {
         profileFetchAttempted.current = true;
-        refreshProfile();
+        refreshProfile().then((result) => {
+          if (!result) setProfileFailed(true);
+        });
       }
       return;
     }
@@ -71,11 +74,41 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, hasCompletedOnboarding, loading, profile, router, refreshProfile]);
 
-  if (loading || !profile) {
+  if (loading || (!profile && !profileFailed)) {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <Spinner size="lg" />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (profileFailed) {
+    return (
+      <AppLayout>
+        <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+          <p
+            className="text-xl text-white mb-2"
+            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+          >
+            Something went quiet
+          </p>
+          <p className="text-sm text-slate-300 font-light mb-8">
+            We couldn't load your profile. This usually resolves on retry.
+          </p>
+          <button
+            onClick={() => {
+              setProfileFailed(false);
+              profileFetchAttempted.current = false;
+              refreshProfile().then((result) => {
+                if (!result) setProfileFailed(true);
+              });
+            }}
+            className="px-6 py-3 rounded-full text-sm font-light bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30 transition-all duration-[233ms]"
+          >
+            Try again
+          </button>
         </div>
       </AppLayout>
     );

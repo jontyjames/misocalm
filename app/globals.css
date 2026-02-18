@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 /* ─── Sacred Geometry Foundation ───────────────────────────────────
  * Phi (1.618) spacing scale, Fibonacci timing, solfeggio harmonics.

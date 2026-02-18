@@ -5,6 +5,7 @@
  */
 
 import { db } from './supabase';
+import { toLocalDateStr } from '@/lib/dateUtils';
 
 export const streakService = {
   /**
@@ -19,7 +20,7 @@ export const streakService = {
    * Initialize activity tracking for a new user
    */
   async initialize(userId) {
-    const today = new Date().toISOString().split('T')[0];
+    const today = toLocalDateStr();
 
     return db.insert('streaks', {
       user_id: userId,
@@ -40,8 +41,7 @@ export const streakService = {
       return { data: null, error: fetchError };
     }
 
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    const todayStr = toLocalDateStr();
 
     if (!activity) {
       return this.initialize(userId);
@@ -52,11 +52,13 @@ export const streakService = {
       return { data: activity, error: null };
     }
 
-    // Calculate days since last activity
-    const lastActivity = new Date(activity.last_activity_date);
-    const daysDiff = Math.floor(
-      (today.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    // Calculate days since last activity using local dates
+    // Parse both as local midnight to avoid UTC offset issues
+    const [ty, tm, td] = todayStr.split('-').map(Number);
+    const [ly, lm, ld] = activity.last_activity_date.split('-').map(Number);
+    const todayLocal = new Date(ty, tm - 1, td);
+    const lastLocal = new Date(ly, lm - 1, ld);
+    const daysDiff = Math.round((todayLocal - lastLocal) / (1000 * 60 * 60 * 24));
 
     // Track consecutive days quietly (for divine number milestones)
     const activeDays = daysDiff === 1
@@ -82,7 +84,7 @@ export const streakService = {
       return { hasActivity: false, error };
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = toLocalDateStr();
     return { hasActivity: activity.last_activity_date === today, error: null };
   },
 
@@ -109,7 +111,7 @@ export const streakService = {
       };
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = toLocalDateStr();
 
     return {
       summary: {

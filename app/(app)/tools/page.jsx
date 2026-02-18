@@ -44,10 +44,10 @@ const tools = [
   {
     id: '2',
     title: 'Body Scan',
-    description: 'Release tension by scanning through your body',
+    description: 'A guided return to your body',
     category: 'somatic',
     duration_minutes: 10,
-    type: 'guided',
+    type: 'coming_soon',
   },
   {
     id: '5',
@@ -60,22 +60,22 @@ const tools = [
   {
     id: '6',
     title: 'Progressive Relaxation',
-    description: 'Systematically tense and release muscle groups',
+    description: 'Tense, release, discover stillness',
     category: 'somatic',
     duration_minutes: 15,
-    type: 'guided',
+    type: 'coming_soon',
   },
   {
     id: '7',
     title: 'Cognitive Reframing',
-    description: 'Learn to reframe your thoughts about triggers',
+    description: 'See your triggers from a new angle',
     category: 'cognitive',
     duration_minutes: 20,
-    type: 'video',
+    type: 'coming_soon',
   },
 ];
 
-const filterTabs = ['All', 'Breath', 'Body', 'Experiences'];
+const filterTabs = ['All', 'Breath', 'Body', 'Mind', 'Experiences'];
 
 const experiences = [
   {
@@ -136,7 +136,8 @@ export default function ToolsPage() {
     if (activeFilter === 'All') return true;
     if (activeFilter === 'Breath') return tool.category === 'breathwork';
     if (activeFilter === 'Body') return tool.category === 'somatic';
-    return tool.category.toLowerCase() === activeFilter.toLowerCase();
+    if (activeFilter === 'Mind') return tool.category === 'cognitive';
+    return false;
   });
 
   if (loading) {
@@ -243,14 +244,23 @@ export default function ToolsPage() {
 
 function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
   const router = useRouter();
+  const isComingSoon = tool.type === 'coming_soon';
 
   return (
     <Card onClick={() => router.push(`/tools/${tool.id}`)}>
       <div className="flex items-center gap-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-white font-light mb-1">
-            <span className="truncate">{tool.title}</span>
-          </h2>
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-white font-light truncate">{tool.title}</h2>
+            {isComingSoon && (
+              <span
+                className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-light text-violet-300 border border-violet-500/20"
+                style={{ background: 'rgba(139,92,246,0.1)' }}
+              >
+                soon
+              </span>
+            )}
+          </div>
           <p className="text-sm text-slate-300 font-light mb-2 truncate">
             {tool.description}
           </p>
@@ -260,20 +270,22 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
             </Badge>
             <span className="text-xs text-slate-300 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {tool.duration_minutes} min
+              ~{tool.duration_minutes} min
             </span>
           </div>
         </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite();
-          }}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-          className={`p-2 shrink-0 ${isFavorite ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}
-        >
-          <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
-        </button>
+        {!isComingSoon && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            className={`p-2 shrink-0 ${isFavorite ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}
+          >
+            <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
+          </button>
+        )}
       </div>
     </Card>
   );

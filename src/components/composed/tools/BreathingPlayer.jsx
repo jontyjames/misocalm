@@ -1,7 +1,8 @@
 /**
  * Breathing Player -- active breathing session with progress and controls.
  *
- * Layout contract: the breathing visual sits dead centre, always.
+ * Layout contract: the breathing visual sits centred below the header bar.
+ * paddingTop offsets for the header so it feels centred in the usable space.
  * Everything else is absolutely positioned and cannot shift it.
  *
  * States:
@@ -79,13 +80,16 @@ export default function BreathingPlayer({
     <div className="flex-1 relative overflow-hidden">
       <ExpansionBloom active={showBloom} solfeggio="cyan" onComplete={handleBloomComplete} />
 
-      {/* Breathing visual -- absolute centre, always. Sacred. Do not change. */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+      {/* Breathing visual -- centred below header, recedes on completion */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0" style={{ paddingTop: PHI_SCALE[4] }}>
         <div
           className="pointer-events-auto"
           style={{
-            opacity: completed ? 0.7 : 1,
-            transition: `opacity ${FIBONACCI_TIMING.sacred}ms ease-out`,
+            opacity: completed ? 0.5 : 1,
+            transform: completed ? `scale(0.85) translateY(-${PHI_SCALE[5]}px)` : 'scale(1)',
+            transition: completed
+              ? `opacity ${FIBONACCI_TIMING.sacred}ms ease-out, transform ${FIBONACCI_TIMING.sacred}ms ease-out`
+              : 'none',
           }}
         >
           <BreathingAura
@@ -96,7 +100,7 @@ export default function BreathingPlayer({
             {tool.breathType === 'box' ? (
               <BreathingBox
                 isActive={isActive} onCycleComplete={handleCycleComplete}
-                onPhaseChange={handlePhaseChange} onStart={handleStart} size={220}
+                onPhaseChange={handlePhaseChange} onStart={handleStart} size={PHI_SCALE[6] * 2}
               />
             ) : (
               <BreathingCircle

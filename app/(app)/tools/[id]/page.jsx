@@ -22,10 +22,12 @@ import { ROUTES } from '@/lib/constants';
 // Tool data (would come from database)
 const toolsData = {
   '1': { id: '1', title: '4-7-8 Breathing', description: 'The 4-7-8 breathing technique is a powerful tool for reducing anxiety and promoting calm. Developed by Dr. Andrew Weil, it acts as a natural tranquilizer for the nervous system.', category: 'breathwork', level: 'basic', type: 'practice', breathType: '478' },
-  '2': { id: '2', title: 'Body Scan', description: 'A body scan meditation helps you release physical tension that often accompanies misophonia reactions. By systematically focusing on each part of your body, you can identify and release stored stress.', category: 'somatic', level: 'basic', duration_minutes: 10, type: 'guided' },
+  '2': { id: '2', title: 'Body Scan', description: 'A guided return to your body, releasing stored tension one layer at a time.', category: 'somatic', level: 'basic', duration_minutes: 10, type: 'coming_soon' },
   '3': { id: '3', title: 'Box Breathing', description: 'Box breathing is a simple yet powerful technique used by Navy SEALs to stay calm under pressure. The equal 4-4-4-4 rhythm creates a meditative focus that helps redirect attention away from trigger sounds.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'box' },
   '4': { id: '4', title: 'Physiological Sigh', description: 'Discovered by Stanford neuroscientists, the physiological sigh is the fastest known way to calm your nervous system in real-time. Perfect for acute trigger moments when you need immediate relief.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'sigh' },
   '5': { id: '5', title: 'Interval Timer', description: 'A meditation timer that keeps you informed without pulling you out of stillness. Gentle bells mark each interval so you never need to move or check your phone.', category: 'somatic', level: 'basic', type: 'timer' },
+  '6': { id: '6', title: 'Progressive Relaxation', description: 'Tense, release, discover stillness through systematic muscle group work.', category: 'somatic', level: 'basic', duration_minutes: 15, type: 'coming_soon' },
+  '7': { id: '7', title: 'Cognitive Reframing', description: 'See your triggers from a new angle with gentle perspective shifts.', category: 'cognitive', level: 'basic', duration_minutes: 20, type: 'coming_soon' },
 };
 
 export default function ToolPage() {
@@ -74,6 +76,9 @@ export default function ToolPage() {
         const match = options?.find(o => o.id === durationParam);
         if (match) setSelectedDuration(match);
       }
+    } else {
+      // Unknown tool ID — show as coming soon
+      setTool({ id, title: 'Coming Soon', type: 'coming_soon' });
     }
   }, [params.id, searchParams]);
 
@@ -164,7 +169,7 @@ export default function ToolPage() {
     }
   }
 
-  // Non-practice tools (coming soon)
+  // Coming soon tools — render with tool-specific data
   return (
     <AppLayout>
       <div className="min-h-screen flex flex-col">
@@ -173,11 +178,9 @@ export default function ToolPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-white font-light">{tool.title}</span>
-          <button onClick={toggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
-            <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
-          </button>
+          <div className="w-9" />
         </div>
-        <ComingSoon onBack={() => router.push(ROUTES.TOOLS)} />
+        <ComingSoon tool={tool} onBack={() => router.push(ROUTES.TOOLS)} />
       </div>
     </AppLayout>
   );

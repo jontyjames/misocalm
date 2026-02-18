@@ -10,6 +10,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 import useReducedMotion from '@/hooks/useReducedMotion';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import MandalaCanvas from './MandalaCanvas';
@@ -125,28 +126,50 @@ export default function MandalaGuide() {
         </button>
       </div>
 
-      {/* Guide text (bottom of screen) */}
+      {/* Exit button — always available once started */}
+      {state.started && (
+        <button
+          onClick={handleReturn}
+          aria-label="Leave experience"
+          style={{
+            position: 'fixed',
+            top: 'clamp(16px, 3vh, 26px)',
+            left: 16,
+            zIndex: 8,
+            opacity: 0,
+            animation: 'fadeIn 0.987s ease-out 2s forwards',
+          }}
+          className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          leave
+        </button>
+      )}
+
+      {/* Guide text (upper third of screen — words first, visual supports) */}
       <div
         style={{
           position: 'fixed',
-          bottom: 0,
+          top: 0,
           left: 0,
           right: 0,
           zIndex: 3,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          paddingBottom: 68,
+          paddingTop: 'clamp(68px, 12vh, 110px)',
+          paddingBottom: 42,
           pointerEvents: 'none',
+          background: 'linear-gradient(to bottom, rgba(3,7,18,0.85) 0%, rgba(3,7,18,0.4) 70%, transparent 100%)',
         }}
       >
         <p
           style={{
-            fontSize: 'clamp(0.9rem, 2.2vw, 1.15rem)',
+            fontSize: 'clamp(1.05rem, 2.5vw, 1.35rem)',
             letterSpacing: '0.08em',
             textAlign: 'center',
             opacity: state.guideText ? 1 : 0,
-            transform: state.guideText ? 'translateY(0)' : 'translateY(6px)',
+            transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
             transition: 'opacity 0.987s ease, transform 0.987s ease, color 0.987s ease',
             lineHeight: 1.8,
             maxWidth: 440,
@@ -154,7 +177,7 @@ export default function MandalaGuide() {
             whiteSpace: 'pre-line',
             fontFamily: "'Josefin Sans', sans-serif",
           }}
-          className={`font-extralight ${state.guideBright ? 'text-slate-300' : 'text-slate-400'}`}
+          className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
         >
           {state.guideText}
         </p>

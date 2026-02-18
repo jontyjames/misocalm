@@ -13,7 +13,16 @@ const supabaseAdmin = createClient(
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
+if (!WEBHOOK_SECRET) {
+  console.error('CRITICAL: STRIPE_WEBHOOK_SECRET is not set. All webhook events will fail silently.');
+}
+
 export async function POST(request) {
+  if (!WEBHOOK_SECRET) {
+    console.error('Webhook rejected: STRIPE_WEBHOOK_SECRET not configured');
+    return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 });
+  }
+
   const stripe = getStripe();
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');

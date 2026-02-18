@@ -66,11 +66,16 @@ export default function usePulseState() {
   const resolveTapsRef = useRef(null);
   const seqTimerRef = useRef(null);
   const hapticIntervalRef = useRef(null);
+  const interactionTimerRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
     if (seqTimerRef.current) {
       clearTimeout(seqTimerRef.current);
       seqTimerRef.current = null;
+    }
+    if (interactionTimerRef.current) {
+      clearTimeout(interactionTimerRef.current);
+      interactionTimerRef.current = null;
     }
   }, []);
 
@@ -100,11 +105,29 @@ export default function usePulseState() {
     });
   }, []);
 
+  // Wait for N taps. Times out after 30s so sequence never hangs.
   const waitForTaps = useCallback((n) => {
     return new Promise((resolve) => {
       tapCountRef.current = 0;
       waitingForTapsRef.current = n;
-      resolveTapsRef.current = resolve;
+
+      interactionTimerRef.current = setTimeout(() => {
+        if (waitingForTapsRef.current) {
+          waitingForTapsRef.current = false;
+          const analysis = analyzeRhythm(tapTimestamps.current);
+          resolveTapsRef.current = null;
+          interactionTimerRef.current = null;
+          resolve(analysis);
+        }
+      }, 30000);
+
+      resolveTapsRef.current = (analysis) => {
+        if (interactionTimerRef.current) {
+          clearTimeout(interactionTimerRef.current);
+          interactionTimerRef.current = null;
+        }
+        resolve(analysis);
+      };
     });
   }, []);
 

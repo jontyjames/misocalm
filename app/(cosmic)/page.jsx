@@ -53,9 +53,9 @@ export default function WelcomePage() {
     setSignInVerifying(true);
     setSignInError(null);
     const { error } = await verifyOtp(signInEmail, signInCode);
+    setSignInVerifying(false);
     if (error) {
       setSignInError('That code didn\'t work. Check your email and try again.');
-      setSignInVerifying(false);
       setSignInCode('');
     }
     // On success, onAuthStateChange fires and redirect happens

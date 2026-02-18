@@ -120,7 +120,9 @@ export default function ChatPage() {
                   max-w-[80%] px-4 py-3 rounded-2xl
                   ${msg.role === 'user'
                     ? 'bg-primary-cta border border-indigo-500/30 text-white'
-                    : 'bg-slate-700/80 text-white'
+                    : msg.isError
+                      ? 'bg-rose-500/10 border border-rose-500/20 text-rose-300'
+                      : 'bg-slate-700/80 text-white'
                   }
                 `}
               >

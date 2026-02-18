@@ -217,14 +217,19 @@ export const auth = {
 
       if (error) {
         console.warn('OTP send issue:', error.message);
-        // Rate limited or other send error — still advance to code entry
-        // so user can enter a previously sent code or dev bypass
-        return { error: null, warning: error.message };
+        // Rate limit errors: code may already be in transit, advance to code entry
+        if (error.message?.toLowerCase().includes('rate') ||
+            error.message?.toLowerCase().includes('already') ||
+            error.status === 429) {
+          return { error: null, warning: error.message };
+        }
+        // Real errors: surface to the user
+        return { error: error.message || 'Could not send code. Please try again.' };
       }
       return { error: null };
     } catch (error) {
       console.warn('OTP send issue:', error.message);
-      return { error: null, warning: error.message || 'Failed to send code' };
+      return { error: error.message || 'Could not send code. Please try again.' };
     }
   },
 

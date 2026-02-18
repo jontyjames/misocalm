@@ -212,7 +212,7 @@ export default function LogFormContainer() {
       {error && (
         <p className="text-sm text-slate-300 font-light mb-4"
            style={{ animation: 'fadeIn 0.377s ease-out' }}>
-          {error.message || 'Something went wrong. Your data is safe.'}
+          {typeof error === 'string' ? error : (error.message || 'Something went wrong. Your data is safe.')}
         </p>
       )}
 

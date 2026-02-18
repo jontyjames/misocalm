@@ -29,14 +29,40 @@ export default function CrisisModal({ isOpen, onContinue, onGetSupport, onClose 
         </p>
 
         <div className="space-y-3">
-          {/* Crisis helpline */}
-          <a
-            href="tel:988"
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 font-light text-sm hover:bg-rose-500/30 transition-colors"
-          >
-            <Phone className="w-4 h-4" />
-            Call 988 Suicide & Crisis Lifeline
-          </a>
+          {/* Crisis helplines */}
+          <div className="space-y-2">
+            <a
+              href="tel:988"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 font-light text-sm hover:bg-rose-500/30 transition-colors"
+            >
+              <Phone className="w-4 h-4" />
+              988 Suicide & Crisis Lifeline (US)
+            </a>
+            <a
+              href="tel:116123"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300/80 font-light text-xs hover:bg-rose-500/20 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              Samaritans 116 123 (UK/IE)
+            </a>
+            <a
+              href="tel:131114"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300/80 font-light text-xs hover:bg-rose-500/20 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              Lifeline 13 11 14 (AU)
+            </a>
+            <a
+              href="tel:1737"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300/80 font-light text-xs hover:bg-rose-500/20 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              Need to Talk? 1737 (NZ)
+            </a>
+            <p className="text-xs text-slate-400 font-light text-center pt-1">
+              Text HOME to 741741 for Crisis Text Line
+            </p>
+          </div>
 
           {/* In-app support */}
           <Button onClick={onGetSupport} className="w-full" size="lg">

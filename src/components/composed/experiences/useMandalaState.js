@@ -50,11 +50,16 @@ export default function useMandalaState() {
   const waitingForTouchRef = useRef(false);
   const resolveTouchRef = useRef(null);
   const seqTimerRef = useRef(null);
+  const interactionTimerRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
     if (seqTimerRef.current) {
       clearTimeout(seqTimerRef.current);
       seqTimerRef.current = null;
+    }
+    if (interactionTimerRef.current) {
+      clearTimeout(interactionTimerRef.current);
+      interactionTimerRef.current = null;
     }
   }, []);
 
@@ -77,12 +82,28 @@ export default function useMandalaState() {
     });
   }, []);
 
-  // Wait for N touches. Returns promise.
+  // Wait for N touches. Times out after 30s so sequence never hangs.
   const waitForTouches = useCallback((n) => {
     return new Promise((resolve) => {
       touchCountRef.current = 0;
       waitingForTouchRef.current = n;
-      resolveTouchRef.current = resolve;
+
+      interactionTimerRef.current = setTimeout(() => {
+        if (waitingForTouchRef.current) {
+          waitingForTouchRef.current = false;
+          resolveTouchRef.current = null;
+          interactionTimerRef.current = null;
+          resolve();
+        }
+      }, 30000);
+
+      resolveTouchRef.current = () => {
+        if (interactionTimerRef.current) {
+          clearTimeout(interactionTimerRef.current);
+          interactionTimerRef.current = null;
+        }
+        resolve();
+      };
     });
   }, []);
 

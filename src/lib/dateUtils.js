@@ -92,6 +92,20 @@ export function getDayOfYear() {
 }
 
 /**
+ * Get a YYYY-MM-DD string in the user's local timezone
+ * Use this instead of toISOString().split('T')[0] which gives UTC dates
+ * @param {Date} date
+ * @returns {string} e.g. "2026-02-18"
+ */
+export function toLocalDateStr(date = new Date()) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
  * Check if two dates are the same day
  * @param {Date} date1
  * @param {Date} date2

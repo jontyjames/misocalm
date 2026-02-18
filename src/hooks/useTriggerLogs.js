@@ -18,6 +18,7 @@ export function useTriggerLogs(userId, options = {}) {
     hasMore: false,
   });
   const [loading, setLoading] = useState(autoFetch);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
   const fetch = useCallback(
@@ -115,6 +116,34 @@ export function useTriggerLogs(userId, options = {}) {
     [fetch]
   );
 
+  /**
+   * Load more entries (append to existing list)
+   */
+  const loadMore = useCallback(
+    async () => {
+      if (!userId || !pagination.hasMore || loadingMore) return;
+
+      setLoadingMore(true);
+      setError(null);
+
+      const nextPage = pagination.page + 1;
+      const { data, pagination: pag, error: fetchError } = await triggerLogService.getAll(
+        userId,
+        { page: nextPage, limit }
+      );
+
+      if (fetchError) {
+        setError(fetchError);
+      } else {
+        setLogs((prev) => [...prev, ...(data || [])]);
+        setPagination(pag);
+      }
+
+      setLoadingMore(false);
+    },
+    [userId, pagination.hasMore, pagination.page, limit, loadingMore]
+  );
+
   // Auto-fetch on mount
   useEffect(() => {
     if (autoFetch && userId) {
@@ -126,6 +155,7 @@ export function useTriggerLogs(userId, options = {}) {
     logs,
     pagination,
     loading,
+    loadingMore,
     error,
     fetch,
     refresh: fetch,
@@ -133,6 +163,7 @@ export function useTriggerLogs(userId, options = {}) {
     update,
     remove,
     goToPage,
+    loadMore,
   };
 }
 

@@ -89,9 +89,11 @@ export default function useMicrophone() {
       setIsListening(true);
       setDenied(false);
       rafRef.current = requestAnimationFrame(analyse);
+      return true;
     } catch {
       setDenied(true);
       setIsListening(false);
+      return false;
     }
   }, [analyse]);
 

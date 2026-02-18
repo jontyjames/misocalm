@@ -58,16 +58,31 @@ export default function PlanPage() {
         onboarding_completed: true,
       });
 
+      if (profileResult?.error) {
+        console.error('Profile save failed:', profileResult.error);
+        setSaveError(true);
+        setSaving(false);
+        return;
+      }
+
       // Verify it actually saved
       const freshProfile = await refreshProfile();
       if (!freshProfile?.onboarding_completed) {
         // Retry once
         console.warn('Onboarding save did not persist, retrying...');
-        await upsertProfile({
+        const retryResult = await upsertProfile({
           name: onboardingData.name || 'Friend',
           impact_level: onboardingData.impact,
           onboarding_completed: true,
         });
+
+        if (retryResult?.error) {
+          console.error('Profile retry failed:', retryResult.error);
+          setSaveError(true);
+          setSaving(false);
+          return;
+        }
+
         await refreshProfile();
       }
 

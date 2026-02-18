@@ -41,7 +41,7 @@ function formatDateLabel(dateStr) {
 
 export default function JournalHistoryList() {
   const { user } = useAuth();
-  const { logs, loading, pagination, goToPage } = useTriggerLogs(user?.id, { limit: 30 });
+  const { logs, loading, loadingMore, pagination, loadMore } = useTriggerLogs(user?.id, { limit: 30 });
   const [showWhy, setShowWhy] = useState(false);
 
   const groups = useMemo(() => groupByDate(logs), [logs]);
@@ -103,10 +103,11 @@ export default function JournalHistoryList() {
       {pagination.hasMore && (
         <div className="flex justify-center pt-4">
           <button
-            onClick={() => goToPage(pagination.page + 1)}
-            className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light"
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light disabled:opacity-50"
           >
-            Load more entries
+            {loadingMore ? 'Loading...' : 'Load more entries'}
           </button>
         </div>
       )}

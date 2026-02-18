@@ -4,7 +4,7 @@
  * Per-trigger intensity model: each trigger gets its own 0-10 intensity
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { triggerLogService } from '@/services';
 import { ROUTES, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/lib/constants';
@@ -29,6 +29,7 @@ export function useLogForm(userId) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showCrisisModal, setShowCrisisModal] = useState(false);
+  const submittingRef = useRef(false);
 
   // Toggle a trigger on/off (default intensity 5 when adding)
   const toggleTrigger = useCallback((name) => {
@@ -58,8 +59,8 @@ export function useLogForm(userId) {
     );
   }, []);
 
-  const handleSave = useCallback(async (skipCrisisCheck = false) => {
-    if (saving) return;
+  const handleSave = useCallback(async (skipCrisisCheck = false, { skipNavigate = false } = {}) => {
+    if (submittingRef.current) return;
 
     const triggerNames = Object.keys(triggerEntries);
     if (triggerNames.length === 0) return;
@@ -71,6 +72,7 @@ export function useLogForm(userId) {
       return;
     }
 
+    submittingRef.current = true;
     setSaving(true);
     setError(null);
 
@@ -94,6 +96,7 @@ export function useLogForm(userId) {
     if (saveError) {
       setError(saveError);
       setSaving(false);
+      submittingRef.current = false;
       return;
     }
 
@@ -105,20 +108,22 @@ export function useLogForm(userId) {
     });
 
     setSaving(false);
+    submittingRef.current = false;
 
-    // Get the created entry ID for the deeper processing flow
-    const entryId = data?.[0]?.id;
-    router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
-  }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, saving, router]);
+    if (!skipNavigate) {
+      const entryId = data?.[0]?.id;
+      router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
+    }
+  }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, router]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);
     handleSave(true);
   }, [handleSave]);
 
-  const handleCrisisSupport = useCallback(() => {
+  const handleCrisisSupport = useCallback(async () => {
     setShowCrisisModal(false);
-    handleSave(true);
+    await handleSave(true, { skipNavigate: true });
     router.push(ROUTES.LOG_SUPPORT);
   }, [handleSave, router]);
 
