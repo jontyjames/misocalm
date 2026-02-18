@@ -7,93 +7,71 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Lock, Star, Clock } from 'lucide-react';
+import { Star, Clock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Card, Badge, Spinner } from '@/components/ui';
+import { Card, Badge, Spinner } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
-import { ROUTES, TOOL_CATEGORIES, TOOL_LEVELS } from '@/lib/constants';
+import { ROUTES, TOOL_CATEGORIES } from '@/lib/constants';
 
-// Sample tools data (would come from database)
-const sampleTools = [
+const tools = [
   {
     id: '1',
     title: '4-7-8 Breathing',
     description: 'Before sleep, or when your mind won\'t stop racing',
     category: 'breathwork',
-    level: 'basic',
     duration_minutes: 5,
     type: 'practice',
     breathType: '478',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '3',
     title: 'Box Breathing',
     description: 'Daily practice, or before entering a known trigger situation',
     category: 'breathwork',
-    level: 'basic',
     duration_minutes: 4,
     type: 'practice',
     breathType: 'box',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '4',
     title: 'Physiological Sigh',
     description: 'In the moment, when you only have 30 seconds',
     category: 'breathwork',
-    level: 'basic',
     duration_minutes: 2,
     type: 'practice',
     breathType: 'sigh',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '2',
     title: 'Body Scan',
     description: 'Release tension by scanning through your body',
     category: 'somatic',
-    level: 'basic',
     duration_minutes: 10,
     type: 'guided',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '5',
     title: 'Interval Timer',
     description: 'Meditation timer with gentle bells at each interval',
     category: 'somatic',
-    level: 'basic',
     duration_minutes: 20,
     type: 'timer',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '6',
     title: 'Progressive Relaxation',
     description: 'Systematically tense and release muscle groups',
     category: 'somatic',
-    level: 'intermediate',
     duration_minutes: 15,
     type: 'guided',
-    completed: false,
-    times_completed: 0,
   },
   {
     id: '7',
     title: 'Cognitive Reframing',
     description: 'Learn to reframe your thoughts about triggers',
     category: 'cognitive',
-    level: 'intermediate',
     duration_minutes: 20,
     type: 'video',
-    completed: false,
-    times_completed: 0,
   },
 ];
 
@@ -128,7 +106,6 @@ export default function ToolsPage() {
   const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
   const [activeFilter, setActiveFilter] = useState('All');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [tools] = useState(sampleTools);
 
   const favoriteTools = profile?.favorite_tools || [];
 
@@ -143,11 +120,6 @@ export default function ToolsPage() {
     return cat?.color || 'slate';
   };
 
-  const getLevelBadge = (level) => {
-    const lvl = TOOL_LEVELS.find((l) => l.value === level);
-    return lvl || { label: level, color: 'slate' };
-  };
-
   const toggleFavorite = async (toolId) => {
     const current = profile?.favorite_tools || [];
     const updated = current.includes(toolId)
@@ -160,23 +132,12 @@ export default function ToolsPage() {
   const isToolFavorite = (tool) => favoriteTools.includes(tool.id);
 
   const filteredTools = tools.filter((tool) => {
-    // Apply favorites filter (composable with category)
     if (showFavoritesOnly && !isToolFavorite(tool)) return false;
-    // Apply category filter
     if (activeFilter === 'All') return true;
     if (activeFilter === 'Breath') return tool.category === 'breathwork';
     if (activeFilter === 'Body') return tool.category === 'somatic';
     return tool.category.toLowerCase() === activeFilter.toLowerCase();
   });
-
-  const basicTools = filteredTools.filter((t) => t.level === 'basic');
-  const intermediateTools = filteredTools.filter((t) => t.level === 'intermediate');
-  const advancedTools = filteredTools.filter((t) => t.level === 'advanced');
-
-  // Calculate progress
-  const completedBasics = basicTools.filter((t) => t.completed).length;
-  const totalBasics = tools.filter((t) => t.level === 'basic').length;
-  const canAccessIntermediate = completedBasics >= 2;
 
   if (loading) {
     return (
@@ -190,35 +151,17 @@ export default function ToolsPage() {
 
   return (
     <AppLayout>
-      <div className="px-6 py-8">
+      <div className="px-6 py-8 pb-32">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Practices</h1>
-          <Button variant="secondary" size="sm">
-            <Lock className="w-4 h-4 mr-2" />
-            Unlock
-          </Button>
-        </div>
-
-        {/* Progress */}
-        <div className="mb-6 animate-fade-in-up">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-300">Journey Progress</span>
-            <span className="text-sm text-slate-300">
-              {completedBasics}/{totalBasics} basics completed
-            </span>
-          </div>
-          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 rounded-full animate-progress"
-              style={{ width: `${(completedBasics / totalBasics) * 100}%` }}
-            />
-          </div>
-        </div>
+        <h1
+          className="text-2xl text-white mb-6"
+          style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+        >
+          Practices
+        </h1>
 
         {/* Filter Tabs */}
         <div className="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-hide -mx-6 px-6">
-          {/* Favorites toggle (composable with category) */}
           <button
             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
             className={`
@@ -232,7 +175,6 @@ export default function ToolsPage() {
           >
             <Star className="w-4 h-4" fill={showFavoritesOnly ? 'currentColor' : 'none'} />
           </button>
-          {/* Category tabs */}
           {filterTabs.map((tab) => (
             <button
               key={tab}
@@ -251,51 +193,21 @@ export default function ToolsPage() {
           ))}
         </div>
 
-        {/* Basic Tools */}
-        {basicTools.length > 0 && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge color="emerald">Essential</Badge>
-              <span className="text-sm text-slate-300">Basic Tools</span>
-            </div>
-            <div className="space-y-3">
-              {basicTools.map((tool) => (
-                <ToolCard
-                  key={tool.id}
-                  tool={tool}
-                  isFavorite={isToolFavorite(tool)}
-                  onToggleFavorite={() => toggleFavorite(tool.id)}
-                  getCategoryColor={getCategoryColor}
-                />
-              ))}
-            </div>
+        {/* Tools */}
+        {filteredTools.length > 0 && (
+          <div className="space-y-3 mb-8">
+            {filteredTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                isFavorite={isToolFavorite(tool)}
+                onToggleFavorite={() => toggleFavorite(tool.id)}
+                getCategoryColor={getCategoryColor}
+              />
+            ))}
           </div>
         )}
 
-        {/* Intermediate Tools */}
-        {intermediateTools.length > 0 && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge color="amber">Level Up</Badge>
-              <span className="text-sm text-slate-300">Intermediate Tools</span>
-              {!canAccessIntermediate && (
-                <Lock className="w-4 h-4 text-slate-600" />
-              )}
-            </div>
-            <div className={`space-y-3 ${!canAccessIntermediate ? 'opacity-50' : ''}`}>
-              {intermediateTools.map((tool) => (
-                <ToolCard
-                  key={tool.id}
-                  tool={tool}
-                  locked={!canAccessIntermediate}
-                  isFavorite={isToolFavorite(tool)}
-                  onToggleFavorite={() => toggleFavorite(tool.id)}
-                  getCategoryColor={getCategoryColor}
-                />
-              ))}
-            </div>
-          </div>
-        )}
         {/* Experiences */}
         {(activeFilter === 'All' || activeFilter === 'Experiences') && experiences.length > 0 && (
           <div className="mb-8">
@@ -329,22 +241,15 @@ export default function ToolsPage() {
   );
 }
 
-function ToolCard({ tool, locked, isFavorite, onToggleFavorite, getCategoryColor }) {
+function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
   const router = useRouter();
 
   return (
-    <Card
-      onClick={locked ? undefined : () => router.push(`/tools/${tool.id}`)}
-      className={locked ? 'cursor-not-allowed' : ''}
-    >
+    <Card onClick={() => router.push(`/tools/${tool.id}`)}>
       <div className="flex items-center gap-4">
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-white font-light flex items-center gap-2 mb-1">
+          <h2 className="text-white font-light mb-1">
             <span className="truncate">{tool.title}</span>
-            {tool.completed && (
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-            )}
           </h2>
           <p className="text-sm text-slate-300 font-light mb-2 truncate">
             {tool.description}
@@ -357,14 +262,8 @@ function ToolCard({ tool, locked, isFavorite, onToggleFavorite, getCategoryColor
               <Clock className="w-3 h-3" />
               {tool.duration_minutes} min
             </span>
-            {tool.times_completed > 0 && (
-              <span className="text-xs text-slate-300">
-                {tool.times_completed}x
-              </span>
-            )}
           </div>
         </div>
-        {/* Favorite button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
