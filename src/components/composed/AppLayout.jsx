@@ -5,12 +5,13 @@
 
 'use client';
 
-import { memo } from 'react';
 import Starfield from './Starfield';
 import Navigation from './Navigation';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-export default memo(function AppLayout({ children, showNav = true }) {
+// Not memoized: children prop is always a new JSX reference.
+// Starfield and Navigation protect themselves via their own React.memo.
+export default function AppLayout({ children, showNav = true }) {
   return (
     <div className="min-h-screen bg-void-black relative">
       {/* Nebula glow effects — behind everything */}
@@ -29,4 +30,4 @@ export default memo(function AppLayout({ children, showNav = true }) {
       {showNav && <Navigation />}
     </div>
   );
-})
+}

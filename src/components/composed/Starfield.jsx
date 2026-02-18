@@ -31,6 +31,9 @@ export default memo(function Starfield({ count = 37 }) {
   useEffect(() => {
     if (prefersReduced) return;
 
+    // Set initial position on mount (handles restored scroll)
+    containerRef.current?.style.setProperty('--scroll-y', `${window.scrollY}`);
+
     const handleScroll = () => {
       containerRef.current?.style.setProperty('--scroll-y', `${window.scrollY}`);
     };
