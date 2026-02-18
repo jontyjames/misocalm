@@ -51,6 +51,15 @@ export default function ToolPage() {
     await refreshProfile();
   };
 
+  // Timer callbacks — must be above early returns to satisfy rules of hooks
+  const handleTimerStart = useCallback((config) => {
+    setTimerConfig(config);
+    setTimerPhase('launching');
+  }, []);
+  const handleTimerBack = useCallback(() => { setTimerConfig(null); setTimerPhase('setup'); }, []);
+  const handleTimerJournal = useCallback(() => router.push(`${ROUTES.CHECK_IN}?from=timer`), [router]);
+  const handleTimerHome = useCallback(() => router.push(ROUTES.DASHBOARD), [router]);
+
   useEffect(() => {
     if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
   }, [isAuthenticated, loading, router]);
@@ -114,15 +123,6 @@ export default function ToolPage() {
   }
 
   // Timer — three-phase flow: setup -> launching -> playing
-  const handleTimerStart = useCallback((config) => {
-    setTimerConfig(config);
-    setTimerPhase('launching');
-  }, []);
-
-  const handleTimerBack = useCallback(() => { setTimerConfig(null); setTimerPhase('setup'); }, []);
-  const handleTimerJournal = useCallback(() => router.push(`${ROUTES.CHECK_IN}?from=timer`), [router]);
-  const handleTimerHome = useCallback(() => router.push(ROUTES.DASHBOARD), [router]);
-
   if (tool.type === 'timer') {
     if (timerPhase === 'setup') {
       return (
