@@ -54,12 +54,13 @@ export default function AppGroupClient({ children }) {
         </ErrorBoundary>
       </main>
 
-      {/* Navigation — always mounted, fades in/out via opacity + translate */}
+      {/* Navigation — always mounted, fades via opacity only.
+          No transform on this wrapper — it would create a containing block
+          and break Navigation's position:fixed positioning. */}
       <div
-        className={reducedMotion ? '' : 'transition-[opacity,transform] duration-[233ms] ease-out'}
+        className={reducedMotion ? '' : 'transition-opacity duration-[233ms] ease-out'}
         style={{
           opacity: showNav ? 1 : 0,
-          transform: (showNav || reducedMotion) ? 'translateY(0)' : 'translateY(1rem)',
           pointerEvents: showNav ? 'auto' : 'none',
         }}
         aria-hidden={!showNav || undefined}
