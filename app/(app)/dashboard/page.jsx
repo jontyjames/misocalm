@@ -84,7 +84,7 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <BetaInstallBanner />
-      <div className="flex flex-col px-6 py-8" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 6rem)' }}>
+      <div className="flex flex-col px-6 py-8 overflow-hidden" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 5rem)' }}>
         {/* Header — pinned to top */}
         <div className="flex items-center justify-between">
           <div className="flex items-end gap-2">
