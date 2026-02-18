@@ -163,15 +163,15 @@ In MisoCalm:
 
 ### Why Solfeggio
 
-The solfeggio scale is a set of frequencies that correspond to specific physiological and emotional states. While the science is debated, the mapping provides a consistent, intentional framework for colour decisions:
+The solfeggio frequencies (396, 528, 741, 852, 963 Hz) are used in sound healing traditions. While specific frequency-to-physiology claims are not supported by peer-reviewed research, music therapy evidence shows that purposeful frequency selection and harmonic design can reduce anxiety activation (Chanda & Levitin, 2013; Thaut & Wheeler, 2010). We map these frequencies to emotional intents not as causal mechanisms, but as a consistent, intentional framework for colour and design decisions. The consistency itself serves the nervous system: if every healing action uses indigo, the nervous system learns to associate that colour with safety and transformation.
 
-| Colour | Frequency | Name | Physiological association | Used for |
-|--------|-----------|------|--------------------------|----------|
-| **Indigo** | 528 Hz | Transformation & Love | DNA repair frequency. Associated with parasympathetic activation and nervous system harmony. The most studied solfeggio frequency. | Primary accent. Healing interactions. The app's core frequency. |
-| **Violet** | 852 Hz | Returning to Spiritual Order | Associated with pineal gland activation. Intuition, inner knowing. Higher-order processing. | Depth, glow effects, deeper practice states. The Seed of Life overlay. |
-| **Cyan** | 741 Hz | Awakening & Expression | Associated with throat chakra. Self-expression, solutions, clarity. Detoxification of the mind. | Progress indicators, completions, clarity moments. Active state highlighting. |
-| **Slate** | 396 Hz | Liberation from Fear | The lowest solfeggio frequency. Root grounding. Turning grief into joy. Liberation from guilt and fear. | Background, containers, the held space. The foundation everything rests on. |
-| **White** | 963 Hz | Higher Connection | The highest solfeggio frequency. Unity, oneness, return to source. Crown activation. | Text, borders, guidance. The voice of the app itself. |
+| Colour | Frequency | Intent | Design rationale | Used for |
+|--------|-----------|--------|-----------------|----------|
+| **Indigo** | 528 Hz | Transformation & Love | Associated in sound healing traditions with harmony and parasympathetic activation. The most referenced solfeggio frequency. | Primary accent. Healing interactions. The app's core frequency. |
+| **Violet** | 852 Hz | Returning to Spiritual Order | Associated with intuition and inner knowing. Higher-order processing. | Depth, glow effects, deeper practice states. The Seed of Life overlay. |
+| **Cyan** | 741 Hz | Awakening & Expression | Associated with self-expression, solutions, and clarity. | Progress indicators, completions, clarity moments. Active state highlighting. |
+| **Slate** | 396 Hz | Liberation from Fear | The lowest solfeggio frequency. Grounding, safety, stability. | Background, containers, the held space. The foundation everything rests on. |
+| **White** | 963 Hz | Higher Connection | The highest solfeggio frequency. Unity, wholeness, return to source. | Text, borders, guidance. The voice of the app itself. |
 
 ### Colour Decision Framework
 

@@ -22,6 +22,14 @@ This ecosystem is designed as an **integrated but non‑dependent system**. Each
 
 The system intentionally avoids rescuing dynamics, over‑reliance on leaders, or endless coping. It prioritizes **capacity, agency, and self‑trust**.
 
+### Research Foundation
+
+Misophonia is a condition where specific sounds trigger intense emotional and physiological responses. Brain imaging research (Kumar et al., 2017, 2021) shows hyperactivity in the anterior insular cortex (the brain's interoceptive hub) and the ventral premotor cortex (mirror neuron system), creating an involuntary motor-emotional cascade before conscious thought intervenes. A 2024 nationally representative U.S. study found 4.6% of adults (approximately 12 million Americans) have clinically significant misophonia. Only three randomised controlled trials have ever been completed for misophonia, and there are no established first-line treatments.
+
+**Why this architecture works:** The anterior insular cortex, the brain region most activated in misophonia, is also the region most responsive to interoceptive practices: breathwork, body awareness, and somatic regulation. This is why MisoCalm's body-based approach is not generic wellness but a precisely targeted intervention. Mindfulness-based therapy has been shown to perform comparably to CBT for misophonia (Javanmard et al.), while ACT produced greater reductions than progressive relaxation in the first in-person psychotherapy RCT (Twohig et al., 2025). Community-based group therapy produced the largest effect size of any misophonia intervention (Jager et al., 2021, d=1.97), with 37% no longer meeting diagnostic criteria.
+
+For the full evidence base, see the Research folder: `C:\Users\jonty\Projects\thriving-with-misophonia\Research\`
+
 ---
 
 ## 2. MisoCalm App – Tiered Architecture
@@ -193,6 +201,8 @@ They **create conditions where healing can emerge**.
 - Insight precedes choice
 - Choice precedes change
 - Change stabilizes in community
+
+This sequence is grounded in polyvagal theory (Porges, 2011): when the nervous system is dysregulated (sympathetic dominance), the prefrontal cortex goes offline. Insight requires a regulated window of tolerance. Tools (breathwork, somatic practices) restore vagal tone first. Community provides co-regulation and social engagement system activation, which is why change stabilizes there, not in isolation.
 
 This is not about fixing misophonia.
 It is about **learning how to live well — with a sensitive nervous system — in a noisy world**.

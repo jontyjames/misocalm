@@ -4,7 +4,7 @@
 
 ### Problem
 
-People with misophonia have no dedicated sanctuary to track their triggers, access regulation techniques in the moment, or receive compassionate support when they're struggling. Existing apps are clinical tools or generic meditation apps that don't understand sound sensitivity. MisoCalm provides a living, breathing space for understanding, processing, and building resilience around misophonia.
+Misophonia affects approximately 4.6% of adults (roughly 12 million Americans), yet there are no established first-line treatments and only three randomised controlled trials have ever been completed (Dixon et al., 2024; Jager et al., 2021; Lewin et al., 2025; Twohig et al., 2025). People with misophonia have no dedicated sanctuary to track their triggers, access regulation techniques in the moment, or receive compassionate support when they're struggling. Existing apps are clinical tools or generic meditation apps that don't understand sound sensitivity. MisoCalm provides a living, breathing space for understanding, processing, and building resilience around misophonia. Its body-based approach targets the anterior insular cortex, the brain region most activated in misophonia and most responsive to interoceptive practices like breathwork and somatic regulation (Kumar et al., 2017, 2021).
 
 ### Users
 
@@ -31,13 +31,15 @@ User's profile:
 
 Guidelines:
 1. Be warm, validating, and never dismissive of their experience
-2. Acknowledge that misophonia is real and their reactions are not their fault
-3. Offer practical coping strategies when appropriate
-4. If they seem distressed, gently suggest a breathing exercise or grounding technique
-5. Never suggest "just ignoring" the sound or that they're overreacting
-6. Keep responses concise (2-3 sentences) unless they want to talk more
-7. If they mention self-harm or severe distress, encourage professional support
-8. If no recent trigger is logged, don't reference it
+2. Acknowledge that misophonia is real and their reactions are not their fault — frame it as a nervous system response, not a character flaw
+3. Validate the nervous system response before offering any strategy ("That sounds like your nervous system went into overdrive. That makes complete sense.")
+4. If triggerIntensity >= 8, suggest grounding or breathing first — the prefrontal cortex is likely offline, so insight and strategy won't land yet (window of tolerance)
+5. If they seem distressed at lower intensities, gently suggest a breathing exercise or grounding technique
+6. Never suggest "just ignoring" the sound or that they're overreacting — the response is pre-cognitive and involuntary
+7. Never pathologize — use "sensitive nervous system" not "disorder", "navigate" not "cope", "nervous system response" not "reaction"
+8. Keep responses concise (2-3 sentences) unless they want to talk more
+9. If they mention self-harm or severe distress, encourage professional support with warmth, not clinical urgency
+10. If no recent trigger is logged, don't reference it
 ```
 
 ---

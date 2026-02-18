@@ -40,6 +40,14 @@ or quietly desperate at a dinner table. Design for their worst moment, not
 their best. Everything should be reachable in under 3 taps. Nothing should
 require reading a paragraph to understand.
 
+When someone is dysregulated (sympathetic nervous system dominance), they are
+in survival mode. The prefrontal cortex (reasoning, planning, reading) is
+offline. Design must bypass cognition and speak to the body directly. Three
+taps respects that under dysregulation, the prefrontal cortex can only handle
+minimal decisions. Under 30 seconds respects the amygdala's threat response
+window: the nervous system either finds relief quickly or locks into sustained
+activation.
+
 **Rule:** If a feature takes more than 30 seconds to use in a crisis,
 it's too complex.
 
@@ -54,6 +62,12 @@ the app.
 The tone is a knowledgeable friend who's been through it — not a therapist,
 not a coach, not a chatbot. Warm, calm, and grounded. Like someone who says
 "I know. Let's breathe together."
+
+Tone is a nervous system signal. Warm, slow, predictable language activates
+the ventral vagus (the social engagement system), signalling safety. Clinical
+tone or urgent language can trigger the same sympathetic response we're trying
+to calm. The warmth isn't decoration. It's co-regulation. The app's voice
+becomes an external regulating presence.
 
 **Rule:** Read every piece of text aloud. Does it sound like something
 a caring human would actually say?
@@ -304,17 +318,21 @@ Imagine someone who:
 
 ### Words We Use
 
-| Instead of... | We say... |
-|---------------|-----------|
-| Disorder | Condition, experience |
-| Sufferer | Person with misophonia |
-| Trigger (as verb) | "When sounds affect you" |
-| Calm down | "Find your calm" |
-| You should | "You might try" |
-| Don't worry | "That's understandable" |
-| Good job! | "You showed up for yourself" |
-| Failure | (we never reference failure) |
-| Broken streak | "Time away" |
+| Instead of... | We say... | Why |
+|---------------|-----------|-----|
+| Disorder | Condition, experience | Depathologizes |
+| Sufferer | Person with misophonia | Identity-first, not condition-first |
+| Trigger (as verb) | "When sounds affect you" | Removes weaponized language |
+| React/reaction | "Nervous system response" | Reframes as body's wisdom, reduces shame |
+| Manage/cope | "Navigate" or "find your way with" | Empowering, respects agency |
+| Calm down | "Find your calm" | Agency, not instruction |
+| You should | "You might try" | Invitation, not prescription |
+| Don't worry | "That's understandable" | Validates instead of dismissing |
+| Good job! | "You showed up for yourself" | Internal motivation, not external approval |
+| Failure | (we never reference failure) | No shame language |
+| Broken streak | "Time away" | No loss framing |
+| Overreacting | (never use) | Invalidates neurobiology |
+| Just ignore it | (never use) | The response is pre-cognitive; this is impossible |
 
 ### Emotional Validation Patterns
 Always validate before suggesting action:
@@ -354,6 +372,13 @@ GOOD: "When you feel ready, there are deeper techniques waiting for you."
 - "Skip" is always an option
 - The app works without an account for basic breathing
 - No dark patterns, no guilt, no manipulation
+
+### Sensory Accessibility
+- No sudden sounds or startle-inducing audio
+- Transitions are smooth, never jarring (Fibonacci timing prevents jolt)
+- Breathing circle can be used without audio (visual-only mode for sound sensitivity)
+- Crisis resources presented calmly, not with emergency-red urgency
+- No rapid visual changes that could activate the threat system
 
 ---
 
