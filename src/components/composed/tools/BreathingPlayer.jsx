@@ -79,8 +79,8 @@ export default function BreathingPlayer({
     <div className="flex-1 relative overflow-hidden">
       <ExpansionBloom active={showBloom} solfeggio="cyan" onComplete={handleBloomComplete} />
 
-      {/* Breathing visual -- true vertical centre, never moves */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+      {/* Breathing visual -- slightly above vertical centre, never moves */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0" style={{ paddingBottom: PHI_SCALE[4] }}>
         <div className="pointer-events-auto">
           <BreathingAura
             phase={breathPhase} isActive={isActive}
