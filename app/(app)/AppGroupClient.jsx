@@ -39,7 +39,7 @@ export default function AppGroupClient({ children }) {
   }, [pathname, setShowNav]);
 
   return (
-    <div className="min-h-screen bg-void-black relative">
+    <div className="min-h-screen bg-void-black relative overflow-x-hidden">
       {/* Starfield persists across all pages in this group (includes nebula glows) */}
       <Starfield />
 
