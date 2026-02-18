@@ -103,12 +103,6 @@ export const TOOL_CATEGORIES = [
   { value: 'communication', label: 'Communication', color: 'amber' },
 ];
 
-export const TOOL_LEVELS = [
-  { value: 'basic', label: 'Essential', color: 'emerald' },
-  { value: 'intermediate', label: 'Level Up', color: 'amber' },
-  { value: 'advanced', label: 'Advanced', color: 'purple' },
-];
-
 // Routes
 export const ROUTES = {
   HOME: '/',

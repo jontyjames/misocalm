@@ -269,12 +269,6 @@ body {
   }
 }
 
-@keyframes progressGrow {
-  from {
-    width: 0%;
-  }
-}
-
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -366,10 +360,6 @@ body {
 
 .animate-scale-in {
   animation: scaleIn 233ms ease-out forwards;
-}
-
-.animate-progress {
-  animation: progressGrow 987ms ease-out forwards;
 }
 
 /* Staggered animation delays (55ms Fibonacci increments) */
