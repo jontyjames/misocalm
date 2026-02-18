@@ -1,9 +1,8 @@
 /**
  * Breathing Player -- active breathing session with progress and controls.
  *
- * Layout contract: the breathing visual sits centred below the header bar.
- * paddingTop offsets for the header so it feels centred in the usable space.
- * Everything else is absolutely positioned and cannot shift it.
+ * Layout contract: the breathing visual sits at true vertical centre of the
+ * viewport. It never moves. Everything else is absolutely positioned around it.
  *
  * States:
  *   1. Pre-practice  (isActive=false, completed=false)
@@ -80,18 +79,9 @@ export default function BreathingPlayer({
     <div className="flex-1 relative overflow-hidden">
       <ExpansionBloom active={showBloom} solfeggio="cyan" onComplete={handleBloomComplete} />
 
-      {/* Breathing visual -- centred below header, recedes on completion */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0" style={{ paddingTop: PHI_SCALE[4] }}>
-        <div
-          className="pointer-events-auto"
-          style={{
-            opacity: completed ? 0.5 : 1,
-            transform: completed ? `scale(0.85) translateY(-${PHI_SCALE[5]}px)` : 'scale(1)',
-            transition: completed
-              ? `opacity ${FIBONACCI_TIMING.sacred}ms ease-out, transform ${FIBONACCI_TIMING.sacred}ms ease-out`
-              : 'none',
-          }}
-        >
+      {/* Breathing visual -- true vertical centre, never moves */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="pointer-events-auto">
           <BreathingAura
             phase={breathPhase} isActive={isActive}
             breathScale={breathScale}
