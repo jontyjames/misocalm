@@ -18,7 +18,7 @@ const sampleTools = [
   {
     id: '1',
     title: '4-7-8 Breathing',
-    description: 'Calm your nervous system with this proven breathing technique',
+    description: 'Before sleep, or when your mind won\'t stop racing',
     category: 'breathwork',
     level: 'basic',
     duration_minutes: 5,
@@ -30,7 +30,7 @@ const sampleTools = [
   {
     id: '3',
     title: 'Box Breathing',
-    description: 'Navy SEAL technique for staying calm under pressure',
+    description: 'Daily practice, or before entering a known trigger situation',
     category: 'breathwork',
     level: 'basic',
     duration_minutes: 4,
@@ -42,7 +42,7 @@ const sampleTools = [
   {
     id: '4',
     title: 'Physiological Sigh',
-    description: 'Fastest way to calm your nervous system in real-time',
+    description: 'In the moment, when you only have 30 seconds',
     category: 'breathwork',
     level: 'basic',
     duration_minutes: 2,
