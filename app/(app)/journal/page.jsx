@@ -126,7 +126,7 @@ export default function JournalPage() {
                 </span>
               </div>
               <span className="relative block text-sm text-slate-300 font-light mt-1.5">
-                Notice what triggered you
+                Write about what felt intense
               </span>
             </button>
 

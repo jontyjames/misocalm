@@ -151,10 +151,17 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
   propsRef.current = { symmetry, showYouDot, customColor };
 
   const lastPointerRef = useRef({ x: 0, y: 0, time: 0 });
+  const lastFormTimeRef = useRef(0);
 
   const handlePointerDown = useCallback((e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Throttle form creation — one per 89ms (fib) to prevent overload
+    const now = Date.now();
+    if (now - lastFormTimeRef.current < 89) return;
+    lastFormTimeRef.current = now;
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -162,7 +169,6 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     const cx = canvas.width / dpr / 2;
     const cy = canvas.height / dpr / 2;
 
-    const now = Date.now();
     const dt = now - lastPointerRef.current.time;
     const dx = x - lastPointerRef.current.x;
     const dy = y - lastPointerRef.current.y;

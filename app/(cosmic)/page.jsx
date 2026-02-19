@@ -14,7 +14,7 @@ import { ROUTES } from '@/lib/constants';
 
 const INTRO_TEXT = 'Welcome';
 const SUBTITLE_TEXT = 'This is a space for you';
-const SUBTITLE_DELAY = INTRO_TEXT.length * 0.034 + 0.377;
+const SUBTITLE_DELAY = INTRO_TEXT.length * 0.089 + 0.610;
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -75,9 +75,9 @@ export default function WelcomePage() {
   // Start intro letter animation after a brief pause
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      const startTimer = setTimeout(() => setIntroStarted(true), 377);
+      const startTimer = setTimeout(() => setIntroStarted(true), 987);
       // Welcome + subtitle animate, hold, then fade to reveal MisoCalm
-      const doneTimer = setTimeout(() => setIntroDone(true), 4181);
+      const doneTimer = setTimeout(() => setIntroDone(true), 6765);
       return () => {
         clearTimeout(startTimer);
         clearTimeout(doneTimer);
@@ -126,7 +126,7 @@ export default function WelcomePage() {
               fontFamily: "'Josefin Sans', sans-serif",
               fontWeight: 200,
               letterSpacing: '0.05em',
-              animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
+              animation: `fadeIn 0.610s ease-out ${i * 0.089}s forwards`,
               width: char === ' ' ? '0.4em' : undefined,
             }}
           >
