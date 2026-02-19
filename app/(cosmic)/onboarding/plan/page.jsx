@@ -49,14 +49,28 @@ export default function PlanPage() {
     if (!onboardingData) return;
 
     setSaving(true);
+    setSaveError(false);
 
     try {
-      // Save profile to database
-      const profileResult = await upsertProfile({
+      // Save profile — always include onboarding_completed
+      const profileData = {
         name: onboardingData.name || 'Friend',
-        impact_level: onboardingData.impact,
         onboarding_completed: true,
-      });
+      };
+      if (onboardingData.impact) {
+        profileData.impact_level = onboardingData.impact;
+      }
+
+      let profileResult = await upsertProfile(profileData);
+
+      // If failed (possibly missing column), retry with just the essentials
+      if (profileResult?.error) {
+        console.warn('Profile save failed, trying minimal:', profileResult.error);
+        profileResult = await upsertProfile({
+          name: onboardingData.name || 'Friend',
+          onboarding_completed: true,
+        });
+      }
 
       if (profileResult?.error) {
         console.error('Profile save failed:', profileResult.error);
@@ -65,48 +79,32 @@ export default function PlanPage() {
         return;
       }
 
-      // Verify it actually saved
+      // Verify it saved
       const freshProfile = await refreshProfile();
       if (!freshProfile?.onboarding_completed) {
-        // Retry once
         console.warn('Onboarding save did not persist, retrying...');
-        const retryResult = await upsertProfile({
+        await upsertProfile({
           name: onboardingData.name || 'Friend',
-          impact_level: onboardingData.impact,
           onboarding_completed: true,
         });
-
-        if (retryResult?.error) {
-          console.error('Profile retry failed:', retryResult.error);
-          setSaveError(true);
-          setSaving(false);
-          return;
-        }
-
         await refreshProfile();
       }
 
-      // Save triggers to database
-      let triggersSaved = false;
+      // Save triggers (non-blocking — don't let this prevent entry)
       if (user?.id && onboardingData.triggers && onboardingData.triggers.length > 0) {
-        const { error } = await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
-        if (!error) {
-          triggersSaved = true;
-        } else {
-          // Retry once after ceremony delay
-          await new Promise(r => setTimeout(r, 1597));
-          const { error: retryError } = await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
-          if (!retryError) triggersSaved = true;
+        try {
+          const { error } = await userTriggerService.saveUserTriggers(user.id, onboardingData.triggers);
+          if (error) {
+            console.warn('Trigger save failed:', error);
+          }
+        } catch (triggerErr) {
+          console.warn('Trigger save error:', triggerErr);
         }
-      } else {
-        triggersSaved = true; // No triggers to save
       }
 
-      // Only clear localStorage after confirmed DB save
-      if (triggersSaved) {
-        localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
-        localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
-      }
+      // Clear localStorage
+      localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
+      localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
     } catch (err) {
       console.error('Error saving onboarding data:', err);
       setSaveError(true);
