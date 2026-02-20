@@ -7,6 +7,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import { MISOPHONIA_LEVELS } from '@/lib/constants';
 
 // Intensity-based gradient backgrounds (solfeggio-mapped)
 function getIntensityGradient(intensity) {
@@ -90,9 +91,11 @@ export default function ExpandingTriggerCard({
         />
 
         {/* Labels */}
-        <div className="flex justify-between mt-1.5">
+        <div className="flex justify-between items-baseline mt-1.5">
           <span className="text-xs text-slate-400">0</span>
-          <span className="text-xs text-slate-200 font-light">{intensity}</span>
+          <span className="text-xs text-slate-200 font-light">
+            {intensity} · {MISOPHONIA_LEVELS[intensity]?.label}
+          </span>
           <span className="text-xs text-slate-400">10</span>
         </div>
       </div>
