@@ -7,10 +7,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
-import { Card, Spinner, PremiumGate } from '@/components/ui';
+import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES, SOUNDSCAPES } from '@/lib/constants';
 
@@ -63,15 +63,7 @@ export default function SoundscapesPage() {
   if (!isPremium) {
     return (
       <AppLayout showNav={false}>
-        <div className="flex items-center gap-4 px-6 py-8 mb-0">
-          <button
-            onClick={() => router.push(ROUTES.DASHBOARD)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Sound Sanctuary</h1>
-        </div>
+        <PageHeader title="Sound Sanctuary" backHref={ROUTES.DASHBOARD} className="px-6 py-8" />
         <PremiumGate feature="Sound Sanctuary" />
       </AppLayout>
     );
@@ -80,16 +72,7 @@ export default function SoundscapesPage() {
   return (
     <AppLayout showNav={false}>
       <div className="px-6 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={() => router.push(ROUTES.DASHBOARD)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Sound Sanctuary</h1>
-        </div>
+        <PageHeader title="Sound Sanctuary" backHref={ROUTES.DASHBOARD} className="mb-8" />
 
         {/* Soundscape Grid */}
         <div className="grid grid-cols-2 gap-4">

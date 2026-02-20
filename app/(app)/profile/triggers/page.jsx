@@ -7,11 +7,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { userTriggerService } from '@/services';
-import { TriggerChips } from '@/components/ui';
+import { TriggerChips, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { DEFAULT_TRIGGERS, ROUTES } from '@/lib/constants';
 import { isValidTriggerName } from '@/lib/validators';
@@ -103,21 +103,7 @@ export default function EditTriggersPage() {
   return (
     <AppLayout showNav={false}>
       <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <button
-            onClick={() => router.back()}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1
-            className="text-2xl text-white"
-            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
-          >
-            My Triggers
-          </h1>
-        </div>
+        <PageHeader title="My Triggers" className="mb-8" />
 
         <p className="text-slate-300 font-light mb-[26px]">
           These are the sounds you're working with. You can update them anytime.

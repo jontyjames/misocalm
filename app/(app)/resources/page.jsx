@@ -7,10 +7,10 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ExternalLink, Phone, MessageSquare, Heart, BookOpen, Wind } from 'lucide-react';
+import { ExternalLink, Phone, MessageSquare, Heart, BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout } from '@/components/composed';
-import { Spinner } from '@/components/ui';
+import { Spinner, PageHeader } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
 
 function ExtLink({ href, children, className = '' }) {
@@ -75,21 +75,7 @@ export default function ResourcesPage() {
   return (
     <AppLayout>
       <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 1.6s ease-out' }}>
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => router.push(ROUTES.DASHBOARD)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1
-            className="text-2xl text-white"
-            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
-          >
-            Resources
-          </h1>
-        </div>
+        <PageHeader title="Resources" backHref={ROUTES.DASHBOARD} className="mb-6" />
 
         {/* Warm intro */}
         <p className="text-slate-200 font-light leading-relaxed mb-8">

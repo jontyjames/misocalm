@@ -7,10 +7,10 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Plus, X, ChevronDown } from 'lucide-react';
+import { Plus, X, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button, TriggerChips } from '@/components/ui';
+import { Button, TriggerChips, PageHeader } from '@/components/ui';
 import { ExpandingTriggerCard, CrisisModal } from '@/components/composed';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
@@ -55,15 +55,7 @@ export default function LogFormContainer() {
 
   return (
     <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <button onClick={() => router.push(ROUTES.JOURNAL)} aria-label="Go back to journal" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-          Log a moment
-        </h1>
-      </div>
+      <PageHeader title="Log a moment" backHref={ROUTES.JOURNAL} className="mb-8" />
 
       {/* 1. Triggers — selected as expanding cards, unselected as chips */}
       <section className="mb-[26px]">

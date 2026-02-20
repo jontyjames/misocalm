@@ -7,10 +7,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
-import { Card, Spinner, PremiumGate } from '@/components/ui';
+import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
@@ -102,15 +102,7 @@ export default function BoundariesPage() {
   if (!isPremium) {
     return (
       <AppLayout showNav={false}>
-        <div className="flex items-center gap-4 px-6 py-8 mb-0">
-          <button
-            onClick={() => router.push(ROUTES.DASHBOARD)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Gentle Boundaries</h1>
-        </div>
+        <PageHeader title="Gentle Boundaries" backHref={ROUTES.DASHBOARD} className="px-6 py-8" />
         <PremiumGate feature="Boundary scripts" />
       </AppLayout>
     );
@@ -119,16 +111,7 @@ export default function BoundariesPage() {
   return (
     <AppLayout showNav={false}>
       <div className="px-6 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => router.push(ROUTES.DASHBOARD)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-2xl text-white" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>Gentle Boundaries</h1>
-        </div>
+        <PageHeader title="Gentle Boundaries" backHref={ROUTES.DASHBOARD} className="mb-6" />
 
         {/* Intro */}
         <p className="text-slate-300 font-light mb-8">
