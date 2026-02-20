@@ -6,8 +6,8 @@
 
 'use client';
 
-import { useState } from 'react';
-import { Plus, X, ChevronDown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Plus, X, ChevronDown, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button, TriggerChips, PageHeader } from '@/components/ui';
@@ -40,6 +40,11 @@ export default function LogFormContainer() {
 
   const selectedNames = Object.keys(triggerEntries);
   const unselected = userTriggers.filter(t => !selectedNames.includes(t));
+  const maxIntensity = useMemo(
+    () => selectedNames.length > 0 ? Math.max(...Object.values(triggerEntries)) : 0,
+    [triggerEntries, selectedNames.length]
+  );
+  const showSupportNudge = maxIntensity >= 7 && maxIntensity < 9;
 
   const handleAddCustom = async () => {
     const trimmed = customTrigger.trim();
@@ -132,6 +137,23 @@ export default function LogFormContainer() {
           </p>
         )}
       </section>
+
+      {/* Support nudge for intensity 7-8 (gentler than crisis modal at 9+) */}
+      {showSupportNudge && (
+        <button
+          onClick={() => router.push(ROUTES.RESOURCES)}
+          className="w-full flex items-center gap-3 p-4 rounded-xl border border-violet-500/20 mb-[26px] text-left transition-all duration-[233ms] hover:border-violet-500/30"
+          style={{
+            background: 'linear-gradient(160deg, rgba(139,92,246,0.08) 0%, rgba(139,92,246,0.03) 100%)',
+            animation: 'fadeIn 0.377s ease-out',
+          }}
+        >
+          <Heart className="w-4 h-4 text-violet-400 shrink-0" />
+          <p className="text-sm text-slate-200 font-light">
+            That sounds really difficult. Support is here if you need it.
+          </p>
+        </button>
+      )}
 
       {/* 2. Environment (replaces Source) */}
       <section className="mb-[26px]">
