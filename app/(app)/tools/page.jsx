@@ -9,8 +9,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, Clock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Badge, Spinner } from '@/components/ui';
+import { Card, Badge } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { ToolsSkeleton } from '@/components/composed/skeletons';
 import { ROUTES, TOOL_CATEGORIES } from '@/lib/constants';
 
 const tools = [
@@ -143,9 +144,7 @@ export default function ToolsPage() {
   if (loading) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <ToolsSkeleton />
       </AppLayout>
     );
   }

@@ -13,8 +13,9 @@ import { useAuth } from '@/context/AuthContext';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { useTriggerStats } from '@/hooks/useTriggerLogs';
 import { useToolStats } from '@/hooks/useTools';
-import { Button, Spinner } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { ProfileSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 
 const IMPACT_LABELS = {
@@ -45,9 +46,7 @@ export default function ProfilePage() {
   if (loading || !profile) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <ProfileSkeleton />
       </AppLayout>
     );
   }

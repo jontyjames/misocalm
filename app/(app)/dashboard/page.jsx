@@ -10,8 +10,7 @@ import { useRouter } from 'next/navigation';
 import { BookOpen, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout, BetaInstallBanner } from '@/components/composed';
-import { DashboardHeader, FindMyCalmCard, DashboardActionCard } from '@/components/composed/dashboard';
-import { Spinner } from '@/components/ui';
+import { DashboardHeader, FindMyCalmCard, DashboardActionCard, DashboardSkeleton } from '@/components/composed/dashboard';
 import { ROUTES, DAILY_AFFIRMATIONS, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
 
@@ -78,9 +77,7 @@ export default function DashboardPage() {
   if (loading || (!profile && !profileFailed)) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <DashboardSkeleton />
       </AppLayout>
     );
   }
