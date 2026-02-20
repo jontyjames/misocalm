@@ -7,8 +7,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Star, Clock } from 'lucide-react';
+import { Star, Clock, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { usePremiumContext } from '@/context/PremiumContext';
 import { Card, Badge } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ToolsSkeleton } from '@/components/composed/skeletons';
@@ -49,6 +50,7 @@ const tools = [
     category: 'somatic',
     duration_minutes: 10,
     type: 'coming_soon',
+    premium: true,
   },
   {
     id: '5',
@@ -65,6 +67,7 @@ const tools = [
     category: 'somatic',
     duration_minutes: 15,
     type: 'coming_soon',
+    premium: true,
   },
   {
     id: '7',
@@ -73,6 +76,7 @@ const tools = [
     category: 'cognitive',
     duration_minutes: 20,
     type: 'coming_soon',
+    premium: true,
   },
 ];
 
@@ -105,6 +109,7 @@ const experiences = [
 export default function ToolsPage() {
   const router = useRouter();
   const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
+  const { isPremium } = usePremiumContext();
   const [activeFilter, setActiveFilter] = useState('All');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
@@ -203,6 +208,7 @@ export default function ToolsPage() {
                 isFavorite={isToolFavorite(tool)}
                 onToggleFavorite={() => toggleFavorite(tool.id)}
                 getCategoryColor={getCategoryColor}
+                isLocked={tool.premium && !isPremium}
               />
             ))}
           </div>
@@ -241,26 +247,37 @@ export default function ToolsPage() {
   );
 }
 
-function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
+function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor, isLocked }) {
   const router = useRouter();
   const isComingSoon = tool.type === 'coming_soon';
 
   return (
-    <Card onClick={() => router.push(`/tools/${tool.id}`)}>
+    <Card
+      onClick={() => router.push(isLocked ? '/premium' : `/tools/${tool.id}`)}
+      className={isLocked ? 'opacity-70' : ''}
+    >
       <div className="flex items-center gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-white font-light truncate">{tool.title}</h2>
-            {isComingSoon && (
+            <h2 className={`font-light truncate ${isLocked ? 'text-slate-300' : 'text-white'}`}>{tool.title}</h2>
+            {isLocked ? (
+              <span
+                className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-light text-violet-300 border border-violet-500/25 flex items-center gap-1"
+                style={{ background: 'rgba(139,92,246,0.12)' }}
+              >
+                <Lock className="w-2.5 h-2.5" />
+                Community
+              </span>
+            ) : isComingSoon ? (
               <span
                 className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-light text-violet-300 border border-violet-500/20"
                 style={{ background: 'rgba(139,92,246,0.1)' }}
               >
                 soon
               </span>
-            )}
+            ) : null}
           </div>
-          <p className="text-sm text-slate-300 font-light mb-2 truncate">
+          <p className={`text-sm font-light mb-2 truncate ${isLocked ? 'text-slate-400' : 'text-slate-300'}`}>
             {tool.description}
           </p>
           <div className="flex items-center gap-3">
@@ -273,7 +290,9 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
             </span>
           </div>
         </div>
-        {!isComingSoon && (
+        {isLocked ? (
+          <Lock className="w-5 h-5 text-slate-500 shrink-0" />
+        ) : !isComingSoon ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -284,7 +303,7 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor }) {
           >
             <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
-        )}
+        ) : null}
       </div>
     </Card>
   );
