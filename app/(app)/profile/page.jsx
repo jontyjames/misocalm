@@ -8,7 +8,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Sparkles, Wind } from 'lucide-react';
+import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
 import { useTriggerStats } from '@/hooks/useTriggerLogs';
@@ -92,7 +92,7 @@ export default function ProfilePage() {
 
         {/* My Triggers */}
         <button
-          onClick={() => router.push('/profile/triggers')}
+          onClick={() => router.push(ROUTES.PROFILE_TRIGGERS)}
           className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
           style={{ background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >

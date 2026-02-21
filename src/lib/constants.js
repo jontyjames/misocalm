@@ -124,6 +124,7 @@ export const ROUTES = {
   SOUNDSCAPES: '/soundscapes',
   BOUNDARIES: '/boundaries',
   PROFILE: '/profile',
+  PROFILE_TRIGGERS: '/profile/triggers',
   DEBUG: '/debug',
   PREMIUM: '/premium',
   RESOURCES: '/resources',

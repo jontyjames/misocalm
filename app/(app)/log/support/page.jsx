@@ -20,7 +20,7 @@ const supportOptions = [
     description: 'Calm your nervous system with guided breathing',
     iconBg: 'bg-indigo-500/20 border-indigo-500/30',
     iconColor: 'text-indigo-400',
-    href: '/tools/1',
+    href: `${ROUTES.TOOLS}/1`,
   },
   {
     icon: Heart,

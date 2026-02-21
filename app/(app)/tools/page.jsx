@@ -253,7 +253,7 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor, isLock
 
   return (
     <Card
-      onClick={() => router.push(isLocked ? '/premium' : `/tools/${tool.id}`)}
+      onClick={() => router.push(isLocked ? ROUTES.PREMIUM : `${ROUTES.TOOLS}/${tool.id}`)}
       className={isLocked ? 'opacity-70' : ''}
     >
       <div className="flex items-center gap-4">

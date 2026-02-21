@@ -39,7 +39,7 @@ export default function PremiumGate({ children, feature = 'this feature' }) {
       </p>
 
       <button
-        onClick={() => router.push('/premium')}
+        onClick={() => router.push(ROUTES.PREMIUM)}
         className="relative px-8 py-4 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms]"
         style={{
           background: 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(139,92,246,0.1) 60%, rgba(139,92,246,0.06) 100%)',
