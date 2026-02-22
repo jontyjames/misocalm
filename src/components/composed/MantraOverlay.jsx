@@ -10,7 +10,8 @@
 
 'use client';
 
-import { useMemo, useEffect, useCallback } from 'react';
+import { useRef, useMemo, useEffect, useCallback } from 'react';
+import useFocusTrap from '@/hooks/useFocusTrap';
 import { SACRED_PATTERNS } from '@/lib/sacredPatterns';
 
 /* ─── Solfeggio Colour Palette (7, prime) ───────────────────────── */
@@ -31,6 +32,9 @@ const ANIMATIONS = [
 ];
 
 export default function MantraOverlay({ mantra, visible, onClose }) {
+  const containerRef = useRef(null);
+  useFocusTrap(containerRef, visible);
+
   /* Dismiss on ESC key */
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') onClose();
@@ -64,6 +68,7 @@ export default function MantraOverlay({ mantra, visible, onClose }) {
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-label="Mantra"
       className="fixed inset-0 z-[60] flex items-center justify-center px-8"

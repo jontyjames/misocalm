@@ -25,6 +25,7 @@ export default function TimerPlayer({
   onJournal,
   onReturnHome,
   onPracticeAgain,
+  onComplete,
 }) {
   const {
     phase, currentRound, totalRounds, timeRemaining,
@@ -51,7 +52,7 @@ export default function TimerPlayer({
     if (phase === 'complete' && !bloomDone) setShowBloom(true);
   }, [phase, bloomDone]);
 
-  const handleBloomComplete = () => { setShowBloom(false); setBloomDone(true); };
+  const handleBloomComplete = () => { setShowBloom(false); setBloomDone(true); onComplete?.(); };
 
   const isComplete = phase === 'complete' && bloomDone;
   const progress = computeProgress(phase, timeRemaining, durationSec, reminderSec);

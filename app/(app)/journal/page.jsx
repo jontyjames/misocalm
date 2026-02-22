@@ -95,7 +95,7 @@ export default function JournalPage() {
             className="text-lg text-slate-200 font-light mb-2"
             style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
           >
-            What would you like to do?
+            {stats?.totalLogs === 0 ? 'A quiet place to notice what you feel' : 'What would you like to do?'}
           </p>
           <p className="text-sm text-slate-400 font-light" style={{ marginBottom: '42px' }}>
             Both paths lead somewhere good

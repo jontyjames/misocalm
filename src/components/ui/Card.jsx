@@ -64,6 +64,7 @@ export default function Card({
           relative rounded-xl ${padding} text-left w-full overflow-hidden
           border border-white/[0.18] backdrop-blur-2xl
           hover:border-white/30 transition-all duration-[233ms]
+          focus-visible:ring-1 focus-visible:ring-indigo-500/50 focus-visible:outline-none
           cursor-pointer
           ${className}
         `}

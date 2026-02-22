@@ -17,6 +17,7 @@ import ComingSoon from '@/components/composed/tools/ComingSoon';
 import TimerSetup from '@/components/composed/tools/TimerSetup';
 import TimerPlayer from '@/components/composed/tools/TimerPlayer';
 import LaunchSequence from '@/components/composed/tools/LaunchSequence';
+import { useTools } from '@/hooks/useTools';
 import { ROUTES } from '@/lib/constants';
 
 // Tool data (would come from database)
@@ -39,6 +40,9 @@ export default function ToolPage() {
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [timerConfig, setTimerConfig] = useState(null);
   const [timerPhase, setTimerPhase] = useState('setup');
+
+  const { markCompleted } = useTools(profile?.id, { autoFetch: false });
+  const handleComplete = useCallback(() => { if (tool) markCompleted(tool.id); }, [tool, markCompleted]);
 
   const favoriteTools = profile?.favorite_tools || [];
   const isFavorite = tool && favoriteTools.includes(tool.id);
@@ -118,6 +122,7 @@ export default function ToolPage() {
           <BreathingPlayer
             tool={tool}
             selectedDuration={selectedDuration}
+            onComplete={handleComplete}
             onChangeDuration={() => setSelectedDuration(null)}
             onJournal={() => router.push(`${ROUTES.CHECK_IN}?from=breathwork`)}
             onReturnHome={() => router.push(ROUTES.DASHBOARD)}
@@ -158,6 +163,7 @@ export default function ToolPage() {
             <TimerPlayer
               tool={tool}
               config={{ ...timerConfig, skipCountdown: true }}
+              onComplete={handleComplete}
               onBack={handleTimerBack}
               onJournal={handleTimerJournal}
               onReturnHome={handleTimerHome}

@@ -173,7 +173,7 @@ export default function ToolsPage() {
               p-2 rounded-full transition-all duration-[144ms] active:scale-95
               ${showFavoritesOnly
                 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                : 'text-slate-500 hover:text-amber-400 hover:bg-slate-800/50'
+                : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/50'
               }
             `}
             aria-label={showFavoritesOnly ? 'Show all practices' : 'Show favorites only'}
@@ -184,6 +184,7 @@ export default function ToolsPage() {
             <button
               key={tab}
               onClick={() => setActiveFilter(tab)}
+              aria-current={activeFilter === tab ? 'true' : undefined}
               className={`
                 px-4 py-2 rounded-full text-sm font-light whitespace-nowrap
                 transition-all duration-[144ms] active:scale-95
@@ -291,7 +292,7 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor, isLock
           </div>
         </div>
         {isLocked ? (
-          <Lock className="w-5 h-5 text-slate-500 shrink-0" />
+          <Lock className="w-5 h-5 text-slate-400 shrink-0" />
         ) : !isComingSoon ? (
           <button
             onClick={(e) => {
@@ -299,7 +300,7 @@ function ToolCard({ tool, isFavorite, onToggleFavorite, getCategoryColor, isLock
               onToggleFavorite();
             }}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            className={`p-2 shrink-0 ${isFavorite ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}
+            className={`p-2 shrink-0 ${isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}`}
           >
             <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
