@@ -10,7 +10,7 @@ import { useState, useMemo } from 'react';
 import { Plus, X, ChevronDown, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button, TriggerChips, PageHeader } from '@/components/ui';
+import { Button, TriggerChips, PageHeader, Skeleton } from '@/components/ui';
 import { ExpandingTriggerCard, CrisisModal } from '@/components/composed';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useUserTriggers } from '@/hooks/useUserTriggers';
@@ -20,7 +20,7 @@ import { ROUTES, ENVIRONMENT_OPTIONS } from '@/lib/constants';
 export default function LogFormContainer() {
   const router = useRouter();
   const { user } = useAuth();
-  const { triggers: userTriggers, isUsingDefaults, addCustomTrigger } = useUserTriggers(user?.id);
+  const { triggers: userTriggers, loading: triggersLoading, isUsingDefaults, addCustomTrigger } = useUserTriggers(user?.id);
 
   const {
     triggerEntries, toggleTrigger, setTriggerIntensity,
@@ -66,35 +66,45 @@ export default function LogFormContainer() {
       <section className="mb-[26px]">
         <h2 className="text-sm text-slate-300 font-light mb-[10px]">What sounds affected you?</h2>
 
-        {isUsingDefaults && (
+        {isUsingDefaults && !triggersLoading && (
           <p className="text-xs text-slate-400 font-light mb-[10px]"
              style={{ animation: 'fadeIn 0.377s ease-out' }}>
             These are common triggers. You can personalise them in your profile.
           </p>
         )}
 
-        {/* Selected triggers as expanding cards */}
-        {selectedNames.length > 0 && (
-          <div className="space-y-[10px] mb-[10px]">
-            {selectedNames.map(name => (
-              <ExpandingTriggerCard
-                key={name}
-                name={name}
-                intensity={triggerEntries[name]}
-                onIntensityChange={setTriggerIntensity}
-                onRemove={toggleTrigger}
-              />
+        {triggersLoading ? (
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 5 }, (_, i) => (
+              <Skeleton key={i} width={`${[88, 110, 72, 96, 80][i]}px`} height="34px" rounded="rounded-full" />
             ))}
           </div>
-        )}
+        ) : (
+          <>
+            {/* Selected triggers as expanding cards */}
+            {selectedNames.length > 0 && (
+              <div className="space-y-[10px] mb-[10px]">
+                {selectedNames.map(name => (
+                  <ExpandingTriggerCard
+                    key={name}
+                    name={name}
+                    intensity={triggerEntries[name]}
+                    onIntensityChange={setTriggerIntensity}
+                    onRemove={toggleTrigger}
+                  />
+                ))}
+              </div>
+            )}
 
-        {/* Unselected triggers as chips */}
-        <TriggerChips
-          items={unselected}
-          selected={[]}
-          onToggle={toggleTrigger}
-          searchable
-        />
+            {/* Unselected triggers as chips */}
+            <TriggerChips
+              items={unselected}
+              selected={[]}
+              onToggle={toggleTrigger}
+              searchable
+            />
+          </>
+        )}
 
         {/* Add custom trigger */}
         <div className="flex justify-center mt-3">

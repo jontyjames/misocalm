@@ -64,7 +64,6 @@ export default function EditTriggersPage() {
       return;
     }
     await addCustomTrigger(trimmed);
-    setSelected(prev => [...prev, trimmed]);
     setCustomTrigger('');
     setShowCustomInput(false);
     setInputError(null);
