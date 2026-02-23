@@ -100,8 +100,8 @@ export default function sitemap() {
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
+      changeFrequency: 'weekly',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/privacy`,

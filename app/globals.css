@@ -159,6 +159,7 @@ body {
   .star,
   .animate-spin-slow,
   .breathing-circle,
+  .breathing-hero,
   .seed-of-life,
   .cosmic-drift-layer,
   .ambient-particle,
@@ -471,6 +472,29 @@ body {
 @keyframes sacredPatternIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* ─── Website Hero Breathing Orb ──────────────────────────────────
+ * Prime durations: 5.3s, 7.1s, 3.7s. Phi-based scale values.
+ */
+@keyframes heroBreathOuter {
+  0%, 100% { transform: scale(1); opacity: 0.618; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes heroBreathMiddle {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes heroBreathInner {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.06); opacity: 0.7; }
+}
+
+@keyframes heroBreathCore {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
 }
 
 /* Reduced motion: disable mantra pattern and overlay animations */
