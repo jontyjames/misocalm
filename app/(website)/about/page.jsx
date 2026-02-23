@@ -105,7 +105,7 @@ function Feature({ title, description, color = 'indigo' }) {
 export default function AboutPage() {
   return (
     <main className="min-h-screen flex flex-col items-center px-6 py-16 sm:py-24">
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-3xl">
         {/* ── Hero ─────────────────────────────────────────────── */}
         <section
           className="text-center mb-16"
@@ -174,35 +174,37 @@ export default function AboutPage() {
             What MisoCalm offers
           </h2>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <GlassCard delay={275}>
-              <div className="space-y-5">
-                <Feature
-                  title="Breathwork tools"
-                  description="4-7-8 Breathing, Box Breathing, and Physiological Sigh. Techniques backed by research to calm your nervous system in the moment."
-                  color="cyan"
-                />
-                <Feature
-                  title="Guided experiences"
-                  description="Mandala drawing, Pulse awareness, and an Impermanence meditation. Gentle practices that help you return to yourself when sounds pull you away."
-                  color="violet"
-                />
-              </div>
+              <Feature
+                title="Breathwork tools"
+                description="4-7-8 Breathing, Box Breathing, and Physiological Sigh. Techniques backed by research to calm your nervous system in the moment."
+                color="cyan"
+              />
             </GlassCard>
 
-            <GlassCard delay={330}>
-              <div className="space-y-5">
-                <Feature
-                  title="Journal and check-in tools"
-                  description="Track triggers, log how you feel, and notice patterns over time. Not to score yourself, just to understand. A place to process what happened and honour what you felt."
-                  color="indigo"
-                />
-                <Feature
-                  title="AI companion"
-                  description="A warm, patient space to talk through difficult moments. Not a therapist, not a chatbot with scripts. A companion that listens and helps you make sense of what you are going through."
-                  color="cyan"
-                />
-              </div>
+            <GlassCard delay={310}>
+              <Feature
+                title="Guided experiences"
+                description="Mandala drawing, Pulse awareness, and an Impermanence meditation. Gentle practices that help you return to yourself when sounds pull you away."
+                color="violet"
+              />
+            </GlassCard>
+
+            <GlassCard delay={345}>
+              <Feature
+                title="Journal and check-in tools"
+                description="Track triggers, log how you feel, and notice patterns over time. Not to score yourself, just to understand. A place to process what happened and honour what you felt."
+                color="indigo"
+              />
+            </GlassCard>
+
+            <GlassCard delay={380}>
+              <Feature
+                title="AI companion"
+                description="A warm, patient space to talk through difficult moments. Not a therapist, not a chatbot with scripts. A companion that listens and helps you make sense of what you are going through."
+                color="cyan"
+              />
             </GlassCard>
           </div>
         </section>

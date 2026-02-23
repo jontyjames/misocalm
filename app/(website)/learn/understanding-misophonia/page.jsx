@@ -28,7 +28,7 @@ export const metadata = {
 
 export default function UnderstandingMisophoniaPage() {
   return (
-    <ArticleLayout>
+    <ArticleLayout slug="understanding-misophonia">
       <h1
         className="text-3xl sm:text-4xl text-white mb-3 leading-tight"
         style={{

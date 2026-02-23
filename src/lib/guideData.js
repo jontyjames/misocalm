@@ -1,6 +1,6 @@
 /**
  * Personalized guide content for each quiz result category
- * Each guide: intro, what's happening, 3 techniques, next step
+ * Each guide: intro, what's happening, 3 techniques, learnMore links, next step
  */
 
 export const GUIDE_CONTENT = {
@@ -11,7 +11,7 @@ export const GUIDE_CONTENT = {
     intro: 'You notice sounds more than most people. That awareness is worth paying attention to, even if it doesn\'t feel overwhelming right now. Understanding your patterns early is one of the most helpful things you can do.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
-      body: 'Everyone processes sound differently. Your brain pays more attention to certain auditory signals than the average person. This isn\'t a flaw. It\'s a sensitivity. For some people, this awareness stays mild. For others, it can intensify during stressful periods. Either way, learning to work with your nervous system now gives you a real advantage.',
+      body: 'Everyone processes sound differently. Your brain pays more attention to certain auditory signals than the average person. This isn\'t a flaw. It\'s a sensitivity. Research suggests that around 4.6% of people meet clinical criteria for misophonia (Dixon et al., 2024), though many more experience milder sound sensitivity. Studies have found that people with heightened sound awareness show increased mirror neuron activity, meaning your brain is literally simulating the actions that produce the sounds you hear. For some people, this awareness stays mild. For others, it can intensify during stressful periods when accumulated stress lowers your threshold. Either way, learning to work with your nervous system now gives you a real advantage.',
     },
     techniques: [
       {
@@ -33,6 +33,10 @@ export const GUIDE_CONTENT = {
         when: 'Before entering spaces you know might be challenging.',
       },
     ],
+    learnMore: [
+      { slug: 'understanding-misophonia', title: 'What I Wish People Understood About Misophonia', readingTime: '4 min' },
+      { slug: 'breathing-techniques', title: '5 Breathing Techniques That Actually Help', readingTime: '6 min' },
+    ],
   },
 
   moderate: {
@@ -42,7 +46,7 @@ export const GUIDE_CONTENT = {
     intro: 'What you\'re experiencing has a name: misophonia. It\'s a neurological condition, not a personality flaw. The fact that you feel your reactions are sometimes "too much" is one of the most common things people with misophonia say. You\'re not alone in this.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
-      body: 'In misophonia, your brain has learned to treat certain sounds as threats. When you hear a trigger sound, your amygdala (the brain\'s alarm system) fires before your conscious mind can intervene. That\'s why the reaction feels instant and involuntary. It\'s not about willpower. Your nervous system is doing exactly what it was wired to do. The response is real, physical, and neurological. And it can be worked with.',
+      body: 'In misophonia, your brain has learned to treat certain sounds as threats. When you hear a trigger sound, your amygdala (the brain\'s alarm system) fires before your conscious mind can intervene. That\'s why the reaction feels instant and involuntary. It\'s not about willpower. Research from 2024 estimates that 4.6% of people meet clinical criteria for misophonia (Dixon et al.), and studies have found heightened mirror neuron activity in response to trigger sounds, meaning your brain is physically simulating the actions it hears. The response is real, physical, and neurological. Accumulated stress also plays a role: the more depleted your nervous system, the lower your threshold for triggers. And it can be worked with.',
     },
     techniques: [
       {
@@ -64,6 +68,11 @@ export const GUIDE_CONTENT = {
         when: 'During meals, meetings, or any situation where you can\'t leave.',
       },
     ],
+    learnMore: [
+      { slug: 'fight-or-flight', title: "Why Your Fight-or-Flight Response Isn't Broken", readingTime: '5 min' },
+      { slug: 'breathing-techniques', title: '5 Breathing Techniques That Actually Help', readingTime: '6 min' },
+      { slug: 'misophonia-facts', title: "13 Things About Misophonia Most People Don't Know", readingTime: '5 min' },
+    ],
   },
 
   significant: {
@@ -73,7 +82,7 @@ export const GUIDE_CONTENT = {
     intro: 'Your responses tell a clear story: misophonia has been shaping your life in significant ways. The planning, the avoidance, the guilt about your own reactions. All of it is real. And none of it means something is wrong with you. Your nervous system is responding to something it perceives as threatening. That response can be worked with.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
-      body: 'Your brain\'s threat detection system has become hypersensitive to specific sounds. When you hear a trigger, your amygdala fires an alarm signal before your prefrontal cortex (the reasoning part) can evaluate it. That\'s why you can\'t "just ignore it." The emotional and physical response happens faster than conscious thought. This isn\'t weakness. It\'s neurology. Research shows that people with misophonia have measurably different brain connectivity patterns in the regions that process sound and emotion. Your experience is valid, documented, and shared by millions of people.',
+      body: 'Your brain\'s threat detection system has become hypersensitive to specific sounds. When you hear a trigger, your amygdala fires an alarm signal before your prefrontal cortex (the reasoning part) can evaluate it. That\'s why you can\'t "just ignore it." The emotional and physical response happens faster than conscious thought. This isn\'t weakness. It\'s neurology. Research from 2024 confirms that around 4.6% of people meet clinical criteria for misophonia (Dixon et al.), with many more experiencing significant symptoms. Studies show heightened mirror neuron activity and measurably different brain connectivity patterns in the regions that process sound and emotion. Accumulated stress compounds this: each unprocessed trigger adds to your nervous system\'s load, lowering your threshold over time. Your experience is valid, documented, and shared by millions of people.',
     },
     techniques: [
       {
@@ -95,6 +104,11 @@ export const GUIDE_CONTENT = {
         when: 'After a trigger event, especially when you feel guilt or frustration with yourself.',
       },
     ],
+    learnMore: [
+      { slug: 'fight-or-flight', title: "Why Your Fight-or-Flight Response Isn't Broken", readingTime: '5 min' },
+      { slug: 'misophonia-at-work', title: 'The Invisible Weight of Misophonia at Work', readingTime: '5 min' },
+      { slug: 'what-to-say', title: '7 Things to Say (and Not Say) to Someone With Misophonia', readingTime: '4 min' },
+    ],
   },
 
   severe: {
@@ -105,7 +119,7 @@ export const GUIDE_CONTENT = {
     intro: 'You\'ve been living with intense misophonia, likely for most of your life. The systems you\'ve built to cope, the relationships it\'s affected, the loneliness of feeling like no one understands. All of it is real. And the fact that you\'re here, looking for answers, says something about your strength.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
-      body: 'Your brain\'s threat detection system has been running in overdrive, possibly for decades. Trigger sounds activate your amygdala with the same intensity as a genuine physical threat. Your body responds accordingly: adrenaline, cortisol, muscle tension, the overwhelming urge to fight or flee. This is not a choice and not a character flaw. Brain imaging studies show that people with severe misophonia have heightened connectivity between the auditory cortex, the anterior insular cortex (which processes emotions), and the amygdala. Your brain literally processes these sounds differently. You have been managing a neurological condition without support, and that takes immense resilience.',
+      body: 'Your brain\'s threat detection system has been running in overdrive, possibly for decades. Trigger sounds activate your amygdala with the same intensity as a genuine physical threat. Your body responds accordingly: adrenaline, cortisol, muscle tension, the overwhelming urge to fight or flee. This is not a choice and not a character flaw. Brain imaging studies show that people with severe misophonia have heightened connectivity between the auditory cortex, the anterior insular cortex (which processes emotions), and the amygdala. Your brain literally processes these sounds differently. Research from 2024 (Dixon et al.) puts clinical prevalence at around 4.6%, and for people at the severe end, there have been only 3 randomized controlled trials ever completed for misophonia, with zero established first-line treatments. That means if you\'ve felt unsupported by the medical system, it\'s not because you haven\'t tried hard enough. It\'s because the system hasn\'t caught up yet. You have been managing a neurological condition largely without support, and that takes immense resilience.',
     },
     techniques: [
       {
@@ -126,6 +140,11 @@ export const GUIDE_CONTENT = {
         how: 'Your vagus nerve is the main pathway between your brain and your body\'s calm-down system. Strengthening it makes you more resilient to triggers over time. Three daily practices: (1) Humming for 2 minutes, feeling the vibration in your chest and throat. (2) Splashing cold water on your face, which activates the dive reflex. (3) Slow, extended exhale breathing (breathe in for 4, out for 8) for 3 minutes. These aren\'t one-time fixes. They\'re training. Like building a muscle. Over weeks, your baseline nervous system state shifts, and triggers become slightly less intense.',
         when: 'Daily practice, ideally morning. Think of it as nervous system training, not crisis management.',
       },
+    ],
+    learnMore: [
+      { slug: 'understanding-misophonia', title: 'What I Wish People Understood About Misophonia', readingTime: '4 min' },
+      { slug: 'fight-or-flight', title: "Why Your Fight-or-Flight Response Isn't Broken", readingTime: '5 min' },
+      { slug: 'parents-guide', title: "Understanding Your Child's Misophonia", readingTime: '15 min' },
     ],
   },
 };

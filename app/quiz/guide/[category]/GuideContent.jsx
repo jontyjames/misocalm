@@ -122,10 +122,46 @@ export default function GuideContent({ guide }) {
           </div>
         </section>
 
+        {/* Learn more */}
+        {guide.learnMore?.length > 0 && (
+          <section
+            className="mb-12"
+            style={{ animation: 'fadeInUp 377ms ease-out 770ms both' }}
+          >
+            <h2
+              className="text-xl text-white mb-6"
+              style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+            >
+              Learn more about misophonia
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {guide.learnMore.map((article) => (
+                <Link
+                  key={article.slug}
+                  href={`/learn/${article.slug}`}
+                  className="block group"
+                >
+                  <GlassCard>
+                    <h3
+                      className="text-sm text-white mb-1 group-hover:text-indigo-200 transition-colors duration-[233ms]"
+                      style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+                    >
+                      {article.title}
+                    </h3>
+                    <span className="text-xs text-slate-400 font-light">
+                      {article.readingTime} read
+                    </span>
+                  </GlassCard>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* CTA */}
         <section
           className="text-center"
-          style={{ animation: 'fadeInUp 377ms ease-out 770ms both' }}
+          style={{ animation: 'fadeInUp 377ms ease-out 880ms both' }}
         >
           <p
             className="text-lg text-slate-200 font-light mb-6"

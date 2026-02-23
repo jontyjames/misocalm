@@ -37,10 +37,12 @@ export default function CosmicLayout({ children }) {
 
       <Starfield />
 
-      <div className="relative z-10 min-h-screen">
-        <ErrorBoundary fallback={(props) => <CosmicErrorFallback {...props} />}>
-          {children}
-        </ErrorBoundary>
+      <div className="relative z-10 min-h-screen flex justify-center">
+        <div className="w-full max-w-md min-h-screen relative">
+          <ErrorBoundary fallback={(props) => <CosmicErrorFallback {...props} />}>
+            {children}
+          </ErrorBoundary>
+        </div>
       </div>
     </div>
   );

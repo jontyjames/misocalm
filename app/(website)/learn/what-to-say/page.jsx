@@ -50,7 +50,7 @@ function DoAndDont({ number, doSay, dontSay, why }) {
 
 export default function WhatToSayPage() {
   return (
-    <ArticleLayout>
+    <ArticleLayout slug="what-to-say">
       <h1
         className="text-3xl sm:text-4xl text-white mb-3 leading-tight"
         style={{

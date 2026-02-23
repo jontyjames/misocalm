@@ -31,7 +31,7 @@ export const metadata = {
 
 export default function BreathingTechniquesPage() {
   return (
-    <ArticleLayout>
+    <ArticleLayout slug="breathing-techniques">
       <h1
         className="text-3xl sm:text-4xl text-white mb-3 leading-tight"
         style={{

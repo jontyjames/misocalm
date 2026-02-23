@@ -118,20 +118,17 @@ export default function RootLayout({ children }) {
         >
           Skip to content
         </a>
-        {/* Phone container - constrains to mobile dimensions */}
-        <div className="w-full max-w-md min-h-screen relative bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] shadow-2xl">
-          <QueryProvider>
-            <AuthProvider>
-              <PremiumProvider>
-                <NavProvider>
-                  <ErrorBoundary>
-                    {children}
-                  </ErrorBoundary>
-                </NavProvider>
-              </PremiumProvider>
-            </AuthProvider>
-          </QueryProvider>
-        </div>
+        <QueryProvider>
+          <AuthProvider>
+            <PremiumProvider>
+              <NavProvider>
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
+              </NavProvider>
+            </PremiumProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   )
