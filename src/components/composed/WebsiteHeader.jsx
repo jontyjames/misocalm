@@ -25,7 +25,7 @@ export default function WebsiteHeader() {
     >
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-[68px]">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/about" className="flex items-center gap-3">
           <Logo size="sm" />
           <span
             className="text-lg tracking-wide text-white hidden sm:block"
