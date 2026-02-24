@@ -47,12 +47,21 @@ export const metadata = {
     siteName: 'MisoCalm',
     type: 'website',
     locale: 'en_US',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'MisoCalm - A Space for Living with Misophonia',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MisoCalm - A Space for Living with Misophonia',
     description:
       'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
+    images: ['/og-image.png'],
   },
   metadataBase: new URL('https://misocalm.app'),
   robots: {
