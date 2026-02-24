@@ -40,9 +40,9 @@ export const metadata = {
     title: 'MisoCalm',
   },
   openGraph: {
-    title: 'MisoCalm - A Space for Living with Misophonia',
+    title: 'MisoCalm - Free Calming Tools for Living with Misophonia',
     description:
-      'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
+      'A free companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Breathwork, journaling, and calming tools.',
     url: 'https://misocalm.app',
     siteName: 'MisoCalm',
     type: 'website',
@@ -58,9 +58,9 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MisoCalm - A Space for Living with Misophonia',
+    title: 'MisoCalm - Free Calming Tools for Living with Misophonia',
     description:
-      'A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground.',
+      'A free companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Breathwork, journaling, and calming tools.',
     images: ['/og-image.png'],
   },
   metadataBase: new URL('https://misocalm.app'),
