@@ -13,7 +13,6 @@ import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import { SACRED_SHAPES } from '@/lib/sacredShapes';
 
-const VOID_FADE = 'rgba(3, 7, 18, 0.008)'; // extremely slow fade — shapes linger
 const MAX_FORMS = 37; // prime cap
 
 class SacredForm {
@@ -24,18 +23,11 @@ class SacredForm {
     this.color = color;
     this.size = size;
     this.rotation = rotation;
-    this.age = 0;
-    this.maxAge = 610; // frames
     this.alive = true;
     this.scale = 0; // scales up from 0
   }
 
   update() {
-    this.age++;
-    if (this.age > this.maxAge) {
-      this.alive = false;
-      return;
-    }
     // Scale up over ~23 frames (smooth entrance)
     if (this.scale < 1) {
       this.scale = Math.min(1, this.scale + 0.045);
@@ -45,12 +37,8 @@ class SacredForm {
   }
 
   draw(ctx) {
-    if (!this.alive) return;
-    const life = Math.max(0, 1 - this.age / this.maxAge);
-    // Fade curve: hold full alpha for 80% of life, then fade
-    const alpha = life > 0.2 ? 0.85 : (life / 0.2) * 0.85;
     const currentSize = this.size * this.scale;
-    if (alpha < 0.005 || currentSize < 1) return;
+    if (currentSize < 1) return;
 
     SACRED_SHAPES[this.shapeIndex](
       ctx,
@@ -58,7 +46,7 @@ class SacredForm {
       this.y,
       currentSize,
       this.color,
-      alpha,
+      0.85,
       this.rotation,
     );
   }
@@ -85,9 +73,8 @@ export default function GroundingCanvas({ shapes }) {
 
     s.time++;
 
-    // Very slow fade trail — shapes accumulate visually
-    ctx.fillStyle = VOID_FADE;
-    ctx.fillRect(0, 0, W, H);
+    // Clear canvas each frame (shapes are permanent, redrawn fresh)
+    ctx.clearRect(0, 0, W, H);
 
     // Spawn new forms from shapes prop
     const currentShapes = shapesRef.current;
@@ -102,12 +89,9 @@ export default function GroundingCanvas({ shapes }) {
       lastSpawnCountRef.current = currentShapes.length;
     }
 
-    // Update and draw
-    for (let i = s.forms.length - 1; i >= 0; i--) {
-      s.forms[i].update();
-      if (!s.forms[i].alive) s.forms.splice(i, 1);
-    }
+    // Update and draw (shapes are permanent, never removed)
     for (const form of s.forms) {
+      form.update();
       form.draw(ctx);
     }
 

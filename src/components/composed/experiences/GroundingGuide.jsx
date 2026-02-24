@@ -30,6 +30,8 @@ const TIER_TRANSITIONS = {
   FLASH:    { in: '0.089s', out: '0.144s' },
 };
 
+const TEXT_SHADOW = '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)';
+
 export default function GroundingGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
@@ -42,6 +44,8 @@ export default function GroundingGuide() {
   useEffect(() => {
     state.setOnTap(() => {
       const shape = spawnSacredShape(window.innerWidth, window.innerHeight);
+      // Bias shapes toward middle and lower screen (away from text zone)
+      shape.y = (window.innerHeight * 0.3) + Math.random() * (window.innerHeight * 0.6);
       setShapes((prev) => [...prev, shape]);
     });
   }, [state.setOnTap]);
@@ -175,42 +179,80 @@ export default function GroundingGuide() {
         </button>
       )}
 
-      {/* Guide text — larger, variable transition speeds */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          paddingTop: 'clamp(68px, 12vh, 110px)',
-          paddingBottom: 42,
-          pointerEvents: 'none',
-          background: 'linear-gradient(to bottom, rgba(3,7,18,0.85) 0%, rgba(3,7,18,0.4) 70%, transparent 100%)',
-        }}
-      >
-        <p
+      {/* Intro text zone — centred on screen, larger, shown during intro */}
+      {state.introActive && (
+        <div
           style={{
-            fontSize: 'clamp(1.4rem, 4vw, 2rem)',
-            letterSpacing: '0.08em',
-            textAlign: 'center',
-            opacity: state.guideText ? 1 : 0,
-            transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
-            transition: `opacity ${state.guideText ? transitions.in : transitions.out} ease, transform ${state.guideText ? transitions.in : transitions.out} ease, color 0.987s ease`,
-            lineHeight: 1.8,
-            maxWidth: 440,
-            padding: '0 26px',
-            whiteSpace: 'pre-line',
-            fontFamily: "'Josefin Sans', sans-serif",
+            position: 'fixed',
+            inset: 0,
+            zIndex: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none',
           }}
-          className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
         >
-          {state.guideText}
-        </p>
-      </div>
+          <p
+            style={{
+              fontSize: 'clamp(1.8rem, 5vw, 2.6rem)',
+              letterSpacing: '0.08em',
+              textAlign: 'center',
+              opacity: state.guideText ? 1 : 0,
+              transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
+              transition: `opacity ${state.guideText ? transitions.in : transitions.out} ease, transform ${state.guideText ? transitions.in : transitions.out} ease, color 0.987s ease`,
+              lineHeight: 1.8,
+              maxWidth: 440,
+              padding: '0 26px',
+              whiteSpace: 'pre-line',
+              fontFamily: "'Josefin Sans', sans-serif",
+              textShadow: TEXT_SHADOW,
+            }}
+            className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
+          >
+            {state.guideText}
+          </p>
+        </div>
+      )}
+
+      {/* Body text zone — top of screen, shown during active grounding */}
+      {!state.introActive && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            paddingTop: 'clamp(68px, 12vh, 110px)',
+            paddingBottom: 42,
+            pointerEvents: 'none',
+            background: 'linear-gradient(to bottom, rgba(3,7,18,0.92) 0%, rgba(3,7,18,0.7) 50%, rgba(3,7,18,0.3) 80%, transparent 100%)',
+          }}
+        >
+          <p
+            style={{
+              fontSize: 'clamp(1.4rem, 4vw, 2rem)',
+              letterSpacing: '0.08em',
+              textAlign: 'center',
+              opacity: state.guideText ? 1 : 0,
+              transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
+              transition: `opacity ${state.guideText ? transitions.in : transitions.out} ease, transform ${state.guideText ? transitions.in : transitions.out} ease, color 0.987s ease`,
+              lineHeight: 1.8,
+              maxWidth: 440,
+              padding: '0 26px',
+              whiteSpace: 'pre-line',
+              fontFamily: "'Josefin Sans', sans-serif",
+              textShadow: TEXT_SHADOW,
+            }}
+            className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
+          >
+            {state.guideText}
+          </p>
+        </div>
+      )}
 
       {/* Sense progress dots */}
       {state.started && state.currentSense && !state.complete && (
