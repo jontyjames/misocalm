@@ -1,30 +1,50 @@
 /**
  * GroundingGuide — orchestrates the 5-4-3-2-1 grounding experience
  *
- * Text-driven sensory grounding. No canvas, no sounds.
- * The user looks at their real environment, not the screen.
- * Same architectural pattern as PulseGuide.
+ * Text-driven sensory grounding with sacred geometry generative art.
+ * Each tap spawns a sacred shape on the canvas. By the end of 15 taps,
+ * the user has painted a unique piece of art through their grounding.
  */
 
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
-import useGroundingState from './useGroundingState';
+import { spawnSacredShape } from '@/lib/sacredShapes';
+import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
 import GroundingComplete from './GroundingComplete';
+import GroundingCanvas from './GroundingCanvas';
+import GroundingPrompt from './GroundingPrompt';
 
 let rippleId = 0;
+
+// Transition durations per timing tier
+const TIER_TRANSITIONS = {
+  SLOW:     { in: '0.987s', out: '0.610s' },
+  STANDARD: { in: '0.987s', out: '0.987s' },
+  QUICK:    { in: '0.377s', out: '0.233s' },
+  FLASH:    { in: '0.089s', out: '0.144s' },
+};
 
 export default function GroundingGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const state = useGroundingState();
   const [ripples, setRipples] = useState([]);
+  const [shapes, setShapes] = useState([]);
   const rippleTimers = useRef([]);
+
+  // Register tap callback to spawn sacred shapes
+  useEffect(() => {
+    state.setOnTap(() => {
+      const shape = spawnSacredShape(window.innerWidth, window.innerHeight);
+      setShapes((prev) => [...prev, shape]);
+    });
+  }, [state.setOnTap]);
 
   const handleTap = useCallback((e) => {
     if (!state.processTap()) return;
@@ -40,7 +60,7 @@ export default function GroundingGuide() {
 
       const timer = setTimeout(() => {
         setRipples((prev) => prev.filter((r) => r.id !== id));
-      }, 610); // fib-ease — ripple expands then fades
+      }, 610);
       rippleTimers.current.push(timer);
     }
   }, [state.processTap, state.currentSense, prefersReduced]);
@@ -64,9 +84,16 @@ export default function GroundingGuide() {
   }, [state.clearSeqTimer, router]);
 
   const senseColor = state.currentSense?.color || 'rgba(148,163,184,0.3)';
+  const tier = state.guideTier || TIERS.STANDARD;
+  const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
+      {/* Sacred geometry canvas — z0, behind everything */}
+      {state.started && !state.complete && (
+        <GroundingCanvas shapes={shapes} />
+      )}
+
       {/* Sense glow — subtle radial background that shifts per sense */}
       {state.started && !state.complete && (
         <div
@@ -74,25 +101,25 @@ export default function GroundingGuide() {
             position: 'fixed',
             inset: 0,
             zIndex: 0,
-            background: `radial-gradient(circle at 50% 60%, ${senseColor}08 0%, transparent 60%)`,
+            background: `radial-gradient(circle at 50% 60%, ${senseColor}12 0%, transparent 60%)`,
             transition: 'background 0.987s ease',
             pointerEvents: 'none',
           }}
         />
       )}
 
-      {/* Tap ripples */}
+      {/* Tap ripples — larger (110px phi scale) */}
       {ripples.map((r) => (
         <div
           key={r.id}
           style={{
             position: 'fixed',
-            left: r.x - 42,
-            top: r.y - 42,
-            width: 84,
-            height: 84,
+            left: r.x - 55,
+            top: r.y - 55,
+            width: 110,
+            height: 110,
             borderRadius: '50%',
-            background: `radial-gradient(circle, ${r.color}25 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${r.color}30 0%, transparent 70%)`,
             zIndex: 1,
             pointerEvents: 'none',
             animation: 'groundingRipple 0.610s ease-out forwards',
@@ -121,80 +148,12 @@ export default function GroundingGuide() {
         />
       )}
 
-      {/* Prompt screen */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#030712',
-          transition: 'opacity 1.597s ease, visibility 1.597s ease',
-          ...(state.started ? { opacity: 0, visibility: 'hidden', pointerEvents: 'none' } : {}),
-        }}
-      >
-        <p
-          className="tracking-widest text-slate-200"
-          style={{
-            fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
-            fontFamily: "'Josefin Sans', sans-serif",
-            fontWeight: 200,
-            marginBottom: 10,
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
-          }}
-        >
-          {state.isFirstVisit ? 'A small practice' : 'Grounding'}
-        </p>
-
-        <div
-          style={{
-            fontSize: 'clamp(0.8rem, 1.8vw, 0.9rem)',
-            letterSpacing: '0.06em',
-            marginBottom: 42,
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
-            textAlign: 'center',
-            lineHeight: 1.8,
-            maxWidth: 340,
-            padding: '0 26px',
-          }}
-          className="font-extralight text-slate-400"
-        >
-          {state.isFirstVisit ? (
-            <span className="block">about finding where you are</span>
-          ) : (
-            <>
-              <span className="block">Welcome back.</span>
-              <span className="block mt-2">Your senses remember.</span>
-            </>
-          )}
-        </div>
-
-        <button
-          onClick={state.enter}
-          style={{
-            fontFamily: "'Josefin Sans', sans-serif",
-            fontSize: '0.9rem',
-            letterSpacing: '0.12em',
-            border: '1px solid rgba(165, 180, 252, 0.25)',
-            background: 'rgba(165, 180, 252, 0.04)',
-            padding: '14px 42px',
-            borderRadius: 999,
-            cursor: 'pointer',
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1.597s forwards',
-            transition: 'all 0.377s ease',
-            color: '#e2e8f0',
-          }}
-          className="font-extralight hover:bg-indigo-300/10 hover:border-indigo-300/40"
-        >
-          {state.isFirstVisit ? 'Begin' : 'Enter'}
-        </button>
-      </div>
+      {/* Prompt screen (extracted component) */}
+      <GroundingPrompt
+        isFirstVisit={state.isFirstVisit}
+        onEnter={state.enter}
+        visible={!state.started}
+      />
 
       {/* Exit button */}
       {state.started && !state.complete && (
@@ -216,7 +175,7 @@ export default function GroundingGuide() {
         </button>
       )}
 
-      {/* Guide text */}
+      {/* Guide text — larger, variable transition speeds */}
       <div
         style={{
           position: 'fixed',
@@ -235,12 +194,12 @@ export default function GroundingGuide() {
       >
         <p
           style={{
-            fontSize: 'clamp(1.05rem, 2.5vw, 1.35rem)',
+            fontSize: 'clamp(1.4rem, 4vw, 2rem)',
             letterSpacing: '0.08em',
             textAlign: 'center',
             opacity: state.guideText ? 1 : 0,
             transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
-            transition: 'opacity 0.987s ease, transform 0.987s ease, color 0.987s ease',
+            transition: `opacity ${state.guideText ? transitions.in : transitions.out} ease, transform ${state.guideText ? transitions.in : transitions.out} ease, color 0.987s ease`,
             lineHeight: 1.8,
             maxWidth: 440,
             padding: '0 26px',

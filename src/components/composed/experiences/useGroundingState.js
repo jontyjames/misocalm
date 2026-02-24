@@ -3,6 +3,8 @@
  *
  * Walks the user through five senses, counting down from 5 to 1.
  * Promise-based async sequence matching usePulseState pattern.
+ *
+ * Timing tiers: SLOW (contemplative), STANDARD, QUICK (snappy), FLASH (subliminal)
  */
 
 'use client';
@@ -19,6 +21,22 @@ const SENSES = [
   { id: 'taste', label: 'taste', count: 1, color: 'rgb(241,245,249)' },   // slate-100
 ];
 
+// Timing tiers — each controls how text appears and lingers
+export const TIERS = {
+  SLOW:     'SLOW',
+  STANDARD: 'STANDARD',
+  QUICK:    'QUICK',
+  FLASH:    'FLASH',
+};
+
+// Gap before next text appears (0 = immediate for flash sequences)
+const TIER_GAP = {
+  SLOW: 377,
+  STANDARD: 377,
+  QUICK: 233,
+  FLASH: 0,
+};
+
 function pickTeaching(visitIndex, lastIndex) {
   if (visitIndex < GROUNDING_TEACHINGS.length) {
     return { teaching: GROUNDING_TEACHINGS[visitIndex], index: visitIndex };
@@ -32,6 +50,7 @@ export default function useGroundingState() {
   const [started, setStarted] = useState(false);
   const [guideText, setGuideText] = useState('');
   const [guideBright, setGuideBright] = useState(false);
+  const [guideTier, setGuideTier] = useState(TIERS.STANDARD);
   const [phase, setPhase] = useState('PROMPT');
   const [currentSense, setCurrentSense] = useState(null);
   const [tapsRemaining, setTapsRemaining] = useState(0);
@@ -47,6 +66,7 @@ export default function useGroundingState() {
   const resolveTapsRef = useRef(null);
   const seqTimerRef = useRef(null);
   const interactionTimerRef = useRef(null);
+  const onTapCallbackRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
     if (seqTimerRef.current) {
@@ -61,14 +81,22 @@ export default function useGroundingState() {
 
   useEffect(() => () => clearSeqTimer(), [clearSeqTimer]);
 
-  const setGuide = useCallback((text, bright = false) => {
+  // setGuide now accepts tier and immediate flag
+  const setGuide = useCallback((text, bright = false, tier = TIERS.STANDARD, immediate = false) => {
+    const gap = immediate ? 0 : TIER_GAP[tier] || 377;
     setGuideText('');
     setGuideBright(false);
+    setGuideTier(tier);
     if (text) {
-      setTimeout(() => {
+      if (gap === 0) {
         setGuideText(text);
         setGuideBright(bright);
-      }, 377);
+      } else {
+        setTimeout(() => {
+          setGuideText(text);
+          setGuideBright(bright);
+        }, gap);
+      }
     }
   }, []);
 
@@ -115,6 +143,9 @@ export default function useGroundingState() {
     setTapsRemaining(total - completed);
     setTotalProgress((p) => p + 1);
 
+    // Fire onTap callback for shape spawning
+    onTapCallbackRef.current?.();
+
     if (completed >= total) {
       waitingForTapsRef.current = false;
       if (resolveTapsRef.current) {
@@ -126,73 +157,78 @@ export default function useGroundingState() {
     return true;
   }, []);
 
+  // Allow parent to register tap callback
+  const setOnTap = useCallback((fn) => {
+    onTapCallbackRef.current = fn;
+  }, []);
+
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
     // INTRO
     setPhase('INTRO');
     await delay(987);
-    setGuide('you are here');
+    setGuide('you are here', false, TIERS.SLOW);
     await delay(2584);
-    setGuide('let your senses bring you back');
+    setGuide('let your senses bring you back', false, TIERS.STANDARD);
     await delay(2584);
 
-    // SEE
+    // SEE (indigo glow)
     setPhase('SEE');
     setCurrentSense(SENSES[0]);
-    setGuide('look around you');
+    setGuide('look around you', false, TIERS.STANDARD);
     await delay(1597);
-    setGuide('find five things you can see');
+    setGuide('find five things you can see', false, TIERS.STANDARD);
     await delay(987);
-    setGuide('tap once for each one');
+    setGuide('tap once for each one', false, TIERS.QUICK);
     await waitForTaps(5);
     await delay(610);
-    setGuide('five anchors, just through your eyes', true);
+    setGuide('five anchors, just through your eyes', true, TIERS.SLOW);
     await delay(1597);
 
-    // TOUCH
+    // TOUCH (cyan glow)
     setPhase('TOUCH');
     setCurrentSense(SENSES[1]);
-    setGuide('now reach out');
+    setGuide('now reach out', false, TIERS.STANDARD);
     await delay(1597);
-    setGuide('four things you can touch');
+    setGuide('four things you can touch', false, TIERS.STANDARD);
     await delay(987);
-    setGuide('tap for each one');
+    setGuide('tap for each one', false, TIERS.QUICK);
     await waitForTaps(4);
     await delay(610);
-    setGuide('your hands already know where you are', true);
+    setGuide('your hands already know where you are', true, TIERS.SLOW);
     await delay(1597);
 
-    // HEAR
+    // HEAR (violet glow)
     setPhase('HEAR');
     setCurrentSense(SENSES[2]);
-    setGuide('listen');
+    setGuide('listen', false, TIERS.SLOW);
     await delay(1597);
-    setGuide('three things you can hear');
+    setGuide('three things you can hear', false, TIERS.STANDARD);
     await delay(987);
     await waitForTaps(3);
     await delay(610);
-    setGuide('the world is still here, holding you', true);
+    setGuide('the world is still here, holding you', true, TIERS.SLOW);
     await delay(1597);
 
-    // SMELL
+    // SMELL (slate-warm glow)
     setPhase('SMELL');
     setCurrentSense(SENSES[3]);
-    setGuide('breathe in');
+    setGuide('breathe in', false, TIERS.SLOW);
     await delay(1597);
-    setGuide('two things you can smell');
+    setGuide('two things you can smell', false, TIERS.STANDARD);
     await delay(987);
     await waitForTaps(2);
     await delay(610);
-    setGuide('closer now', true);
-    await delay(1597);
+    setGuide('closer now', true, TIERS.FLASH, true);
+    await delay(610);
 
-    // TASTE
+    // TASTE (white glow)
     setPhase('TASTE');
     setCurrentSense(SENSES[4]);
-    setGuide('one last anchor');
-    await delay(1597);
-    setGuide('one thing you can taste');
+    setGuide('one last anchor', false, TIERS.FLASH, true);
+    await delay(987);
+    setGuide('one thing you can taste', false, TIERS.STANDARD);
     await delay(987);
     await waitForTaps(1);
     await delay(610);
@@ -203,7 +239,7 @@ export default function useGroundingState() {
     setPhase('TEACHING');
     setCurrentSense(null);
     for (const line of teaching.lines) {
-      setGuide(line, true);
+      setGuide(line, true, TIERS.SLOW);
       await delay(1597);
     }
     setGuide('');
@@ -212,7 +248,7 @@ export default function useGroundingState() {
     // COMPLETE
     setPhase('COMPLETE');
     setLastTeaching(teachingIndex);
-    setGuide('you brought yourself back', true);
+    setGuide('you brought yourself back', true, TIERS.SLOW);
     await delay(2584);
     setComplete(true);
   }, [visits, lastTeaching, setLastTeaching, delay, waitForTaps, setGuide]);
@@ -227,6 +263,7 @@ export default function useGroundingState() {
     started,
     guideText,
     guideBright,
+    guideTier,
     phase,
     currentSense,
     tapsRemaining,
@@ -237,6 +274,7 @@ export default function useGroundingState() {
     visits,
     enter,
     processTap,
+    setOnTap,
     clearSeqTimer,
   };
 }
