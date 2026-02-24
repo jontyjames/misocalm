@@ -104,6 +104,13 @@ const experiences = [
     duration: '~3 min',
     route: '/tools/experiences/pulse',
   },
+  {
+    id: 'grounding',
+    title: 'Grounding',
+    description: 'Five senses. Fifteen anchors. You are here.',
+    duration: '~3 min',
+    route: '/tools/experiences/grounding',
+  },
 ];
 
 export default function ToolsPage() {

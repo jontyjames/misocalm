@@ -244,6 +244,18 @@ body {
   }
 }
 
+/* Grounding experience: tap ripple expands and fades over fib-ease (610ms) */
+@keyframes groundingRipple {
+  from {
+    opacity: 1;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
 /* Sanctuary text: wait 0.377s, fade in 0.377s, hold 0.610s, fade out 0.233s = 1.597s total */
 @keyframes sanctuary {
   0%   { opacity: 0; }

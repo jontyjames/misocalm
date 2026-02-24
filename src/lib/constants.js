@@ -135,6 +135,7 @@ export const ROUTES = {
   EXPERIENCE_IMPERMANENCE: '/tools/experiences/impermanence',
   EXPERIENCE_MANDALA: '/tools/experiences/mandala',
   EXPERIENCE_PULSE: '/tools/experiences/pulse',
+  EXPERIENCE_GROUNDING: '/tools/experiences/grounding',
 };
 
 // Attribution options (how did you find us)
@@ -270,6 +271,8 @@ export const STORAGE_KEYS = {
   PULSE_VISITS: 'misocalm_pulse_visits',
   PULSE_LAST_TEACHING: 'misocalm_pulse_last_teaching',
   PULSE_HUE: 'misocalm_pulse_hue',
+  GROUNDING_VISITS: 'misocalm_grounding_visits',
+  GROUNDING_LAST_TEACHING: 'misocalm_grounding_last_teaching',
 };
 
 // Impermanence experience teachings (5, prime)
@@ -428,6 +431,56 @@ export const PULSE_TEACHINGS = [
       'still alive',
     ],
   },
+];
+
+// Grounding experience teachings (5, prime)
+export const GROUNDING_TEACHINGS = [
+  {
+    lines: [
+      'you just brought yourself back',
+      'with nothing but your attention',
+      'that is not a small thing',
+    ],
+  },
+  {
+    lines: [
+      'your senses are always here',
+      'waiting to bring you home',
+      'you only need to notice',
+    ],
+  },
+  {
+    lines: [
+      'the world around you held still',
+      'while you found your way back',
+      'it has always been holding you',
+    ],
+  },
+  {
+    lines: [
+      'five senses',
+      'fifteen anchors',
+      'and the thread that connects them all is you',
+    ],
+  },
+  {
+    lines: [
+      'every time you return to your body',
+      'you remind your nervous system',
+      'that right now, you are safe',
+    ],
+  },
+];
+
+// After grounding (7 prompts, prime)
+export const DEEPER_PROMPTS_GROUNDING = [
+  'What did you notice about where you are right now?',
+  'Was there a sense that felt easier to connect with?',
+  'How does your body feel compared to when you started?',
+  'Did anything surprise you about what you noticed?',
+  'Which moment felt most grounding?',
+  'What is one thing you noticed that you want to remember?',
+  'How does this space feel to you right now?',
 ];
 
 // Misophonia Response Levels (0-10 clinical scale)
