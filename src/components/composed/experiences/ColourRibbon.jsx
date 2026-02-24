@@ -63,7 +63,7 @@ export default function ColourRibbon({ onChange, showHint = false, storageKey = 
   useEffect(() => {
     if (!showHint || !visible) return;
     const t1 = setTimeout(() => setHintVisible(true), 987);
-    const t2 = setTimeout(() => setHintVisible(false), 987 + 3000);
+    const t2 = setTimeout(() => setHintVisible(false), 987 + 2584); // fib-breathe + fib-sacred
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [showHint, visible]);
 

@@ -145,7 +145,7 @@ export const RESULT_CATEGORIES = [
     accent: 'indigo',
     paragraphs: [
       'Your responses suggest something more than ordinary annoyance with sounds. The patterns you described, the physical tension, the emotional intensity, the way certain sounds can change how you feel about a person or a place, these are hallmarks of misophonia.',
-      'Misophonia is a neurological condition where your brain treats certain sounds as threats. It\'s not a choice, and it\'s not about being too sensitive. Your nervous system is doing exactly what it was wired to do. The problem isn\'t you. It\'s that no one ever explained what was happening.',
+      'Misophonia is how your brain has learned to process certain sounds as threats. It\'s not a choice, and it\'s not about being too sensitive. Your nervous system is doing exactly what it was wired to do. The problem isn\'t you. It\'s that no one ever explained what was happening.',
       'The good news is that once you understand what\'s going on, you can start working with it instead of against it. Breathwork, journaling, and nervous system regulation can genuinely help reduce the intensity of your responses over time.',
     ],
   },
@@ -157,7 +157,7 @@ export const RESULT_CATEGORIES = [
     paragraphs: [
       'Your responses paint a picture of someone whose life is significantly shaped by sound sensitivity. The avoidance, the planning, the guilt about your own reactions. This is misophonia, and it\'s been affecting you deeply.',
       'Here\'s what matters most: your brain treats certain sounds as genuine threats. That\'s why the response feels so intense, so physical, so impossible to control. It\'s not a personality flaw. It\'s neurology. And the fact that you\'ve been managing this, often without support or even a name for it, says something about your resilience.',
-      'You don\'t have to white-knuckle your way through this alone anymore. There are techniques that work with your nervous system rather than against it. Breathwork to interrupt the fight-or-flight response. Journaling to process the emotional weight. A community of people who understand exactly what you\'re going through.',
+      'You don\'t have to push through this alone anymore. There are practices that work with your nervous system rather than against it. Breathwork to interrupt the fight-or-flight response. Journaling to process the emotional weight. A community of people who understand exactly what you\'re going through.',
     ],
   },
   {
@@ -168,7 +168,7 @@ export const RESULT_CATEGORIES = [
     glow: true,
     paragraphs: [
       'Your responses tell a story of someone who has been living with intense misophonia for a long time, likely since childhood. The depth of your reactions, the systems you\'ve built to cope, the loneliness of feeling like no one understands. This is real, and you are not broken.',
-      'What you experience is a neurological condition called misophonia. Your brain\'s threat detection system has become hypersensitive to certain sounds and movements. Every time you feel that surge of rage or disgust or panic, that\'s your nervous system trying to protect you. It\'s doing its job. It\'s just doing it too well.',
+      'What you experience is called misophonia. Your brain\'s threat detection system has become hypersensitive to certain sounds and movements. Every time you feel that surge of rage or disgust or panic, that\'s your nervous system trying to protect you. It\'s doing its job. It\'s just doing it too well.',
       'You\'ve been incredibly resourceful in managing this on your own. But you don\'t have to keep carrying it alone. There are people who understand exactly what this feels like, and there are practices that can help your nervous system learn to respond differently. Not overnight, but genuinely, over time.',
     ],
   },

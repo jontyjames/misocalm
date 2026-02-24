@@ -7,7 +7,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 // Pseudo-random deterministic values using index
 function seededValue(i, offset = 0) {

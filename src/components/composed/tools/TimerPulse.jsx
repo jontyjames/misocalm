@@ -7,7 +7,7 @@
 
 'use client';
 
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 import { FIBONACCI_TIMING, PRIME_DURATIONS, PHI_SCALE } from '@/lib/constants';
 import { PHASE_COLOURS } from '@/lib/timerConstants';
 

@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useUserTriggers } from '@/hooks/useUserTriggers';
+import { useUserTriggers } from '@/hooks';
 import { userTriggerService } from '@/services';
 import { TriggerChips, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
@@ -102,7 +102,7 @@ export default function EditTriggersPage() {
   return (
     <AppLayout showNav={false}>
       <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
-        <PageHeader title="My Triggers" className="mb-8" />
+        <PageHeader title="My Triggers" backHref={ROUTES.PROFILE} className="mb-8" />
 
         <p className="text-slate-300 font-light mb-[26px]">
           These are the sounds you're working with. You can update them anytime.

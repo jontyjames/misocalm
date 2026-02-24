@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Heart, Clock, Sparkles, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useTriggerStats } from '@/hooks/useTriggerLogs';
+import { useTriggerStats } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { JournalHistoryList, JournalInsights } from '@/components/composed/journal';
 import { ROUTES } from '@/lib/constants';

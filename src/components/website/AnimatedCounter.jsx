@@ -7,7 +7,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import useScrollReveal from '@/hooks/useScrollReveal';
+import { useScrollReveal } from '@/hooks';
 import { FIBONACCI_TIMING } from '@/lib/constants';
 
 export default function AnimatedCounter({

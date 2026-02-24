@@ -156,7 +156,7 @@ export default function useMandalaState() {
     if (progression.length > 3) setSymmetry(progression[3]);
     for (const line of teaching.lines) {
       setGuide(line, true);
-      await delay(3500);
+      await delay(2584); // fib-sacred
     }
     setGuide('');
     await delay(1597);

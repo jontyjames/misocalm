@@ -10,16 +10,17 @@ import { useState, useMemo } from 'react';
 import { Plus, X, ChevronDown, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion, useUserTriggers, useLogForm } from '@/hooks';
+import { TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/hooks/useLogForm';
 import { Button, TriggerChips, PageHeader, Skeleton } from '@/components/ui';
 import { ExpandingTriggerCard, CrisisModal } from '@/components/composed';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { useUserTriggers } from '@/hooks/useUserTriggers';
-import { useLogForm, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/hooks/useLogForm';
 import { ROUTES, ENVIRONMENT_OPTIONS } from '@/lib/constants';
 
 export default function LogFormContainer() {
   const router = useRouter();
   const { user } = useAuth();
+  const prefersReduced = useReducedMotion();
   const { triggers: userTriggers, loading: triggersLoading, isUsingDefaults, addCustomTrigger } = useUserTriggers(user?.id);
 
   const {
@@ -59,7 +60,7 @@ export default function LogFormContainer() {
   };
 
   return (
-    <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
+    <div className="px-6 py-8 pb-32" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.61s ease-out' }}>
       <PageHeader title="Log a moment" backHref={ROUTES.JOURNAL} className="mb-8" />
 
       {/* 1. Triggers — selected as expanding cards, unselected as chips */}
@@ -68,7 +69,7 @@ export default function LogFormContainer() {
 
         {isUsingDefaults && !triggersLoading && (
           <p className="text-xs text-slate-400 font-light mb-[10px]"
-             style={{ animation: 'fadeIn 0.377s ease-out' }}>
+             style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
             These are common triggers. You can personalise them in your profile.
           </p>
         )}
@@ -109,7 +110,7 @@ export default function LogFormContainer() {
         {/* Add custom trigger */}
         <div className="flex justify-center mt-3">
           {showCustomInput ? (
-            <div className="flex items-center gap-2" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+            <div className="flex items-center gap-2" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
               <input
                 type="text"
                 value={customTrigger}
@@ -142,7 +143,7 @@ export default function LogFormContainer() {
         {/* Added confirmation */}
         {addedMessage && (
           <p className="text-sm text-indigo-400 font-light text-center mt-2"
-             style={{ animation: 'fadeIn 0.377s ease-out' }}>
+             style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
             {addedMessage}
           </p>
         )}
@@ -155,7 +156,7 @@ export default function LogFormContainer() {
           className="w-full flex items-center gap-3 p-4 rounded-xl border border-violet-500/20 mb-[26px] text-left transition-all duration-[233ms] hover:border-violet-500/30"
           style={{
             background: 'linear-gradient(160deg, rgba(139,92,246,0.08) 0%, rgba(139,92,246,0.03) 100%)',
-            animation: 'fadeIn 0.377s ease-out',
+            animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out',
           }}
         >
           <Heart className="w-4 h-4 text-violet-400 shrink-0" />
@@ -197,7 +198,7 @@ export default function LogFormContainer() {
           Notice your body...
         </button>
         {showBody && (
-          <div className="mt-3" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+          <div className="mt-3" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
             <p className="text-xs text-slate-300 font-light mb-3">How did your body respond?</p>
             <TriggerChips
               items={BODY_RESPONSE_OPTIONS}
@@ -211,7 +212,7 @@ export default function LogFormContainer() {
       {/* 5. Notes (optional, expandable) */}
       <section className="mb-[26px]">
         {showNotes ? (
-          <div style={{ animation: 'fadeIn 0.377s ease-out' }}>
+          <div style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -235,7 +236,7 @@ export default function LogFormContainer() {
       {/* Error display (slate-300, not alarming) */}
       {error && (
         <p className="text-sm text-slate-300 font-light mb-4"
-           style={{ animation: 'fadeIn 0.377s ease-out' }}>
+           style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
           {typeof error === 'string' ? error : (error.message || 'Something went wrong. Your data is safe.')}
         </p>
       )}
@@ -265,7 +266,7 @@ export default function LogFormContainer() {
               Call 988
             </a>
             <p className="text-slate-400 text-sm font-light mt-4">
-              Suicide and Crisis Lifeline — available 24/7
+              Suicide and Crisis Lifeline, available 24/7
             </p>
           </div>
         </div>

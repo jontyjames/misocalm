@@ -4,8 +4,11 @@
  * Accepts tool data to render a personalized preview
  */
 
+'use client';
+
 import { Sparkles, ArrowLeft, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui';
+import { useReducedMotion } from '@/hooks';
 
 // Tool-specific content — poetic, warm, never clinical
 const TOOL_CONTENT = {
@@ -42,6 +45,7 @@ const CATEGORY_COLORS = {
 };
 
 export default function ComingSoon({ tool, onBack }) {
+  const prefersReduced = useReducedMotion();
   const content = TOOL_CONTENT[tool?.id] || {};
   const title = tool?.title || 'New Practice';
   const subtitle = content.subtitle || 'Something new is being crafted';
@@ -53,7 +57,7 @@ export default function ComingSoon({ tool, onBack }) {
   return (
     <div
       className="flex-1 flex flex-col items-center px-6 pt-16 pb-10 text-center"
-      style={{ animation: 'fadeIn 610ms ease-out' }}
+      style={{ animation: prefersReduced ? 'none' : 'fadeIn 610ms ease-out' }}
     >
       {/* Glowing icon */}
       <div
@@ -81,15 +85,15 @@ export default function ComingSoon({ tool, onBack }) {
       {/* Subtitle */}
       <p
         className="text-sm text-indigo-300 font-light mb-6"
-        style={{ animation: 'fadeIn 987ms ease-out' }}
+        style={{ animation: prefersReduced ? 'none' : 'fadeIn 987ms ease-out' }}
       >
         {subtitle}
       </p>
 
       {/* Meta badges */}
       <div
-        className="flex items-center gap-3 mb-10 opacity-0"
-        style={{ animation: 'fadeIn 377ms ease-out 377ms forwards' }}
+        className={`flex items-center gap-3 mb-10 ${prefersReduced ? '' : 'opacity-0'}`}
+        style={{ animation: prefersReduced ? 'none' : 'fadeIn 377ms ease-out 377ms forwards' }}
       >
         {category && (
           <Badge color={categoryColor} size="sm">{category}</Badge>
@@ -105,12 +109,12 @@ export default function ComingSoon({ tool, onBack }) {
       {/* Preview card */}
       {preview.length > 0 && (
         <div
-          className="w-full max-w-sm rounded-xl p-6 mb-10 text-left opacity-0"
+          className={`w-full max-w-sm rounded-xl p-6 mb-10 text-left ${prefersReduced ? '' : 'opacity-0'}`}
           style={{
             background: 'linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 30%, rgba(99,102,241,0.04) 100%)',
             border: '1px solid rgba(255,255,255,0.12)',
             boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.08), 0 4px 20px rgba(0,0,0,0.2)',
-            animation: 'fadeInUp 610ms ease-out 610ms forwards',
+            animation: prefersReduced ? 'none' : 'fadeInUp 610ms ease-out 610ms forwards',
           }}
         >
           <p
@@ -136,8 +140,8 @@ export default function ComingSoon({ tool, onBack }) {
 
       {/* Being crafted indicator */}
       <p
-        className="text-sm text-slate-300 font-light mb-10 opacity-0"
-        style={{ animation: 'fadeIn 377ms ease-out 987ms forwards' }}
+        className={`text-sm text-slate-300 font-light mb-10 ${prefersReduced ? '' : 'opacity-0'}`}
+        style={{ animation: prefersReduced ? 'none' : 'fadeIn 377ms ease-out 987ms forwards' }}
       >
         Being carefully crafted. When it arrives, it will be here waiting for you.
       </p>
@@ -145,11 +149,11 @@ export default function ComingSoon({ tool, onBack }) {
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-light border-2 border-white/[0.33] hover:border-white/40 text-white transition-all duration-[233ms] opacity-0"
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-light border-2 border-white/[0.33] hover:border-white/40 text-white transition-all duration-[233ms] ${prefersReduced ? '' : 'opacity-0'}`}
         style={{
           background: 'rgba(139,92,246,0.08)',
           boxShadow: '0 0 12px rgba(255,255,255,0.06)',
-          animation: 'fadeIn 377ms ease-out 1597ms forwards',
+          animation: prefersReduced ? 'none' : 'fadeIn 377ms ease-out 1597ms forwards',
         }}
       >
         <ArrowLeft className="w-4 h-4" />

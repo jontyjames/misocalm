@@ -6,7 +6,7 @@
 'use client';
 
 import { createContext, useContext } from 'react';
-import usePremium from '@/hooks/usePremium';
+import { usePremium } from '@/hooks';
 
 const PremiumContext = createContext(null);
 

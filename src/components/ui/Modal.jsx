@@ -7,7 +7,7 @@
 
 import { useEffect, useRef, useId } from 'react';
 import { X } from 'lucide-react';
-import useFocusTrap from '@/hooks/useFocusTrap';
+import { useFocusTrap } from '@/hooks';
 
 const sizes = {
   sm: 'max-w-sm',
@@ -69,7 +69,7 @@ export default function Modal({
           bg-slate-900 border border-slate-800
           rounded-2xl shadow-2xl shadow-black/50
           p-6 mx-4
-          animate-in fade-in zoom-in-95 duration-200
+          animate-in fade-in zoom-in-95 duration-[233ms]
         `}
       >
         {/* Header */}

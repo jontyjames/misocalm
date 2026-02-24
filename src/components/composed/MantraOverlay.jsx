@@ -11,7 +11,7 @@
 'use client';
 
 import { useRef, useMemo, useEffect, useCallback } from 'react';
-import useFocusTrap from '@/hooks/useFocusTrap';
+import { useFocusTrap } from '@/hooks';
 import { SACRED_PATTERNS } from '@/lib/sacredPatterns';
 
 /* ─── Solfeggio Colour Palette (7, prime) ───────────────────────── */

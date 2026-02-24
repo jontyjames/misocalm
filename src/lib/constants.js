@@ -79,7 +79,7 @@ export const SOURCE_OPTIONS = [
 
 export const RESPONSE_OPTIONS = [
   { value: 'left_situation', label: 'Left the situation' },
-  { value: 'coping_technique', label: 'Used a coping technique' },
+  { value: 'coping_technique', label: 'Used a calming practice' },
   { value: 'asked_stop', label: 'Asked them to stop' },
   { value: 'angry', label: 'Got angry/frustrated' },
   { value: 'headphones', label: 'Used headphones' },
@@ -88,10 +88,10 @@ export const RESPONSE_OPTIONS = [
 ];
 
 export const SUPPORT_TYPES = [
-  { value: 'breathing', label: 'Breathing Technique', icon: 'Wind' },
+  { value: 'breathing', label: 'Breathing Practice', icon: 'Wind' },
   { value: 'mantra', label: 'Calming Mantra', icon: 'Heart' },
   { value: 'soundscape', label: 'Soothing Soundscape', icon: 'Music' },
-  { value: 'grounding', label: 'Grounding Exercise', icon: 'Anchor' },
+  { value: 'grounding', label: 'Grounding Practice', icon: 'Anchor' },
   { value: 'ai_chat', label: 'Talk to AI', icon: 'MessageCircle' },
 ];
 

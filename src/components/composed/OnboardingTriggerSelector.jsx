@@ -10,8 +10,10 @@ import { Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { DEFAULT_TRIGGERS } from '@/lib/constants';
 import { isValidTriggerName } from '@/lib/validators';
+import { useReducedMotion } from '@/hooks';
 
 export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
+  const prefersReduced = useReducedMotion();
   const [selected, setSelected] = useState([]);
   const [customTrigger, setCustomTrigger] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -104,7 +106,7 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
 
       {/* Custom trigger input */}
       {showCustomInput && (
-        <div className="max-w-xs mb-4 mx-auto" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+        <div className="max-w-xs mb-4 mx-auto" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
           <div className="flex items-center gap-2">
             <input
               type="text"

@@ -79,7 +79,7 @@ export default function AssessmentPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
       {/* Top bar */}
       <div className="flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />

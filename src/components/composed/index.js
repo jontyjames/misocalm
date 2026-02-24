@@ -12,8 +12,7 @@ export { default as BreathingCircle } from './BreathingCircle';
 export { default as BreathingBox } from './BreathingBox';
 export { default as BreathingAura } from './BreathingAura';
 export { default as TriggerGrid } from './TriggerGrid';
-export { default as IntensitySelector } from './IntensitySelector';
-export { default as SourceSelector } from './SourceSelector';
+
 export { default as CrisisModal } from './CrisisModal';
 export { default as ExpandingTriggerCard } from './ExpandingTriggerCard';
 export { default as LogFormContainer } from './LogFormContainer';
@@ -29,3 +28,4 @@ export { default as TimerPulse } from './tools/TimerPulse';
 export { default as TimerDisplay } from './tools/TimerDisplay';
 export { default as TimerPlayer } from './tools/TimerPlayer';
 export { default as BetaInstallBanner } from './BetaInstallBanner';
+export { default as ToolCard } from './tools/ToolCard';

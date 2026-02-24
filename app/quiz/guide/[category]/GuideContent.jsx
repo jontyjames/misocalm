@@ -50,7 +50,7 @@ export default function GuideContent({ guide }) {
         {/* Intro */}
         <section
           className="mb-10"
-          style={{ animation: 'fadeInUp 377ms ease-out 110ms both' }}
+          style={{ animation: 'fadeInUp 377ms ease-out 144ms both' }}
         >
           <p className="text-slate-200 font-light leading-relaxed">
             {guide.intro}
@@ -60,7 +60,7 @@ export default function GuideContent({ guide }) {
         {/* What's happening */}
         <section
           className="mb-12"
-          style={{ animation: 'fadeInUp 377ms ease-out 220ms both' }}
+          style={{ animation: 'fadeInUp 377ms ease-out 233ms both' }}
         >
           <GlassCard>
             <h2
@@ -82,21 +82,21 @@ export default function GuideContent({ guide }) {
             style={{
               fontFamily: "'Josefin Sans', sans-serif",
               fontWeight: 200,
-              animation: 'fadeInUp 377ms ease-out 330ms both',
+              animation: 'fadeInUp 377ms ease-out 377ms both',
             }}
           >
-            3 techniques that help
+            3 practices that help
           </h2>
 
           <div className="space-y-6">
             {guide.techniques.map((technique, i) => (
               <div
                 key={i}
-                style={{ animation: `fadeInUp 377ms ease-out ${440 + i * 110}ms both` }}
+                style={{ animation: `fadeInUp 377ms ease-out ${610 + i * 144}ms both` }}
               >
                 <GlassCard>
                   <div className="flex items-start gap-3 mb-3">
-                    <span className={`mt-[7px] w-[6px] h-[6px] rounded-full shrink-0 ${accent.dot}`} />
+                    <span className={`mt-[6px] w-[6px] h-[6px] rounded-full shrink-0 ${accent.dot}`} />
                     <h3
                       className="text-lg text-white"
                       style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}

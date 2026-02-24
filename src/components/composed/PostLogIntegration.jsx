@@ -15,6 +15,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Layers, Wind, Home } from 'lucide-react';
 import { ROUTES, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
+import { useReducedMotion } from '@/hooks';
 import StarDissolve from './StarDissolve';
 
 const TRIGGER_AFFIRMATIONS = [
@@ -44,6 +45,7 @@ function getDailyPractice() {
 export default function PostLogIntegration() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const prefersReduced = useReducedMotion();
   const entryId = searchParams.get('entry');
   const isCheckIn = searchParams.get('type') === 'check_in';
   const fromBreathwork = searchParams.get('from') === 'breathwork';
@@ -195,7 +197,7 @@ export default function PostLogIntegration() {
                       key={ci}
                       style={{
                         opacity: startIdx + ci < visibleChars ? 1 : 0,
-                        transition: 'opacity 0.377s ease-out',
+                        transition: prefersReduced ? 'none' : 'opacity 0.377s ease-out',
                       }}
                     >
                       {char}
@@ -214,7 +216,7 @@ export default function PostLogIntegration() {
         {showPaths && (
           <div
             className="space-y-4"
-            style={{ animation: 'fadeIn 0.377s ease-out' }}
+            style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}
           >
             {paths.map((path) => {
               const Icon = path.icon;

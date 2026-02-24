@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import PulseCanvas from './PulseCanvas';
 import ColourRibbon from './ColourRibbon';
@@ -63,7 +63,7 @@ export default function PulseGuide() {
             fontWeight: 200,
             marginBottom: 10,
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.5s forwards',
+            animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
           }}
         >
           {state.isFirstVisit ? 'A small recognition' : 'Pulse'}
@@ -75,7 +75,7 @@ export default function PulseGuide() {
             letterSpacing: '0.06em',
             marginBottom: 42,
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1s forwards',
+            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
             textAlign: 'center',
             lineHeight: 1.8,
             maxWidth: 340,
@@ -110,7 +110,7 @@ export default function PulseGuide() {
             borderRadius: 999,
             cursor: 'pointer',
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1.5s forwards',
+            animation: 'fadeInUp 1.597s ease-out 1.597s forwards',
             transition: 'all 0.377s ease',
             color: '#e2e8f0',
           }}
@@ -131,7 +131,7 @@ export default function PulseGuide() {
             left: 16,
             zIndex: 8,
             opacity: 0,
-            animation: 'fadeIn 0.987s ease-out 2s forwards',
+            animation: 'fadeIn 0.987s ease-out 1.597s forwards',
           }}
           className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
         >

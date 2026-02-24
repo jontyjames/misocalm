@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { triggerLogService } from '@/services';
+import { useReducedMotion } from '@/hooks';
 import {
   ROUTES,
   FIBONACCI_TIMING,
@@ -72,6 +73,7 @@ export default function DeeperProcessing() {
   const searchParams = useSearchParams();
   const entryId = searchParams.get('entry');
   const { user } = useAuth();
+  const prefersReduced = useReducedMotion();
 
   const context = useMemo(() => getContext(searchParams), [searchParams]);
   const prompts = useMemo(() => selectPrompts(PROMPT_POOLS[context]), [context]);
@@ -142,7 +144,7 @@ export default function DeeperProcessing() {
   }
 
   return (
-    <div className="px-6 py-8" style={{ animation: `fadeIn ${FIBONACCI_TIMING.ease}ms ease-out` }}>
+    <div className="px-6 py-8" style={{ animation: prefersReduced ? 'none' : `fadeIn ${FIBONACCI_TIMING.ease}ms ease-out` }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <button
@@ -171,7 +173,7 @@ export default function DeeperProcessing() {
       {/* Current prompt */}
       <div
         key={currentPrompt}
-        style={{ animation: 'fadeIn 0.377s ease-out' }}
+        style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}
       >
         <h2
           className="text-lg text-violet-300 mb-4"

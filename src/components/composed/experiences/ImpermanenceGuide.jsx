@@ -13,8 +13,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import useMicrophone from '@/hooks/useMicrophone';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useMicrophone, useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
 import SoundCanvas from './SoundCanvas';
 import ColourRibbon from './ColourRibbon';
@@ -85,7 +84,7 @@ export default function ImpermanenceGuide() {
             fontWeight: 200,
             marginBottom: 10,
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.5s forwards',
+            animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
           }}
         >
           {state.isFirstVisit ? 'A small experiment' : 'Impermanence'}
@@ -97,7 +96,7 @@ export default function ImpermanenceGuide() {
             letterSpacing: '0.06em',
             marginBottom: 42,
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1s forwards',
+            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
             textAlign: 'center',
             lineHeight: 1.8,
             maxWidth: 340,
@@ -129,12 +128,12 @@ export default function ImpermanenceGuide() {
             letterSpacing: '0.04em',
             marginBottom: 26,
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1.2s forwards',
+            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
             textAlign: 'center',
             maxWidth: 280,
             padding: '0 26px',
           }}
-          className="font-extralight text-slate-500"
+          className="font-extralight text-slate-400"
         >
           Works best in a quiet space without much background noise
         </p>
@@ -151,7 +150,7 @@ export default function ImpermanenceGuide() {
             borderRadius: 999,
             cursor: 'pointer',
             opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1.7s forwards',
+            animation: 'fadeInUp 1.597s ease-out 1.597s forwards',
             transition: 'all 0.377s ease',
             color: '#e2e8f0',
           }}
@@ -178,7 +177,7 @@ export default function ImpermanenceGuide() {
             left: 16,
             zIndex: 8,
             opacity: 0,
-            animation: 'fadeIn 0.987s ease-out 2s forwards',
+            animation: 'fadeIn 0.987s ease-out 1.597s forwards',
           }}
           className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
         >

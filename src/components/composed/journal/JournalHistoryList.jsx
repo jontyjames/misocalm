@@ -8,7 +8,7 @@ import { useState, useMemo } from 'react';
 import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useTriggerLogs } from '@/hooks/useTriggerLogs';
+import { useReducedMotion, useTriggerLogs } from '@/hooks';
 import { Spinner } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
 import { formatDate } from '@/lib/dateUtils';
@@ -43,6 +43,7 @@ export default function JournalHistoryList() {
   const { user } = useAuth();
   const { logs, loading, loadingMore, pagination, loadMore } = useTriggerLogs(user?.id, { limit: 30 });
   const [showWhy, setShowWhy] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   const groups = useMemo(() => groupByDate(logs), [logs]);
 
@@ -77,7 +78,7 @@ export default function JournalHistoryList() {
         {showWhy && (
           <p
             className="text-sm text-slate-300 font-light leading-relaxed px-4 pt-3"
-            style={{ animation: 'fadeIn 0.233s ease-out' }}
+            style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.233s ease-out' }}
           >
             Looking back isn't about reliving difficult moments.
             It's about noticing what keeps showing up, so you can

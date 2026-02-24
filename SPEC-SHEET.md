@@ -377,3 +377,4 @@ All timing values are Fibonacci. All spacing is phi. See MICRO-INTERACTIONS.md f
 | MICRO-INTERACTIONS.md | Touch responses, completion animations, ambient systems, sound design |
 | MISOCALM-AGENTS.md | Agent team definitions and review criteria |
 | CLAUDE.md | Architecture rules, folder structure, component limits |
+| Thriving.With.Misophonia.Architecture.md | System architecture, tiered features, research foundation |

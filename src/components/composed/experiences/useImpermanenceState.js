@@ -68,7 +68,7 @@ export default function useImpermanenceState() {
       setTimeout(() => {
         setGuideText(text);
         setGuideBright(bright);
-      }, 400);
+      }, 377); // fib-flow
     }
   }, []);
 
@@ -139,51 +139,51 @@ export default function useImpermanenceState() {
 
     // Show "you" label
     setShowYouLabel(true);
-    await delay(1500);
+    await delay(1597); // fib-ceremony
 
     // Round 1
     setGuide('make any sound');
-    await delay(2000);
+    await delay(1597);
     await listenForSound();
-    await delay(1200);
+    await delay(987); // fib-breathe
     setGuide('all sounds go', true);
-    await delay(2000);
+    await delay(1597);
     setGuide('but you still remain', true);
-    await delay(3000);
+    await delay(2584); // fib-sacred
     setGuide('');
-    await delay(2500);
+    await delay(2584);
 
     // Round 2
     setGuide('again\na little louder');
-    await delay(2000);
+    await delay(1597);
     await listenForSound();
-    await delay(1200);
+    await delay(987);
     setGuide('that one filled the whole space');
-    await delay(2000);
+    await delay(1597);
     setGuide('and it still went', true);
-    await delay(3000);
+    await delay(2584);
     setGuide('');
-    await delay(2500);
+    await delay(2584);
 
     // Round 3
     setGuide('one more');
-    await delay(2000);
+    await delay(1597);
     await listenForSound();
     setGuide('');
-    await delay(2000);
+    await delay(1597);
 
     // Teaching
     for (const line of teaching.lines) {
       setGuide(line, true);
-      await delay(3500);
+      await delay(2584);
     }
     setGuide('');
-    await delay(3000);
+    await delay(2584);
 
     // Free play
     setLastTeaching(teachingIndex);
     setGuide('play as long as you like');
-    await delay(3000);
+    await delay(2584);
     setFreePlay(true);
     waitingForSoundRef.current = true; // enable continuous sound detection
   }, [visits, lastTeaching, setLastTeaching, delay, listenForSound, setGuide]);

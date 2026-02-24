@@ -169,7 +169,7 @@ export default function FirstPracticePage() {
                 className="text-lg text-slate-200"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
               >
-                Introducing the 4-7-8 breathing technique
+                Introducing the 4-7-8 breathing practice
               </p>
             </div>
 
@@ -261,7 +261,7 @@ export default function FirstPracticePage() {
                         <li><span className="text-cyan-400">Repeat</span></li>
                       </ul>
                       <p className="text-sm text-slate-300 font-light mt-4 pt-3 border-t border-slate-700/50">
-                        Used by therapists worldwide, 4-7-8 is a foundation technique for calm and relaxation.
+                        Used by therapists worldwide, 4-7-8 is a foundation practice for calm and relaxation.
                       </p>
                     </div>
                   </div>

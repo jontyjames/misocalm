@@ -10,7 +10,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.03)';
 const MAX_TAP_DURATION = 233; // fib-move

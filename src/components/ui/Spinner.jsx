@@ -34,7 +34,7 @@ export default function Spinner({ size = 'md' }) {
         height={s}
         viewBox={`0 0 ${s} ${s}`}
         className="relative"
-        style={{ animation: 'spin 1.6s linear infinite' }}
+        style={{ animation: 'spin 1.597s linear infinite' }}
       >
         <defs>
           <linearGradient id={`neon-ring-${s}`} x1="0%" y1="0%" x2="100%" y2="100%">

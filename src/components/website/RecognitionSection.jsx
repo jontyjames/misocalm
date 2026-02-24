@@ -30,7 +30,7 @@ export default function RecognitionSection() {
               say you are overreacting.
             </p>
             <p>
-              Misophonia is a neurological condition where specific sounds
+              Misophonia is a neurological sensitivity where specific sounds
               trigger intense emotional and physical responses. It is not
               about being too sensitive. Your nervous system is responding
               to something real.

@@ -12,7 +12,7 @@ import Starfield from '@/components/composed/Starfield';
 import Navigation from '@/components/composed/Navigation';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useNav } from '@/context/NavContext';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const IMMERSIVE_PREFIXES = ['/tools/experiences/'];
 

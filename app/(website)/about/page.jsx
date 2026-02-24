@@ -10,11 +10,11 @@ import {
 } from '@/components/website';
 
 export const metadata = {
-  title: 'MisoCalm — A Space for Living with Misophonia',
+  title: 'MisoCalm - A Space for Living with Misophonia',
   description: 'MisoCalm is a free companion app for living with misophonia. Breathwork, journaling, guided experiences, and AI support.',
   keywords: ['misophonia', 'misophonia app', 'misophonia help', 'misophonia coping', 'misophonia tools', 'misophonia breathing', 'misophonia support', 'sound sensitivity'],
   openGraph: {
-    title: 'MisoCalm — A Space for Living with Misophonia',
+    title: 'MisoCalm - A Space for Living with Misophonia',
     description: 'Free breathwork, journaling, guided experiences, and AI support for people living with misophonia.',
     type: 'website',
     url: 'https://misocalm.app/about',

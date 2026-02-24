@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 export default function Card({
   children,

@@ -4,6 +4,7 @@ const OFFLINE_URL = '/offline';
 // Assets to cache on install
 const PRECACHE_ASSETS = [
   '/',
+  '/offline',
   '/manifest.json',
   '/icons/icon.svg',
 ];

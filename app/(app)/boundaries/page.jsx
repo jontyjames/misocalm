@@ -84,7 +84,7 @@ export default function BoundariesPage() {
   const handleCopy = async (script, id) => {
     await navigator.clipboard.writeText(script);
     setCopied(id);
-    setTimeout(() => setCopied(null), 2000);
+    setTimeout(() => setCopied(null), 1597); // fib-ceremony
   };
 
   const { isPremium, isLoading: premiumLoading } = usePremiumContext();
@@ -116,7 +116,7 @@ export default function BoundariesPage() {
         {/* Intro */}
         <p className="text-slate-300 font-light mb-8">
           Ready-to-use scripts for communicating your needs with compassion.
-          These are starting points—adapt them to fit your situation and voice.
+          These are starting points. Adapt them to fit your situation and voice.
         </p>
 
         {/* Accordion Sections */}

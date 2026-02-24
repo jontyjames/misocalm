@@ -10,6 +10,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "generate-icons": "node scripts/generate-icons.js",
+    "insta": "node scripts/insta/generate.mjs",
+    "skool:thumbs": "node scripts/skool/export-thumbnails.mjs",
+    "skool:assets": "node scripts/skool/generate-assets.mjs",
     "cap:sync": "cap sync",
     "cap:open:ios": "cap open ios",
     "cap:open:android": "cap open android"
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.1.0",
     "@capacitor/core": "^8.1.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -40,6 +44,8 @@
     "dotenv": "^17.2.3",
     "jsdom": "^28.0.0",
     "postcss": "^8.4.49",
+    "puppeteer": "^24.37.5",
+    "satori": "^0.19.2",
     "tailwindcss": "^4.0.0",
     "vitest": "^4.0.18"
   }

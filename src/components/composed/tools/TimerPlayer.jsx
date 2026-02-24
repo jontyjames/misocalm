@@ -10,9 +10,8 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui';
+import { useReducedMotion, useIntervalTimer, useWakeLock } from '@/hooks';
 import { ExpansionBloom } from '@/components/composed';
-import useIntervalTimer from '@/hooks/useIntervalTimer';
-import useWakeLock from '@/hooks/useWakeLock';
 import { FIBONACCI_TIMING } from '@/lib/constants';
 import { computeProgress } from '@/lib/timerConstants';
 import TimerDisplay from './TimerDisplay';
@@ -27,6 +26,7 @@ export default function TimerPlayer({
   onPracticeAgain,
   onComplete,
 }) {
+  const prefersReduced = useReducedMotion();
   const {
     phase, currentRound, totalRounds, timeRemaining,
     countdownNumber, isRunning, isPaused, formattedTime,
@@ -87,7 +87,7 @@ export default function TimerPlayer({
       <div className="w-full flex flex-col items-center" style={{ minHeight: '12rem' }}>
         {/* Completion */}
         {isComplete && (
-          <div className="mb-6 text-center" style={{ animation: `fadeIn ${FIBONACCI_TIMING.ease}ms ease-out` }}>
+          <div className="mb-6 text-center" style={{ animation: prefersReduced ? 'none' : `fadeIn ${FIBONACCI_TIMING.ease}ms ease-out` }}>
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-violet-400/15 border border-violet-400/30 flex items-center justify-center">
               <Check className="w-6 h-6 text-violet-400" />
             </div>
@@ -114,7 +114,7 @@ export default function TimerPlayer({
 
         {/* Pause overlay */}
         {isPaused && (
-          <div className="w-full max-w-xs space-y-3 mb-4" style={{ animation: `fadeIn ${FIBONACCI_TIMING.flow}ms ease-out` }}>
+          <div className="w-full max-w-xs space-y-3 mb-4" style={{ animation: prefersReduced ? 'none' : `fadeIn ${FIBONACCI_TIMING.flow}ms ease-out` }}>
             <Button onClick={resume} className="w-full" size="lg">Resume</Button>
             <Button variant="secondary" onClick={() => { stop(); onReturnHome(); }} className="w-full" size="lg">Finish here</Button>
             <Button variant="ghost" onClick={onReturnHome} className="w-full" size="md">Return to sanctuary</Button>

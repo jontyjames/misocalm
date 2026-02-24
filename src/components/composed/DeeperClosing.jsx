@@ -10,9 +10,11 @@ import { useRouter } from 'next/navigation';
 import { Wind, Home } from 'lucide-react';
 import { ROUTES, FIBONACCI_TIMING, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
+import { useReducedMotion } from '@/hooks';
 
 export default function DeeperClosing({ message, context }) {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const [closingChars, setClosingChars] = useState(0);
   const [showPaths, setShowPaths] = useState(false);
 
@@ -55,14 +57,14 @@ export default function DeeperClosing({ message, context }) {
                       key={ci}
                       style={{
                         opacity: startIdx + ci < closingChars ? 1 : 0,
-                        transition: 'opacity 0.377s ease-out',
+                        transition: prefersReduced ? 'none' : 'opacity 0.377s ease-out',
                       }}
                     >
                       {char}
                     </span>
                   ))}
                   {wi < words.length - 1 && (
-                    <span style={{ opacity: startIdx + word.length < closingChars ? 1 : 0, transition: 'opacity 0.377s ease-out' }}>&nbsp;</span>
+                    <span style={{ opacity: startIdx + word.length < closingChars ? 1 : 0, transition: prefersReduced ? 'none' : 'opacity 0.377s ease-out' }}>&nbsp;</span>
                   )}
                 </span>
               );
@@ -71,7 +73,7 @@ export default function DeeperClosing({ message, context }) {
         </h1>
 
         {showPaths && (
-          <div className="space-y-4" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+          <div className="space-y-4" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
             {/* Don't offer breathwork after breathwork (creates a loop) */}
             {context !== 'breathwork' && (
               <button

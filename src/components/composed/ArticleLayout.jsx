@@ -10,10 +10,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRelatedArticles } from '@/lib/articleData';
+import { useReducedMotion } from '@/hooks';
 
 export default function ArticleLayout({ children, slug }) {
   const related = slug ? getRelatedArticles(slug) : [];
   const [progress, setProgress] = useState(0);
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
     function handleScroll() {
@@ -44,7 +46,7 @@ export default function ArticleLayout({ children, slug }) {
 
       <div
         className="flex flex-col items-center px-6 py-16 sm:py-24"
-        style={{ animation: 'fadeIn 987ms ease-out' }}
+        style={{ animation: prefersReduced ? 'none' : 'fadeIn 987ms ease-out' }}
       >
         <article className="w-full max-w-2xl">
           <Link

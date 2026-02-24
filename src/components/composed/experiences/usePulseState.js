@@ -183,7 +183,7 @@ export default function usePulseState() {
     await delay(987);
     if (isFirstVisit) {
       setGuide('find your pulse\nyour wrist, your neck, your chest');
-      await delay(3500);
+      await delay(2584); // fib-sacred
       setGuide('when you feel it\ntap the screen with each beat');
     } else {
       setGuide('find your pulse\ntap with each beat');

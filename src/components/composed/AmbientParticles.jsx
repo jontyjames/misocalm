@@ -7,7 +7,7 @@
 'use client';
 
 import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const PARTICLE_COUNT = 13; // prime
 const PRIME_SPEEDS = [23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73]; // seconds per drift cycle

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLocalStorage, useReducedMotion } from '@/hooks';
 import { STORAGE_KEYS, FIBONACCI_TIMING } from '@/lib/constants';
 
 function getPlatform() {
@@ -20,6 +20,7 @@ export default function BetaInstallBanner() {
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState('unknown');
   const buttonRef = useRef(null);
+  const prefersReduced = useReducedMotion();
 
   const dismiss = useCallback(() => setDismissed(true), [setDismissed]);
 
@@ -55,7 +56,7 @@ export default function BetaInstallBanner() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="beta-banner-title"
-      style={{ animation: 'fadeIn 0.61s ease-out' }}
+      style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.61s ease-out' }}
       onKeyDown={(e) => {
         // Focus trap: only one focusable element (the button), so trap is implicit
         if (e.key === 'Tab') {

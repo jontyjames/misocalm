@@ -9,6 +9,7 @@
 import { useState } from 'react';
 import { timeAgo } from '@/lib/dateUtils';
 import { SOURCE_OPTIONS } from '@/lib/constants';
+import { useReducedMotion } from '@/hooks';
 
 const ENERGY_LABELS = ['Very low', 'Low', 'Somewhat low', 'Neutral', 'Somewhat high', 'High', 'Very high'];
 const PLEASANTNESS_LABELS = ['Very unpleasant', 'Unpleasant', 'Somewhat unpleasant', 'Neutral', 'Somewhat pleasant', 'Pleasant', 'Very pleasant'];
@@ -26,6 +27,7 @@ function getSourceLabel(value) {
 
 export default function JournalEntryCard({ entry }) {
   const [open, setOpen] = useState(false);
+  const prefersReduced = useReducedMotion();
   const isCheckIn = entry.entry_type === 'check_in';
   const triggers = entry.triggers?.join(', ') || 'Untitled';
   const hasBody = entry.body_responses?.length > 0;
@@ -55,7 +57,7 @@ export default function JournalEntryCard({ entry }) {
       {open && (
         <div
           className="ml-5 pl-4 pb-4 border-l border-slate-800/60"
-          style={{ animation: 'fadeIn 0.233s ease-out' }}
+          style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.233s ease-out' }}
         >
           <div className="space-y-2 pt-1">
             {isCheckIn ? (

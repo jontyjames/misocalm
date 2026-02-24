@@ -12,9 +12,9 @@ const BREATH_PATTERNS = {
   '478': {
     name: '4-7-8 Breathing',
     phases: {
-      GET_READY: { name: 'Empty your lungs', duration: 3, scale: 0.8, transitionMs: 3000, countdown: true },
+      GET_READY: { name: 'Empty your lungs', duration: 3, scale: 0.8, transitionMs: 2584, countdown: true },
       INHALE: { name: 'Breathe In', duration: 4, scale: 1.4, transitionMs: 4000, countdown: false },
-      HOLD: { name: 'Hold', duration: 7, scale: 1.4, transitionMs: 200, countdown: true },
+      HOLD: { name: 'Hold', duration: 7, scale: 1.4, transitionMs: 233, countdown: true },
       EXHALE: { name: 'Breathe Out', duration: 8, scale: 0.8, transitionMs: 8000, countdown: true },
     },
     sequence: ['GET_READY', 'INHALE', 'HOLD', 'EXHALE'],
@@ -23,11 +23,11 @@ const BREATH_PATTERNS = {
   'box': {
     name: 'Box Breathing',
     phases: {
-      GET_READY: { name: 'Get ready', duration: 3, scale: 0.8, transitionMs: 3000, countdown: true },
+      GET_READY: { name: 'Get ready', duration: 3, scale: 0.8, transitionMs: 2584, countdown: true },
       INHALE: { name: 'Breathe In', duration: 4, scale: 1.4, transitionMs: 4000, countdown: false },
-      HOLD_IN: { name: 'Hold', duration: 4, scale: 1.4, transitionMs: 200, countdown: false },
+      HOLD_IN: { name: 'Hold', duration: 4, scale: 1.4, transitionMs: 233, countdown: false },
       EXHALE: { name: 'Breathe Out', duration: 4, scale: 0.8, transitionMs: 4000, countdown: false },
-      HOLD_OUT: { name: 'Hold', duration: 4, scale: 0.8, transitionMs: 200, countdown: false },
+      HOLD_OUT: { name: 'Hold', duration: 4, scale: 0.8, transitionMs: 233, countdown: false },
     },
     sequence: ['GET_READY', 'INHALE', 'HOLD_IN', 'EXHALE', 'HOLD_OUT'],
     cycleStart: 'INHALE',
@@ -35,7 +35,7 @@ const BREATH_PATTERNS = {
   'sigh': {
     name: 'Physiological Sigh',
     phases: {
-      GET_READY: { name: 'Get ready', duration: 3, scale: 0.8, transitionMs: 3000, countdown: true },
+      GET_READY: { name: 'Get ready', duration: 3, scale: 0.8, transitionMs: 2584, countdown: true },
       INHALE_1: { name: 'Breathe In', duration: 2, scale: 1.2, transitionMs: 2000, countdown: false },
       INHALE_2: { name: 'Sip More Air', duration: 1, scale: 1.4, transitionMs: 1000, countdown: false },
       EXHALE: { name: 'Long Exhale', duration: 6, scale: 0.8, transitionMs: 6000, countdown: true },

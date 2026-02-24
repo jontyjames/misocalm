@@ -15,3 +15,8 @@ export { default as useFocusTrap } from './useFocusTrap';
 export { default as useCapacitor } from './useCapacitor';
 export { default as useMicrophone } from './useMicrophone';
 export { default as useAuthGuard } from './useAuthGuard';
+export { useCheckInForm } from './useCheckInForm';
+export { default as useIntervalTimer } from './useIntervalTimer';
+export { default as useWakeLock } from './useWakeLock';
+export { default as usePremium } from './usePremium';
+export { default as useScrollReveal } from './useScrollReveal';

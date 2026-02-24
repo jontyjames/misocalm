@@ -7,7 +7,7 @@
 
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import useAuthGuard from '@/hooks/useAuthGuard';
+import { useAuthGuard } from '@/hooks';
 import { useNav } from '@/context/NavContext';
 import { Spinner } from '@/components/ui';
 

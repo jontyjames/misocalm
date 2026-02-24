@@ -6,9 +6,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import useTouchGlow from '@/hooks/useTouchGlow';
-import useHaptic from '@/hooks/useHaptic';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useTouchGlow, useHaptic, useReducedMotion } from '@/hooks';
 
 const variants = {
   primary: `

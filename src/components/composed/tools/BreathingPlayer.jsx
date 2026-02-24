@@ -16,7 +16,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { BreathingCircle, BreathingBox, BreathingAura, ExpansionBloom } from '@/components/composed';
-import useWakeLock from '@/hooks/useWakeLock';
+import { useWakeLock } from '@/hooks';
 import { BREATH_INSTRUCTIONS } from './DurationSelector';
 import { FIBONACCI_TIMING, PHI_SCALE } from '@/lib/constants';
 

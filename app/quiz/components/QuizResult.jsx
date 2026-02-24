@@ -88,7 +88,7 @@ export default function QuizResult({ result, answers, utmParams, onEmailSubmitte
             key={i}
             className="text-slate-200 font-light leading-relaxed"
             style={{
-              animation: `fadeInUp 377ms ease-out ${110 + i * 110}ms both`,
+              animation: `fadeInUp 377ms ease-out ${144 + i * 89}ms both`,
             }}
           >
             {p}
@@ -109,7 +109,7 @@ export default function QuizResult({ result, answers, utmParams, onEmailSubmitte
           <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)' }} />
 
           <p className={`text-lg font-light mb-2 ${accentClass}`} style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-            Get your personalized guide and 3 techniques that help
+            Get your personalized guide and 3 practices that help
           </p>
           <p className="text-sm text-slate-300 font-light mb-4">
             Enter your email and we&apos;ll unlock your guide. No spam, just support.

@@ -74,7 +74,7 @@ export default function ResourcesPage() {
 
   return (
     <AppLayout>
-      <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+      <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 1.597s ease-out' }}>
         <PageHeader title="Resources" backHref={ROUTES.DASHBOARD} className="mb-6" />
 
         {/* Warm intro */}

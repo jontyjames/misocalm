@@ -7,6 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import { ArrowLeft, Star, ChevronDown } from 'lucide-react';
+import { useReducedMotion } from '@/hooks';
 import CockpitOrb from './CockpitOrb';
 import CockpitControls from './CockpitControls';
 import CockpitInitiate from './CockpitInitiate';
@@ -18,6 +19,7 @@ export default function TimerSetup({
   onBack,
   onStart,
 }) {
+  const prefersReduced = useReducedMotion();
   const [duration, setDuration] = useState(20);
   const [reminder, setReminder] = useState(5);
   const [rounds, setRounds] = useState(1);
@@ -81,7 +83,7 @@ export default function TimerSetup({
         {showGuide && (
           <div
             className="text-sm font-light text-slate-300 space-y-2 mb-4 pl-5"
-            style={{ animation: 'fadeIn 233ms ease-out' }}
+            style={{ animation: prefersReduced ? 'none' : 'fadeIn 233ms ease-out' }}
           >
             <p>Find a comfortable position and close your eyes. Place your phone face-down nearby.</p>
             <p>A gentle bell marks the end of each practice interval. The grace period gives you space to return slowly, with no rush.</p>

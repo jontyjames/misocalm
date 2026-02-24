@@ -7,7 +7,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const SOLFEGGIO_GRADIENTS = {
   indigo: 'radial-gradient(circle, rgba(99,102,241,0.6) 0%, rgba(99,102,241,0.2) 50%, transparent 70%)',
@@ -34,7 +34,7 @@ export default function ExpansionBloom({ active = false, solfeggio = 'indigo', o
   if (!visible || prefersReduced) {
     // In reduced motion, still fire onComplete
     if (active && prefersReduced && onComplete) {
-      setTimeout(onComplete, 100);
+      setTimeout(onComplete, 89); // fib-snap
     }
     return null;
   }

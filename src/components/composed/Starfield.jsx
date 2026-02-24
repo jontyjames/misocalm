@@ -6,7 +6,7 @@
 'use client';
 
 import { memo, useMemo, useEffect, useRef } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 // Prime-based durations so stars never blink in unison
 const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];

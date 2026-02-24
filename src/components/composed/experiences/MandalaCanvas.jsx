@@ -10,7 +10,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.02)';
 const MAX_FORMS = 37; // prime cap

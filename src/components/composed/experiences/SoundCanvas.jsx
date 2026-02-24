@@ -12,7 +12,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback } from 'react';
-import useReducedMotion from '@/hooks/useReducedMotion';
+import { useReducedMotion } from '@/hooks';
 
 const LOUD_THRESHOLD = 0.06;
 const VOID_COLOR = 'rgba(3, 7, 18, 0.06)';

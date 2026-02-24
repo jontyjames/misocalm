@@ -29,3 +29,7 @@ android/.gradle/
 android/app/build/
 
 .vercel
+
+# generated assets
+output/
+scripts/fonts/*.ttf

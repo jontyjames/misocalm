@@ -20,7 +20,7 @@ export default function GroundingComplete({ onJournal, onReturn }) {
         alignItems: 'center',
         gap: 16,
         opacity: 0,
-        animation: 'fadeIn 1.597s ease-out 0.5s forwards',
+        animation: 'fadeIn 1.597s ease-out 0.610s forwards',
       }}
     >
       <button

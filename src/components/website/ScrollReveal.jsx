@@ -6,7 +6,7 @@
 
 'use client';
 
-import useScrollReveal from '@/hooks/useScrollReveal';
+import { useScrollReveal } from '@/hooks';
 import { FIBONACCI_TIMING } from '@/lib/constants';
 
 const PRESETS = {

@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useReducedMotion } from '@/hooks';
 import Logo from './Logo';
 
 const NAV_LINKS = [
@@ -19,11 +20,12 @@ const NAV_LINKS = [
 export default function WebsiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   return (
     <header
       className="sticky top-0 z-40 bg-void-black/60 backdrop-blur-xl border-b border-white/[0.06]"
-      style={{ animation: 'fadeIn 610ms ease-out' }}
+      style={{ animation: prefersReduced ? 'none' : 'fadeIn 610ms ease-out' }}
     >
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-[68px]">
         {/* Brand */}
@@ -81,12 +83,12 @@ export default function WebsiteHeader() {
           aria-expanded={menuOpen}
         >
           <span
-            className={`block w-5 h-[1.5px] bg-slate-300 transition-all duration-[233ms] ${
+            className={`block w-5 h-[1.5px] bg-slate-300 ${prefersReduced ? '' : 'transition-all duration-[233ms]'} ${
               menuOpen ? 'rotate-45 translate-y-[4.5px]' : ''
             }`}
           />
           <span
-            className={`block w-5 h-[1.5px] bg-slate-300 transition-all duration-[233ms] ${
+            className={`block w-5 h-[1.5px] bg-slate-300 ${prefersReduced ? '' : 'transition-all duration-[233ms]'} ${
               menuOpen ? '-rotate-45 -translate-y-[4.5px]' : ''
             }`}
           />
@@ -97,7 +99,7 @@ export default function WebsiteHeader() {
       {menuOpen && (
         <nav
           className="sm:hidden border-t border-white/[0.06] bg-void-black/90 backdrop-blur-xl"
-          style={{ animation: 'fadeIn 233ms ease-out' }}
+          style={{ animation: prefersReduced ? 'none' : 'fadeIn 233ms ease-out' }}
         >
           <div className="px-6 py-4 flex flex-col gap-4">
             {NAV_LINKS.map(({ href, label }) => {

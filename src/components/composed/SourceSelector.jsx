@@ -3,7 +3,7 @@
  * 13 options (prime), matching TriggerChips visual style
  */
 
-import TriggerChips from '@/components/ui/TriggerChips';
+import { TriggerChips } from '@/components/ui';
 import { SOURCE_OPTIONS } from '@/lib/constants';
 
 export default function SourceSelector({ selected, onToggle, className = '' }) {

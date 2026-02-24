@@ -8,8 +8,8 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion, useInsights } from '@/hooks';
 import { usePremiumContext } from '@/context/PremiumContext';
-import { useInsights } from '@/hooks/useInsights';
 import { Spinner, PremiumGate } from '@/components/ui';
 import InsightCard from './InsightCard';
 
@@ -18,6 +18,7 @@ export default function JournalInsights() {
   const { isPremium, isLoading: premiumLoading } = usePremiumContext();
   const { insights, stats, loading } = useInsights(user?.id, 30);
   const [showWhy, setShowWhy] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   if (loading || premiumLoading) {
     return (
@@ -63,7 +64,7 @@ export default function JournalInsights() {
       {showWhy && (
         <p
           className="text-sm text-slate-300 font-light leading-relaxed px-4 pb-2"
-          style={{ animation: 'fadeIn 0.233s ease-out' }}
+          style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.233s ease-out' }}
         >
           These patterns are here to help you understand, not to define you.
           Noticing what shows up most often can bring a sense of clarity, but

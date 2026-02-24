@@ -16,7 +16,7 @@ import { ROUTES } from '@/lib/constants';
 const supportOptions = [
   {
     icon: Wind,
-    title: 'Breathing Technique',
+    title: 'Breathing Practice',
     description: 'Calm your nervous system with guided breathing',
     iconBg: 'bg-indigo-500/20 border-indigo-500/30',
     iconColor: 'text-indigo-400',

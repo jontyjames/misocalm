@@ -3,7 +3,10 @@
  * Sacred Glass cards for choosing breathing session length
  */
 
+'use client';
+
 import { ArrowLeft, Star } from 'lucide-react';
+import { useReducedMotion } from '@/hooks';
 
 const DURATION_OPTIONS_BY_TYPE = {
   '478': [
@@ -57,6 +60,7 @@ const CARD_COLORS = [
 export { DURATION_OPTIONS_BY_TYPE, BREATH_INSTRUCTIONS };
 
 export default function DurationSelector({ tool, isFavorite, onToggleFavorite, onSelect, onBack }) {
+  const prefersReduced = useReducedMotion();
   const options = DURATION_OPTIONS_BY_TYPE[tool.breathType] || DURATION_OPTIONS_BY_TYPE['478'];
   const instructions = tool.breathType && BREATH_INSTRUCTIONS[tool.breathType];
 
@@ -104,7 +108,7 @@ export default function DurationSelector({ tool, isFavorite, onToggleFavorite, o
                 <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }} />
                 <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
                 <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${colors.color}0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${colors.color}0.06) 0%, transparent 60%)` }} />
-                <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 120% 80% at 50% 50%, ${colors.color}0.08) 0%, transparent 70%)`, backgroundSize: '100% 200%', animation: colors.breathe }} />
+                <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 120% 80% at 50% 50%, ${colors.color}0.08) 0%, transparent 70%)`, backgroundSize: '100% 200%', animation: prefersReduced ? 'none' : colors.breathe }} />
 
                 <div className="relative flex items-start justify-between mb-2">
                   <p className="text-white font-light text-lg">{option.name}</p>

@@ -8,12 +8,13 @@
 
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import Slider from '@/components/ui/Slider';
+import { Slider } from '@/components/ui';
 import { CHECK_IN_SCALES, ROUTES } from '@/lib/constants';
-import { useCheckInForm } from '@/hooks/useCheckInForm';
+import { useCheckInForm, useReducedMotion } from '@/hooks';
 
 export default function BreathworkCheckIn({ userId, fromBreathwork = false }) {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const backRoute = fromBreathwork ? ROUTES.DASHBOARD : ROUTES.JOURNAL;
   const {
     energy, setEnergy,
@@ -26,7 +27,7 @@ export default function BreathworkCheckIn({ userId, fromBreathwork = false }) {
   return (
     <div
       className="min-h-screen flex flex-col px-6 py-8"
-      style={{ animation: 'fadeIn 1.6s ease-out' }}
+      style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}
     >
       {/* Back */}
       <button

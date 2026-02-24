@@ -107,7 +107,7 @@ export default function VerifyPage() {
     await sendOtp(email);
     setResending(false);
     setResent(true);
-    setTimeout(() => setResent(false), 5000);
+    setTimeout(() => setResent(false), 2584); // fib-sacred
   };
 
   const handleUseDifferentEmail = () => {
@@ -118,7 +118,7 @@ export default function VerifyPage() {
   const displayError = localError || authError;
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.6s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
       <div className="flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
       </div>

@@ -161,6 +161,14 @@ export default function DashboardPage() {
             title="Go inward"
             subtitle="Reflect, log, or check in with yourself"
           />
+
+          <a
+            href={ROUTES.RESOURCES}
+            className="text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors mt-6"
+            style={{ transition: 'color 0.377s ease' }}
+          >
+            crisis support and resources
+          </a>
         </div>
       </div>
     </AppLayout>
