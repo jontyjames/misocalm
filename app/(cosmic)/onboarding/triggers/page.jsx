@@ -63,22 +63,28 @@ export default function TriggersPage() {
 
   return (
     <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
-      {/* Top bar */}
+      {/* Top bar: progress dots + skip */}
       <div className="flex items-center justify-between mb-[26px]">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
+        <button
+          onClick={handleSkip}
+          className="text-sm text-slate-300 hover:text-white transition-colors"
+        >
+          Not now
+        </button>
       </div>
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <OnboardingTriggerSelector onComplete={handleComplete} onSkip={handleSkip} />
+        <OnboardingTriggerSelector onComplete={handleComplete} />
       </div>
 
       {/* Privacy note */}
       <div className="text-center pb-4">
-        <div className="flex items-center justify-center gap-1.5">
-          <Lock className="w-3 h-3 text-slate-300" />
-          <p className="text-xs text-slate-300 font-light">
-            Your information is private and never shared
+        <div className="flex items-center justify-center gap-[6px]">
+          <Lock className="w-3 h-3 text-slate-400" />
+          <p className="text-xs text-slate-400 font-light">
+            Private and never shared
           </p>
         </div>
       </div>

@@ -12,7 +12,7 @@ import { DEFAULT_TRIGGERS } from '@/lib/constants';
 import { isValidTriggerName } from '@/lib/validators';
 import { useReducedMotion } from '@/hooks';
 
-export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
+export default function OnboardingTriggerSelector({ onComplete }) {
   const prefersReduced = useReducedMotion();
   const [selected, setSelected] = useState([]);
   const [customTrigger, setCustomTrigger] = useState('');
@@ -155,12 +155,6 @@ export default function OnboardingTriggerSelector({ onComplete, onSkip }) {
         >
           Continue
         </Button>
-        <button
-          onClick={onSkip}
-          className="w-full mt-3 text-sm text-slate-400 hover:text-white transition-colors text-center"
-        >
-          Skip for now
-        </button>
       </div>
     </>
   );

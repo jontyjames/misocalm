@@ -253,17 +253,25 @@ export default function FirstPracticePage() {
                 {showInstructions && (
                   <div
                     className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800/95 border border-slate-700/50 backdrop-blur-sm"
-                    style={{ animation: 'fadeIn 0.377s ease-out' }}
+                    style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}
                   >
-                    <div className="px-4 py-4">
-                      <ul className="text-sm text-slate-300 font-light space-y-2">
-                        <li>Breathe in through your nose for <span className="text-cyan-400">4 seconds</span></li>
-                        <li>Hold your breath for <span className="text-cyan-400">7 seconds</span></li>
-                        <li>Breathe out through your mouth for <span className="text-cyan-400">8 seconds</span></li>
-                        <li><span className="text-cyan-400">Repeat</span></li>
-                      </ul>
-                      <p className="text-sm text-slate-300 font-light mt-4 pt-3 border-t border-slate-700/50">
-                        Used by therapists worldwide, 4-7-8 is a foundation practice for calm and relaxation.
+                    <div className="px-5 py-5">
+                      <div className="space-y-3">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-cyan-400 text-xs font-light w-[26px] shrink-0 text-right">4s</span>
+                          <span className="text-sm text-slate-200 font-light">Breathe in through your nose</span>
+                        </div>
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-cyan-400 text-xs font-light w-[26px] shrink-0 text-right">7s</span>
+                          <span className="text-sm text-slate-200 font-light">Hold gently</span>
+                        </div>
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-cyan-400 text-xs font-light w-[26px] shrink-0 text-right">8s</span>
+                          <span className="text-sm text-slate-200 font-light">Breathe out through your mouth</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 font-light mt-4 pt-3 border-t border-slate-700/50">
+                        A foundation practice for calm, used by therapists worldwide.
                       </p>
                     </div>
                   </div>
