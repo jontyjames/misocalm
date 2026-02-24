@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion } from '@/hooks';
 import { userTriggerService } from '@/services';
 import { Button, Spinner, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
@@ -18,6 +19,7 @@ const CURRENT_STEP = 6;
 
 export default function PlanPage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const { user, upsertProfile, refreshProfile, isAuthenticated, loading: authLoading } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -124,7 +126,7 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8 relative" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
       {/* Soft radial glow — lights coming on with content */}
       <div
         className={`absolute inset-0 pointer-events-none transition-opacity duration-[987ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}
@@ -145,12 +147,12 @@ export default function PlanPage() {
           {'Well done for choosing this path'.split('').map((char, i) => (
             <span
               key={i}
-              className="text-xl sm:text-2xl text-white/80 opacity-0"
+              className={`text-xl sm:text-2xl text-white/80 ${prefersReduced ? '' : 'opacity-0'}`}
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
                 textShadow: '0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.15)',
-                animation: `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
+                animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -218,8 +220,8 @@ export default function PlanPage() {
           </div>
       </div>
 
-      {/* Disclaimer — footer */}
-      <div className="relative z-10 text-center pb-4">
+      {/* Disclaimer — footer, fades in with content */}
+      <div className={`relative z-10 text-center pb-4 transition-opacity duration-[1597ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-xs text-slate-300 font-light">
           MisoCalm is a wellness tool, not a substitute for professional support
         </p>

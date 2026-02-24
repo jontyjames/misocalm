@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useReducedMotion } from '@/hooks';
 import { Button, ProgressDots } from '@/components/ui';
 import { BreathingCircle, BreathingAura } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
@@ -17,6 +18,7 @@ const CURRENT_STEP = 1;
 
 export default function FirstPracticePage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const [isActive, setIsActive] = useState(false);
   const [cycleCount, setCycleCount] = useState(0);
   const [targetCycles] = useState(3);
@@ -67,7 +69,7 @@ export default function FirstPracticePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
         {/* Top bar: progress dots + skip */}
         <div className="flex items-center justify-between mb-6">
           <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
@@ -90,11 +92,11 @@ export default function FirstPracticePage() {
                 {feedbackMessage.split('').map((char, i) => (
                   <span
                     key={i}
-                    className="text-2xl text-white opacity-0"
+                    className={`text-2xl text-white ${prefersReduced ? '' : 'opacity-0'}`}
                     style={{
                       fontFamily: "'Josefin Sans', sans-serif",
                       fontWeight: 200,
-                      animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
+                      animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                       width: char === ' ' ? '0.4em' : undefined,
                     }}
                   >

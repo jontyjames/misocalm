@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion } from '@/hooks';
 import { Spinner, ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
@@ -44,6 +45,7 @@ const IMPACT_OPTIONS = [
 
 export default function AssessmentPage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [selected, setSelected] = useState(null);
 
@@ -79,7 +81,7 @@ export default function AssessmentPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
       {/* Top bar */}
       <div className="flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />

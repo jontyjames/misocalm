@@ -30,7 +30,7 @@ function CosmicErrorFallback({ error, reset }) {
 
 export default function CosmicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-void-black relative overflow-hidden">
+    <div className="min-h-screen w-full bg-void-black relative overflow-hidden">
       {/* Nebula glow effects */}
       <div className="absolute top-0 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-indigo pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-cyan pointer-events-none" />
@@ -38,7 +38,7 @@ export default function CosmicLayout({ children }) {
       <Starfield />
 
       <div className="relative z-10 min-h-screen flex justify-center">
-        <div className="w-full max-w-md min-h-screen relative">
+        <div className="w-full sm:max-w-md min-h-screen relative">
           <ErrorBoundary fallback={(props) => <CosmicErrorFallback {...props} />}>
             {children}
           </ErrorBoundary>

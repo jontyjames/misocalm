@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
+import { useReducedMotion } from '@/hooks';
 import { ProgressDots } from '@/components/ui';
 import { OnboardingTriggerSelector } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
@@ -18,6 +19,7 @@ const THANK_YOU_MESSAGE = 'Thank you for trusting us with this.';
 
 export default function TriggersPage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
 
   const handleComplete = (selected) => {
@@ -43,11 +45,11 @@ export default function TriggersPage() {
           {THANK_YOU_MESSAGE.split('').map((char, i) => (
             <span
               key={i}
-              className="text-2xl text-white opacity-0"
+              className={`text-2xl text-white ${prefersReduced ? '' : 'opacity-0'}`}
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
-                animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
+                animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -60,7 +62,7 @@ export default function TriggersPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
       {/* Top bar */}
       <div className="flex items-center justify-between mb-[26px]">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />

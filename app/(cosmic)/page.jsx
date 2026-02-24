@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion } from '@/hooks';
 import { Button, Input, Spinner } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
@@ -19,6 +20,7 @@ const SUBTITLE_DELAY = INTRO_TEXT.length * 0.089 + 0.610;
 export default function WelcomePage() {
   const router = useRouter();
   const { isAuthenticated, hasCompletedOnboarding, loading, sendOtp, verifyOtp } = useAuth();
+  const prefersReduced = useReducedMotion();
   const [introStarted, setIntroStarted] = useState(false);
   const [introDone, setIntroDone] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -121,12 +123,12 @@ export default function WelcomePage() {
         {introStarted && INTRO_TEXT.split('').map((char, i) => (
           <span
             key={i}
-            className="text-3xl text-slate-200 opacity-0"
+            className={`text-3xl text-slate-200 ${prefersReduced ? '' : 'opacity-0'}`}
             style={{
               fontFamily: "'Josefin Sans', sans-serif",
               fontWeight: 200,
               letterSpacing: '0.05em',
-              animation: `fadeIn 0.610s ease-out ${i * 0.089}s forwards`,
+              animation: prefersReduced ? 'none' : `fadeIn 0.610s ease-out ${i * 0.089}s forwards`,
               width: char === ' ' ? '0.4em' : undefined,
             }}
           >
@@ -147,12 +149,12 @@ export default function WelcomePage() {
           {SUBTITLE_TEXT.split('').map((char, i) => (
             <span
               key={i}
-              className="text-3xl text-white/90 opacity-0"
+              className={`text-3xl text-white/90 ${prefersReduced ? '' : 'opacity-0'}`}
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
                 letterSpacing: '0.04em',
-                animation: `fadeIn 0.377s ease-out ${SUBTITLE_DELAY + i * 0.034}s forwards`,
+                animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${SUBTITLE_DELAY + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -266,11 +268,11 @@ export default function WelcomePage() {
           {'Your sanctuary awaits'.split('').map((char, i) => (
             <span
               key={i}
-              className="text-2xl text-white opacity-0"
+              className={`text-2xl text-white ${prefersReduced ? '' : 'opacity-0'}`}
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
-                animation: `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
+                animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${0.377 + i * 0.034}s forwards`,
                 width: char === ' ' ? '0.5em' : undefined,
               }}
             >

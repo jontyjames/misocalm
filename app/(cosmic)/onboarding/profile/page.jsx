@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion } from '@/hooks';
 import { Button, Input, ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
@@ -19,6 +20,7 @@ const CODE_MESSAGE = 'Check your email for a code.';
 
 export default function ProfilePage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const { sendOtp, error: authError, clearError } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -68,11 +70,11 @@ export default function ProfilePage() {
           {CODE_MESSAGE.split('').map((char, i) => (
             <span
               key={i}
-              className="text-2xl text-white opacity-0"
+              className={`text-2xl text-white ${prefersReduced ? '' : 'opacity-0'}`}
               style={{
                 fontFamily: "'Josefin Sans', sans-serif",
                 fontWeight: 200,
-                animation: `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
+                animation: prefersReduced ? 'none' : `fadeIn 0.377s ease-out ${i * 0.034}s forwards`,
                 width: char === ' ' ? '0.4em' : undefined,
               }}
             >
@@ -85,7 +87,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
       {/* Top bar */}
       <div className="flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />

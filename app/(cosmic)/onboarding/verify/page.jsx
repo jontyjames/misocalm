@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useReducedMotion } from '@/hooks';
 import { Button, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS, FIBONACCI_TIMING } from '@/lib/constants';
@@ -18,6 +19,7 @@ const CODE_LENGTH = 6;
 
 export default function VerifyPage() {
   const router = useRouter();
+  const prefersReduced = useReducedMotion();
   const { sendOtp, verifyOtp, isAuthenticated, error: authError, clearError } = useAuth();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(''));
@@ -118,7 +120,7 @@ export default function VerifyPage() {
   const displayError = localError || authError;
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: 'fadeIn 1.597s ease-out' }}>
+    <div className="min-h-screen flex flex-col px-6 py-8" style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}>
       <div className="flex items-center justify-between mb-6">
         <ProgressDots current={CURRENT_STEP} total={TOTAL_ONBOARDING_STEPS} />
       </div>
