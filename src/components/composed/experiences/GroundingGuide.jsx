@@ -19,6 +19,7 @@ import SenseProgress from './SenseProgress';
 import GroundingComplete from './GroundingComplete';
 import GroundingCanvas from './GroundingCanvas';
 import GroundingPrompt from './GroundingPrompt';
+import GroundingIntro from './GroundingIntro';
 
 let rippleId = 0;
 
@@ -179,40 +180,8 @@ export default function GroundingGuide() {
         </button>
       )}
 
-      {/* Intro text zone — centred on screen, larger, shown during intro */}
-      {state.introActive && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'none',
-          }}
-        >
-          <p
-            style={{
-              fontSize: 'clamp(1.8rem, 5vw, 2.6rem)',
-              letterSpacing: '0.08em',
-              textAlign: 'center',
-              opacity: state.guideText ? 1 : 0,
-              transform: state.guideText ? 'translateY(0)' : 'translateY(-6px)',
-              transition: `opacity ${state.guideText ? transitions.in : transitions.out} ease, transform ${state.guideText ? transitions.in : transitions.out} ease, color 0.987s ease`,
-              lineHeight: 1.8,
-              maxWidth: 440,
-              padding: '0 26px',
-              whiteSpace: 'pre-line',
-              fontFamily: "'Josefin Sans', sans-serif",
-              textShadow: TEXT_SHADOW,
-            }}
-            className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
-          >
-            {state.guideText}
-          </p>
-        </div>
-      )}
+      {/* Intro text — centred, larger, letter-by-letter reveal */}
+      {state.introActive && <GroundingIntro text={state.guideText} />}
 
       {/* Body text zone — top of screen, shown during active grounding */}
       {!state.introActive && (

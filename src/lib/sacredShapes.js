@@ -228,13 +228,13 @@ const SACRED_SHAPES = [
  * Returns data object — caller creates the SacredForm instance.
  */
 function spawnSacredShape(canvasW, canvasH) {
-  const padding = 68; // phi-scale margin
+  const padding = 26; // tight margin so shapes overlap edges
   return {
     shapeIndex: Math.floor(Math.random() * SACRED_SHAPES.length),
     colorStr: SACRED_COLORS[Math.floor(Math.random() * SACRED_COLORS.length)],
     x: padding + Math.random() * (canvasW - padding * 2),
     y: padding + Math.random() * (canvasH - padding * 2),
-    size: 42 + Math.random() * 68, // phi scale: 42–110
+    size: 110 + Math.random() * 190, // large: 110–300, fills the screen
     rotation: Math.random() * Math.PI * 2,
   };
 }

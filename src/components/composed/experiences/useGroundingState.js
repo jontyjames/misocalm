@@ -166,16 +166,16 @@ export default function useGroundingState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
-    // INTRO — centred, larger, faster pace
+    // INTRO — centred, larger, letter-by-letter
     setPhase('INTRO');
     setIntroActive(true);
     await delay(610);
     setGuide('you are here', false, TIERS.SLOW);
-    await delay(1597);
+    await delay(2584);
     setGuide('your senses know the way', false, TIERS.SLOW);
-    await delay(1597);
+    await delay(2584);
     setGuide('let them guide you', false, TIERS.SLOW);
-    await delay(1597);
+    await delay(2584);
     setIntroActive(false);
 
     // SEE (indigo glow)
