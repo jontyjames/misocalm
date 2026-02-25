@@ -87,6 +87,32 @@ Dashboard → Tools (nav) → /tools (browse)
 
 ---
 
+### 2b. Experience via Daily Rotation
+
+Experiences now appear in the daily practice rotation on the dashboard, and as the hero card on the tools page. URLs go directly to the experience page (not through /tools/{id}).
+
+```
+Dashboard → "Today's Practice" (when experience) → /tools/experiences/{slug}
+  → Complete (guided flow within experience page)
+  → Each experience has its own guide (GroundingGuide, MandalaGuide, etc.)
+  → Guide completion offers integration paths → Return to sanctuary
+```
+
+Or via tools page:
+
+```
+Dashboard → Tools (nav) → /tools → Hero experience card or experience grid
+  → /tools/experiences/{slug} → Complete → Guide integration → Sanctuary
+```
+
+**Back buttons:**
+- `/tools/experiences/{slug}` back → `/tools` (waypoint)
+- Post-completion → no back, paths forward from guide
+
+**Note:** Experience pages already follow the torus via their existing guide flows. No new navigation paths are created by adding them to the daily rotation.
+
+---
+
 ### 3. Trigger Logging
 
 Processing a difficult moment through reflection.
