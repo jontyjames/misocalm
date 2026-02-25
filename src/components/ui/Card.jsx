@@ -53,6 +53,12 @@ export default function Card({
     cyan: 'rgba(34,211,238,0.2)',
   };
 
+  const SOLFEGGIO_RGBA = {
+    indigo: 'rgba(99,102,241,',
+    violet: 'rgba(139,92,246,',
+    cyan: 'rgba(34,211,238,',
+  };
+
   if (isInteractive) {
     return (
       <Component
@@ -69,8 +75,8 @@ export default function Card({
           ${className}
         `}
         style={{
-          background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, rgba(99,102,241,0.05) 100%)',
-          boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.25)',
+          background: `linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.05) 100%)`,
+          boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.12), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.08), 0 4px 20px rgba(0,0,0,0.25)`,
           ...springStyle,
         }}
       >
@@ -83,6 +89,13 @@ export default function Card({
         <div
           className="absolute inset-0 pointer-events-none rounded-xl"
           style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.03) 40%, transparent 65%)' }}
+        />
+        {/* Torus flow — solfeggio colour enters from top, returns from bottom */}
+        <div
+          className="absolute inset-0 pointer-events-none rounded-xl"
+          style={{
+            background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.1) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.05) 0%, transparent 60%)`,
+          }}
         />
         {/* Touch glow overlay */}
         {glowPos && (

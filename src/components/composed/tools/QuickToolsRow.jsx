@@ -5,7 +5,8 @@
  *
  * Sacred geometry: phi spacing (6/10/16/26/42px), Fibonacci timing (233ms),
  * solfeggio icon glows (indigo=528Hz, cyan=741Hz, violet=852Hz).
- * Card width tuned so ~1.5 cards visible on 375px screen (scroll hint).
+ * Card total: 157px (prime) = 133px content + 24px p-3 padding,
+ * showing ~2 full cards + peek of 3rd on 375px screen.
  */
 
 'use client';
@@ -30,6 +31,14 @@ const TOOL_ICONS = {
   '5': { icon: Orbit,    color: 'text-cyan-400',   glow: 'rgba(34,211,238,0.2)' },   // Orbit — cycles of sacred timing, planetary rhythm, no auditory connotation
 };
 
+// Solfeggio colour per tool — drives Card's solfeggio prop for full Sacred Glass colour
+const TOOL_SOLFEGGIO = {
+  '1': 'indigo',  // 4-7-8 Breathing — transformation
+  '3': 'cyan',    // Box Breathing — clarity/grounding
+  '4': 'violet',  // Physiological Sigh — intuition/release
+  '5': 'cyan',    // Interval Timer — clarity/expression
+};
+
 export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) {
   const router = useRouter();
 
@@ -41,6 +50,7 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
           fontFamily: "'Josefin Sans', sans-serif",
           fontWeight: 200,
           marginBottom: PHI_SCALE[1], /* phi-2 (10px) */
+          textShadow: '0 0 16px rgba(99,102,241,0.3)',
         }}
       >
         Tools
@@ -61,62 +71,63 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
             <Card
               key={tool.id}
               onClick={() => router.push(`${ROUTES.TOOLS}/${tool.id}`)}
-              padding="p-4" /* phi-3 (16px) */
+              padding="p-3" /* 12px */
+              solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
               className="shrink-0"
             >
-              {/* Content width: 180px so card total ~212px, showing ~1.5 on 375px */}
-              <div style={{ width: 180 }}>
-                {/* Header: icon + star */}
-                <div
-                  className="flex items-start justify-between"
-                  style={{ marginBottom: PHI_SCALE[1] }} /* phi-2 (10px) */
-                >
-                  {Icon && (
-                    <div
-                      className={`flex items-center justify-center rounded-xl border border-white/[0.12] ${iconColor}`}
-                      style={{
-                        width: PHI_SCALE[4],  /* phi-5 (42px) */
-                        height: PHI_SCALE[4], /* phi-5 (42px) */
-                        background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
-                        boxShadow: `0 0 ${PHI_SCALE[2]}px ${iconGlow}`, /* phi-3 (16px) spread, solfeggio glow */
-                      }}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </div>
-                  )}
+              <div
+                className="flex flex-col items-center text-center"
+                style={{ width: 133 }} /* 157px total card (prime) − 24px p-3 */
+              >
+                {/* Star — top-right, 42px (phi-5) touch target */}
+                <div className="flex w-full justify-end" style={{ marginBottom: PHI_SCALE[0] }}>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleFavorite(tool.id);
                     }}
                     aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                    className={`p-1.5 -mr-1 -mt-1 shrink-0 min-w-[42px] min-h-[42px] flex items-center justify-center transition-colors duration-[233ms] ${
+                    className={`flex items-center justify-center shrink-0 transition-colors duration-[233ms] ${
                       isFav ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'
                     }`}
+                    style={{
+                      width: PHI_SCALE[4],  /* phi-5 (42px) */
+                      height: PHI_SCALE[4], /* phi-5 (42px) */
+                      marginTop: -PHI_SCALE[0],  /* pull into card padding */
+                      marginRight: -PHI_SCALE[0],
+                    }}
                   >
-                    <Star className="w-4 h-4" fill={isFav ? 'currentColor' : 'none'} />
+                    <Star className="w-3.5 h-3.5" fill={isFav ? 'currentColor' : 'none'} />
                   </button>
                 </div>
 
-                {/* Title */}
+                {/* Icon — centred */}
+                {Icon && (
+                  <div
+                    className={`flex items-center justify-center rounded-lg border border-white/[0.12] ${iconColor}`}
+                    style={{
+                      width: PHI_SCALE[3],  /* phi-4 (26px) */
+                      height: PHI_SCALE[3], /* phi-4 (26px) */
+                      marginBottom: PHI_SCALE[0], /* phi-1 (6px) */
+                      background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
+                      boxShadow: `0 0 ${PHI_SCALE[1]}px ${iconGlow}`, /* phi-2 (10px) spread */
+                    }}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </div>
+                )}
+
+                {/* Title — centred */}
                 <h3
-                  className="text-white font-light text-sm truncate"
+                  className="text-white font-light text-sm truncate w-full"
                   style={{ marginBottom: PHI_SCALE[0] }} /* phi-1 (6px) */
                 >
                   {tool.title}
                 </h3>
 
-                {/* Description */}
-                <p
-                  className="text-xs text-slate-300 font-light line-clamp-2"
-                  style={{ marginBottom: PHI_SCALE[1] }} /* phi-2 (10px) */
-                >
-                  {tool.description}
-                </p>
-
-                {/* Duration */}
+                {/* Duration — centred */}
                 <span
-                  className="text-xs text-slate-400 flex items-center"
+                  className="text-xs text-slate-400 flex items-center justify-center"
                   style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
                 >
                   <Clock className="w-3 h-3" />

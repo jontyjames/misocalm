@@ -48,7 +48,21 @@ export default function ToolsClient() {
         >
           Practices
         </h1>
-        <HeroExperience />
+        <div className="relative">
+          <div
+            className="absolute pointer-events-none rounded-3xl"
+            style={{
+              top: '-2rem',
+              bottom: '-2rem',
+              left: '-1.5rem',
+              right: '-1.5rem',
+              background: 'radial-gradient(ellipse 90% 140% at center, rgba(139,92,246,0.12) 0%, rgba(99,102,241,0.04) 45%, transparent 70%)',
+              filter: 'blur(24px)',
+              animation: 'glow-breathe 8s ease-in-out infinite',
+            }}
+          />
+          <HeroExperience />
+        </div>
         <QuickToolsRow favoriteTools={favoriteTools} onToggleFavorite={toggleFavorite} />
         <ExperienceGrid />
         <ComingSoonSection />

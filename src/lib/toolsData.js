@@ -75,6 +75,14 @@ export const TOOLS = [
 // Hero experience rotation order (cycles daily)
 export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence'];
 
+// Solfeggio colour per experience — drives Card's solfeggio prop
+export const EXPERIENCE_SOLFEGGIO = {
+  grounding: 'cyan',       // 741Hz — awakening, clarity, return to senses
+  mandala: 'violet',       // 852Hz — intuition, depth, creation
+  pulse: 'indigo',         // 528Hz — transformation, love, heartbeat
+  impermanence: 'violet',  // 852Hz — spiritual order, letting go
+};
+
 // Guided experiences
 export const EXPERIENCES = [
   {

@@ -2,24 +2,25 @@
  * HeroExperience
  * Full-width featured experience card that rotates daily.
  * Mini canvas preview loaded via dynamic import (ssr: false).
+ * Solfeggio colour driven by experience identity.
  */
 
 'use client';
 
 import { useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Clock } from 'lucide-react';
 import { Card } from '@/components/ui';
-import { EXPERIENCES, EXPERIENCE_HERO_ORDER } from '@/lib/toolsData';
+import { EXPERIENCES, EXPERIENCE_HERO_ORDER, EXPERIENCE_SOLFEGGIO } from '@/lib/toolsData';
 import { getDayOfYear } from '@/lib/dateUtils';
+import CANVAS_MAP from '@/components/composed/experiences/mini/canvasMap';
 
-// Module-scope map for dynamic imports (Next.js dynamic() requirement)
-const CANVAS_MAP = {
-  grounding: dynamic(() => import('@/components/composed/experiences/mini/MiniGroundingCanvas'), { ssr: false }),
-  mandala: dynamic(() => import('@/components/composed/experiences/mini/MiniMandalaCanvas'), { ssr: false }),
-  pulse: dynamic(() => import('@/components/composed/experiences/mini/MiniPulseCanvas'), { ssr: false }),
-  impermanence: dynamic(() => import('@/components/composed/experiences/mini/MiniSoundCanvas'), { ssr: false }),
+// Label text colour matched to solfeggio frequency
+const EXPERIENCE_LABEL_COLORS = {
+  grounding: 'text-cyan-300/70',
+  mandala: 'text-violet-300/70',
+  pulse: 'text-indigo-300/70',
+  impermanence: 'text-violet-300/70',
 };
 
 export default function HeroExperience() {
@@ -33,18 +34,20 @@ export default function HeroExperience() {
   if (!heroExp) return null;
 
   const Canvas = CANVAS_MAP[heroExp.id];
+  const solfeggio = EXPERIENCE_SOLFEGGIO[heroExp.id] || 'violet';
+  const labelColor = EXPERIENCE_LABEL_COLORS[heroExp.id] || 'text-violet-300/70';
 
   return (
     <Card
       onClick={() => router.push(heroExp.route)}
-      solfeggio="violet"
+      solfeggio={solfeggio}
       padding="p-5"
     >
       <div className="flex items-center gap-4">
         {Canvas && <Canvas size={160} />}
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-violet-300/70 font-light mb-1 tracking-wide uppercase">
-            Today's Experience
+          <p className={`text-xs ${labelColor} font-light mb-1 tracking-wide uppercase`}>
+            Today&apos;s Experience
           </p>
           <h2
             className="text-lg text-white mb-1"

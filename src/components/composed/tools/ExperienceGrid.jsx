@@ -1,26 +1,22 @@
 /**
  * ExperienceGrid
- * 2x2 CSS grid of experience cards, excluding today's hero.
- * Mini canvases loaded via dynamic import (ssr: false).
+ * Horizontal scroll row of experience cards, excluding today's hero.
+ * Mini canvases loaded via shared canvasMap (dynamic import, ssr: false).
+ *
+ * Card total: 157px (prime) = 133px content + 24px p-3 padding.
+ * Canvas: 120px (practical fit within card).
  */
 
 'use client';
 
 import { useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Clock } from 'lucide-react';
 import { Card } from '@/components/ui';
-import { EXPERIENCES, EXPERIENCE_HERO_ORDER } from '@/lib/toolsData';
+import { PHI_SCALE } from '@/lib/constants';
+import { EXPERIENCES, EXPERIENCE_HERO_ORDER, EXPERIENCE_SOLFEGGIO } from '@/lib/toolsData';
 import { getDayOfYear } from '@/lib/dateUtils';
-
-// Module-scope map for dynamic imports
-const CANVAS_MAP = {
-  grounding: dynamic(() => import('@/components/composed/experiences/mini/MiniGroundingCanvas'), { ssr: false }),
-  mandala: dynamic(() => import('@/components/composed/experiences/mini/MiniMandalaCanvas'), { ssr: false }),
-  pulse: dynamic(() => import('@/components/composed/experiences/mini/MiniPulseCanvas'), { ssr: false }),
-  impermanence: dynamic(() => import('@/components/composed/experiences/mini/MiniSoundCanvas'), { ssr: false }),
-};
+import CANVAS_MAP from '@/components/composed/experiences/mini/canvasMap';
 
 export default function ExperienceGrid() {
   const router = useRouter();
@@ -34,32 +30,49 @@ export default function ExperienceGrid() {
     <section>
       <h2
         className="text-lg text-white"
-        style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, marginBottom: 10 }}
+        style={{
+          fontFamily: "'Josefin Sans', sans-serif",
+          fontWeight: 200,
+          marginBottom: PHI_SCALE[1], /* phi-2 (10px) */
+          textShadow: '0 0 16px rgba(139,92,246,0.3)',
+        }}
       >
         Experiences
       </h2>
-      <div className="grid grid-cols-2 gap-3">
+      <div
+        className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
+        style={{ gap: PHI_SCALE[1] }} /* phi-2 (10px) */
+      >
         {remaining.map((exp) => {
           const Canvas = CANVAS_MAP[exp.id];
           return (
             <Card
               key={exp.id}
               onClick={() => router.push(exp.route)}
-              solfeggio="violet"
+              solfeggio={EXPERIENCE_SOLFEGGIO[exp.id] || 'violet'}
               padding="p-3"
+              className="shrink-0"
             >
-              <div className="flex flex-col items-center text-center">
+              <div
+                className="flex flex-col items-center text-center"
+                style={{ width: 133 }} /* 157px total card (prime) − 24px p-3 */
+              >
                 {Canvas && <Canvas size={120} />}
                 <h3
-                  className="text-white text-sm mt-2 mb-0.5"
-                  style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+                  className="text-white text-sm truncate w-full"
+                  style={{
+                    fontFamily: "'Josefin Sans', sans-serif",
+                    fontWeight: 200,
+                    marginTop: PHI_SCALE[0],  /* phi-1 (6px) */
+                    marginBottom: PHI_SCALE[0], /* phi-1 (6px) */
+                  }}
                 >
                   {exp.title}
                 </h3>
-                <p className="text-xs text-slate-300 font-light mb-1 line-clamp-2">
-                  {exp.description}
-                </p>
-                <span className="text-xs text-slate-400 flex items-center" style={{ gap: 6 }}>
+                <span
+                  className="text-xs text-slate-400 flex items-center justify-center"
+                  style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
+                >
                   <Clock className="w-3 h-3" />
                   {exp.duration}
                 </span>
