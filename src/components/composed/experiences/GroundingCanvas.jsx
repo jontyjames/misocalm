@@ -1,10 +1,9 @@
 /**
  * GroundingCanvas — full-screen sacred geometry renderer for grounding experience
  *
- * Each tap spawns a SacredForm: a translucent geometric shape at a random position.
- * By the end of 15 taps, the user has painted a unique generative art piece.
- * Very slow fade trail so shapes persist nearly the whole experience.
- * Pattern follows SoundCanvas/MandalaCanvas.
+ * Renders a pre-computed composition. Receives a `composition` object (with positions
+ * array) and `revealedCount` (how many positions to show). Connecting lines drawn
+ * between nearby shapes using additive screen blending.
  */
 
 'use client';
@@ -12,8 +11,13 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import { SACRED_SHAPES } from '@/lib/sacredShapes';
+import { findConnections } from '@/lib/groundingCompositions';
 
-const MAX_FORMS = 37; // prime cap
+function extractRgb(colorTemplate) {
+  const match = colorTemplate.match(/rgba\((\d+),(\d+),(\d+),/);
+  if (!match) return '150,150,150';
+  return `${match[1]},${match[2]},${match[3]}`;
+}
 
 class SacredForm {
   constructor(x, y, shapeIndex, color, size, rotation) {
@@ -23,43 +27,36 @@ class SacredForm {
     this.color = color;
     this.size = size;
     this.rotation = rotation;
-    this.alive = true;
-    this.scale = 0; // scales up from 0
+    this.scale = 0;
+    this.alpha = 0;
+    this.targetAlpha = 0.85;
   }
 
   update() {
-    // Scale up over ~23 frames (smooth entrance)
     if (this.scale < 1) {
-      this.scale = Math.min(1, this.scale + 0.045);
+      this.scale = Math.min(1, this.scale + 0.035);
     }
-    // Gentle rotation drift
-    this.rotation += 0.001;
+    if (this.alpha < this.targetAlpha) {
+      this.alpha = Math.min(this.targetAlpha, this.alpha + 0.025);
+    }
+    this.rotation += 0.0008;
   }
 
   draw(ctx) {
     const currentSize = this.size * this.scale;
-    if (currentSize < 1) return;
-
-    SACRED_SHAPES[this.shapeIndex](
-      ctx,
-      this.x,
-      this.y,
-      currentSize,
-      this.color,
-      0.85,
-      this.rotation,
-    );
+    if (currentSize < 1 || this.alpha < 0.005) return;
+    SACRED_SHAPES[this.shapeIndex](ctx, this.x, this.y, currentSize, this.color, this.alpha, this.rotation);
   }
 }
 
-export default function GroundingCanvas({ shapes }) {
+export default function GroundingCanvas({ composition, revealedCount }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ forms: [], time: 0 });
+  const stateRef = useRef({ forms: [] });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
-  const shapesRef = useRef(shapes);
-  shapesRef.current = shapes;
+  const propsRef = useRef({ composition, revealedCount });
+  propsRef.current = { composition, revealedCount };
   const lastSpawnCountRef = useRef(0);
 
   const render = useCallback(() => {
@@ -70,26 +67,40 @@ export default function GroundingCanvas({ shapes }) {
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
     const s = stateRef.current;
+    const { composition: comp, revealedCount: revealed } = propsRef.current;
 
-    s.time++;
-
-    // Clear canvas each frame (shapes are permanent, redrawn fresh)
     ctx.clearRect(0, 0, W, H);
 
-    // Spawn new forms from shapes prop
-    const currentShapes = shapesRef.current;
-    if (currentShapes.length > lastSpawnCountRef.current) {
-      for (let i = lastSpawnCountRef.current; i < currentShapes.length; i++) {
-        const sh = currentShapes[i];
-        if (s.forms.length >= MAX_FORMS) {
-          s.forms.shift();
-        }
-        s.forms.push(new SacredForm(sh.x, sh.y, sh.shapeIndex, sh.colorStr, sh.size, sh.rotation));
+    // Spawn new forms when revealedCount increases
+    if (comp && revealed > lastSpawnCountRef.current) {
+      for (let i = lastSpawnCountRef.current; i < revealed; i++) {
+        const p = comp.positions[i];
+        if (!p) continue;
+        s.forms.push(new SacredForm(p.x, p.y, p.shapeIndex, p.colorStr, p.size, p.rotation));
       }
-      lastSpawnCountRef.current = currentShapes.length;
+      lastSpawnCountRef.current = revealed;
     }
 
-    // Update and draw (shapes are permanent, never removed)
+    // Draw connecting lines (behind shapes)
+    if (comp && revealed > 1) {
+      const conns = findConnections(comp.positions, revealed);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for (const [fi, ti] of conns) {
+        const from = comp.positions[fi];
+        const to = comp.positions[ti];
+        const rgb = extractRgb(from.colorStr);
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.strokeStyle = `rgba(${rgb},0.15)`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Update and draw all forms
     for (const form of s.forms) {
       form.update();
       form.draw(ctx);

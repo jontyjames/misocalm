@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
-import { spawnSacredShape } from '@/lib/sacredShapes';
+import { generateComposition } from '@/lib/groundingCompositions';
 import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
 import GroundingComplete from './GroundingComplete';
@@ -38,16 +38,20 @@ export default function GroundingGuide() {
   const prefersReduced = useReducedMotion();
   const state = useGroundingState();
   const [ripples, setRipples] = useState([]);
-  const [shapes, setShapes] = useState([]);
+  const [composition, setComposition] = useState(null);
+  const [revealedCount, setRevealedCount] = useState(0);
   const rippleTimers = useRef([]);
 
-  // Register tap callback to spawn sacred shapes
+  // Generate composition on enter, register tap callback to reveal next shape
+  useEffect(() => {
+    if (state.started && !composition) {
+      setComposition(generateComposition(window.innerWidth, window.innerHeight));
+    }
+  }, [state.started, composition]);
+
   useEffect(() => {
     state.setOnTap(() => {
-      const shape = spawnSacredShape(window.innerWidth, window.innerHeight);
-      // Bias shapes toward middle and lower screen (away from text zone)
-      shape.y = (window.innerHeight * 0.3) + Math.random() * (window.innerHeight * 0.6);
-      setShapes((prev) => [...prev, shape]);
+      setRevealedCount((c) => c + 1);
     });
   }, [state.setOnTap]);
 
@@ -95,8 +99,8 @@ export default function GroundingGuide() {
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
       {/* Sacred geometry canvas — z0, behind everything */}
-      {state.started && !state.complete && (
-        <GroundingCanvas shapes={shapes} />
+      {state.started && !state.complete && composition && (
+        <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}
 
       {/* Sense glow — subtle radial background that shifts per sense */}
