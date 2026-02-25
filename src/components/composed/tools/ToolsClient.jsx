@@ -1,7 +1,7 @@
 /**
  * ToolsClient
  * Orchestrator for the practices page: hero + tools row + experience grid + coming soon.
- * Thin component — composes sections and handles auth guard + favorites.
+ * Thin component — composes sections and handles auth guard.
  */
 
 'use client';
@@ -19,21 +19,11 @@ import ComingSoonSection from './ComingSoonSection';
 
 export default function ToolsClient() {
   const router = useRouter();
-  const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
-  const favoriteTools = profile?.favorite_tools || [];
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
   }, [isAuthenticated, loading, router]);
-
-  const toggleFavorite = async (toolId) => {
-    const current = profile?.favorite_tools || [];
-    const updated = current.includes(toolId)
-      ? current.filter((id) => id !== toolId)
-      : [...current, toolId];
-    await upsertProfile({ favorite_tools: updated });
-    await refreshProfile();
-  };
 
   if (loading) {
     return <AppLayout><ToolsSkeleton /></AppLayout>;
@@ -63,7 +53,7 @@ export default function ToolsClient() {
           />
           <HeroExperience />
         </div>
-        <QuickToolsRow favoriteTools={favoriteTools} onToggleFavorite={toggleFavorite} />
+        <QuickToolsRow />
         <ExperienceGrid />
         <ComingSoonSection />
       </div>

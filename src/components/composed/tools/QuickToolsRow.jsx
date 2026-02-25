@@ -11,7 +11,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Star, Clock, Moon, Anchor, Feather, Orbit } from 'lucide-react';
+import { Clock, Moon, Anchor, Feather, Orbit } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { ROUTES, PHI_SCALE } from '@/lib/constants';
 import { TOOLS } from '@/lib/toolsData';
@@ -38,7 +38,7 @@ const TOOL_SOLFEGGIO = {
   '5': 'cyan',    // Interval Timer — clarity/expression
 };
 
-export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) {
+export default function QuickToolsRow() {
   const router = useRouter();
 
   return (
@@ -60,7 +60,6 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
         style={{ gap: PHI_SCALE[1] }} /* phi-2 (10px) */
       >
         {activeTools.map((tool) => {
-          const isFav = favoriteTools.includes(tool.id);
           const toolIcon = TOOL_ICONS[tool.id];
           const Icon = toolIcon?.icon;
           const iconColor = toolIcon?.color || 'text-slate-400';
@@ -74,28 +73,6 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
               solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
             >
               <div className="flex flex-col items-center text-center">
-                {/* Star — top-right, 42px (phi-5) touch target */}
-                <div className="flex w-full justify-end" style={{ marginBottom: PHI_SCALE[0] }}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleFavorite(tool.id);
-                    }}
-                    aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                    className={`flex items-center justify-center shrink-0 transition-colors duration-[233ms] ${
-                      isFav ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'
-                    }`}
-                    style={{
-                      width: PHI_SCALE[4],  /* phi-5 (42px) */
-                      height: PHI_SCALE[4], /* phi-5 (42px) */
-                      marginTop: -PHI_SCALE[0],  /* pull into card padding */
-                      marginRight: -PHI_SCALE[0],
-                    }}
-                  >
-                    <Star className="w-3.5 h-3.5" fill={isFav ? 'currentColor' : 'none'} />
-                  </button>
-                </div>
-
                 {/* Icon — centred */}
                 {Icon && (
                   <div
