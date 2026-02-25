@@ -1,32 +1,54 @@
 /**
  * GroundingComplete — post-completion paths for the grounding experience
  *
- * Torus flow: integration (journal) or return to centre (sanctuary).
+ * Shows screenshot reminder (each mandala is unique and unrepeatable),
+ * creative play option, and torus flow paths (journal / sanctuary).
  */
 
 'use client';
 
-export default function GroundingComplete({ onJournal, onReturn }) {
+export default function GroundingComplete({ onJournal, onReturn, onPlay }) {
   return (
     <div
       style={{
         position: 'fixed',
-        bottom: 26,
+        bottom: 0,
         left: 0,
         right: 0,
         zIndex: 5,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 16,
+        paddingBottom: 'clamp(26px, 5vh, 42px)',
         opacity: 0,
         animation: 'fadeIn 1.597s ease-out 0.610s forwards',
+        background: 'linear-gradient(to top, rgba(3,7,18,0.85) 0%, rgba(3,7,18,0.5) 60%, transparent 100%)',
       }}
     >
+      {/* Screenshot reminder */}
+      <p
+        className="text-slate-400/50 text-xs font-light tracking-widest text-center"
+        style={{ marginBottom: 26, lineHeight: 1.8, fontFamily: "'Josefin Sans', sans-serif" }}
+      >
+        this will never be made again
+        <br />
+        <span className="text-slate-400/35">screenshot to keep your creation</span>
+      </p>
+
+      {/* Play mode */}
+      <button
+        onClick={onPlay}
+        className="text-slate-200/70 text-sm font-light tracking-widest hover:text-slate-200/90 transition-colors"
+        style={{ transition: 'color 0.377s ease', marginBottom: 16 }}
+      >
+        keep creating
+      </button>
+
+      {/* Torus flow paths */}
       <button
         onClick={onJournal}
-        className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-300/90 transition-colors"
-        style={{ transition: 'color 0.377s ease' }}
+        className="text-slate-300/50 text-xs font-light tracking-widest hover:text-slate-300/80 transition-colors"
+        style={{ transition: 'color 0.377s ease', marginBottom: 10 }}
       >
         reflect in your journal
       </button>

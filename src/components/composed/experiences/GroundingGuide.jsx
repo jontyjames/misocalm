@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
-import { generateComposition } from '@/lib/groundingCompositions';
+import { generateComposition, generatePlayLayer } from '@/lib/groundingCompositions';
 import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
 import GroundingComplete from './GroundingComplete';
@@ -40,6 +40,7 @@ export default function GroundingGuide() {
   const [ripples, setRipples] = useState([]);
   const [composition, setComposition] = useState(null);
   const [revealedCount, setRevealedCount] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const rippleTimers = useRef([]);
 
   // Generate composition on enter, register tap callback to reveal next shape
@@ -92,14 +93,29 @@ export default function GroundingGuide() {
     router.push(`${ROUTES.CHECK_IN}?from=grounding`);
   }, [state.clearSeqTimer, router]);
 
+  const handlePlay = useCallback(() => setPlaying(true), []);
+
+  const handlePlayTap = useCallback((e) => {
+    if (!composition) return;
+    const layer = generatePlayLayer();
+    setComposition(prev => ({ ...prev, layers: [...prev.layers, layer] }));
+    setRevealedCount(c => c + 1);
+    if (!prefersReduced) {
+      const id = ++rippleId;
+      setRipples(prev => [...prev, { id, x: e.clientX, y: e.clientY, color: 'rgb(226,232,240)' }]);
+      const timer = setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 610);
+      rippleTimers.current.push(timer);
+    }
+  }, [composition, prefersReduced]);
+
   const senseColor = state.currentSense?.color || 'rgba(148,163,184,0.3)';
   const tier = state.guideTier || TIERS.STANDARD;
   const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
-      {/* Sacred geometry canvas — z0, behind everything */}
-      {state.started && !state.complete && composition && (
+      {/* Sacred geometry canvas — z0, persists through completion */}
+      {state.started && composition && (
         <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}
 
@@ -136,22 +152,23 @@ export default function GroundingGuide() {
         />
       ))}
 
-      {/* Full-screen tap target */}
-      {state.started && !state.complete && (
+      {/* Full-screen tap target — active during grounding and play mode */}
+      {state.started && (!state.complete || playing) && (
         <div
-          onClick={handleTap}
+          onClick={playing ? handlePlayTap : handleTap}
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 2,
+            zIndex: playing ? 6 : 2,
             cursor: 'pointer',
           }}
           role="button"
           tabIndex={0}
-          aria-label="Tap to acknowledge"
+          aria-label={playing ? 'Tap to add to your creation' : 'Tap to acknowledge'}
           onKeyDown={(e) => {
             if (e.key === ' ' || e.key === 'Enter') {
-              handleTap({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
+              const synth = { clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 };
+              playing ? handlePlayTap(synth) : handleTap(synth);
             }
           }}
         />
@@ -251,8 +268,17 @@ export default function GroundingGuide() {
       )}
 
       {/* Completion options */}
-      {state.complete && (
-        <GroundingComplete onJournal={handleJournal} onReturn={handleReturn} />
+      {state.complete && !playing && (
+        <GroundingComplete onJournal={handleJournal} onReturn={handleReturn} onPlay={handlePlay} />
+      )}
+
+      {/* Play mode done button */}
+      {playing && (
+        <button
+          onClick={() => setPlaying(false)}
+          style={{ position: 'fixed', bottom: 'clamp(26px, 5vh, 42px)', left: '50%', transform: 'translateX(-50%)', zIndex: 8 }}
+          className="text-slate-400/50 text-xs font-light tracking-widest hover:text-slate-300/70 transition-colors"
+        >done</button>
       )}
 
       {/* Reduced motion fallback */}
