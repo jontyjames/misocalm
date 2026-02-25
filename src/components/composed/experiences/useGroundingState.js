@@ -17,7 +17,7 @@ const SENSES = [
   { id: 'see',   label: 'sight', count: 5, color: 'rgb(129,140,248)' },  // indigo-400
   { id: 'touch', label: 'touch', count: 4, color: 'rgb(34,211,238)' },   // cyan-400
   { id: 'hear',  label: 'hearing', count: 3, color: 'rgb(167,139,250)' }, // violet-400
-  { id: 'smell', label: 'smell', count: 2, color: 'rgb(203,213,225)' },   // slate-300
+  { id: 'smell', label: 'smell', count: 2, color: 'rgb(253,186,116)' },   // amber-300
   { id: 'taste', label: 'taste', count: 1, color: 'rgb(241,245,249)' },   // slate-100
 ];
 
@@ -66,6 +66,7 @@ export default function useGroundingState() {
   const tapCountRef = useRef(0);
   const resolveTapsRef = useRef(null);
   const seqTimerRef = useRef(null);
+  const guideTimerRef = useRef(null);
   const interactionTimerRef = useRef(null);
   const onTapCallbackRef = useRef(null);
 
@@ -73,6 +74,10 @@ export default function useGroundingState() {
     if (seqTimerRef.current) {
       clearTimeout(seqTimerRef.current);
       seqTimerRef.current = null;
+    }
+    if (guideTimerRef.current) {
+      clearTimeout(guideTimerRef.current);
+      guideTimerRef.current = null;
     }
     if (interactionTimerRef.current) {
       clearTimeout(interactionTimerRef.current);
@@ -85,6 +90,11 @@ export default function useGroundingState() {
   // setGuide now accepts tier and immediate flag
   const setGuide = useCallback((text, bright = false, tier = TIERS.STANDARD, immediate = false) => {
     const gap = immediate ? 0 : TIER_GAP[tier] || 377;
+    // Clear any pending guide timer
+    if (guideTimerRef.current) {
+      clearTimeout(guideTimerRef.current);
+      guideTimerRef.current = null;
+    }
     setGuideText('');
     setGuideBright(false);
     setGuideTier(tier);
@@ -93,9 +103,10 @@ export default function useGroundingState() {
         setGuideText(text);
         setGuideBright(bright);
       } else {
-        setTimeout(() => {
+        guideTimerRef.current = setTimeout(() => {
           setGuideText(text);
           setGuideBright(bright);
+          guideTimerRef.current = null;
         }, gap);
       }
     }

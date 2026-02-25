@@ -42,8 +42,9 @@ class SacredForm {
     this.rotation += 0.0008;
   }
 
-  draw(ctx) {
-    const currentSize = this.size * this.scale;
+  draw(ctx, time) {
+    const breathe = 1 + Math.sin(time * 0.003) * 0.015; // very subtle, barely perceptible
+    const currentSize = this.size * this.scale * breathe;
     if (currentSize < 1 || this.alpha < 0.005) return;
     SACRED_SHAPES[this.shapeIndex](ctx, this.x, this.y, currentSize, this.color, this.alpha, this.rotation);
   }
@@ -51,7 +52,7 @@ class SacredForm {
 
 export default function GroundingCanvas({ composition, revealedCount }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ forms: [] });
+  const stateRef = useRef({ forms: [], time: 0 });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
@@ -68,6 +69,7 @@ export default function GroundingCanvas({ composition, revealedCount }) {
     const H = canvas.height / dpr;
     const s = stateRef.current;
     const { composition: comp, revealedCount: revealed } = propsRef.current;
+    s.time += 16; // ~60fps frame time
 
     ctx.clearRect(0, 0, W, H);
 
@@ -90,11 +92,22 @@ export default function GroundingCanvas({ composition, revealedCount }) {
         const from = comp.positions[fi];
         const to = comp.positions[ti];
         const rgb = extractRgb(from.colorStr);
+        // Curved connection — control point offset perpendicular to midpoint
+        const mx = (from.x + to.x) / 2;
+        const my = (from.y + to.y) / 2;
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const offset = dist * 0.15;
+        // Perpendicular offset (alternates direction based on index sum)
+        const sign = (fi + ti) % 2 === 0 ? 1 : -1;
+        const nx = -dy / dist * offset * sign;
+        const ny = dx / dist * offset * sign;
         ctx.beginPath();
         ctx.moveTo(from.x, from.y);
-        ctx.lineTo(to.x, to.y);
-        ctx.strokeStyle = `rgba(${rgb},0.15)`;
-        ctx.lineWidth = 0.5;
+        ctx.quadraticCurveTo(mx + nx, my + ny, to.x, to.y);
+        ctx.strokeStyle = `rgba(${rgb},0.12)`;
+        ctx.lineWidth = 0.6;
         ctx.stroke();
       }
       ctx.restore();
@@ -103,7 +116,20 @@ export default function GroundingCanvas({ composition, revealedCount }) {
     // Update and draw all forms
     for (const form of s.forms) {
       form.update();
-      form.draw(ctx);
+      form.draw(ctx, s.time);
+    }
+
+    // Keystone glow for the final central shape
+    if (revealed >= 15 && comp.positions.length >= 15) {
+      const keystone = comp.positions[14];
+      const glowBreath = 1 + Math.sin(s.time * 0.004) * 0.2;
+      const grad = ctx.createRadialGradient(keystone.x, keystone.y, 0, keystone.x, keystone.y, 60 * glowBreath);
+      grad.addColorStop(0, 'rgba(241,245,249,0.08)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(keystone.x, keystone.y, 60 * glowBreath, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     rafRef.current = requestAnimationFrame(render);

@@ -89,7 +89,7 @@ export default function GroundingGuide() {
   const handleJournal = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
     state.clearSeqTimer();
-    router.push(`${ROUTES.CHECK_IN}?from=breathwork`);
+    router.push(`${ROUTES.CHECK_IN}?from=grounding`);
   }, [state.clearSeqTimer, router]);
 
   const senseColor = state.currentSense?.color || 'rgba(148,163,184,0.3)';
@@ -177,7 +177,7 @@ export default function GroundingGuide() {
             opacity: 0,
             animation: 'fadeIn 0.987s ease-out 1.597s forwards',
           }}
-          className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
+          className="flex items-center gap-1 text-slate-400/40 text-xs font-light tracking-wider hover:text-slate-300/60 transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           leave

@@ -37,11 +37,11 @@ const SENSE_BOUNDS = [
 
 function generateConvergence(cx, cy, maxRadius) {
   const rings = [
-    { count: 5, radiusFactor: 0.85 },
-    { count: 4, radiusFactor: 0.6 },
-    { count: 3, radiusFactor: 0.38 },
-    { count: 2, radiusFactor: 0.18 },
-    { count: 1, radiusFactor: 0 },
+    { count: 5, radiusFactor: 0.854 },  // SEE:   phi^(-1/3)
+    { count: 4, radiusFactor: 0.618 },  // TOUCH: phi complement
+    { count: 3, radiusFactor: 0.382 },  // HEAR:  1 - phi complement
+    { count: 2, radiusFactor: 0.236 },  // SMELL: phi complement squared
+    { count: 1, radiusFactor: 0 },      // TASTE: dead centre
   ];
 
   const positions = [];
@@ -55,7 +55,7 @@ function generateConvergence(cx, cy, maxRadius) {
     const offset = Math.random() * Math.PI * 2;
     for (let i = 0; i < ring.count; i++) {
       const angle = offset + (i / ring.count) * Math.PI * 2
-        + (Math.random() - 0.5) * 0.3; // +/- 0.15 rad jitter
+        + (Math.random() - 0.5) * 0.288; // +/- 0.144 rad jitter (Fibonacci 144)
       positions.push({
         x: cx + Math.cos(angle) * r,
         y: cy + Math.sin(angle) * r,
@@ -78,8 +78,8 @@ function generateSpiral(cx, cy, maxRadius) {
     const r = maxRadius * 0.85 * Math.pow(t, 0.7);
     const angle = startAngle + i * goldenAngle;
     positions.push({
-      x: cx + Math.cos(angle) * r + (Math.random() - 0.5) * 16,
-      y: cy + Math.sin(angle) * r + (Math.random() - 0.5) * 16,
+      x: cx + Math.cos(angle) * r + (Math.random() - 0.5) * 12,
+      y: cy + Math.sin(angle) * r + (Math.random() - 0.5) * 12,
     });
   }
 
@@ -91,7 +91,7 @@ function generateSpiral(cx, cy, maxRadius) {
 export function generateComposition(width, height) {
   const cx = width / 2;
   const cy = height / 2;
-  const maxRadius = Math.min(width, height) * 0.42;
+  const maxRadius = Math.min(width, height) * 0.382; // phi complement (1 - 0.618)
 
   const mode = Math.random() < 0.5 ? 'convergence' : 'spiral';
 
@@ -108,7 +108,7 @@ export function generateComposition(width, height) {
     // Outer positions larger, inner smaller; TASTE keystone is medium
     const ringProgress = i / 14;
     const baseSize = senseIndex === 4
-      ? 130
+      ? 110                                // TASTE keystone: phi-7 (110px)
       : 110 + (1 - ringProgress) * 140;
     const size = baseSize + (Math.random() - 0.5) * 40;
 
