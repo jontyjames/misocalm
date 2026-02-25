@@ -1,149 +1,245 @@
 /**
- * groundingCompositions — composition engine for 5-4-3-2-1 grounding
+ * groundingCompositions — layer-based mandala engine for 5-4-3-2-1 grounding
  *
- * Generates 15 pre-computed positions that form a sacred geometry
- * composition when revealed one at a time through tapping.
- * Two modes: Convergence (concentric rings) and Spiral (golden spiral).
+ * Generates a single centred sacred geometry mandala composed of 15 layers.
+ * Each tap reveals the next layer, building one coherent image piece by piece.
+ * Three template styles (Celestial, Crystalline, Harmonic), randomly chosen.
+ *
+ * Outside → inside construction mirrors the grounding journey:
+ * scattered senses converging to centre, wholeness.
  *
  * Pure utility. No React.
  */
 
-import { SACRED_SHAPES, SACRED_COLORS } from './sacredShapes';
+const PI = Math.PI;
+const TAU = PI * 2;
 
-// Sense-specific colour palettes (subsets of the full 13)
+// One colour per sense — shifts as the mandala builds inward
 const SENSE_COLORS = [
-  // SEE (indigo family)
-  ['rgba(165,180,252,A)', 'rgba(129,140,248,A)'],
-  // TOUCH (cyan family)
-  ['rgba(103,232,249,A)', 'rgba(34,211,238,A)'],
-  // HEAR (violet family)
-  ['rgba(196,181,253,A)', 'rgba(167,139,250,A)'],
-  // SMELL (warm family)
-  ['rgba(253,186,116,A)', 'rgba(252,211,77,A)'],
-  // TASTE (light/white family)
-  ['rgba(241,245,249,A)', 'rgba(226,232,240,A)'],
+  'rgba(129,140,248,A)',  // SEE:   indigo-400
+  'rgba(34,211,238,A)',   // TOUCH: cyan-400
+  'rgba(167,139,250,A)',  // HEAR:  violet-400
+  'rgba(253,186,116,A)',  // SMELL: amber-300
+  'rgba(241,245,249,A)',  // TASTE: slate-100
 ];
 
-// Sense boundaries: SEE 5, TOUCH 4, HEAR 3, SMELL 2, TASTE 1
-const SENSE_BOUNDS = [
-  { start: 0, end: 5, senseIndex: 0 },
-  { start: 5, end: 9, senseIndex: 1 },
-  { start: 9, end: 12, senseIndex: 2 },
-  { start: 12, end: 14, senseIndex: 3 },
-  { start: 14, end: 15, senseIndex: 4 },
-];
+// Inner layers glow brighter, drawing the eye to centre
+const SENSE_ALPHA = [0.55, 0.6, 0.68, 0.75, 0.85];
 
-// ─── Ring layout ────────────────────────────────────────────────
+function c(template, alpha) {
+  return template.replace('A', Math.max(0, alpha).toFixed(3));
+}
 
-function generateConvergence(cx, cy, maxRadius) {
-  const rings = [
-    { count: 5, radiusFactor: 0.854 },  // SEE:   phi^(-1/3)
-    { count: 4, radiusFactor: 0.618 },  // TOUCH: phi complement
-    { count: 3, radiusFactor: 0.382 },  // HEAR:  1 - phi complement
-    { count: 2, radiusFactor: 0.236 },  // SMELL: phi complement squared
-    { count: 1, radiusFactor: 0 },      // TASTE: dead centre
+// ── Drawing primitives ─────────────────────────────────────────
+
+function strokeCircle(ctx, cx, cy, r, color, alpha, lw = 0.8) {
+  if (r < 1) return;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, TAU);
+  ctx.strokeStyle = c(color, alpha);
+  ctx.lineWidth = lw;
+  ctx.stroke();
+}
+
+function strokePolygon(ctx, cx, cy, r, sides, rot, color, alpha, lw = 0.8) {
+  if (r < 1) return;
+  ctx.beginPath();
+  for (let i = 0; i <= sides; i++) {
+    const a = rot + (i / sides) * TAU;
+    const px = cx + Math.cos(a) * r;
+    const py = cy + Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.strokeStyle = c(color, alpha);
+  ctx.lineWidth = lw;
+  ctx.stroke();
+}
+
+function strokeStar(ctx, cx, cy, outerR, innerR, points, rot, color, alpha, lw = 0.7) {
+  ctx.beginPath();
+  for (let i = 0; i <= points * 2; i++) {
+    const a = rot + (i / (points * 2)) * TAU;
+    const r = i % 2 === 0 ? outerR : innerR;
+    const px = cx + Math.cos(a) * r;
+    const py = cy + Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = c(color, alpha);
+  ctx.lineWidth = lw;
+  ctx.stroke();
+}
+
+function strokeRays(ctx, cx, cy, innerR, outerR, count, rot, color, alpha, lw = 0.5) {
+  ctx.strokeStyle = c(color, alpha);
+  ctx.lineWidth = lw;
+  for (let i = 0; i < count; i++) {
+    const a = rot + (i / count) * TAU;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * innerR, cy + Math.sin(a) * innerR);
+    ctx.lineTo(cx + Math.cos(a) * outerR, cy + Math.sin(a) * outerR);
+    ctx.stroke();
+  }
+}
+
+function strokeCirclesOnRing(ctx, cx, cy, ringR, count, circleR, rot, color, alpha, lw = 0.7) {
+  for (let i = 0; i < count; i++) {
+    const a = rot + (i / count) * TAU;
+    strokeCircle(ctx, cx + Math.cos(a) * ringR, cy + Math.sin(a) * ringR, circleR, color, alpha, lw);
+  }
+}
+
+function strokeArcs(ctx, cx, cy, r, count, arcLen, rot, color, alpha, lw = 0.7) {
+  ctx.strokeStyle = c(color, alpha);
+  ctx.lineWidth = lw;
+  for (let i = 0; i < count; i++) {
+    const startA = rot + (i / count) * TAU;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startA, startA + arcLen);
+    ctx.stroke();
+  }
+}
+
+function strokeDotsOnRing(ctx, cx, cy, ringR, count, dotR, rot, color, alpha) {
+  ctx.fillStyle = c(color, alpha * 0.7);
+  for (let i = 0; i < count; i++) {
+    const a = rot + (i / count) * TAU;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * ringR, cy + Math.sin(a) * ringR, dotR, 0, TAU);
+    ctx.fill();
+  }
+}
+
+function fillGlow(ctx, cx, cy, r, color, alpha) {
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  grad.addColorStop(0, c(color, alpha * 0.9));
+  grad.addColorStop(0.5, c(color, alpha * 0.3));
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, TAU);
+  ctx.fill();
+}
+
+// ── Templates ──────────────────────────────────────────────────
+// Each returns 15 layers: { draw(ctx, cx, cy, scale, color, alpha), sense: 0-4 }
+// Layers build outside → inside. Sense mapping: SEE(5), TOUCH(4), HEAR(3), SMELL(2), TASTE(1)
+
+function templateCelestial(rot) {
+  return [
+    // SEE (5): outer orbital rings and arcs
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.95, col, a, 1.0) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * 0.88, 8, 0.32, rot, col, a, 0.8) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.80, col, a, 0.8) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * 0.875, 8, s * 0.015, rot + TAU / 16, col, a) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * 0.80, s * 0.95, 16, rot, col, a * 0.6, 0.5) },
+
+    // TOUCH (4): hexagonal flower mid-ring
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.618, col, a, 0.9) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.618, 6, rot, col, a, 0.8) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * 0.618, 6, s * 0.15, rot, col, a * 0.7, 0.7) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * 0.50, 6, 0.55, rot + PI / 6, col, a * 0.8, 0.7) },
+
+    // HEAR (3): inner star structure
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.382, col, a, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeStar(ctx, x, y, s * 0.382, s * 0.19, 6, rot, col, a, 0.7) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * 0.12, s * 0.382, 12, rot + PI / 12, col, a * 0.6, 0.5) },
+
+    // SMELL (2): seed of life details
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * 0.145, 6, s * 0.09, rot, col, a, 0.8) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.145, col, a, 0.9) },
+
+    // TASTE (1): centre glow
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * 0.10, col, a) },
   ];
-
-  const positions = [];
-
-  for (const ring of rings) {
-    if (ring.count === 1) {
-      positions.push({ x: cx, y: cy });
-      continue;
-    }
-    const r = maxRadius * ring.radiusFactor;
-    const offset = Math.random() * Math.PI * 2;
-    for (let i = 0; i < ring.count; i++) {
-      const angle = offset + (i / ring.count) * Math.PI * 2
-        + (Math.random() - 0.5) * 0.288; // +/- 0.144 rad jitter (Fibonacci 144)
-      positions.push({
-        x: cx + Math.cos(angle) * r,
-        y: cy + Math.sin(angle) * r,
-      });
-    }
-  }
-
-  return positions;
 }
 
-// ─── Golden spiral layout ───────────────────────────────────────
+function templateCrystalline(rot) {
+  return [
+    // SEE (5): outer crystal frame — dual octagons with connections
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.95, 8, rot, col, a, 1.0) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.82, 8, rot + TAU / 16, col, a, 0.8) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => {
+      ctx.strokeStyle = c(col, a * 0.7);
+      ctx.lineWidth = 0.6;
+      for (let i = 0; i < 8; i++) {
+        const a1 = rot + (i / 8) * TAU;
+        const a2 = rot + TAU / 16 + (i / 8) * TAU;
+        ctx.beginPath();
+        ctx.moveTo(x + Math.cos(a1) * s * 0.95, y + Math.sin(a1) * s * 0.95);
+        ctx.lineTo(x + Math.cos(a2) * s * 0.82, y + Math.sin(a2) * s * 0.82);
+        ctx.stroke();
+      }
+    }},
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.95, col, a * 0.4, 0.5) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * 0.88, 8, 0.18, rot + TAU / 16, col, a * 0.7, 0.7) },
 
-function generateSpiral(cx, cy, maxRadius) {
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  const startAngle = Math.random() * Math.PI * 2;
-  const positions = [];
+    // TOUCH (4): Star of David mid-structure
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.618, 3, rot - PI / 2, col, a, 0.9) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.618, 3, rot + PI / 2, col, a, 0.9) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.618, col, a * 0.8, 0.7) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * 0.618, s * 0.82, 6, rot, col, a * 0.5, 0.5) },
 
-  for (let i = 0; i < 15; i++) {
-    const t = 1 - i / 14; // 1 (outer) to 0 (centre)
-    const r = maxRadius * 0.85 * Math.pow(t, 0.7);
-    const angle = startAngle + i * goldenAngle;
-    positions.push({
-      x: cx + Math.cos(angle) * r + (Math.random() - 0.5) * 12,
-      y: cy + Math.sin(angle) * r + (Math.random() - 0.5) * 12,
-    });
-  }
+    // HEAR (3): inner dual triangles
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.382, 3, rot - PI / 2, col, a, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.382, 3, rot + PI / 2, col, a, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.382, col, a * 0.7, 0.7) },
 
-  return positions;
+    // SMELL (2): inner crystal
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.18, 6, rot, col, a, 0.9) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * 0.18, 6, s * 0.02, rot, col, a) },
+
+    // TASTE (1): centre glow
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * 0.10, col, a) },
+  ];
 }
 
-// ─── Main composition generator ─────────────────────────────────
+function templateHarmonic(rot) {
+  return [
+    // SEE (5): outer flower boundary with overlapping circles
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.95, col, a, 1.0) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * 0.85, 12, 0.20, rot, col, a * 0.7, 0.7) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * 0.618, 6, s * 0.30, rot, col, a * 0.55, 0.6) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.75, col, a * 0.5, 0.6) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * 0.618, 6, 0.55, rot + PI / 6, col, a * 0.6, 0.6) },
+
+    // TOUCH (4): inner flower layer
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * 0.382, 6, s * 0.20, rot + PI / 6, col, a * 0.6, 0.6) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.52, col, a * 0.7, 0.7) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.45, 6, rot, col, a * 0.6, 0.6) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.382, col, a, 0.8) },
+
+    // HEAR (3): triangular harmony
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.33, 3, rot - PI / 2, col, a, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * 0.33, 3, rot + PI / 2, col, a, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.28, col, a * 0.8, 0.7) },
+
+    // SMELL (2): Seed of Life centre
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * 0.13, 6, s * 0.13, rot, col, a * 0.8, 0.8) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * 0.13, col, a, 0.9) },
+
+    // TASTE (1): centre glow
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * 0.08, col, a) },
+  ];
+}
+
+// ── Main composition generator ─────────────────────────────────
 
 export function generateComposition(width, height) {
   const cx = width / 2;
   const cy = height / 2;
-  const maxRadius = Math.min(width, height) * 0.382; // phi complement (1 - 0.618)
+  const scale = Math.min(width, height) * 0.44;
+  const rotation = Math.random() * TAU;
 
-  const mode = Math.random() < 0.5 ? 'convergence' : 'spiral';
+  const templates = [templateCelestial, templateCrystalline, templateHarmonic];
+  const template = templates[Math.floor(Math.random() * templates.length)];
+  const layers = template(rotation);
 
-  const rawPositions = mode === 'convergence'
-    ? generateConvergence(cx, cy, maxRadius)
-    : generateSpiral(cx, cy, maxRadius);
-
-  const positions = rawPositions.map((pos, i) => {
-    const sense = SENSE_BOUNDS.find(s => i >= s.start && i < s.end);
-    const senseIndex = sense.senseIndex;
-    const palette = SENSE_COLORS[senseIndex];
-    const colorStr = palette[Math.floor(Math.random() * palette.length)];
-
-    // Outer positions larger, inner smaller; TASTE keystone is medium
-    const ringProgress = i / 14;
-    const baseSize = senseIndex === 4
-      ? 110                                // TASTE keystone: phi-7 (110px)
-      : 110 + (1 - ringProgress) * 140;
-    const size = baseSize + (Math.random() - 0.5) * 40;
-
-    return {
-      x: pos.x,
-      y: pos.y,
-      senseIndex,
-      shapeIndex: Math.floor(Math.random() * SACRED_SHAPES.length),
-      colorStr,
-      size: Math.max(80, size),
-      rotation: Math.random() * Math.PI * 2,
-    };
-  });
-
-  return { mode, positions };
-}
-
-// ─── Connection lines ───────────────────────────────────────────
-
-export function findConnections(positions, revealedCount) {
-  const connections = [];
-
-  for (let i = 1; i < revealedCount; i++) {
-    const cur = positions[i];
-    const distances = [];
-    for (let j = 0; j < i; j++) {
-      const dx = cur.x - positions[j].x;
-      const dy = cur.y - positions[j].y;
-      distances.push({ index: j, dist: Math.sqrt(dx * dx + dy * dy) });
-    }
-    distances.sort((a, b) => a.dist - b.dist);
-    for (const c of distances.slice(0, 2)) {
-      connections.push([c.index, i]);
-    }
+  // Assign sense colours and target alphas
+  for (const layer of layers) {
+    layer.color = SENSE_COLORS[layer.sense];
+    layer.targetAlpha = SENSE_ALPHA[layer.sense];
   }
 
-  return connections;
+  return { cx, cy, scale, layers };
 }
