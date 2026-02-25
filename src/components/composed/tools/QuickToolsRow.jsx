@@ -37,11 +37,11 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
             <Card
               key={tool.id}
               onClick={() => router.push(`${ROUTES.TOOLS}/${tool.id}`)}
-              padding="p-4"
+              padding="p-3"
               className="shrink-0"
             >
-              <div style={{ width: 200 }}>
-                <div className="flex items-center justify-between mb-2">
+              <div style={{ width: 140 }}>
+                <div className="flex items-center justify-between mb-1.5">
                   <Badge color={getCategoryColor(tool.category)} size="sm">
                     {tool.category}
                   </Badge>
@@ -58,8 +58,7 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
                     <Star className="w-4 h-4" fill={isFav ? 'currentColor' : 'none'} />
                   </button>
                 </div>
-                <h3 className="text-white font-light text-sm mb-1 truncate">{tool.title}</h3>
-                <p className="text-xs text-slate-300 font-light mb-2 line-clamp-2">{tool.description}</p>
+                <h3 className="text-white font-light text-sm mb-0.5 truncate">{tool.title}</h3>
                 <span className="text-xs text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   ~{tool.duration_minutes} min

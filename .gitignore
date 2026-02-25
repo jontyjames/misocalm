@@ -16,6 +16,7 @@ npm-debug.log*
 # os
 .DS_Store
 Thumbs.db
+.tmp.driveupload/
 
 # claude
 .claude/
