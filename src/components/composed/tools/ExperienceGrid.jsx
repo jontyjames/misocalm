@@ -3,7 +3,7 @@
  * Horizontal scroll row of experience cards, excluding today's hero.
  * Mini canvases loaded via shared canvasMap (dynamic import, ssr: false).
  *
- * Card total: 157px (prime) = 133px content + 24px p-3 padding.
+ * Card wrapper: 157px (prime), matching original 2x2 grid card width.
  * Canvas: 120px (practical fit within card).
  */
 
@@ -46,17 +46,13 @@ export default function ExperienceGrid() {
         {remaining.map((exp) => {
           const Canvas = CANVAS_MAP[exp.id];
           return (
+            <div key={exp.id} className="shrink-0" style={{ width: 157 }}>
             <Card
-              key={exp.id}
               onClick={() => router.push(exp.route)}
               solfeggio={EXPERIENCE_SOLFEGGIO[exp.id] || 'violet'}
               padding="p-3"
-              className="shrink-0"
             >
-              <div
-                className="flex flex-col items-center text-center"
-                style={{ width: 133 }} /* 157px total card (prime) − 24px p-3 */
-              >
+              <div className="flex flex-col items-center text-center">
                 {Canvas && <Canvas size={120} />}
                 <h3
                   className="text-white text-sm truncate w-full"
@@ -69,6 +65,12 @@ export default function ExperienceGrid() {
                 >
                   {exp.title}
                 </h3>
+                <p
+                  className="text-xs text-slate-300 font-light line-clamp-2"
+                  style={{ marginBottom: PHI_SCALE[0] }} /* phi-1 (6px) */
+                >
+                  {exp.description}
+                </p>
                 <span
                   className="text-xs text-slate-400 flex items-center justify-center"
                   style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
@@ -78,6 +80,7 @@ export default function ExperienceGrid() {
                 </span>
               </div>
             </Card>
+            </div>
           );
         })}
       </div>

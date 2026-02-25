@@ -5,8 +5,7 @@
  *
  * Sacred geometry: phi spacing (6/10/16/26/42px), Fibonacci timing (233ms),
  * solfeggio icon glows (indigo=528Hz, cyan=741Hz, violet=852Hz).
- * Card total: 157px (prime) = 133px content + 24px p-3 padding,
- * showing ~2 full cards + peek of 3rd on 375px screen.
+ * Card wrapper: 137px (prime), showing ~2 full cards + 32px peek on 375px screen.
  */
 
 'use client';
@@ -68,17 +67,13 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
           const iconGlow = toolIcon?.glow || 'transparent';
 
           return (
+            <div key={tool.id} className="shrink-0" style={{ width: 137 }}>
             <Card
-              key={tool.id}
               onClick={() => router.push(`${ROUTES.TOOLS}/${tool.id}`)}
               padding="p-3" /* 12px */
               solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
-              className="shrink-0"
             >
-              <div
-                className="flex flex-col items-center text-center"
-                style={{ width: 133 }} /* 157px total card (prime) − 24px p-3 */
-              >
+              <div className="flex flex-col items-center text-center">
                 {/* Star — top-right, 42px (phi-5) touch target */}
                 <div className="flex w-full justify-end" style={{ marginBottom: PHI_SCALE[0] }}>
                   <button
@@ -135,6 +130,7 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
                 </span>
               </div>
             </Card>
+            </div>
           );
         })}
       </div>
