@@ -52,7 +52,7 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
               padding="p-3"
               className="shrink-0"
             >
-              <div style={{ width: 140 }}>
+              <div style={{ width: 200 }}>
                 <div className="flex items-center justify-between mb-2">
                   {Icon && (
                     <div className={`w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center ${iconColor}`}
@@ -75,6 +75,7 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
                   </button>
                 </div>
                 <h3 className="text-white font-light text-sm mb-0.5 truncate">{tool.title}</h3>
+                <p className="text-xs text-slate-300 font-light mb-2 line-clamp-2">{tool.description}</p>
                 <span className="text-xs text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   ~{tool.duration_minutes} min
