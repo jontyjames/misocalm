@@ -282,9 +282,9 @@ export default function GroundingGuide() {
       {playing && (
         <div style={{ position: 'fixed', bottom: 'clamp(26px, 5vh, 42px)', left: 0, right: 0, zIndex: 8, display: 'flex', justifyContent: 'center', gap: 26 }}>
           {revealedCount > 15 && (
-            <button onClick={handlePlayUndo} className="text-slate-500/40 text-xs font-light tracking-widest hover:text-slate-400/60 transition-colors">undo</button>
+            <button onClick={handlePlayUndo} className="text-slate-300/50 text-xs font-light tracking-widest hover:text-slate-200/80 transition-colors">undo</button>
           )}
-          <button onClick={() => setPlaying(false)} className="text-slate-400/50 text-xs font-light tracking-widest hover:text-slate-300/70 transition-colors">done</button>
+          <button onClick={() => setPlaying(false)} className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-200/90 transition-colors">done</button>
         </div>
       )}
 

@@ -27,18 +27,18 @@ export default function GroundingComplete({ onJournal, onReturn, onPlay }) {
     >
       {/* Screenshot reminder */}
       <p
-        className="text-slate-400/50 text-xs font-light tracking-widest text-center"
+        className="text-slate-300/70 text-xs font-light tracking-widest text-center"
         style={{ marginBottom: 26, lineHeight: 1.8, fontFamily: "'Josefin Sans', sans-serif" }}
       >
         this will never be made again
         <br />
-        <span className="text-slate-400/35">screenshot to keep your creation</span>
+        <span className="text-slate-300/50">screenshot to keep your creation</span>
       </p>
 
       {/* Play mode */}
       <button
         onClick={onPlay}
-        className="text-slate-200/70 text-sm font-light tracking-widest hover:text-slate-200/90 transition-colors"
+        className="text-slate-200/90 text-sm font-light tracking-widest hover:text-slate-100 transition-colors"
         style={{ transition: 'color 0.377s ease', marginBottom: 16 }}
       >
         keep creating
@@ -47,14 +47,14 @@ export default function GroundingComplete({ onJournal, onReturn, onPlay }) {
       {/* Torus flow paths */}
       <button
         onClick={onJournal}
-        className="text-slate-300/50 text-xs font-light tracking-widest hover:text-slate-300/80 transition-colors"
+        className="text-slate-300/80 text-xs font-light tracking-widest hover:text-slate-200 transition-colors"
         style={{ transition: 'color 0.377s ease', marginBottom: 10 }}
       >
         reflect in your journal
       </button>
       <button
         onClick={onReturn}
-        className="text-slate-500/40 text-xs font-light tracking-widest hover:text-slate-400/60 transition-colors"
+        className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-200/90 transition-colors"
         style={{ transition: 'color 0.377s ease' }}
       >
         return to sanctuary

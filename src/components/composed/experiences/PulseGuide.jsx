@@ -90,7 +90,7 @@ export default function PulseGuide() {
               <span className="block">Welcome back.</span>
               <span className="block mt-2">Your heart remembers.</span>
               {state.visits > 0 && (
-                <span className="block mt-4 text-slate-500/40 text-xs">
+                <span className="block mt-4 text-slate-300/50 text-xs">
                   visit {state.visits + 1}
                 </span>
               )}
@@ -198,8 +198,8 @@ export default function PulseGuide() {
           >
             <button
               onClick={handleReturn}
-              className="text-slate-500/40 text-xs font-light tracking-widest
-                         hover:text-slate-400/60 transition-colors"
+              className="text-slate-300/60 text-xs font-light tracking-widest
+                         hover:text-slate-200/90 transition-colors"
               style={{ transition: 'color 0.377s ease' }}
             >
               return to sanctuary
