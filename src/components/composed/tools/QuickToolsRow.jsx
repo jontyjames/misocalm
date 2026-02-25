@@ -7,12 +7,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Star, Clock } from 'lucide-react';
+import { Star, Clock, Moon, Square, Zap, Timer } from 'lucide-react';
 import { Card, Badge } from '@/components/ui';
 import { ROUTES, TOOL_CATEGORIES } from '@/lib/constants';
 import { TOOLS } from '@/lib/toolsData';
 
 const activeTOOLS = TOOLS.filter((t) => t.type === 'practice' || t.type === 'timer');
+
+// Each tool gets a symbol that reflects its character
+const TOOL_ICONS = {
+  '1': { icon: Moon, color: 'text-indigo-400' },    // 4-7-8: slow, lunar, before sleep
+  '3': { icon: Square, color: 'text-cyan-400' },     // Box: structured, four equal sides
+  '4': { icon: Zap, color: 'text-violet-400' },      // Sigh: quick, electric, in the moment
+  '5': { icon: Timer, color: 'text-cyan-400' },      // Interval Timer: time-based
+};
 
 function getCategoryColor(category) {
   const cat = TOOL_CATEGORIES.find((c) => c.value === category);
@@ -33,6 +41,10 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
       <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-2">
         {activeTOOLS.map((tool) => {
           const isFav = favoriteTools.includes(tool.id);
+          const toolIcon = TOOL_ICONS[tool.id];
+          const Icon = toolIcon?.icon;
+          const iconColor = toolIcon?.color || 'text-slate-400';
+
           return (
             <Card
               key={tool.id}
@@ -41,10 +53,14 @@ export default function QuickToolsRow({ favoriteTools = [], onToggleFavorite }) 
               className="shrink-0"
             >
               <div style={{ width: 140 }}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <Badge color={getCategoryColor(tool.category)} size="sm">
-                    {tool.category}
-                  </Badge>
+                <div className="flex items-center justify-between mb-2">
+                  {Icon && (
+                    <div className={`w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center ${iconColor}`}
+                      style={{ background: 'rgba(255,255,255,0.05)' }}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
+                  )}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
