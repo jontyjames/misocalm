@@ -9,7 +9,7 @@
 import { memo, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, BookOpen, Compass, MessageCircle } from 'lucide-react';
+import { Home, BookOpen, Wind, MessageCircle } from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
 import NavLogoGem from './NavLogoGem';
 import MantraOverlay from './MantraOverlay';
@@ -46,7 +46,7 @@ const leftNav = [
 ];
 
 const rightNav = [
-  { href: ROUTES.TOOLS, icon: Compass, label: 'Practices' },
+  { href: ROUTES.TOOLS, icon: Wind, label: 'Practices' },
   { href: ROUTES.CHAT, icon: MessageCircle, label: 'Chat' },
 ];
 
