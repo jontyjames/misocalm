@@ -72,24 +72,35 @@ export default function QuickToolsRow() {
               padding="p-3" /* 12px */
               solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
             >
-              <div className="flex flex-col items-center text-center">
-                {/* Icon — centred */}
-                {Icon && (
-                  <div
-                    className={`flex items-center justify-center rounded-lg border border-white/[0.12] ${iconColor}`}
-                    style={{
-                      width: PHI_SCALE[3],  /* phi-4 (26px) */
-                      height: PHI_SCALE[3], /* phi-4 (26px) */
-                      marginBottom: PHI_SCALE[0], /* phi-1 (6px) */
-                      background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
-                      boxShadow: `0 0 ${PHI_SCALE[1]}px ${iconGlow}`, /* phi-2 (10px) spread */
-                    }}
+              <div className="flex flex-col">
+                {/* Icon + duration row */}
+                <div
+                  className="flex items-center"
+                  style={{ gap: PHI_SCALE[1], marginBottom: PHI_SCALE[0] }} /* phi-2 (10px) gap, phi-1 (6px) mb */
+                >
+                  {Icon && (
+                    <div
+                      className={`flex items-center justify-center shrink-0 rounded-lg border border-white/[0.12] ${iconColor}`}
+                      style={{
+                        width: PHI_SCALE[3],  /* phi-4 (26px) */
+                        height: PHI_SCALE[3], /* phi-4 (26px) */
+                        background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
+                        boxShadow: `0 0 ${PHI_SCALE[1]}px ${iconGlow}`, /* phi-2 (10px) spread */
+                      }}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
+                  )}
+                  <span
+                    className="text-xs text-slate-400 flex items-center"
+                    style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
                   >
-                    <Icon className="w-4 h-4" />
-                  </div>
-                )}
+                    <Clock className="w-3 h-3 shrink-0" />
+                    ~{tool.duration_minutes} min
+                  </span>
+                </div>
 
-                {/* Title — centred */}
+                {/* Title */}
                 <h3
                   className="text-white font-light text-sm truncate w-full"
                   style={{ marginBottom: PHI_SCALE[0] }} /* phi-1 (6px) */
@@ -97,14 +108,13 @@ export default function QuickToolsRow() {
                   {tool.title}
                 </h3>
 
-                {/* Duration — centred */}
-                <span
-                  className="text-xs text-slate-400 flex items-center justify-center"
-                  style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
+                {/* Description — triage text for dysregulated users */}
+                <p
+                  className="text-xs text-slate-300 font-light line-clamp-2 leading-4"
+                  style={{ minHeight: PHI_SCALE[4] }} /* phi-5 (42px) — consistent card height */
                 >
-                  <Clock className="w-3 h-3" />
-                  ~{tool.duration_minutes} min
-                </span>
+                  {tool.description}
+                </p>
               </div>
             </Card>
             </div>

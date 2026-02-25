@@ -20,7 +20,7 @@ export const TOOLS = [
   {
     id: '3',
     title: 'Box Breathing',
-    description: 'Daily practice, or before entering a known trigger situation',
+    description: 'Daily practice, or before a moment you know will be hard',
     category: 'breathwork',
     duration_minutes: 4,
     type: 'practice',
