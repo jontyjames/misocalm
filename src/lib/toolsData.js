@@ -72,9 +72,6 @@ export const TOOLS = [
   },
 ];
 
-// Filter tab labels (5, prime)
-export const FILTER_TABS = ['All', 'Breath', 'Body', 'Mind', 'Experiences'];
-
 // Hero experience rotation order (cycles daily)
 export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence'];
 

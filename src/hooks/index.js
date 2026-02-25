@@ -20,3 +20,4 @@ export { default as useIntervalTimer } from './useIntervalTimer';
 export { default as useWakeLock } from './useWakeLock';
 export { default as usePremium } from './usePremium';
 export { default as useScrollReveal } from './useScrollReveal';
+export { default as useCanvasVisibility } from './useCanvasVisibility';

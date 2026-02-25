@@ -28,4 +28,4 @@ export { default as TimerPulse } from './tools/TimerPulse';
 export { default as TimerDisplay } from './tools/TimerDisplay';
 export { default as TimerPlayer } from './tools/TimerPlayer';
 export { default as BetaInstallBanner } from './BetaInstallBanner';
-export { default as ToolCard } from './tools/ToolCard';
+export { default as ToolsClient } from './tools/ToolsClient';
