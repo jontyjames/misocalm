@@ -13,7 +13,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Layers, Wind, Home } from 'lucide-react';
-import { ROUTES, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
+import { ROUTES } from '@/lib/constants';
+import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { useReducedMotion } from '@/hooks';
 import StarDissolve from './StarDissolve';
@@ -38,10 +39,6 @@ const CHECK_IN_AFFIRMATIONS = [
   'A moment of peace, well earned',
 ];
 
-function getDailyPractice() {
-  return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
-}
-
 export default function PostLogIntegration() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,7 +53,7 @@ export default function PostLogIntegration() {
     return affirmations[getDayOfYear() % affirmations.length];
   }, [affirmations]);
 
-  const practice = useMemo(() => getDailyPractice(), []);
+  const practice = useMemo(() => getBreathworkPractice(), []);
 
   // Letter-by-letter animation state
   const [visibleChars, setVisibleChars] = useState(0);
@@ -117,7 +114,7 @@ export default function PostLogIntegration() {
         description: 'Go straight into a calming practice',
         icon: Wind,
         accent: 'cyan',
-        onClick: () => router.push(`/tools/${practice.id}?duration=${practice.duration}`),
+        onClick: () => router.push(buildPracticeHref(practice)),
       },
       {
         title: 'Return to sanctuary',
@@ -142,7 +139,7 @@ export default function PostLogIntegration() {
         description: 'Go straight into a calming practice',
         icon: Wind,
         accent: 'cyan',
-        onClick: () => router.push(`/tools/${practice.id}?duration=${practice.duration}`),
+        onClick: () => router.push(buildPracticeHref(practice)),
       },
       {
         title: 'Return to sanctuary',

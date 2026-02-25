@@ -7,12 +7,13 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, Wind } from 'lucide-react';
+import { BookOpen, Wind, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout, BetaInstallBanner } from '@/components/composed';
 import { DashboardHeader, FindMyCalmCard, DashboardActionCard, DashboardSkeleton } from '@/components/composed/dashboard';
-import { ROUTES, DAILY_AFFIRMATIONS, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
+import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
+import { getDailyPractice, buildPracticeHref } from '@/lib/dailyPractice';
 
 const DAILY_MESSAGES = [
   'Your space is ready.',
@@ -36,10 +37,6 @@ function getDailyMessage() {
 
 function getDailyAffirmation() {
   return DAILY_AFFIRMATIONS[getDayOfYear() % DAILY_AFFIRMATIONS.length];
-}
-
-function getDailyPractice() {
-  return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
 }
 
 export default function DashboardPage() {
@@ -144,8 +141,8 @@ export default function DashboardPage() {
           <FindMyCalmCard />
 
           <DashboardActionCard
-            href={`/tools/${todaysPractice.id}?duration=${todaysPractice.duration}`}
-            icon={Wind}
+            href={buildPracticeHref(todaysPractice)}
+            icon={todaysPractice.type === 'experience' ? Sparkles : Wind}
             iconColor={practiceAccent}
             accentRgba={practiceAccent.rgba}
             title="Today's Practice"

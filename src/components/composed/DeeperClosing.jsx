@@ -8,8 +8,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Wind, Home } from 'lucide-react';
-import { ROUTES, FIBONACCI_TIMING, DAILY_PRACTICES_ROTATION } from '@/lib/constants';
-import { getDayOfYear } from '@/lib/dateUtils';
+import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
+import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
 import { useReducedMotion } from '@/hooks';
 
 export default function DeeperClosing({ message, context }) {
@@ -18,9 +18,7 @@ export default function DeeperClosing({ message, context }) {
   const [closingChars, setClosingChars] = useState(0);
   const [showPaths, setShowPaths] = useState(false);
 
-  const practice = useMemo(() => {
-    return DAILY_PRACTICES_ROTATION[getDayOfYear() % DAILY_PRACTICES_ROTATION.length];
-  }, []);
+  const practice = useMemo(() => getBreathworkPractice(), []);
 
   useEffect(() => {
     if (closingChars < message.length) {
@@ -77,7 +75,7 @@ export default function DeeperClosing({ message, context }) {
             {/* Don't offer breathwork after breathwork (creates a loop) */}
             {context !== 'breathwork' && (
               <button
-                onClick={() => router.push(`/tools/${practice.id}?duration=${practice.duration}`)}
+                onClick={() => router.push(buildPracticeHref(practice))}
                 className="relative w-full p-5 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-2xl hover:border-white/30 text-left transition-all duration-[233ms]"
                 style={{
                   background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(34,211,238,0.08) 100%)',
