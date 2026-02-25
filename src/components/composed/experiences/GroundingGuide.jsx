@@ -108,6 +108,12 @@ export default function GroundingGuide() {
     }
   }, [composition, prefersReduced]);
 
+  const handlePlayUndo = useCallback(() => {
+    if (!composition || revealedCount <= 15) return; // can't undo the original 15
+    setComposition(prev => ({ ...prev, layers: prev.layers.slice(0, -1) }));
+    setRevealedCount(c => c - 1);
+  }, [composition, revealedCount]);
+
   const senseColor = state.currentSense?.color || 'rgba(148,163,184,0.3)';
   const tier = state.guideTier || TIERS.STANDARD;
   const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
@@ -272,24 +278,21 @@ export default function GroundingGuide() {
         <GroundingComplete onJournal={handleJournal} onReturn={handleReturn} onPlay={handlePlay} />
       )}
 
-      {/* Play mode done button */}
+      {/* Play mode controls */}
       {playing && (
-        <button
-          onClick={() => setPlaying(false)}
-          style={{ position: 'fixed', bottom: 'clamp(26px, 5vh, 42px)', left: '50%', transform: 'translateX(-50%)', zIndex: 8 }}
-          className="text-slate-400/50 text-xs font-light tracking-widest hover:text-slate-300/70 transition-colors"
-        >done</button>
+        <div style={{ position: 'fixed', bottom: 'clamp(26px, 5vh, 42px)', left: 0, right: 0, zIndex: 8, display: 'flex', justifyContent: 'center', gap: 26 }}>
+          {revealedCount > 15 && (
+            <button onClick={handlePlayUndo} className="text-slate-500/40 text-xs font-light tracking-widest hover:text-slate-400/60 transition-colors">undo</button>
+          )}
+          <button onClick={() => setPlaying(false)} className="text-slate-400/50 text-xs font-light tracking-widest hover:text-slate-300/70 transition-colors">done</button>
+        </div>
       )}
 
       {/* Reduced motion fallback */}
       {prefersReduced && state.started && !state.complete && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="text-center">
-            <p className="text-slate-400 text-xs font-light tracking-widest mb-2">
-              {state.currentSense ? state.currentSense.label : 'grounding'}
-            </p>
-            <p className="text-slate-300 text-sm font-light tracking-wider">{state.guideText}</p>
-          </div>
+          <p className="text-slate-400 text-xs font-light tracking-widest">{state.currentSense?.label || 'grounding'}</p>
+          <p className="text-slate-300 text-sm font-light tracking-wider ml-3">{state.guideText}</p>
         </div>
       )}
     </div>

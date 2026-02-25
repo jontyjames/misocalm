@@ -6,8 +6,9 @@
  * Three template styles (Celestial, Crystalline, Harmonic), randomly chosen.
  * Per-layer randomness ensures every session produces a structurally unique mandala.
  *
- * Outside -> inside construction mirrors the grounding journey:
- * scattered senses converging to centre, wholeness.
+ * IMPORTANT: All randomness is computed at generation time, NOT inside draw()
+ * functions. Draw functions run 60fps — any Math.random() inside them causes
+ * the mandala to vibrate/flicker wildly.
  *
  * Pure utility. No React.
  */
@@ -34,18 +35,17 @@ const COUNTS_STAR = [5, 6, 7, 8];
 const COUNTS_RAY = [6, 8, 12];
 const COUNTS_RING = [5, 6, 7, 8];
 
-// -- Randomness helpers --
+// -- Randomness helpers (ONLY call at generation time, never inside draw) --
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function jitter(base, range) { return base + (Math.random() * 2 - 1) * range; }
-function jR(base) { return jitter(base, 0.03); }          // radius jitter
-function jA(base) { return jitter(base, 0.1); }           // arc-length jitter
-function maybe(a, b) { return Math.random() < 0.5 ? a : b; } // coin flip
+function jR(base) { return jitter(base, 0.03); }
+function jA(base) { return jitter(base, 0.1); }
 
 function c(template, alpha) {
   return template.replace('A', Math.max(0, alpha).toFixed(3));
 }
 
-// -- Drawing primitives (line widths bumped ~60%) --
+// -- Drawing primitives --
 
 function strokeCircle(ctx, cx, cy, r, color, alpha, lw = 1.2) {
   if (r < 1) return;
@@ -121,115 +121,118 @@ function fillGlow(ctx, cx, cy, r, color, alpha) {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.fill();
 }
 
-// -- Ring element: arcs or dots (coin-flip substitution) --
-function ringElement(ctx, x, y, s, rFactor, count, arcLen, rot, col, a, lw) {
-  if (Math.random() < 0.3) {
-    strokeDotsOnRing(ctx, x, y, s * rFactor, count, s * 0.015, rot, col, a);
-  } else {
-    strokeArcs(ctx, x, y, s * rFactor, count, arcLen, rot, col, a, lw);
-  }
-}
-
-// -- Templates --
+// -- Templates (all random values pre-computed, closures capture fixed numbers) --
 
 function templateCelestial(rot) {
-  const ac = () => pick(COUNTS_ARC);
-  const rc = () => pick(COUNTS_RING);
-  const sc = () => pick(COUNTS_STAR);
+  // Pre-compute all random values
+  const r0 = jR(0.95), r1 = jR(0.88), r2 = jR(0.80), r3 = jR(0.875), r4a = jR(0.80), r4b = jR(0.95);
+  const r5 = jR(0.618), r6 = jR(0.618), r7 = jR(0.618), r7c = jR(0.15), r8 = jR(0.50);
+  const r9 = jR(0.382), r10a = jR(0.382), r10b = jR(0.19), r11a = jR(0.12), r11b = jR(0.382);
+  const r12r = jR(0.145), r12c = jR(0.09), r13 = jR(0.145), r14 = jR(0.10);
+  const n1 = pick(COUNTS_ARC), al1 = jA(0.32), useDots1 = Math.random() < 0.3;
+  const n3 = pick(COUNTS_RING), useDots3 = Math.random() < 0.5;
+  const n4 = pick(COUNTS_RAY), n6 = pick(COUNTS_POLY), n7 = pick(COUNTS_RING);
+  const n8 = pick(COUNTS_ARC), al8 = jA(0.55), n10 = pick(COUNTS_STAR);
+  const n11 = pick(COUNTS_RAY), n12 = pick(COUNTS_RING);
+
   return [
-    // SEE (0-4): outer orbital rings and arcs
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.95), col, a, 1.6) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => ringElement(ctx, x, y, s, jR(0.88), ac(), jA(0.32), rot, col, a, 1.1) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.80), col, a, 1.2) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => {
-      maybe(strokeDotsOnRing, strokeCirclesOnRing) === strokeDotsOnRing
-        ? strokeDotsOnRing(ctx, x, y, s * jR(0.875), rc(), s * 0.015, rot + TAU / 16, col, a)
-        : strokeCirclesOnRing(ctx, x, y, s * jR(0.875), rc(), s * 0.04, rot + TAU / 16, col, a * 0.7, 1.0);
-    }},
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * jR(0.80), s * jR(0.95), pick(COUNTS_RAY), rot, col, a * 0.6, 0.8) },
-    // TOUCH (5-8): hexagonal flower mid-ring
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.618), col, a, 1.2) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.618), pick(COUNTS_POLY), rot, col, a, 1.3) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * jR(0.618), rc(), s * jR(0.15), rot, col, a * 0.7, 1.0) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * jR(0.50), pick(COUNTS_ARC), jA(0.55), rot + PI / 6, col, a * 0.8, 1.1) },
-    // HEAR (9-11): inner star structure
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.382), col, a, 1.2) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeStar(ctx, x, y, s * jR(0.382), s * jR(0.19), sc(), rot, col, a, 1.1) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * jR(0.12), s * jR(0.382), pick(COUNTS_RAY), rot + PI / 12, col, a * 0.6, 0.8) },
-    // SMELL (12-13): seed of life details
-    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * jR(0.145), rc(), s * jR(0.09), rot, col, a, 1.0) },
-    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.145), col, a, 1.2) },
-    // TASTE (14): centre glow
-    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * jR(0.10), col, a) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r0, col, a, 1.6) },
+    { sense: 0, draw: useDots1
+      ? (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * r1, n1, s * 0.015, rot, col, a)
+      : (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * r1, n1, al1, rot, col, a, 1.1) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r2, col, a, 1.2) },
+    { sense: 0, draw: useDots3
+      ? (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * r3, n3, s * 0.015, rot + TAU / 16, col, a)
+      : (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r3, n3, s * 0.04, rot + TAU / 16, col, a * 0.7, 1.0) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * r4a, s * r4b, n4, rot, col, a * 0.6, 0.8) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r5, col, a, 1.2) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r6, n6, rot, col, a, 1.3) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r7, n7, s * r7c, rot, col, a * 0.7, 1.0) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * r8, n8, al8, rot + PI / 6, col, a * 0.8, 1.1) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r9, col, a, 1.2) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeStar(ctx, x, y, s * r10a, s * r10b, n10, rot, col, a, 1.1) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * r11a, s * r11b, n11, rot + PI / 12, col, a * 0.6, 0.8) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r12r, n12, s * r12c, rot, col, a, 1.0) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r13, col, a, 1.2) },
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * r14, col, a) },
   ];
 }
 
 function templateCrystalline(rot) {
-  const pc = () => pick(COUNTS_POLY);
-  const n8 = () => pick([6, 8]);
+  const sides0 = pick([6, 8]), sides1 = pick([6, 8]), sides2 = pick([6, 8]);
+  const r0 = jR(0.95), r1 = jR(0.82), r2a = jR(0.95), r2b = jR(0.82);
+  const r3 = jR(0.95), r4 = jR(0.88), n4 = pick([6, 8]), al4 = jA(0.18);
+  const useDots4 = Math.random() < 0.3;
+  const r5 = jR(0.618), r6 = jR(0.618), r7 = jR(0.618);
+  const r8a = jR(0.618), r8b = jR(0.82), n8 = pick(COUNTS_RAY);
+  const r9 = jR(0.382), n9 = pick(COUNTS_POLY), r10 = jR(0.382), n10 = pick(COUNTS_POLY);
+  const r11 = jR(0.382), r12 = jR(0.18), n12 = pick(COUNTS_POLY);
+  const r13 = jR(0.18), n13 = pick(COUNTS_RING), useDots13 = Math.random() < 0.5;
+  const r14 = jR(0.10);
+
   return [
-    // SEE (0-4): outer crystal frame
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.95), n8(), rot, col, a, 1.6) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.82), n8(), rot + TAU / 16, col, a, 1.2) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r0, sides0, rot, col, a, 1.6) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r1, sides1, rot + TAU / 16, col, a, 1.2) },
     { sense: 0, draw: (ctx, x, y, s, col, a) => {
-      const sides = n8();
       ctx.strokeStyle = c(col, a * 0.7); ctx.lineWidth = 1.0;
-      for (let i = 0; i < sides; i++) {
-        const a1 = rot + (i / sides) * TAU;
-        const a2 = rot + TAU / (sides * 2) + (i / sides) * TAU;
+      for (let i = 0; i < sides2; i++) {
+        const a1 = rot + (i / sides2) * TAU;
+        const a2 = rot + TAU / (sides2 * 2) + (i / sides2) * TAU;
         ctx.beginPath();
-        ctx.moveTo(x + Math.cos(a1) * s * jR(0.95), y + Math.sin(a1) * s * jR(0.95));
-        ctx.lineTo(x + Math.cos(a2) * s * jR(0.82), y + Math.sin(a2) * s * jR(0.82));
+        ctx.moveTo(x + Math.cos(a1) * s * r2a, y + Math.sin(a1) * s * r2a);
+        ctx.lineTo(x + Math.cos(a2) * s * r2b, y + Math.sin(a2) * s * r2b);
         ctx.stroke();
       }
     }},
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.95), col, a * 0.4, 0.8) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => ringElement(ctx, x, y, s, jR(0.88), n8(), jA(0.18), rot + TAU / 16, col, a * 0.7, 1.1) },
-    // TOUCH (5-8): Star of David mid-structure
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.618), 3, rot - PI / 2, col, a, 1.3) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.618), 3, rot + PI / 2, col, a, 1.3) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.618), col, a * 0.8, 1.1) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * jR(0.618), s * jR(0.82), pick(COUNTS_RAY), rot, col, a * 0.5, 0.8) },
-    // HEAR (9-11): inner dual triangles
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.382), pc(), rot - PI / 2, col, a, 1.3) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.382), pc(), rot + PI / 2, col, a, 1.3) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.382), col, a * 0.7, 1.1) },
-    // SMELL (12-13): inner crystal
-    { sense: 3, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.18), pick(COUNTS_POLY), rot, col, a, 1.3) },
-    { sense: 3, draw: (ctx, x, y, s, col, a) => {
-      maybe(strokeDotsOnRing, strokeCirclesOnRing) === strokeDotsOnRing
-        ? strokeDotsOnRing(ctx, x, y, s * jR(0.18), pick(COUNTS_RING), s * 0.02, rot, col, a)
-        : strokeCirclesOnRing(ctx, x, y, s * jR(0.18), pick(COUNTS_RING), s * 0.03, rot, col, a, 1.0);
-    }},
-    // TASTE (14): centre glow
-    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * jR(0.10), col, a) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r3, col, a * 0.4, 0.8) },
+    { sense: 0, draw: useDots4
+      ? (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * r4, n4, s * 0.015, rot + TAU / 16, col, a)
+      : (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * r4, n4, al4, rot + TAU / 16, col, a * 0.7, 1.1) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r5, 3, rot - PI / 2, col, a, 1.3) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r6, 3, rot + PI / 2, col, a, 1.3) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r7, col, a * 0.8, 1.1) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * r8a, s * r8b, n8, rot, col, a * 0.5, 0.8) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r9, n9, rot - PI / 2, col, a, 1.3) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r10, n10, rot + PI / 2, col, a, 1.3) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r11, col, a * 0.7, 1.1) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r12, n12, rot, col, a, 1.3) },
+    { sense: 3, draw: useDots13
+      ? (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * r13, n13, s * 0.02, rot, col, a)
+      : (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r13, n13, s * 0.03, rot, col, a, 1.0) },
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * r14, col, a) },
   ];
 }
 
 function templateHarmonic(rot) {
-  const rc = () => pick(COUNTS_RING);
-  const ac = () => pick(COUNTS_ARC);
+  const r0 = jR(0.95), r1 = jR(0.85), n1 = pick(COUNTS_ARC), al1 = jA(0.20);
+  const r2 = jR(0.618), n2 = pick(COUNTS_RING), r2c = jR(0.30);
+  const r3 = jR(0.75), r4 = jR(0.618), n4 = pick(COUNTS_ARC), al4 = jA(0.55);
+  const useDots4 = Math.random() < 0.3;
+  const r5 = jR(0.382), n5 = pick(COUNTS_RING), r5c = jR(0.20);
+  const r6 = jR(0.52), r7 = jR(0.45), n7 = pick(COUNTS_POLY), r8 = jR(0.382);
+  const r9 = jR(0.33), n9 = pick(COUNTS_POLY), r10 = jR(0.33), n10 = pick(COUNTS_POLY);
+  const r11 = jR(0.28);
+  const r12 = jR(0.13), n12 = pick(COUNTS_RING), r12c = jR(0.13), r13 = jR(0.13);
+  const r14 = jR(0.08);
+
   return [
-    // SEE (0-4): outer flower boundary with overlapping circles
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.95), col, a, 1.6) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * jR(0.85), ac(), jA(0.20), rot, col, a * 0.7, 1.1) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * jR(0.618), rc(), s * jR(0.30), rot, col, a * 0.55, 1.0) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.75), col, a * 0.5, 1.0) },
-    { sense: 0, draw: (ctx, x, y, s, col, a) => ringElement(ctx, x, y, s, jR(0.618), ac(), jA(0.55), rot + PI / 6, col, a * 0.6, 1.0) },
-    // TOUCH (5-8): inner flower layer
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * jR(0.382), rc(), s * jR(0.20), rot + PI / 6, col, a * 0.6, 1.0) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.52), col, a * 0.7, 1.1) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.45), pick(COUNTS_POLY), rot, col, a * 0.6, 1.0) },
-    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.382), col, a, 1.2) },
-    // HEAR (9-11): triangular harmony
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.33), pick(COUNTS_POLY), rot - PI / 2, col, a, 1.3) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * jR(0.33), pick(COUNTS_POLY), rot + PI / 2, col, a, 1.3) },
-    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.28), col, a * 0.8, 1.1) },
-    // SMELL (12-13): Seed of Life centre
-    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * jR(0.13), rc(), s * jR(0.13), rot, col, a * 0.8, 1.2) },
-    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * jR(0.13), col, a, 1.2) },
-    // TASTE (14): centre glow
-    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * jR(0.08), col, a) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r0, col, a, 1.6) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * r1, n1, al1, rot, col, a * 0.7, 1.1) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r2, n2, s * r2c, rot, col, a * 0.55, 1.0) },
+    { sense: 0, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r3, col, a * 0.5, 1.0) },
+    { sense: 0, draw: useDots4
+      ? (ctx, x, y, s, col, a) => strokeDotsOnRing(ctx, x, y, s * r4, n4, s * 0.015, rot + PI / 6, col, a)
+      : (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * r4, n4, al4, rot + PI / 6, col, a * 0.6, 1.0) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r5, n5, s * r5c, rot + PI / 6, col, a * 0.6, 1.0) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r6, col, a * 0.7, 1.1) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r7, n7, rot, col, a * 0.6, 1.0) },
+    { sense: 1, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r8, col, a, 1.2) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r9, n9, rot - PI / 2, col, a, 1.3) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * r10, n10, rot + PI / 2, col, a, 1.3) },
+    { sense: 2, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r11, col, a * 0.8, 1.1) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * r12, n12, s * r12c, rot, col, a * 0.8, 1.2) },
+    { sense: 3, draw: (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * r13, col, a, 1.2) },
+    { sense: 4, draw: (ctx, x, y, s, col, a) => fillGlow(ctx, x, y, s * r14, col, a) },
   ];
 }
 
@@ -245,7 +248,6 @@ export function generateComposition(width, height) {
   const template = templates[Math.floor(Math.random() * templates.length)];
   const layers = template(rotation);
 
-  // Assign sense colours and target alphas
   for (const layer of layers) {
     layer.color = SENSE_COLORS[layer.sense];
     layer.targetAlpha = SENSE_ALPHA[layer.sense];
@@ -254,19 +256,27 @@ export function generateComposition(width, height) {
   return { cx, cy, scale, layers };
 }
 
-// -- Play mode layer generator (free-form creative taps) --
+// -- Play mode layer generator (all random values pre-computed) --
 
 export function generatePlayLayer() {
   const rot = Math.random() * TAU;
   const rFactor = jitter(0.5, 0.35);
   const color = pick(SENSE_COLORS);
+  const sides = pick(COUNTS_POLY);
+  const points = pick(COUNTS_STAR);
+  const arcCount = pick(COUNTS_ARC);
+  const arcLen = jA(0.4);
+  const ringCount = pick(COUNTS_RING);
+  const ringCircleR = jR(0.08);
+  const rayCount = pick(COUNTS_RAY);
+
   const primitives = [
     (ctx, x, y, s, col, a) => strokeCircle(ctx, x, y, s * rFactor, col, a, 1.2),
-    (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * rFactor, pick(COUNTS_POLY), rot, col, a, 1.3),
-    (ctx, x, y, s, col, a) => strokeStar(ctx, x, y, s * rFactor, s * rFactor * 0.5, pick(COUNTS_STAR), rot, col, a, 1.1),
-    (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * rFactor, pick(COUNTS_ARC), jA(0.4), rot, col, a, 1.1),
-    (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * rFactor, pick(COUNTS_RING), s * jR(0.08), rot, col, a, 1.0),
-    (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * rFactor * 0.3, s * rFactor, pick(COUNTS_RAY), rot, col, a, 0.8),
+    (ctx, x, y, s, col, a) => strokePolygon(ctx, x, y, s * rFactor, sides, rot, col, a, 1.3),
+    (ctx, x, y, s, col, a) => strokeStar(ctx, x, y, s * rFactor, s * rFactor * 0.5, points, rot, col, a, 1.1),
+    (ctx, x, y, s, col, a) => strokeArcs(ctx, x, y, s * rFactor, arcCount, arcLen, rot, col, a, 1.1),
+    (ctx, x, y, s, col, a) => strokeCirclesOnRing(ctx, x, y, s * rFactor, ringCount, s * ringCircleR, rot, col, a, 1.0),
+    (ctx, x, y, s, col, a) => strokeRays(ctx, x, y, s * rFactor * 0.3, s * rFactor, rayCount, rot, col, a, 0.8),
   ];
   return { sense: Math.floor(Math.random() * 5), color, targetAlpha: jitter(0.6, 0.15), draw: pick(primitives) };
 }
