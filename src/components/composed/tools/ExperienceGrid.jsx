@@ -33,8 +33,8 @@ export default function ExperienceGrid() {
   return (
     <section>
       <h2
-        className="text-lg text-white mb-3"
-        style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+        className="text-lg text-white"
+        style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, marginBottom: 10 }}
       >
         Experiences
       </h2>
@@ -59,7 +59,7 @@ export default function ExperienceGrid() {
                 <p className="text-xs text-slate-300 font-light mb-1 line-clamp-2">
                   {exp.description}
                 </p>
-                <span className="text-xs text-slate-400 flex items-center gap-1">
+                <span className="text-xs text-slate-400 flex items-center" style={{ gap: 6 }}>
                   <Clock className="w-3 h-3" />
                   {exp.duration}
                 </span>

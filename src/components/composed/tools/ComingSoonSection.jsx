@@ -21,8 +21,8 @@ export default function ComingSoonSection() {
   return (
     <section>
       <h2
-        className="text-lg text-white mb-3"
-        style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+        className="text-lg text-white"
+        style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, marginBottom: 10 }}
       >
         Coming Soon
       </h2>
@@ -46,7 +46,7 @@ export default function ComingSoonSection() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 font-light mb-1">{tool.description}</p>
-                <span className="text-xs text-slate-400 flex items-center gap-1">
+                <span className="text-xs text-slate-400 flex items-center" style={{ gap: 6 }}>
                   <Clock className="w-3 h-3" />
                   ~{tool.duration_minutes} min
                 </span>
