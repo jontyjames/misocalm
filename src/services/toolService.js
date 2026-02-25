@@ -103,53 +103,6 @@ export const toolService = {
   },
 
   /**
-   * Toggle favorite status for a tool
-   */
-  async toggleFavorite(userId, toolId) {
-    const { data: existing } = await this.getToolProgress(userId, toolId);
-
-    if (existing) {
-      return db.update('user_tool_progress', existing.id, {
-        favorited: !existing.favorited,
-      });
-    } else {
-      return db.insert('user_tool_progress', {
-        user_id: userId,
-        tool_id: toolId,
-        favorited: true,
-      });
-    }
-  },
-
-  /**
-   * Get user's favorite tools
-   */
-  async getFavorites(userId) {
-    const { data: progress, error: progressError } = await db.query((supabase) =>
-      supabase
-        .from('user_tool_progress')
-        .select('tool_id')
-        .eq('user_id', userId)
-        .eq('favorited', true)
-    );
-
-    if (progressError || !progress?.length) {
-      return { data: [], error: progressError };
-    }
-
-    const toolIds = progress.map((p) => p.tool_id);
-    const { data, error } = await db.query((supabase) =>
-      supabase
-        .from('tools')
-        .select('*')
-        .in('id', toolIds)
-        .order('sort_order', { ascending: true })
-    );
-
-    return { data, error };
-  },
-
-  /**
    * Get tools with user progress merged
    */
   async getToolsWithProgress(userId, options = {}) {
@@ -183,7 +136,6 @@ export const toolService = {
 
     const totalTools = tools?.length || 0;
     const completedTools = (progress || []).filter((p) => p.completed).length;
-    const favoriteCount = (progress || []).filter((p) => p.favorited).length;
     const totalCompletions = (progress || []).reduce(
       (sum, p) => sum + (p.times_completed || 0),
       0
@@ -194,7 +146,6 @@ export const toolService = {
         totalTools,
         completedTools,
         completionRate: totalTools > 0 ? Math.round((completedTools / totalTools) * 100) : 0,
-        favoriteCount,
         totalCompletions,
       },
       error: null,

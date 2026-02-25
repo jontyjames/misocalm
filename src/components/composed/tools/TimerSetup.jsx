@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { ArrowLeft, Star, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import CockpitOrb from './CockpitOrb';
 import CockpitControls from './CockpitControls';
@@ -14,8 +14,6 @@ import CockpitInitiate from './CockpitInitiate';
 
 export default function TimerSetup({
   tool,
-  isFavorite,
-  onToggleFavorite,
   onBack,
   onStart,
 }) {
@@ -43,9 +41,7 @@ export default function TimerSetup({
           <ArrowLeft className="w-5 h-5" />
         </button>
         <span className="text-white font-light">{tool.title}</span>
-        <button onClick={onToggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
-          <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
-        </button>
+        <div className="w-9" />
       </div>
 
       <div className="flex-1 flex flex-col px-4 py-6">

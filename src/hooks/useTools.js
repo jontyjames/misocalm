@@ -66,37 +66,6 @@ export function useTools(userId, options = {}) {
     [userId]
   );
 
-  const toggleFavorite = useCallback(
-    async (toolId) => {
-      if (!userId) return { error: 'Not authenticated' };
-
-      setError(null);
-      const result = await toolService.toggleFavorite(userId, toolId);
-
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Update local state
-        setTools((prev) =>
-          prev.map((tool) =>
-            tool.id === toolId
-              ? {
-                  ...tool,
-                  progress: {
-                    ...(tool.progress || {}),
-                    favorited: !(tool.progress?.favorited || false),
-                  },
-                }
-              : tool
-          )
-        );
-      }
-
-      return result;
-    },
-    [userId]
-  );
-
   // Auto-fetch on mount
   useEffect(() => {
     if (autoFetch) {
@@ -111,7 +80,6 @@ export function useTools(userId, options = {}) {
     fetch,
     refresh: fetch,
     markCompleted,
-    toggleFavorite,
   };
 }
 
@@ -167,21 +135,6 @@ export function useTool(toolId, userId) {
     return result;
   }, [userId, toolId]);
 
-  const toggleFavorite = useCallback(async () => {
-    if (!userId || !toolId) return { error: 'Not authenticated' };
-
-    const result = await toolService.toggleFavorite(userId, toolId);
-
-    if (!result.error) {
-      setProgress((prev) => ({
-        ...(prev || {}),
-        favorited: !(prev?.favorited || false),
-      }));
-    }
-
-    return result;
-  }, [userId, toolId]);
-
   useEffect(() => {
     fetch();
   }, [fetch]);
@@ -193,7 +146,6 @@ export function useTool(toolId, userId) {
     error,
     refresh: fetch,
     markCompleted,
-    toggleFavorite,
   };
 }
 
@@ -227,38 +179,6 @@ export function useToolStats(userId) {
   }, [fetch]);
 
   return { stats, loading, error, refresh: fetch };
-}
-
-/**
- * Hook for favorite tools
- */
-export function useFavoriteTools(userId) {
-  const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetch = useCallback(async () => {
-    if (!userId) return;
-
-    setLoading(true);
-    setError(null);
-
-    const { data, error: fetchError } = await toolService.getFavorites(userId);
-
-    if (fetchError) {
-      setError(fetchError);
-    } else {
-      setFavorites(data || []);
-    }
-
-    setLoading(false);
-  }, [userId]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { favorites, loading, error, refresh: fetch };
 }
 
 export default useTools;

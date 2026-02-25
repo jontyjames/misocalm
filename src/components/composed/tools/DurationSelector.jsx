@@ -5,7 +5,7 @@
 
 'use client';
 
-import { ArrowLeft, Star } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 
 const DURATION_OPTIONS_BY_TYPE = {
@@ -59,7 +59,7 @@ const CARD_COLORS = [
 
 export { DURATION_OPTIONS_BY_TYPE, BREATH_INSTRUCTIONS };
 
-export default function DurationSelector({ tool, isFavorite, onToggleFavorite, onSelect, onBack }) {
+export default function DurationSelector({ tool, onSelect, onBack }) {
   const prefersReduced = useReducedMotion();
   const options = DURATION_OPTIONS_BY_TYPE[tool.breathType] || DURATION_OPTIONS_BY_TYPE['478'];
   const instructions = tool.breathType && BREATH_INSTRUCTIONS[tool.breathType];
@@ -71,9 +71,7 @@ export default function DurationSelector({ tool, isFavorite, onToggleFavorite, o
           <ArrowLeft className="w-5 h-5" />
         </button>
         <span className="text-white font-light">{tool.title}</span>
-        <button onClick={onToggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
-          <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
-        </button>
+        <div className="w-9" />
       </div>
 
       <div className="flex-1 px-4 py-6">

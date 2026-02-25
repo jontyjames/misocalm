@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Star } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
@@ -35,7 +35,7 @@ export default function ToolPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { isAuthenticated, profile, upsertProfile, refreshProfile, loading } = useAuth();
+  const { isAuthenticated, profile, loading } = useAuth();
   const [tool, setTool] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [timerConfig, setTimerConfig] = useState(null);
@@ -43,19 +43,6 @@ export default function ToolPage() {
 
   const { markCompleted } = useTools(profile?.id, { autoFetch: false });
   const handleComplete = useCallback(() => { if (tool) markCompleted(tool.id); }, [tool, markCompleted]);
-
-  const favoriteTools = profile?.favorite_tools || [];
-  const isFavorite = tool && favoriteTools.includes(tool.id);
-
-  const toggleFavorite = async () => {
-    if (!tool) return;
-    const current = profile?.favorite_tools || [];
-    const updated = current.includes(tool.id)
-      ? current.filter((id) => id !== tool.id)
-      : [...current, tool.id];
-    await upsertProfile({ favorite_tools: updated });
-    await refreshProfile();
-  };
 
   // Timer callbacks — must be above early returns to satisfy rules of hooks
   const handleTimerStart = useCallback((config) => {
@@ -96,8 +83,6 @@ export default function ToolPage() {
       <AppLayout>
         <DurationSelector
           tool={tool}
-          isFavorite={isFavorite}
-          onToggleFavorite={toggleFavorite}
           onSelect={setSelectedDuration}
           onBack={() => router.push(ROUTES.TOOLS)}
         />
@@ -115,9 +100,7 @@ export default function ToolPage() {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <span className="text-white font-light">{tool.title}</span>
-            <button onClick={toggleFavorite} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'} className={isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'}>
-              <Star className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} />
-            </button>
+            <div className="w-9" />
           </div>
           <BreathingPlayer
             tool={tool}
@@ -139,8 +122,6 @@ export default function ToolPage() {
         <AppLayout showNav={false}>
           <TimerSetup
             tool={tool}
-            isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
             onBack={() => router.push(ROUTES.TOOLS)}
             onStart={handleTimerStart}
           />

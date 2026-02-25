@@ -18,8 +18,6 @@ export const EVENTS = {
   // Tool events
   TOOL_STARTED: 'tool_started',
   TOOL_COMPLETED: 'tool_completed',
-  TOOL_FAVORITED: 'tool_favorited',
-  TOOL_UNFAVORITED: 'tool_unfavorited',
 
   // Auth events
   LOGIN: 'login',
