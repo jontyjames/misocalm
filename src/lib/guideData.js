@@ -124,7 +124,7 @@ export const GUIDE_CONTENT = {
     techniques: [
       {
         name: 'Physiological sigh',
-        why: 'The fastest evidence-based reset for acute trigger moments.',
+        why: 'The fastest evidence-based reset for acute difficult moments.',
         how: 'Double inhale through your nose: one breath in, then immediately a second short sniff on top. Then a long, slow exhale through your mouth. One cycle can shift your nervous system in under 10 seconds. Practice this when you\'re calm first, so it becomes automatic when you need it. This practice was identified by Stanford neuroscientist Andrew Huberman as the most efficient real-time stress intervention. It works because the double inhale maximizes lung inflation, which maximizes CO2 offloading on the exhale, which directly calms the sympathetic nervous system.',
         when: 'The instant you feel a sound response. Before it peaks. Practice daily so it becomes muscle memory.',
       },
