@@ -15,21 +15,28 @@ import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import PulseCanvas from './PulseCanvas';
 import ColourRibbon from './ColourRibbon';
 import usePulseState from './usePulseState';
+import ExitThreshold from './ExitThreshold';
 
 export default function PulseGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const state = usePulseState();
   const [customColor, setCustomColor] = useState(null);
+  const [exitTransition, setExitTransition] = useState(null);
 
   const handleTap = useCallback(() => {
     state.processTap();
   }, [state.processTap]);
 
-  const handleReturn = useCallback(() => {
+  const handleLeave = useCallback(() => {
     state.clearSeqTimer();
     router.push(ROUTES.TOOLS);
   }, [state.clearSeqTimer, router]);
+
+  const handleReturn = useCallback(() => {
+    state.clearSeqTimer();
+    setExitTransition({ destination: ROUTES.TOOLS, solfeggio: 'indigo' });
+  }, [state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
@@ -123,7 +130,7 @@ export default function PulseGuide() {
       {/* Exit button — always available once started */}
       {state.started && (
         <button
-          onClick={handleReturn}
+          onClick={handleLeave}
           aria-label="Leave experience"
           style={{
             position: 'fixed',
@@ -207,6 +214,15 @@ export default function PulseGuide() {
             </button>
           </div>
         </>
+      )}
+
+      {/* Exit threshold — soft transition out */}
+      {exitTransition && (
+        <ExitThreshold
+          destination={exitTransition.destination}
+          solfeggio={exitTransition.solfeggio}
+          onNavigate={(route) => router.push(route)}
+        />
       )}
 
       {/* Reduced motion fallback */}

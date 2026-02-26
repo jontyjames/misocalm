@@ -245,6 +245,12 @@ body {
 }
 
 /* Grounding experience: tap ripple expands and fades over fib-ease (610ms) */
+@keyframes thresholdPulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.0618); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
 @keyframes groundingRipple {
   from {
     opacity: 1;

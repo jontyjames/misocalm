@@ -17,6 +17,7 @@ import MandalaCanvas from './MandalaCanvas';
 import ColourRibbon from './ColourRibbon';
 import SymmetrySelector from './SymmetrySelector';
 import useMandalaState from './useMandalaState';
+import ExitThreshold from './ExitThreshold';
 
 export default function MandalaGuide() {
   const router = useRouter();
@@ -24,15 +25,21 @@ export default function MandalaGuide() {
   const state = useMandalaState();
   const [customColor, setCustomColor] = useState(null);
   const [freeSymmetry, setFreeSymmetry] = useState(11);
+  const [exitTransition, setExitTransition] = useState(null);
 
   const handleTouch = useCallback((touchData) => {
     state.processTouchEvent(touchData);
   }, [state.processTouchEvent]);
 
-  const handleReturn = useCallback(() => {
+  const handleLeave = useCallback(() => {
     state.clearSeqTimer();
     router.push(ROUTES.TOOLS);
   }, [state.clearSeqTimer, router]);
+
+  const handleReturn = useCallback(() => {
+    state.clearSeqTimer();
+    setExitTransition({ destination: ROUTES.TOOLS, solfeggio: 'violet' });
+  }, [state.clearSeqTimer]);
 
   const activeSymmetry = state.freePlay ? freeSymmetry : state.symmetry;
 
@@ -129,7 +136,7 @@ export default function MandalaGuide() {
       {/* Exit button — always available once started */}
       {state.started && (
         <button
-          onClick={handleReturn}
+          onClick={handleLeave}
           aria-label="Leave experience"
           style={{
             position: 'fixed',
@@ -214,6 +221,15 @@ export default function MandalaGuide() {
             </button>
           </div>
         </>
+      )}
+
+      {/* Exit threshold — soft transition out */}
+      {exitTransition && (
+        <ExitThreshold
+          destination={exitTransition.destination}
+          solfeggio={exitTransition.solfeggio}
+          onNavigate={(route) => router.push(route)}
+        />
       )}
 
       {/* Reduced motion fallback */}

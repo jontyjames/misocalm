@@ -20,6 +20,7 @@ import GroundingComplete from './GroundingComplete';
 import GroundingCanvas from './GroundingCanvas';
 import GroundingPrompt from './GroundingPrompt';
 import GroundingIntro from './GroundingIntro';
+import ExitThreshold from './ExitThreshold';
 
 let rippleId = 0;
 
@@ -41,6 +42,7 @@ export default function GroundingGuide() {
   const [composition, setComposition] = useState(null);
   const [revealedCount, setRevealedCount] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [exitTransition, setExitTransition] = useState(null);
   const rippleTimers = useRef([]);
 
   // Generate composition on enter, register tap callback to reveal next shape
@@ -49,7 +51,6 @@ export default function GroundingGuide() {
       setComposition(generateComposition(window.innerWidth, window.innerHeight));
     }
   }, [state.started, composition]);
-
   useEffect(() => {
     state.setOnTap(() => {
       setRevealedCount((c) => c + 1);
@@ -84,17 +85,16 @@ export default function GroundingGuide() {
   const handleReturn = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
     state.clearSeqTimer();
-    router.push(ROUTES.DASHBOARD);
-  }, [state.clearSeqTimer, router]);
+    setExitTransition({ destination: ROUTES.DASHBOARD, solfeggio: 'cyan' });
+  }, [state.clearSeqTimer]);
 
   const handleJournal = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
     state.clearSeqTimer();
-    router.push(`${ROUTES.CHECK_IN}?from=grounding`);
-  }, [state.clearSeqTimer, router]);
+    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=grounding`, solfeggio: 'cyan' });
+  }, [state.clearSeqTimer]);
 
   const handlePlay = useCallback(() => setPlaying(true), []);
-
   const handlePlayTap = useCallback((e) => {
     if (!composition) return;
     const layer = generatePlayLayer();
@@ -113,14 +113,12 @@ export default function GroundingGuide() {
     setComposition(prev => ({ ...prev, layers: prev.layers.slice(0, -1) }));
     setRevealedCount(c => c - 1);
   }, [composition, revealedCount]);
-
   const senseColor = state.currentSense?.color || 'rgba(148,163,184,0.3)';
   const tier = state.guideTier || TIERS.STANDARD;
   const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
-      {/* Sacred geometry canvas — z0, persists through completion */}
       {state.started && composition && (
         <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}
@@ -157,7 +155,6 @@ export default function GroundingGuide() {
           }}
         />
       ))}
-
       {/* Full-screen tap target — active during grounding and play mode */}
       {state.started && (!state.complete || playing) && (
         <div
@@ -273,7 +270,6 @@ export default function GroundingGuide() {
         </div>
       )}
 
-      {/* Completion options */}
       {state.complete && !playing && (
         <GroundingComplete onJournal={handleJournal} onReturn={handleReturn} onPlay={handlePlay} />
       )}
@@ -286,6 +282,10 @@ export default function GroundingGuide() {
           )}
           <button onClick={() => setPlaying(false)} className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-200/90 transition-colors">done</button>
         </div>
+      )}
+
+      {exitTransition && (
+        <ExitThreshold destination={exitTransition.destination} solfeggio={exitTransition.solfeggio} onNavigate={(route) => router.push(route)} />
       )}
 
       {/* Reduced motion fallback */}

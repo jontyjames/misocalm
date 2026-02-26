@@ -555,6 +555,29 @@ export const DEEPER_PROMPTS_FOCUS = [
   'What would you like to carry from this into the rest of your day?',
 ];
 
+// Threshold transition text — soft bridge between experience and app (13 total, prime)
+export const THRESHOLD_TEXT = {
+  journal: [
+    'carry this feeling with you',
+    'there is no rush',
+    'take a moment before you write',
+    'let the stillness come with you',
+    'the words will find you',
+  ],
+  dashboard: [
+    'your sanctuary is waiting',
+    'softly, back to centre',
+    'nothing needs to happen next',
+    'the practice stays with you',
+    'you are already home',
+  ],
+  tools: [
+    'gently, now',
+    'carrying what you made',
+    'back to solid ground',
+  ],
+};
+
 // Misophonia Response Levels (0-10 clinical scale)
 export const MISOPHONIA_LEVELS = [
   {

@@ -18,6 +18,7 @@ import { ROUTES } from '@/lib/constants';
 import SoundCanvas from './SoundCanvas';
 import ColourRibbon from './ColourRibbon';
 import useImpermanenceState from './useImpermanenceState';
+import ExitThreshold from './ExitThreshold';
 
 export default function ImpermanenceGuide() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ImpermanenceGuide() {
   const mic = useMicrophone();
   const state = useImpermanenceState();
   const [customColor, setCustomColor] = useState(null);
+  const [exitTransition, setExitTransition] = useState(null);
   const rafRef = useRef(null);
 
   // Feed audio level to the state machine every frame
@@ -44,11 +46,17 @@ export default function ImpermanenceGuide() {
     if (success) state.enter();
   }, [mic, state]);
 
-  const handleReturn = useCallback(() => {
+  const handleLeave = useCallback(() => {
     mic.stopListening();
     state.clearSeqTimer();
     router.push(ROUTES.TOOLS);
   }, [mic, state, router]);
+
+  const handleReturn = useCallback(() => {
+    mic.stopListening();
+    state.clearSeqTimer();
+    setExitTransition({ destination: ROUTES.TOOLS, solfeggio: 'violet' });
+  }, [mic, state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
@@ -169,7 +177,7 @@ export default function ImpermanenceGuide() {
       {/* Exit button — always available once started */}
       {state.started && (
         <button
-          onClick={handleReturn}
+          onClick={handleLeave}
           aria-label="Leave experience"
           style={{
             position: 'fixed',
@@ -252,6 +260,15 @@ export default function ImpermanenceGuide() {
             </button>
           </div>
         </>
+      )}
+
+      {/* Exit threshold — soft transition out */}
+      {exitTransition && (
+        <ExitThreshold
+          destination={exitTransition.destination}
+          solfeggio={exitTransition.solfeggio}
+          onNavigate={(route) => router.push(route)}
+        />
       )}
 
       {/* Reduced motion fallback */}

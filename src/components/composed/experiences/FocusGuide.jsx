@@ -18,6 +18,7 @@ import FocusCanvas from './FocusCanvas';
 import FocusPrompt from './FocusPrompt';
 import FocusComplete from './FocusComplete';
 import GroundingIntro from './GroundingIntro';
+import ExitThreshold from './ExitThreshold';
 
 const GUIDE_TRANSITION = { in: '0.987s', out: '0.610s' };
 const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
@@ -27,6 +28,7 @@ export default function FocusGuide() {
   const prefersReduced = useReducedMotion();
   const state = useFocusState();
   const [playTouch, setPlayTouch] = useState(null);
+  const [exitTransition, setExitTransition] = useState(null);
 
   const handlePlayTap = useCallback((e) => {
     const x = e.clientX ?? e.touches?.[0]?.clientX;
@@ -45,13 +47,13 @@ export default function FocusGuide() {
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
-    router.push(ROUTES.DASHBOARD);
-  }, [state.clearSeqTimer, router]);
+    setExitTransition({ destination: ROUTES.DASHBOARD, solfeggio: 'cyan' });
+  }, [state.clearSeqTimer]);
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    router.push(`${ROUTES.CHECK_IN}?from=focus`);
-  }, [state.clearSeqTimer, router]);
+    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=focus`, solfeggio: 'cyan' });
+  }, [state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
@@ -226,6 +228,15 @@ export default function FocusGuide() {
             touch anywhere
           </p>
         </>
+      )}
+
+      {/* Exit threshold — soft transition out */}
+      {exitTransition && (
+        <ExitThreshold
+          destination={exitTransition.destination}
+          solfeggio={exitTransition.solfeggio}
+          onNavigate={(route) => router.push(route)}
+        />
       )}
 
       {/* Reduced motion fallback */}
