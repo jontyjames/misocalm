@@ -103,6 +103,11 @@ export const TOOL_CATEGORIES = [
   { value: 'communication', label: 'Communication', color: 'amber' },
 ];
 
+// External URLs
+export const EXTERNAL_URLS = {
+  SKOOL_COMMUNITY: 'https://www.skool.com/thriving-with-misophonia',
+};
+
 // Routes
 export const ROUTES = {
   HOME: '/',

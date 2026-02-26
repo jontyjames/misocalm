@@ -15,6 +15,7 @@ import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { SACRED_GLASS_STATIC_CLASSES, sacredGlassStaticStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE } from '@/lib/sacredGlass';
 
 const TOTAL_ONBOARDING_STEPS = 6;
+const BASE_GLASS_STYLE = sacredGlassStaticStyle();
 const CURRENT_STEP = 5;
 
 const IMPACT_OPTIONS = [
@@ -122,7 +123,6 @@ export default function AssessmentContent() {
           {IMPACT_OPTIONS.map((option) => {
             const isSelected = selected === option.value;
             const isUpdated = isRetake && saving && isSelected;
-
             return (
               <button
                 key={option.value}
@@ -141,8 +141,8 @@ export default function AssessmentContent() {
                 style={{
                   background: isSelected
                     ? 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(99,102,241,0.15) 100%)'
-                    : sacredGlassStaticStyle().background,
-                  boxShadow: sacredGlassStaticStyle().boxShadow,
+                    : BASE_GLASS_STYLE.background,
+                  boxShadow: BASE_GLASS_STYLE.boxShadow,
                 }}
               >
                 {/* Glass overlays */}

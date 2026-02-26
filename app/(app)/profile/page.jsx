@@ -13,14 +13,19 @@ import { useAuthGuard, useUserTriggers, useTriggerStats, useToolStats } from '@/
 import { Button } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ProfileSkeleton } from '@/components/composed/skeletons';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, EXTERNAL_URLS } from '@/lib/constants';
 
 const IMPACT_LABELS = {
   mild: 'A little',
   moderate: 'Quite a bit',
   significant: 'Significantly',
+  severe: 'Severely',
   unsure: 'Still figuring it out',
 };
+
+const PROFILE_CARD_CLASSES = 'w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3';
+const PROFILE_CARD_STYLE = { background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' };
+const PROFILE_CARD_STYLE_VIOLET = { background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' };
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -69,27 +74,27 @@ export default function ProfilePage() {
         {impactLabel && (
           <button
             onClick={() => router.push(`${ROUTES.ONBOARDING_ASSESSMENT}?from=profile`)}
-            className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
-            style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+            className={PROFILE_CARD_CLASSES}
+            style={PROFILE_CARD_STYLE}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-slate-300 font-light mb-1">How misophonia affects you</p>
                 <p className="text-white font-light">{impactLabel}</p>
               </div>
-              <span className="text-xs text-indigo-300 font-light">Retake</span>
+              <span className="text-xs text-indigo-300 font-light">Update</span>
             </div>
           </button>
         )}
 
-        {/* My Triggers */}
+        {/* My Sounds */}
         <button
           onClick={() => router.push(ROUTES.PROFILE_TRIGGERS)}
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
-          style={{ background: 'rgba(139,92,246,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+          className={PROFILE_CARD_CLASSES}
+          style={PROFILE_CARD_STYLE_VIOLET}
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white font-light">My Triggers</p>
+            <p className="text-white font-light">My Sounds</p>
             <ChevronRight className="w-4 h-4 text-slate-300" />
           </div>
           {triggers.length > 0 ? (
@@ -110,7 +115,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <p className="text-sm text-slate-300 font-light">
-              Tap to add your trigger sounds
+              Tap to add your sounds
             </p>
           )}
         </button>
@@ -146,9 +151,9 @@ export default function ProfilePage() {
 
         {/* Join Community */}
         <button
-          onClick={() => window.open('https://www.skool.com/thriving-with-misophonia', '_blank')}
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
-          style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
+          onClick={() => window.open(EXTERNAL_URLS.SKOOL_COMMUNITY, '_blank')}
+          className={PROFILE_CARD_CLASSES}
+          style={PROFILE_CARD_STYLE}
         >
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">

@@ -23,6 +23,19 @@ import { TOOLS } from '@/lib/toolsData';
 
 // Lookup by id — single source of truth from toolsData.js
 const toolsLookup = Object.fromEntries(TOOLS.map(t => [t.id, t]));
+const JOURNAL_FROM_BREATHWORK = `${ROUTES.CHECK_IN}?from=breathwork`;
+
+function ToolHeader({ title, onBack }) {
+  return (
+    <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+      <button onClick={onBack} aria-label="Go back" className="p-3 -ml-3 text-slate-400 hover:text-white transition-colors">
+        <ArrowLeft className="w-5 h-5" />
+      </button>
+      <span className="text-white font-light">{title}</span>
+      <div className="w-9" />
+    </div>
+  );
+}
 
 export default function ToolPage() {
   const router = useRouter();
@@ -44,7 +57,7 @@ export default function ToolPage() {
     setTimerPhase('launching');
   }, []);
   const handleTimerBack = useCallback(() => { setTimerConfig(null); setTimerPhase('setup'); }, []);
-  const handleTimerJournal = useCallback(() => router.push(`${ROUTES.CHECK_IN}?from=breathwork`), [router]);
+  const handleTimerJournal = useCallback(() => router.push(JOURNAL_FROM_BREATHWORK), [router]);
   const handleTimerHome = useCallback(() => router.push(ROUTES.DASHBOARD), [router]);
 
   useEffect(() => {
@@ -86,19 +99,13 @@ export default function ToolPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex flex-col">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-            <button onClick={() => setSelectedDuration(null)} aria-label="Go back" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <span className="text-white font-light">{tool.title}</span>
-            <div className="w-9" />
-          </div>
+          <ToolHeader title={tool.title} onBack={() => setSelectedDuration(null)} />
           <BreathingPlayer
             tool={tool}
             selectedDuration={selectedDuration}
             onComplete={handleComplete}
             onChangeDuration={() => setSelectedDuration(null)}
-            onJournal={() => router.push(`${ROUTES.CHECK_IN}?from=breathwork`)}
+            onJournal={() => router.push(JOURNAL_FROM_BREATHWORK)}
             onReturnHome={() => router.push(ROUTES.DASHBOARD)}
           />
         </div>
@@ -151,13 +158,7 @@ export default function ToolPage() {
   return (
     <AppLayout>
       <div className="min-h-screen flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-          <button onClick={() => router.push(ROUTES.TOOLS)} aria-label="Go back" className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <span className="text-white font-light">{tool.title}</span>
-          <div className="w-9" />
-        </div>
+        <ToolHeader title={tool.title} onBack={() => router.push(ROUTES.TOOLS)} />
         <ComingSoon tool={tool} onBack={() => router.push(ROUTES.TOOLS)} />
       </div>
     </AppLayout>
