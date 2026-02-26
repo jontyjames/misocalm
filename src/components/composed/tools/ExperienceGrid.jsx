@@ -58,7 +58,7 @@ export default function ExperienceGrid() {
                   className="text-white text-sm truncate w-full"
                   style={{
                     fontFamily: "'Josefin Sans', sans-serif",
-                    fontWeight: 200,
+                    fontWeight: 300,
                     marginTop: PHI_SCALE[0],  /* phi-1 (6px) */
                     marginBottom: PHI_SCALE[0], /* phi-1 (6px) */
                   }}

@@ -45,11 +45,11 @@ function MiniPulseCanvas({ size = 120 }) {
         const phase = (t + i * 2.1) % 6.28;
         const progress = phase / 6.28;
         const radius = progress * size * 0.45;
-        const alpha = (1 - progress) * 0.35;
+        const alpha = (1 - progress) * 0.65;
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, TWO_PI);
         ctx.strokeStyle = `rgba(99,102,241,${alpha})`;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
       }
     });

@@ -20,8 +20,8 @@ function createParticles(count, size) {
     speed: 0.2 + Math.random() * 0.3,
     dist: Math.random() * size * 0.15,
     maxDist: size * 0.4,
-    alpha: 0.3 + Math.random() * 0.4,
-    radius: 1.5 + Math.random() * 1.5,
+    alpha: 0.55 + Math.random() * 0.35,
+    radius: 2 + Math.random() * 1.5,
     cx,
     cy,
   }));
