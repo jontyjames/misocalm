@@ -97,7 +97,7 @@ class TunnelShape {
     this.baseRot = Math.random() * TAU;
     this.rotSpd = (0.001 + Math.random() * 0.002) * (Math.random() < 0.5 ? 1 : -1);
     this.fn = createShapeDraw();
-    this.alphaBase = captured ? 0.35 : 0.18;
+    this.alphaBase = captured ? 0.68 : 0.45;
     this.scaleMul = captured ? 1.1 : 1.0;
   }
   update() { this.age++; if (this.age > this.maxAge) this.alive = false; }
@@ -119,7 +119,7 @@ class CaptureRipple {
     if (!this.alive) return;
     const t = this.age / 23; // ~377ms at 60fps
     const r = t * 68; // expand to phi-6
-    const a = 0.15 * (1 - t);
+    const a = 0.35 * (1 - t);
     if (a < 0.005) return;
     const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r);
     g.addColorStop(0, `rgba(34,211,238,${a})`); g.addColorStop(1, 'transparent');
@@ -193,15 +193,15 @@ export default function FocusCanvas({ flashVisible, flashAngle, flashCaptured, t
       const spokeLen = maxR * 0.9;
       let sA, sR = 34, sG = 211, sB = 238;
       if (bloom >= 0) {
-        if (bloom < 987) { sA = 0.05 + (bloom / 987) * 0.20; }
-        else if (bloom < 2584) { sA = 0.25; }
+        if (bloom < 987) { sA = 0.15 + (bloom / 987) * 0.30; }
+        else if (bloom < 2584) { sA = 0.45; }
         else if (bloom < 4181) {
           const t = (bloom - 2584) / 1597;
-          sA = 0.25 - t * 0.17;
+          sA = 0.45 - t * 0.30;
           sR = 34 + t * 192; sG = 211 + t * 21; sB = 238 + t * 2;
-        } else { sA = 0.08; sR = 226; sG = 232; sB = 240; }
+        } else { sA = 0.15; sR = 226; sG = 232; sB = 240; }
       } else {
-        sA = 0.05 + Math.sin(s.time * 0.002) * 0.02;
+        sA = 0.15 + Math.sin(s.time * 0.002) * 0.05;
       }
       ctx.lineWidth = 0.5;
       ctx.strokeStyle = `rgba(${sR|0},${sG|0},${sB|0},${sA.toFixed(3)})`;
