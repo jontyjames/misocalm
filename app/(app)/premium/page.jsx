@@ -14,6 +14,7 @@ import { supabase } from '@/services/supabase';
 import { AppLayout } from '@/components/composed';
 import { Spinner } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
+import { SACRED_GLASS_CLASSES, GLASS_HIGHLIGHT_STYLE } from '@/lib/sacredGlass';
 
 const FEATURES = [
   { icon: MessageCircle, label: 'AI companion chat', description: 'Talk through difficult moments with Miso' },
@@ -181,13 +182,13 @@ function PremiumContent() {
             <button
               onClick={handleCheckout}
               disabled={checkoutLoading || isLoading}
-              className="relative w-full py-4 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms] disabled:opacity-50"
+              className={`relative w-full py-4 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} disabled:opacity-50`}
               style={{
                 background: 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(139,92,246,0.12) 60%, rgba(139,92,246,0.06) 100%)',
                 boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.18), inset 0 -1px 0 0 rgba(255,255,255,0.04), 0 0 20px rgba(139,92,246,0.2), 0 4px 20px rgba(0,0,0,0.25)',
               }}
             >
-              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }} />
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={GLASS_HIGHLIGHT_STYLE} />
               <span
                 className="text-white"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}

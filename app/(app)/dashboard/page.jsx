@@ -144,7 +144,7 @@ export default function DashboardPage() {
             href={buildPracticeHref(todaysPractice)}
             icon={todaysPractice.type === 'experience' ? Sparkles : Wind}
             iconColor={practiceAccent}
-            accentRgba={practiceAccent.rgba}
+            accent={todaysPractice.accent}
             title="Today's Practice"
             subtitle={`${todaysPractice.name} · ${todaysPractice.label} · ${todaysPractice.time}`}
             className="mb-2.5"
@@ -154,7 +154,7 @@ export default function DashboardPage() {
             href={ROUTES.JOURNAL}
             icon={BookOpen}
             iconColor={{ bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' }}
-            accentRgba="rgba(34,211,238,"
+            accent="cyan"
             title="Go inward"
             subtitle="Reflect, log, or check in with yourself"
           />

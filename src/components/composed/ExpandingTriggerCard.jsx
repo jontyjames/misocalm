@@ -8,6 +8,7 @@
 
 import { X } from 'lucide-react';
 import { MISOPHONIA_LEVELS } from '@/lib/constants';
+import { GLASS_HIGHLIGHT_STYLE } from '@/lib/sacredGlass';
 
 // Intensity-based gradient backgrounds (solfeggio-mapped)
 function getIntensityGradient(intensity) {

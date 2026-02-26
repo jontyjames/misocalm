@@ -13,6 +13,7 @@ import { Home, BookOpen, Wind, MessageCircle } from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
 import NavLogoGem from './NavLogoGem';
 import MantraOverlay from './MantraOverlay';
+import { SACRED_GLASS_STATIC_CLASSES } from '@/lib/sacredGlass';
 
 const MANTRAS = [
   'You are not defined by what you hear.',
@@ -153,11 +154,7 @@ export default memo(function Navigation() {
         aria-label="Main navigation"
       >
         <div
-          className="
-            flex items-center justify-center gap-2
-            rounded-full border overflow-visible
-            backdrop-blur-2xl
-          "
+          className={`flex items-center justify-center gap-2 rounded-full border overflow-visible backdrop-blur-2xl`}
           style={{
             padding: '6px 10px',
             borderColor: 'rgba(255,255,255,0.18)',

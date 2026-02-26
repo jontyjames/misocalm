@@ -13,6 +13,7 @@ import { useTriggerStats } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { JournalHistoryList, JournalInsights } from '@/components/composed/journal';
 import { ROUTES } from '@/lib/constants';
+import { SACRED_GLASS_CLASSES, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle, SACRED_GLASS_SUBTLE_CLASSES, sacredGlassSubtleStyle } from '@/lib/sacredGlass';
 
 export default function JournalPage() {
   const router = useRouter();
@@ -113,9 +114,9 @@ export default function JournalPage() {
               }}
             >
               <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.35) 30%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.35) 70%, transparent 95%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(139,92,246,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 40% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'radial-gradient(ellipse 120% 80% at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)', backgroundSize: '100% 200%', animation: 'solfeggio-breathe-852 3.7s ease-in-out infinite' }} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={PHI_LAYERS_STYLE} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={torusFlowStyle('violet')} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={solfeggioBreathStyle('violet', 'solfeggio-breathe-852 3.7s ease-in-out infinite')} />
               <div className="relative flex items-center justify-center gap-3">
                 <BookOpen className="w-5 h-5 text-violet-400" />
                 <span
@@ -140,9 +141,9 @@ export default function JournalPage() {
               }}
             >
               <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.35) 30%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.35) 70%, transparent 95%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(34,211,238,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 40% at 50% 110%, rgba(34,211,238,0.06) 0%, transparent 60%)' }} />
-              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'radial-gradient(ellipse 120% 80% at 50% 50%, rgba(34,211,238,0.08) 0%, transparent 70%)', backgroundSize: '100% 200%', animation: 'solfeggio-breathe-741 3.7s ease-in-out infinite' }} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={PHI_LAYERS_STYLE} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={torusFlowStyle('cyan')} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={solfeggioBreathStyle('cyan', 'solfeggio-breathe-741 3.7s ease-in-out infinite')} />
               <div className="relative flex items-center justify-center gap-3">
                 <Heart className="w-5 h-5 text-cyan-400" />
                 <span
@@ -162,11 +163,8 @@ export default function JournalPage() {
           <div className="w-full flex gap-3">
             <button
               onClick={() => changeView('history')}
-              className="relative overflow-hidden flex-1 p-4 rounded-xl border border-white/[0.12] backdrop-blur-xl hover:border-white/25 transition-all duration-[233ms] text-left"
-              style={{
-                background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
-                boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.1), 0 4px 16px rgba(0,0,0,0.2)',
-              }}
+              className={`relative overflow-hidden flex-1 p-4 rounded-xl ${SACRED_GLASS_SUBTLE_CLASSES} text-left`}
+              style={sacredGlassSubtleStyle()}
             >
               <div className="relative flex items-center gap-3">
                 <Clock className="w-4 h-4 text-slate-300 shrink-0" />
@@ -176,11 +174,8 @@ export default function JournalPage() {
 
             <button
               onClick={() => changeView('insights')}
-              className="relative overflow-hidden flex-1 p-4 rounded-xl border border-white/[0.12] backdrop-blur-xl hover:border-white/25 transition-all duration-[233ms] text-left"
-              style={{
-                background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
-                boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.1), 0 4px 16px rgba(0,0,0,0.2)',
-              }}
+              className={`relative overflow-hidden flex-1 p-4 rounded-xl ${SACRED_GLASS_SUBTLE_CLASSES} text-left`}
+              style={sacredGlassSubtleStyle()}
             >
               <div className="relative flex items-center gap-3">
                 <Sparkles className="w-4 h-4 text-slate-300 shrink-0" />

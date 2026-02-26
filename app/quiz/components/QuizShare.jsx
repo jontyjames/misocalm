@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SACRED_GLASS_PILL_CLASSES } from '@/lib/sacredGlass';
 
 const SHARE_TEXT = 'I just took this misophonia self-assessment. If certain sounds make you feel rage, disgust, or panic, this might help you understand why.';
 const SHARE_URL = 'https://misocalm.app/quiz';
@@ -46,12 +47,7 @@ export default function QuizShare() {
 
       <button
         onClick={handleShare}
-        className="
-          py-3 px-8 rounded-full
-          border border-white/[0.18] backdrop-blur-2xl
-          hover:border-white/30 transition-all duration-[233ms]
-          text-white text-sm font-light
-        "
+        className={`py-3 px-8 ${SACRED_GLASS_PILL_CLASSES} text-white text-sm font-light`}
         style={{
           background: 'linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
           fontFamily: "'Josefin Sans', sans-serif",

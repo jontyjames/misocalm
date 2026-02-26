@@ -13,6 +13,7 @@ import { userTriggerService } from '@/services';
 import { Button, Spinner, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 6;
@@ -196,8 +197,8 @@ export default function PlanPage() {
               }}
             >
               <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.6) 50%, transparent 90%)' }} />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.16) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, rgba(99,102,241,0.08) 0%, transparent 60%)' }} />
+              <div className="absolute inset-0 pointer-events-none" style={PHI_LAYERS_STYLE} />
+              <div className="absolute inset-0 pointer-events-none" style={torusFlowStyle('indigo')} />
               <span
                 className="relative z-10 font-light text-white text-base"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, textShadow: '0 0 12px rgba(255,255,255,0.3), 0 0 34px rgba(99,102,241,0.2)' }}

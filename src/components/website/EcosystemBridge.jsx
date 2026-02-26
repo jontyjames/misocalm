@@ -8,6 +8,7 @@
 import Link from 'next/link';
 import ScrollReveal from './ScrollReveal';
 import { FIBONACCI_TIMING } from '@/lib/constants';
+import { GLASS_HIGHLIGHT_STYLE } from '@/lib/sacredGlass';
 
 function GlassColumn({ children, borderClass = 'border-white/[0.18]', bg, shadow }) {
   return (
@@ -17,11 +18,10 @@ function GlassColumn({ children, borderClass = 'border-white/[0.18]', bg, shadow
     >
       <div
         className="absolute inset-x-0 top-0 h-[1px] pointer-events-none"
-        style={{
-          background: borderClass.includes('violet')
-            ? 'linear-gradient(90deg, transparent 10%, rgba(139,92,246,0.35) 50%, transparent 90%)'
-            : 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)',
-        }}
+        style={borderClass.includes('violet')
+          ? { background: 'linear-gradient(90deg, transparent 10%, rgba(139,92,246,0.35) 50%, transparent 90%)' }
+          : GLASS_HIGHLIGHT_STYLE
+        }
       />
       <div className="relative flex-1 flex flex-col">{children}</div>
     </div>
