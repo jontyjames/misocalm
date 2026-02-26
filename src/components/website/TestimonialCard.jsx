@@ -14,13 +14,10 @@ export default function TestimonialCard({ quote, attribution }) {
           'inset 0 1px 0 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.2)',
       }}
     >
-      {/* Glass top highlight */}
+      {/* Glass top highlight (dimmed for testimonial) */}
       <div
         className="absolute inset-x-0 top-0 h-[1px] pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.15) 50%, transparent 90%)',
-        }}
+        style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.15) 50%, transparent 90%)' }}
       />
       <div className="relative">
         <p className="text-slate-200 font-light leading-relaxed text-sm italic mb-4">

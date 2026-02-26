@@ -7,6 +7,7 @@
 
 import { ArrowLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
+import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle } from '@/lib/sacredGlass';
 
 const DURATION_OPTIONS_BY_TYPE = {
   '478': [
@@ -52,9 +53,9 @@ const BREATH_INSTRUCTIONS = {
 };
 
 const CARD_COLORS = [
-  { color: 'rgba(99,102,241,', breathe: 'solfeggio-breathe-528 5.28s ease-in-out infinite', badge: 'text-indigo-400 bg-indigo-400/10' },
-  { color: 'rgba(139,92,246,', breathe: 'solfeggio-breathe-852 3.7s ease-in-out infinite', badge: 'text-violet-400 bg-violet-400/10' },
-  { color: 'rgba(34,211,238,', breathe: 'solfeggio-breathe-741 5.3s ease-in-out infinite', badge: 'text-cyan-400 bg-cyan-400/10' },
+  { accent: 'indigo', breathe: 'solfeggio-breathe-528 5.28s ease-in-out infinite', badge: 'text-indigo-400 bg-indigo-400/10' },
+  { accent: 'violet', breathe: 'solfeggio-breathe-852 3.7s ease-in-out infinite', badge: 'text-violet-400 bg-violet-400/10' },
+  { accent: 'cyan', breathe: 'solfeggio-breathe-741 5.3s ease-in-out infinite', badge: 'text-cyan-400 bg-cyan-400/10' },
 ];
 
 export { DURATION_OPTIONS_BY_TYPE, BREATH_INSTRUCTIONS };
@@ -97,16 +98,13 @@ export default function DurationSelector({ tool, onSelect, onBack }) {
               <button
                 key={option.id}
                 onClick={() => onSelect(option)}
-                className="relative w-full p-4 rounded-xl overflow-hidden border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms] text-left"
-                style={{
-                  background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, ${colors.color}0.08) 100%)`,
-                  boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px ${colors.color}0.12), 0 4px 20px rgba(0,0,0,0.25)`,
-                }}
+                className={`relative w-full p-4 rounded-xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
+                style={sacredGlassStyle(colors.accent)}
               >
-                <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }} />
-                <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-                <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${colors.color}0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${colors.color}0.06) 0%, transparent 60%)` }} />
-                <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: `radial-gradient(ellipse 120% 80% at 50% 50%, ${colors.color}0.08) 0%, transparent 70%)`, backgroundSize: '100% 200%', animation: prefersReduced ? 'none' : colors.breathe }} />
+                <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={GLASS_HIGHLIGHT_STYLE} />
+                <div className="absolute inset-0 pointer-events-none rounded-xl" style={PHI_LAYERS_STYLE} />
+                <div className="absolute inset-0 pointer-events-none rounded-xl" style={torusFlowStyle(colors.accent)} />
+                <div className="absolute inset-0 pointer-events-none rounded-xl" style={solfeggioBreathStyle(colors.accent, prefersReduced ? 'none' : colors.breathe)} />
 
                 <div className="relative flex items-start justify-between mb-2">
                   <p className="text-white font-light text-lg">{option.name}</p>

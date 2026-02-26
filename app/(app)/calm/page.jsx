@@ -10,6 +10,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
+import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle, SOLFEGGIO_RGBA } from '@/lib/sacredGlass';
 
 // Solfeggio-mapped glass cards
 // Each level breathes at its own harmonic rate, never syncing mechanically
@@ -19,7 +20,7 @@ const SUPPORT_LEVELS = [
     name: 'Just a moment',
     time: '1.5 min',
     description: 'A few breaths to bring you back to centre',
-    color: 'rgba(99,102,241,',    // indigo — 528Hz, transformation
+    accent: 'indigo',    // 528Hz, transformation
     badge: 'text-indigo-400 bg-indigo-400/10',
     breathe: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
   },
@@ -28,7 +29,7 @@ const SUPPORT_LEVELS = [
     name: 'I need some space',
     time: '3 min',
     description: 'Enough space to let your body fully calm',
-    color: 'rgba(139,92,246,',    // violet — 852Hz, intuition
+    accent: 'violet',    // 852Hz, intuition
     badge: 'text-violet-400 bg-violet-400/10',
     breathe: 'solfeggio-breathe-852 3.7s ease-in-out infinite',
   },
@@ -37,7 +38,7 @@ const SUPPORT_LEVELS = [
     name: 'Stay with me',
     time: '4 min',
     description: 'A full session to find steady ground',
-    color: 'rgba(34,211,238,',    // cyan — 741Hz, expression
+    accent: 'cyan',    // 741Hz, expression
     badge: 'text-cyan-400 bg-cyan-400/10',
     breathe: 'solfeggio-breathe-741 5.3s ease-in-out infinite',
   },
@@ -81,42 +82,28 @@ export default function CalmPage() {
               <button
                 key={level.id}
                 onClick={() => handleSelect(level)}
-                className="relative w-full p-5 rounded-xl overflow-hidden border border-white/[0.18] backdrop-blur-2xl hover:border-white/30 transition-all duration-[233ms] text-left"
-                style={{
-                  background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, ${level.color}0.08) 100%)`,
-                  boxShadow: `
-                    inset 0 1px 0 0 rgba(255,255,255,0.15),
-                    inset 0 -1px 0 0 rgba(255,255,255,0.03),
-                    0 0 16px ${level.color}0.12),
-                    0 4px 20px rgba(0,0,0,0.25)
-                  `,
-                }}
+                className={`relative w-full p-5 rounded-xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
+                style={sacredGlassStyle(level.accent)}
               >
                 {/* Glass top highlight */}
                 <div
                   className="absolute inset-x-0 top-0 h-[1px] pointer-events-none"
-                  style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }}
+                  style={GLASS_HIGHLIGHT_STYLE}
                 />
                 {/* Phi opacity layers — 0.03, 0.05, 0.08, 0.13 (Fibonacci) */}
                 <div
                   className="absolute inset-0 pointer-events-none rounded-xl"
-                  style={{ background: `linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)` }}
+                  style={PHI_LAYERS_STYLE}
                 />
                 {/* Torus flow — light enters top centre, curves outward, returns at bottom */}
                 <div
                   className="absolute inset-0 pointer-events-none rounded-xl"
-                  style={{
-                    background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${level.color}0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${level.color}0.06) 0%, transparent 60%)`,
-                  }}
+                  style={torusFlowStyle(level.accent)}
                 />
                 {/* Solfeggio breathing glow — each card pulses at its harmonic rate */}
                 <div
                   className="absolute inset-0 pointer-events-none rounded-xl"
-                  style={{
-                    background: `radial-gradient(ellipse 120% 80% at 50% 50%, ${level.color}0.08) 0%, transparent 70%)`,
-                    backgroundSize: '100% 200%',
-                    animation: level.breathe,
-                  }}
+                  style={solfeggioBreathStyle(level.accent, level.breathe)}
                 />
                 <div className="relative flex items-baseline justify-between mb-1.5">
                   <span

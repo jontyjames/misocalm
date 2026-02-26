@@ -1,5 +1,7 @@
 'use client';
 
+import { SACRED_GLASS_PILL_CLASSES, sacredGlassPillStyle } from '@/lib/sacredGlass';
+
 /**
  * Quiz landing / intro screen
  */
@@ -33,18 +35,11 @@ export default function QuizIntro({ onStart }) {
 
       <button
         onClick={onStart}
-        className="
-          relative overflow-hidden
-          py-4 px-10 rounded-full
-          border border-white/[0.18] backdrop-blur-2xl
-          hover:border-white/30 transition-all duration-[233ms]
-          text-white text-base
-        "
+        className={`relative overflow-hidden py-4 px-10 ${SACRED_GLASS_PILL_CLASSES} text-white text-base`}
         style={{
           fontFamily: "'Josefin Sans', sans-serif",
           fontWeight: 200,
-          background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(99,102,241,0.08) 100%)',
-          boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 30px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.3)',
+          ...sacredGlassPillStyle('indigo'),
         }}
       >
         Begin

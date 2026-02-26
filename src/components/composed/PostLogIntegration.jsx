@@ -18,6 +18,7 @@ import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { useReducedMotion } from '@/hooks';
 import StarDissolve from './StarDissolve';
+import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
 const TRIGGER_AFFIRMATIONS = [
   'Noticing is not judging',
@@ -151,11 +152,7 @@ export default function PostLogIntegration() {
     ];
   }
 
-  const colorMap = {
-    violet: 'rgba(139,92,246,',
-    cyan: 'rgba(34,211,238,',
-    indigo: 'rgba(99,102,241,',
-  };
+  // colorMap removed — using sacredGlass utilities instead
 
   const iconStyles = {
     violet: 'bg-violet-500/20 border-violet-500/30 text-violet-400',
@@ -217,20 +214,16 @@ export default function PostLogIntegration() {
           >
             {paths.map((path) => {
               const Icon = path.icon;
-              const colorRgba = colorMap[path.accent];
               return (
                 <button
                   key={path.title}
                   onClick={path.onClick}
-                  className="relative w-full p-5 rounded-2xl overflow-hidden border border-white/[0.18] backdrop-blur-2xl hover:border-white/30 text-left transition-all duration-[233ms]"
-                  style={{
-                    background: `linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, ${colorRgba}0.08) 100%)`,
-                    boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.15), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 0 16px ${colorRgba}0.12), 0 4px 20px rgba(0,0,0,0.25)`,
-                  }}
+                  className={`relative w-full p-5 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
+                  style={sacredGlassStyle(path.accent)}
                 >
-                  <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.3) 50%, transparent 90%)' }} />
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)' }} />
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${colorRgba}0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${colorRgba}0.06) 0%, transparent 60%)` }} />
+                  <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={GLASS_HIGHLIGHT_STYLE} />
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl" style={PHI_LAYERS_STYLE} />
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl" style={torusFlowStyle(path.accent)} />
                   <div className="relative flex items-start gap-4">
                     <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${iconStyles[path.accent]}`}>
                       <Icon className="w-5 h-5" />

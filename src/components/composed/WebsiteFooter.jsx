@@ -6,6 +6,7 @@
 
 import Link from 'next/link';
 import { articles } from '@/lib/articleData';
+import { SACRED_GLASS_PILL_CLASSES } from '@/lib/sacredGlass';
 
 export default function WebsiteFooter() {
   return (
@@ -31,7 +32,7 @@ export default function WebsiteFooter() {
             <div className="flex flex-col gap-3">
               <Link
                 href="/"
-                className="inline-flex items-center justify-center py-3 px-6 rounded-full text-sm text-white border border-white/[0.18] backdrop-blur-2xl hover:border-white/30 transition-all duration-[233ms]"
+                className={`inline-flex items-center justify-center py-3 px-6 ${SACRED_GLASS_PILL_CLASSES} text-sm text-white`}
                 style={{
                   fontFamily: "'Josefin Sans', sans-serif",
                   fontWeight: 200,

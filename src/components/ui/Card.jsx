@@ -7,6 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
+import { SOLFEGGIO_RGBA, SACRED_GLASS_CLASSES, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
 export default function Card({
   children,
@@ -53,12 +54,6 @@ export default function Card({
     cyan: 'rgba(34,211,238,0.2)',
   };
 
-  const SOLFEGGIO_RGBA = {
-    indigo: 'rgba(99,102,241,',
-    violet: 'rgba(139,92,246,',
-    cyan: 'rgba(34,211,238,',
-  };
-
   if (isInteractive) {
     return (
       <Component
@@ -68,8 +63,7 @@ export default function Card({
         onPointerLeave={handlePointerUp}
         className={`
           relative rounded-xl ${padding} text-left w-full overflow-hidden
-          border border-white/[0.18] backdrop-blur-2xl
-          hover:border-white/30 transition-all duration-[233ms]
+          ${SACRED_GLASS_CLASSES}
           focus-visible:ring-1 focus-visible:ring-indigo-500/50 focus-visible:outline-none
           cursor-pointer
           ${className}
@@ -83,19 +77,17 @@ export default function Card({
         {/* Glass top highlight */}
         <div
           className="absolute inset-x-0 top-0 h-[1px] pointer-events-none"
-          style={{ background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)' }}
+          style={GLASS_HIGHLIGHT_STYLE}
         />
         {/* Phi opacity layers */}
         <div
           className="absolute inset-0 pointer-events-none rounded-xl"
-          style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.03) 40%, transparent 65%)' }}
+          style={PHI_LAYERS_STYLE}
         />
         {/* Torus flow — solfeggio colour enters from top, returns from bottom */}
         <div
           className="absolute inset-0 pointer-events-none rounded-xl"
-          style={{
-            background: `radial-gradient(ellipse 80% 50% at 50% -10%, ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.1) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 50% 110%, ${SOLFEGGIO_RGBA[solfeggio] || SOLFEGGIO_RGBA.indigo}0.05) 0%, transparent 60%)`,
-          }}
+          style={torusFlowStyle(solfeggio)}
         />
         {/* Touch glow overlay */}
         {glowPos && (

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalStorage, useReducedMotion } from '@/hooks';
 import { STORAGE_KEYS, FIBONACCI_TIMING } from '@/lib/constants';
+import { SACRED_GLASS_STATIC_CLASSES } from '@/lib/sacredGlass';
 
 function getPlatform() {
   if (typeof window === 'undefined') return 'unknown';
@@ -70,7 +71,7 @@ export default function BetaInstallBanner() {
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-sm rounded-2xl border border-white/[0.18] backdrop-blur-2xl p-6"
+        className={`relative w-full max-w-sm rounded-2xl ${SACRED_GLASS_STATIC_CLASSES} p-6`}
         style={{
           background: 'linear-gradient(160deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 30%, rgba(34,211,238,0.06) 100%)',
           boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.15), 0 0 30px rgba(0,0,0,0.5), 0 12px 40px rgba(0,0,0,0.4)',

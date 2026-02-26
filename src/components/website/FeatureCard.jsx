@@ -3,6 +3,8 @@
  * Renders an icon, title, and description with solfeggio-colored accent.
  */
 
+import { SACRED_GLASS_STATIC_CLASSES, sacredGlassStaticStyle, GLASS_HIGHLIGHT_STYLE } from '@/lib/sacredGlass';
+
 const ACCENT_COLORS = {
   indigo: 'text-indigo-400',
   cyan: 'text-cyan-400',
@@ -18,21 +20,13 @@ const ACCENT_DOTS = {
 export default function FeatureCard({ icon: Icon, title, description, accent = 'indigo' }) {
   return (
     <div
-      className="relative rounded-xl p-6 overflow-hidden border border-white/[0.18] backdrop-blur-2xl h-full"
-      style={{
-        background:
-          'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, rgba(99,102,241,0.05) 100%)',
-        boxShadow:
-          'inset 0 1px 0 0 rgba(255,255,255,0.12), inset 0 -1px 0 0 rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.25)',
-      }}
+      className={`relative rounded-xl p-6 overflow-hidden ${SACRED_GLASS_STATIC_CLASSES} h-full`}
+      style={sacredGlassStaticStyle()}
     >
       {/* Glass top highlight */}
       <div
         className="absolute inset-x-0 top-0 h-[1px] pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 50%, transparent 90%)',
-        }}
+        style={GLASS_HIGHLIGHT_STYLE}
       />
       <div className="relative">
         <div className="flex items-start gap-3">

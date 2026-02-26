@@ -11,6 +11,7 @@ import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { Spinner, PageHeader } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
+import { SACRED_GLASS_STATIC_CLASSES, SACRED_GLASS_CLASSES } from '@/lib/sacredGlass';
 
 function ExtLink({ href, children, className = '' }) {
   return (
@@ -29,7 +30,7 @@ function ExtLink({ href, children, className = '' }) {
 function Section({ title, icon: Icon, iconColor = 'text-indigo-400', children }) {
   return (
     <div
-      className="p-5 rounded-xl border border-white/[0.18] backdrop-blur-xl"
+      className={`p-5 rounded-xl ${SACRED_GLASS_STATIC_CLASSES}`}
       style={{
         background: 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(99,102,241,0.06) 100%)',
         boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), 0 4px 20px rgba(0,0,0,0.25)',
@@ -200,7 +201,7 @@ export default function ResourcesPage() {
           {/* Read more (internal nav) */}
           <button
             onClick={() => router.push(ROUTES.TOOLS)}
-            className="w-full p-4 rounded-xl border border-white/[0.18] backdrop-blur-xl hover:border-white/30 transition-all duration-[233ms] text-left flex items-center gap-4"
+            className={`w-full p-4 rounded-xl ${SACRED_GLASS_CLASSES} text-left flex items-center gap-4`}
             style={{
               background: 'linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
             }}

@@ -7,6 +7,7 @@
 
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/lib/constants';
+import { PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle } from '@/lib/sacredGlass';
 
 export default function FindMyCalmCard() {
   const router = useRouter();
@@ -52,25 +53,17 @@ export default function FindMyCalmCard() {
         {/* Phi opacity layers */}
         <div
           className="absolute inset-0 pointer-events-none rounded-2xl"
-          style={{
-            background: 'linear-gradient(170deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.03) 50%, transparent 70%)',
-          }}
+          style={PHI_LAYERS_STYLE}
         />
         {/* Torus flow */}
         <div
           className="absolute inset-0 pointer-events-none rounded-2xl"
-          style={{
-            background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(139,92,246,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 40% at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 60%)',
-          }}
+          style={torusFlowStyle('violet')}
         />
         {/* Solfeggio breathing — violet 852Hz */}
         <div
           className="absolute inset-0 pointer-events-none rounded-2xl"
-          style={{
-            background: 'radial-gradient(ellipse 120% 80% at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)',
-            backgroundSize: '100% 200%',
-            animation: 'solfeggio-breathe-852 3.7s ease-in-out infinite',
-          }}
+          style={solfeggioBreathStyle('violet', 'solfeggio-breathe-852 3.7s ease-in-out infinite')}
         />
         {/* Slow shimmer */}
         <div
