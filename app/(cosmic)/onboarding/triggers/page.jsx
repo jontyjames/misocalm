@@ -76,12 +76,6 @@ export default function TriggersPage() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <p
-          className="text-sm text-slate-300/80 font-light text-center max-w-[280px] mb-[16px]"
-          style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}
-        >
-          You might know these as &lsquo;triggers.&rsquo; We call them sound sensitivities, because you&apos;re not broken &mdash; your nervous system is just responding.
-        </p>
         <OnboardingTriggerSelector onComplete={handleComplete} />
       </div>
 
