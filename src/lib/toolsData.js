@@ -79,8 +79,8 @@ export const TOOLS = [
   },
 ];
 
-// Hero experience rotation order (cycles daily)
-export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence'];
+// Hero experience rotation order (cycles daily, 5 = prime)
+export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence', 'focus'];
 
 // Solfeggio colour per experience — drives Card's solfeggio prop
 export const EXPERIENCE_SOLFEGGIO = {
@@ -88,6 +88,7 @@ export const EXPERIENCE_SOLFEGGIO = {
   mandala: 'violet',       // 852Hz — intuition, depth, creation
   pulse: 'indigo',         // 528Hz — transformation, love, heartbeat
   impermanence: 'violet',  // 852Hz — spiritual order, letting go
+  focus: 'cyan',           // 741Hz — awakening, clarity, attentional precision
 };
 
 // Guided experiences
@@ -119,5 +120,12 @@ export const EXPERIENCES = [
     description: 'Five senses. Fifteen anchors. You are here.',
     duration: '~3 min',
     route: ROUTES.EXPERIENCE_GROUNDING,
+  },
+  {
+    id: 'focus',
+    title: 'Focus',
+    description: 'Hold the centre. The tunnel opens from within.',
+    duration: '~3 min',
+    route: ROUTES.EXPERIENCE_FOCUS,
   },
 ];

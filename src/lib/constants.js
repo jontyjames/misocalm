@@ -141,6 +141,7 @@ export const ROUTES = {
   EXPERIENCE_MANDALA: '/tools/experiences/mandala',
   EXPERIENCE_PULSE: '/tools/experiences/pulse',
   EXPERIENCE_GROUNDING: '/tools/experiences/grounding',
+  EXPERIENCE_FOCUS: '/tools/experiences/focus',
 };
 
 // Attribution options (how did you find us)
@@ -278,6 +279,8 @@ export const STORAGE_KEYS = {
   PULSE_HUE: 'misocalm_pulse_hue',
   GROUNDING_VISITS: 'misocalm_grounding_visits',
   GROUNDING_LAST_TEACHING: 'misocalm_grounding_last_teaching',
+  FOCUS_VISITS: 'misocalm_focus_visits',
+  FOCUS_LAST_TEACHING: 'misocalm_focus_last_teaching',
 };
 
 // Impermanence experience teachings (5, prime)
@@ -488,6 +491,70 @@ export const DEEPER_PROMPTS_GROUNDING = [
   'How does this space feel to you right now?',
 ];
 
+// Focus experience teachings (7, prime)
+export const FOCUS_TEACHINGS = [
+  {
+    lines: [
+      'your attention was yours this whole time',
+      'no sound ever took it',
+      'it only borrowed what you gave',
+    ],
+  },
+  {
+    lines: [
+      'the centre held',
+      'while everything moved around it',
+      'it always holds',
+    ],
+  },
+  {
+    lines: [
+      'you watched the light come',
+      'without reaching for it',
+      'that is a kind of trust',
+    ],
+  },
+  {
+    lines: [
+      'focus is not force',
+      'it is a gentle return',
+      'to where you already are',
+    ],
+  },
+  {
+    lines: [
+      'the sounds that pull your attention',
+      'are loud',
+      'but you are deeper',
+    ],
+  },
+  {
+    lines: [
+      'every time you came back to the centre',
+      'your nervous system learned',
+      'that you are the one who chooses',
+    ],
+  },
+  {
+    lines: [
+      'the tunnel was not something you entered',
+      'it was something you created',
+      'by staying still',
+    ],
+  },
+];
+
+// After focus (7 prompts, prime)
+export const DEEPER_PROMPTS_FOCUS = [
+  'What did you notice about your attention during that?',
+  'Was there a moment where something felt easy or soft?',
+  'How does the stillness feel compared to before you started?',
+  'Did anything at the edges pull your attention? How did it feel to come back?',
+  'What does it feel like to know your attention is yours?',
+  'Was there a moment where the tunnel felt deepest?',
+  'What would you like to carry from this into the rest of your day?',
+];
+
 // Misophonia Response Levels (0-10 clinical scale)
 export const MISOPHONIA_LEVELS = [
   {
@@ -645,4 +712,5 @@ export const DAILY_PRACTICES_ROTATION = [
   { type: 'experience', id: 'mandala',      name: 'Mandala',      label: 'Touch the Void',    route: ROUTES.EXPERIENCE_MANDALA,      time: '~3 min', accent: 'violet' },
   { type: 'experience', id: 'pulse',        name: 'Pulse',        label: 'Your Heartbeat',    route: ROUTES.EXPERIENCE_PULSE,        time: '~3 min', accent: 'indigo' },
   { type: 'experience', id: 'impermanence', name: 'Impermanence', label: 'What Remains',      route: ROUTES.EXPERIENCE_IMPERMANENCE, time: '~3 min', accent: 'violet' },
+  { type: 'experience', id: 'focus',        name: 'Focus',        label: 'The Stillpoint',    route: ROUTES.EXPERIENCE_FOCUS,        time: '~3 min', accent: 'cyan' },
 ];

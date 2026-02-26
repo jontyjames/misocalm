@@ -11,6 +11,7 @@ const CANVAS_MAP = {
   mandala: dynamic(() => import('./MiniMandalaCanvas'), { ssr: false }),
   pulse: dynamic(() => import('./MiniPulseCanvas'), { ssr: false }),
   impermanence: dynamic(() => import('./MiniSoundCanvas'), { ssr: false }),
+  focus: dynamic(() => import('./MiniFocusCanvas'), { ssr: false }),
 };
 
 export default CANVAS_MAP;
