@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
@@ -20,12 +20,19 @@ import FocusComplete from './FocusComplete';
 import GroundingIntro from './GroundingIntro';
 
 const GUIDE_TRANSITION = { in: '0.987s', out: '0.610s' };
-const TEXT_SHADOW = '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)';
+const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
 
 export default function FocusGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const state = useFocusState();
+  const [playTouch, setPlayTouch] = useState(null);
+
+  const handlePlayTap = useCallback((e) => {
+    const x = e.clientX ?? e.touches?.[0]?.clientX;
+    const y = e.clientY ?? e.touches?.[0]?.clientY;
+    if (x != null && y != null) setPlayTouch({ x, y, id: Date.now() });
+  }, []);
 
   const handleTap = useCallback(() => {
     state.processTap();
@@ -57,6 +64,7 @@ export default function FocusGuide() {
           totalCaptured={state.totalCaptured}
           phase={state.phase}
           complete={state.complete}
+          playTouch={playTouch}
         />
       )}
 
@@ -184,6 +192,40 @@ export default function FocusGuide() {
       {/* Completion */}
       {state.complete && (
         <FocusComplete onJournal={handleJournal} onReturn={handleReturn} />
+      )}
+
+      {/* Free play — touch anywhere to create */}
+      {state.freePlay && (
+        <>
+          <div
+            onClick={handlePlayTap}
+            style={{ position: 'fixed', inset: 0, zIndex: 2, cursor: 'pointer' }}
+            role="button"
+            tabIndex={0}
+            aria-label="Touch anywhere to create shapes"
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                handlePlayTap({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
+              }
+            }}
+          />
+          <p
+            className="text-slate-300/30 text-xs font-light tracking-widest"
+            style={{
+              position: 'fixed',
+              top: 'clamp(68px, 12vh, 110px)',
+              left: 0,
+              right: 0,
+              textAlign: 'center',
+              zIndex: 3,
+              pointerEvents: 'none',
+              opacity: 0,
+              animation: 'fadeIn 1.597s ease-out 0.610s forwards',
+            }}
+          >
+            touch anywhere
+          </p>
+        </>
       )}
 
       {/* Reduced motion fallback */}

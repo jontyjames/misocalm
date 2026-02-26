@@ -7,6 +7,7 @@
  * Completion bloom: spokes brighten, centre grows, colour shifts to white.
  * Solfeggio palette: cyan (741Hz), indigo (528Hz), violet (852Hz).
  * Max 13 concurrent shapes (prime). Counts: [3,5,7,11] all prime.
+ * Free play: playTouch prop spawns beams to centre, ripples, and shapes.
  */
 
 'use client';
@@ -85,14 +86,14 @@ function createShapeDraw() {
     case 1: { const n = pick(STAR_POINTS); return (x,cx,cy,r,rot,cl,a) => strokeStar(x,cx,cy,r,r*0.5,n,rot,cl,a); }
     case 2: return (x,cx,cy,r,_,cl,a) => strokeCircle(x,cx,cy,r,cl,a);
     case 3: { const n=pick([3,5,7]),al=0.3+Math.random()*0.4; return (x,cx,cy,r,rot,cl,a) => strokeArcs(x,cx,cy,r,n,al,rot,cl,a); }
-    case 4: { const n = pick(POLY_SIDES); return (x,cx,cy,r,rot,cl,a) => { strokePoly(x,cx,cy,r,n,rot,cl,a); strokePoly(x,cx,cy,r*0.618,n,rot+TAU/(n*2),cl,a*0.6); }; }
+    case 4: { const n = pick(POLY_SIDES); return (x,cx,cy,r,rot,cl,a) => { strokePoly(x,cx,cy,r,n,rot,cl,a); strokePoly(x,cx,cy,r*0.618,n,rot+TAU/(n*2),cl,a*0.618); }; }
     default: return (x,cx,cy,r,_,cl,a) => strokeCircle(x,cx,cy,r,cl,a);
   }
 }
 
 class TunnelShape {
   constructor(captured = false) {
-    this.age = 0; this.maxAge = 360; this.alive = true;
+    this.age = 0; this.maxAge = 359; this.alive = true;
     this.color = pick(TUNNEL_COLORS);
     this.baseRot = Math.random() * TAU;
     this.rotSpd = (0.001 + Math.random() * 0.002) * (Math.random() < 0.5 ? 1 : -1);
@@ -112,6 +113,16 @@ class TunnelShape {
   }
 }
 
+class PlayBeam {
+  constructor(x, y) { this.x = x; this.y = y; this.age = 0; this.alive = true; }
+  update() { this.age++; if (this.age > 23) this.alive = false; }
+  draw(ctx, cx, cy) {
+    const a = this.alive ? 0.35 * (1 - this.age / 23) : 0;
+    if (a < 0.005) return;
+    ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(cx, cy);
+    ctx.strokeStyle = `rgba(34,211,238,${a})`; ctx.lineWidth = 1; ctx.stroke();
+  }
+}
 class CaptureRipple {
   constructor(x, y) { this.x = x; this.y = y; this.age = 0; this.alive = true; }
   update() { this.age++; if (this.age > 23) this.alive = false; }
@@ -127,17 +138,17 @@ class CaptureRipple {
   }
 }
 
-export default function FocusCanvas({ flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete }) {
+export default function FocusCanvas({ flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete, playTouch }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
-  const propsRef = useRef({ flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete });
-  propsRef.current = { flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete };
+  const propsRef = useRef({ flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete, playTouch });
+  propsRef.current = { flashVisible, flashAngle, flashCaptured, totalCaptured, phase, complete, playTouch };
 
   const stateRef = useRef({
-    shapes: [], spokes: [], ripples: [],
-    time: 0, lastAutoSpawn: 0, lastCapturedCount: 0, bloomStart: -1,
+    shapes: [], spokes: [], ripples: [], beams: [],
+    time: 0, lastAutoSpawn: 0, lastCapturedCount: 0, bloomStart: -1, lastPlayTouchId: 0,
   });
 
   // Empty deps: safe — all external state read via propsRef/stateRef (mutable refs)
@@ -175,14 +186,25 @@ export default function FocusCanvas({ flashVisible, flashAngle, flashCaptured, t
       s.lastAutoSpawn = now;
     }
 
+    // Play touch: beam + ripple + shape from tap point
+    if (p.playTouch && p.playTouch.id > s.lastPlayTouchId) {
+      s.lastPlayTouchId = p.playTouch.id;
+      s.beams.push(new PlayBeam(p.playTouch.x, p.playTouch.y));
+      s.ripples.push(new CaptureRipple(p.playTouch.x, p.playTouch.y));
+      s.shapes.push(new TunnelShape(true));
+      if (s.shapes.length > MAX_SHAPES) s.shapes.shift();
+    }
+
     // Update + gc
     for (let i = s.shapes.length - 1; i >= 0; i--) { s.shapes[i].update(); if (!s.shapes[i].alive) s.shapes.splice(i, 1); }
     for (let i = s.ripples.length - 1; i >= 0; i--) { s.ripples[i].update(); if (!s.ripples[i].alive) s.ripples.splice(i, 1); }
+    for (let i = s.beams.length - 1; i >= 0; i--) { s.beams[i].update(); if (!s.beams[i].alive) s.beams.splice(i, 1); }
 
     // Draw shapes (oldest in back)
     for (const sh of s.shapes) sh.draw(ctx, cx, cy, maxR);
-    // Draw capture ripples
+    // Draw capture ripples + play beams
     for (const rp of s.ripples) rp.draw(ctx);
+    for (const bm of s.beams) bm.draw(ctx, cx, cy);
 
     // Bloom detection (completion)
     if (p.complete && s.bloomStart < 0) s.bloomStart = s.time;

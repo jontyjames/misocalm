@@ -54,6 +54,7 @@ export default function useFocusState() {
   const [totalCaptured, setTotalCaptured] = useState(0);
   const [totalFlashes, setTotalFlashes] = useState(0);
   const [complete, setComplete] = useState(false);
+  const [freePlay, setFreePlay] = useState(false);
   const [introActive, setIntroActive] = useState(false);
   const [visits, setVisits] = useLocalStorage(STORAGE_KEYS.FOCUS_VISITS, 0);
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.FOCUS_LAST_TEACHING, -1);
@@ -214,6 +215,8 @@ export default function useFocusState() {
     setGuide('the centre held you', true);
     await delay(2584);
     setComplete(true);
+    await delay(1597);
+    setFreePlay(true);
   }, [visits, lastTeaching, setLastTeaching, delay, showFlash, setGuide, setIntroActive]);
 
   const enter = useCallback(() => {
@@ -233,6 +236,7 @@ export default function useFocusState() {
     totalCaptured,
     totalFlashes,
     complete,
+    freePlay,
     introActive,
     isFirstVisit,
     visits,
