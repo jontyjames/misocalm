@@ -51,21 +51,15 @@ export default function OnboardingTriggerSelector({ onComplete }) {
   return (
     <>
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-[26px]">
         <h1
-          className="text-2xl text-white mb-4"
+          className="text-2xl text-white mb-[10px]"
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
         >
           Which sounds affect you?
         </h1>
-        <p className="text-sm text-slate-200 font-light leading-relaxed mb-3">
-          To support your journey, we need to understand what affects you most
-        </p>
-        <p className="text-sm text-indigo-400 font-light mb-2">
-          Naming your triggers is the first step to managing them
-        </p>
-        <p className="text-xs text-slate-300 font-light">
-          You can always update these later
+        <p className="text-sm text-slate-300 font-light">
+          Select the ones you recognise. You can always update these later.
         </p>
       </div>
 
@@ -114,7 +108,7 @@ export default function OnboardingTriggerSelector({ onComplete }) {
               onChange={(e) => { setCustomTrigger(e.target.value); setInputError(null); }}
               onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
               placeholder="Type a sound..."
-              aria-label="Custom trigger name"
+              aria-label="Add a sound you recognise"
               maxLength={50}
               autoFocus
               className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-full px-4 py-2.5
