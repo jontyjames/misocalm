@@ -5,12 +5,11 @@
 
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useUserTriggers, useTriggerStats, useToolStats } from '@/hooks';
+import { useAuthGuard, useUserTriggers, useTriggerStats, useToolStats } from '@/hooks';
 import { Button } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ProfileSkeleton } from '@/components/composed/skeletons';
@@ -25,16 +24,11 @@ const IMPACT_LABELS = {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, profile, isAuthenticated, loading, signOut } = useAuth();
+  const { loading } = useAuthGuard();
+  const { user, profile, signOut } = useAuth();
   const { triggers } = useUserTriggers(user?.id);
   const { stats } = useTriggerStats(user?.id, 90);
   const { stats: toolStats } = useToolStats(user?.id);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
 
   const handleSignOut = async () => {
     await signOut();

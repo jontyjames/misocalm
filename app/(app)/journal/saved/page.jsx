@@ -5,26 +5,17 @@
 
 'use client';
 
-import { Suspense, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { Suspense } from 'react';
+import { useAuthGuard } from '@/hooks';
 import { AppLayout, PostLogIntegration } from '@/components/composed';
 import { Spinner } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
 
 function SavedContent() {
   return <PostLogIntegration />;
 }
 
 export default function JournalSavedPage() {
-  const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
+  useAuthGuard();
 
   return (
     <AppLayout showNav={false}>

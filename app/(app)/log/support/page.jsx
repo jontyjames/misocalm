@@ -5,10 +5,10 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Wind, Heart, Music, MessageCircle, X } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { Button, Card } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
@@ -57,14 +57,8 @@ const mantras = [
 
 export default function SupportPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  useAuthGuard();
   const [showMantra, setShowMantra] = useState(false);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
   const [currentMantra, setCurrentMantra] = useState('');
 
   const handleSelect = (option) => {

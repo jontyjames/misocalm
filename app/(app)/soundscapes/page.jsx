@@ -5,11 +5,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
+import { useAuthGuard } from '@/hooks';
 import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES, SOUNDSCAPES } from '@/lib/constants';
@@ -27,14 +27,8 @@ const iconMap = {
 
 export default function SoundscapesPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { loading } = useAuthGuard();
   const [playing, setPlaying] = useState(null);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
 
   const handlePlay = (soundscape) => {
     if (playing?.id === soundscape.id) {

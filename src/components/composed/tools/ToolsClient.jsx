@@ -6,24 +6,16 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { ToolsSkeleton } from '@/components/composed/skeletons';
-import { ROUTES } from '@/lib/constants';
 import HeroExperience from './HeroExperience';
 import QuickToolsRow from './QuickToolsRow';
 import ExperienceGrid from './ExperienceGrid';
 import ComingSoonSection from './ComingSoonSection';
 
 export default function ToolsClient() {
-  const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
-  }, [isAuthenticated, loading, router]);
+  const { loading } = useAuthGuard();
 
   if (loading) {
     return <AppLayout><ToolsSkeleton /></AppLayout>;

@@ -5,10 +5,9 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { useReducedMotion } from '@/hooks';
+import { useAuthGuard, useReducedMotion } from '@/hooks';
 import { Spinner, ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 
@@ -46,15 +45,8 @@ const IMPACT_OPTIONS = [
 export default function AssessmentPage() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuthGuard();
   const [selected, setSelected] = useState(null);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   const handleSelect = (value) => {
     setSelected(value);

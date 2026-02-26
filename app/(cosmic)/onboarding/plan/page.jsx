@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useReducedMotion } from '@/hooks';
+import { useAuthGuard, useReducedMotion } from '@/hooks';
 import { userTriggerService } from '@/services';
 import { Button, Spinner, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
@@ -20,7 +20,8 @@ const CURRENT_STEP = 6;
 export default function PlanPage() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const { user, upsertProfile, refreshProfile, isAuthenticated, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuthGuard();
+  const { user, upsertProfile, refreshProfile } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -40,12 +41,6 @@ export default function PlanPage() {
     }
     setOnboardingData(JSON.parse(raw));
   }, [router]);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   const handleEnter = async () => {
     if (!onboardingData) return;

@@ -17,7 +17,7 @@ import ComingSoon from '@/components/composed/tools/ComingSoon';
 import TimerSetup from '@/components/composed/tools/TimerSetup';
 import TimerPlayer from '@/components/composed/tools/TimerPlayer';
 import LaunchSequence from '@/components/composed/tools/LaunchSequence';
-import { useTools } from '@/hooks';
+import { useAuthGuard, useTools } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
 
 // Tool data (would come from database)
@@ -35,7 +35,8 @@ export default function ToolPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { isAuthenticated, profile, loading } = useAuth();
+  const { loading } = useAuthGuard();
+  const { profile } = useAuth();
   const [tool, setTool] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [timerConfig, setTimerConfig] = useState(null);
@@ -52,10 +53,6 @@ export default function ToolPage() {
   const handleTimerBack = useCallback(() => { setTimerConfig(null); setTimerPhase('setup'); }, []);
   const handleTimerJournal = useCallback(() => router.push(`${ROUTES.CHECK_IN}?from=breathwork`), [router]);
   const handleTimerHome = useCallback(() => router.push(ROUTES.DASHBOARD), [router]);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
-  }, [isAuthenticated, loading, router]);
 
   useEffect(() => {
     const id = params.id;
