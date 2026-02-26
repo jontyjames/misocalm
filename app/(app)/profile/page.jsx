@@ -74,7 +74,7 @@ export default function ProfilePage() {
         {/* Impact Level */}
         {impactLabel && (
           <button
-            onClick={() => router.push(ROUTES.ONBOARDING_ASSESSMENT)}
+            onClick={() => router.push(`${ROUTES.ONBOARDING_ASSESSMENT}?from=profile`)}
             className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3"
             style={{ background: 'rgba(99,102,241,0.08)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
           >
