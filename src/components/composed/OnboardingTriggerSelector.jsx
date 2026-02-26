@@ -113,7 +113,7 @@ export default function OnboardingTriggerSelector({ onComplete }) {
               value={customTrigger}
               onChange={(e) => { setCustomTrigger(e.target.value); setInputError(null); }}
               onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
-              placeholder="Type a trigger..."
+              placeholder="Type a sound..."
               aria-label="Custom trigger name"
               maxLength={50}
               autoFocus

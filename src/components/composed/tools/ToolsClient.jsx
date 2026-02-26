@@ -48,7 +48,7 @@ export default function ToolsClient() {
               right: '-1.5rem',
               background: 'radial-gradient(ellipse 90% 140% at center, rgba(139,92,246,0.12) 0%, rgba(99,102,241,0.04) 45%, transparent 70%)',
               filter: 'blur(24px)',
-              animation: 'glow-breathe 8s ease-in-out infinite',
+              animation: 'glow-breathe 7.1s ease-in-out infinite',
             }}
           />
           <HeroExperience />

@@ -210,7 +210,7 @@ export default function BreathingPlayer({
         {showPrePractice && (
           <div className="w-full max-w-xs flex flex-col" style={{ gap: PHI_SCALE[1] }}>
             <Button onClick={() => setIsActive(true)} className="w-full" size="lg">
-              {cycleCount > 0 ? 'Start Again' : 'Start Practice'}
+              {cycleCount > 0 ? 'Begin again' : 'Start Practice'}
             </Button>
             {cycleCount > 0 && (
               <button
@@ -264,13 +264,6 @@ export default function BreathingPlayer({
               <Button variant="secondary" onClick={onReturnHome} className="w-full" size="lg">
                 Return to sanctuary
               </Button>
-              <button
-                onClick={handleStart}
-                className="w-full text-sm text-slate-400 hover:text-white font-light"
-                style={{ transition: `color ${FIBONACCI_TIMING.shift}ms ease` }}
-              >
-                Practice again
-              </button>
             </div>
           </div>
         )}

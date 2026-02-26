@@ -1,6 +1,6 @@
 /**
  * Skeleton — shimmer placeholder for loading states
- * Uses existing shimmer keyframe from globals.css with 8s cycle (Fibonacci-adjacent)
+ * Uses existing shimmer keyframe from globals.css with 7.1s cycle (prime)
  */
 
 const baseClasses = 'rounded-xl relative overflow-hidden';
@@ -8,7 +8,7 @@ const baseClasses = 'rounded-xl relative overflow-hidden';
 const shimmerStyle = {
   background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 60%, transparent 70%)',
   backgroundSize: '250% 100%',
-  animation: 'shimmer 8s ease-in-out infinite',
+  animation: 'shimmer 7.1s ease-in-out infinite',
 };
 
 export function Skeleton({ width, height, className = '', circle = false, rounded = 'rounded-xl' }) {

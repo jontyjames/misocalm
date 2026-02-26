@@ -26,7 +26,7 @@ function buildInsights(stats) {
     insights.push({
       type: 'frequency',
       accent: 'indigo',
-      message: `${trigger} is your most common trigger, appearing in ${pct}% of entries`,
+      message: `${trigger} is your most common sound sensitivity, appearing in ${pct}% of entries`,
     });
   }
 
@@ -40,7 +40,7 @@ function buildInsights(stats) {
     insights.push({
       type: 'time',
       accent: 'cyan',
-      message: `You tend to experience triggers most in the ${peakTime}`,
+      message: `You tend to experience difficult sounds most in the ${peakTime}`,
     });
   }
 
@@ -65,7 +65,7 @@ function buildInsights(stats) {
     insights.push({
       type: 'source',
       accent: 'indigo',
-      message: `Triggers from ${getSourceLabel(top.source)} tend to feel more intense (avg ${top.avg.toFixed(1)}/10)`,
+      message: `Sounds from ${getSourceLabel(top.source)} tend to feel more intense (avg ${top.avg.toFixed(1)}/10)`,
     });
   }
 

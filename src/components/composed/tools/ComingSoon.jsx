@@ -29,7 +29,7 @@ const TOOL_CONTENT = {
     ],
   },
   '7': {
-    subtitle: 'See your triggers from a new angle',
+    subtitle: 'See your sound sensitivities from a new angle',
     preview: [
       'Gentle perspective shifts, at your own pace',
       'Understand the story behind the reaction',

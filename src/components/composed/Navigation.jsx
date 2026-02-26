@@ -15,7 +15,7 @@ import NavLogoGem from './NavLogoGem';
 import MantraOverlay from './MantraOverlay';
 
 const MANTRAS = [
-  'You are not your triggers.',
+  'You are not defined by what you hear.',
   'Every breath is a choice you made for yourself.',
   'You showed up today. That matters.',
   'You have already come so far.',

@@ -214,9 +214,9 @@ export const DEEPER_PROMPTS_TRIGGER = [
   'You showed up. What does that tell you about yourself?',
   // Patterns and noticing
   'Have you noticed this feeling before? When?',
-  'Was there a moment just before the trigger where something shifted?',
+  'Was there a moment just before the sound where something shifted?',
   'What were you hoping for in that space?',
-  'If this trigger had less power over you, what would be different?',
+  'If this sound had less power over you, what would be different?',
   'What time of day does this tend to find you?',
   // Environment and context
   'What was the space like around you?',
@@ -582,7 +582,7 @@ export const DAILY_AFFIRMATIONS = [
   'Your sensitivity is not a flaw.',
   'You are allowed to need quiet.',
   'Your reactions are valid, even when others don\'t understand.',
-  'You are more than your triggers.',
+  'You are more than what you hear.',
   'What you feel is real. You don\'t need to justify it.',
   'Your nervous system is doing its best with what it has.',
   'You are not broken. You are wired differently.',
@@ -616,7 +616,7 @@ export const DAILY_AFFIRMATIONS = [
   'Not everyone will understand. That does not make it less real.',
   // Presence & stillness
   'This moment will pass. You will still be here.',
-  'There is space between the trigger and your response. You are learning to find it.',
+  'There is space between the sound and your response. You are learning to find it.',
   'Stillness is not the absence of sound. It is the presence of you.',
   'You carry more than most people see. And you carry it well.',
   'Right now, in this breath, you are safe.',

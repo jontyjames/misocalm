@@ -111,7 +111,7 @@ export default function FirstPracticePage() {
                   className="text-3xl text-white mb-3"
                   style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
                 >
-                  Well done
+                  Something just shifted
                 </h1>
                 <p className="text-slate-300 font-light mb-2">
                   You just did something good for yourself.

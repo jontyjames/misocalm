@@ -24,11 +24,11 @@ import { ROUTES } from '@/lib/constants';
 const toolsData = {
   '1': { id: '1', title: '4-7-8 Breathing', description: 'The 4-7-8 breathing practice is a powerful way to reduce anxiety and promote calm. Developed by Dr. Andrew Weil, it acts as a natural tranquilizer for the nervous system.', category: 'breathwork', level: 'basic', type: 'practice', breathType: '478' },
   '2': { id: '2', title: 'Body Scan', description: 'A guided return to your body, releasing stored tension one layer at a time.', category: 'somatic', level: 'basic', duration_minutes: 10, type: 'coming_soon' },
-  '3': { id: '3', title: 'Box Breathing', description: 'Box breathing is a simple yet powerful practice used by Navy SEALs to stay calm under pressure. The equal 4-4-4-4 rhythm creates a meditative focus that helps redirect attention away from trigger sounds.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'box' },
-  '4': { id: '4', title: 'Physiological Sigh', description: 'Discovered by Stanford neuroscientists, the physiological sigh is the fastest known way to calm your nervous system in real time. Perfect for acute trigger moments when you need immediate relief.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'sigh' },
+  '3': { id: '3', title: 'Box Breathing', description: 'Box breathing is a simple yet powerful practice used by Navy SEALs to stay calm under pressure. The equal 4-4-4-4 rhythm creates a meditative focus that helps redirect attention from difficult sounds.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'box' },
+  '4': { id: '4', title: 'Physiological Sigh', description: 'Discovered by Stanford neuroscientists, the physiological sigh is the fastest known way to calm your nervous system in real time. Perfect for acute moments when you need immediate relief.', category: 'breathwork', level: 'basic', type: 'practice', breathType: 'sigh' },
   '5': { id: '5', title: 'Interval Timer', description: 'A meditation timer that keeps you informed without pulling you out of stillness. Gentle bells mark each interval so you never need to move or check your phone.', category: 'somatic', level: 'basic', type: 'timer' },
   '6': { id: '6', title: 'Progressive Relaxation', description: 'Tense, release, discover stillness through systematic muscle group work.', category: 'somatic', level: 'basic', duration_minutes: 15, type: 'coming_soon' },
-  '7': { id: '7', title: 'Cognitive Reframing', description: 'See your triggers from a new angle with gentle perspective shifts.', category: 'cognitive', level: 'basic', duration_minutes: 20, type: 'coming_soon' },
+  '7': { id: '7', title: 'Cognitive Reframing', description: 'See your sound sensitivities from a new angle with gentle perspective shifts.', category: 'cognitive', level: 'basic', duration_minutes: 20, type: 'coming_soon' },
 };
 
 export default function ToolPage() {

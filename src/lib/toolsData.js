@@ -64,7 +64,7 @@ export const TOOLS = [
   {
     id: '7',
     title: 'Cognitive Reframing',
-    description: 'See your triggers from a new angle',
+    description: 'See your sound sensitivities from a new angle',
     category: 'cognitive',
     duration_minutes: 20,
     type: 'coming_soon',

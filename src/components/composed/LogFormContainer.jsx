@@ -70,7 +70,7 @@ export default function LogFormContainer() {
         {isUsingDefaults && !triggersLoading && (
           <p className="text-xs text-slate-400 font-light mb-[10px]"
              style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
-            These are common triggers. You can personalise them in your profile.
+            These are common sound sensitivities. You can personalise them in your profile.
           </p>
         )}
 
@@ -116,7 +116,7 @@ export default function LogFormContainer() {
                 value={customTrigger}
                 onChange={(e) => setCustomTrigger(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
-                placeholder="Type a trigger..."
+                placeholder="Type a sound..."
                 aria-label="Custom trigger name"
                 maxLength={50}
                 autoFocus

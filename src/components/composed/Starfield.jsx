@@ -7,9 +7,7 @@
 
 import { memo, useMemo, useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/hooks';
-
-// Prime-based durations so stars never blink in unison
-const PRIME_DURATIONS = [2.3, 3.7, 5.3, 7.1, 11.3, 13.7];
+import { PRIME_DURATIONS } from '@/lib/constants';
 
 // Star depth layers for parallax (0 = far, 1 = near)
 const DEPTH_LAYERS = [0.2, 0.4, 0.6, 0.8, 1.0];

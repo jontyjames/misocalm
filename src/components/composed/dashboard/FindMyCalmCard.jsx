@@ -20,7 +20,7 @@ export default function FindMyCalmCard() {
           top: '-2rem', bottom: '-2rem', left: '-1.5rem', right: '-1.5rem',
           background: 'radial-gradient(ellipse 90% 140% at center, rgba(139,92,246,0.25) 0%, rgba(99,102,241,0.1) 45%, transparent 70%)',
           filter: 'blur(24px)',
-          animation: 'glow-breathe 8s ease-in-out infinite',
+          animation: 'glow-breathe 7.1s ease-in-out infinite',
         }}
       />
       <button

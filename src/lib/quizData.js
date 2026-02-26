@@ -27,7 +27,7 @@ export const QUIZ_QUESTIONS = [
     question: 'During a meal with someone who eats loudly, your body...',
     options: [
       { label: 'Feels normal', description: 'I can eat and chat without issue', score: 0 },
-      { label: 'Tenses up a bit', description: 'I notice some discomfort but manage', score: 1 },
+      { label: 'Tenses up a bit', description: 'I notice some discomfort but get through it', score: 1 },
       { label: 'Goes into survival mode', description: 'Jaw clenches, chest tightens, I need to escape', score: 2 },
     ],
   },
@@ -46,7 +46,7 @@ export const QUIZ_QUESTIONS = [
     options: [
       { label: 'No, that sounds extreme', description: 'I\'ve never needed to do that', score: 0 },
       { label: 'Once or twice', description: 'In really bad situations, yes', score: 1 },
-      { label: 'This is my life', description: 'I do this regularly. It\'s how I cope', score: 2 },
+      { label: 'This is my life', description: 'I do this regularly. It\'s part of how I navigate my days', score: 2 },
     ],
   },
   {

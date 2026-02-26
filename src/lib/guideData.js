@@ -52,19 +52,19 @@ export const GUIDE_CONTENT = {
       {
         name: '4-7-8 Breathing',
         why: 'Interrupts the fight-or-flight response before it peaks.',
-        how: 'Breathe in through your nose for 4 counts. Hold for 7 counts. Exhale slowly through your mouth for 8 counts. The extended exhale directly activates your vagus nerve, shifting your nervous system from "threat mode" to "safe mode." Practice this 3 times in a row. Use it the moment you notice a trigger, not after the reaction has already built.',
-        when: 'At the first sign of a trigger. The earlier you start, the more effective it is.',
+        how: 'Breathe in through your nose for 4 counts. Hold for 7 counts. Exhale slowly through your mouth for 8 counts. The extended exhale directly activates your vagus nerve, shifting your nervous system from "threat mode" to "safe mode." Practice this 3 times in a row. Use it the moment you notice a difficult sound, not after the response has already built.',
+        when: 'At the first sign of a difficult sound. The earlier you start, the more effective it is.',
       },
       {
-        name: 'Trigger journaling',
+        name: 'Sound pattern journaling',
         why: 'Understanding your patterns reduces the feeling of chaos.',
-        how: 'After a triggering moment, write down: the sound, where you were, who was there, how your body responded, and what you did. Keep it brief. Over time, you\'ll notice patterns: certain people, places, times of day, or stress levels that make triggers worse. This knowledge is power. It turns "why does this keep happening to me?" into "I understand what\'s going on."',
-        when: 'After a triggering event, once you\'ve had a moment to settle.',
+        how: 'After a difficult moment, write down: the sound, where you were, who was there, how your body responded, and what you did. Keep it brief. Over time, you\'ll notice patterns: certain people, places, times of day, or stress levels that make things worse. This knowledge is power. It turns "why does this keep happening to me?" into "I understand what\'s going on."',
+        when: 'After a difficult sound event, once you\'ve had a little space.',
       },
       {
         name: 'The anchor technique',
-        why: 'Gives your brain something to focus on instead of the trigger.',
-        how: 'When you notice a trigger sound, press your thumb and index finger together firmly. Focus all your attention on that physical sensation: the pressure, the warmth, the texture of your skin. Hold for 10 seconds. This gives your brain a competing sensory input, redirecting attention away from the auditory trigger. It\'s subtle enough to use anywhere.',
+        why: 'Gives your brain something to focus on instead of the sound.',
+        how: 'When you notice a difficult sound, press your thumb and index finger together firmly. Focus all your attention on that physical sensation: the pressure, the warmth, the texture of your skin. Hold for 10 seconds. This gives your brain a competing sensory input, redirecting attention away from the difficult sound. It\'s subtle enough to use anywhere.',
         when: 'During meals, meetings, or any situation where you can\'t leave.',
       },
     ],
@@ -77,9 +77,9 @@ export const GUIDE_CONTENT = {
 
   significant: {
     title: 'Your Misophonia Guide',
-    subtitle: 'You\'re not overreacting',
+    subtitle: 'What you feel is completely real',
     accent: 'violet',
-    intro: 'Your responses tell a clear story: misophonia has been shaping your life in significant ways. The planning, the avoidance, the guilt about your own reactions. All of it is real. And none of it means something is wrong with you. Your nervous system is responding to something it perceives as threatening. That response can be worked with.',
+    intro: 'Your responses tell a clear story: misophonia has been shaping your life in significant ways. The planning, the avoidance, the weight you carry after a difficult moment. All of it is real. And none of it means something is wrong with you. Your nervous system is responding to something it perceives as threatening. That response can be worked with.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
       body: 'Your brain\'s threat detection system has become hypersensitive to specific sounds. When you hear a trigger, your amygdala fires an alarm signal before your prefrontal cortex (the reasoning part) can evaluate it. That\'s why you can\'t "just ignore it." The emotional and physical response happens faster than conscious thought. This isn\'t weakness. It\'s neurology. Research from 2024 confirms that around 4.6% of people experience misophonia (Dixon et al.), with many more experiencing significant symptoms. Studies show heightened mirror neuron activity and measurably different brain connectivity patterns in the regions that process sound and emotion. Accumulated stress compounds this: each unprocessed trigger adds to your nervous system\'s load, lowering your threshold over time. Your experience is valid, documented, and shared by millions of people.',
@@ -89,19 +89,19 @@ export const GUIDE_CONTENT = {
         name: 'Physiological sigh',
         why: 'The fastest known way to reset your nervous system. Takes 10 seconds.',
         how: 'Take a double inhale through your nose: one normal breath in, then immediately a second short sharp sniff on top of it (filling your lungs completely). Then exhale slowly through your mouth for as long as you can. One cycle is often enough. The double inhale pops open the tiny air sacs in your lungs (alveoli), maximizing CO2 release on the exhale. This is what your body naturally does when it sighs. You\'re just doing it deliberately.',
-        when: 'The moment you feel the trigger response. This works faster than any other breathing technique.',
+        when: 'The moment you feel the response. This works faster than any other breathing technique.',
       },
       {
-        name: 'Trigger mapping',
+        name: 'Sound mapping',
         why: 'Replaces helplessness with understanding.',
-        how: 'Create a simple map of your triggers. For each one, note: the specific sound, your intensity (1-10), whether it\'s worse from certain people, and what your body does in response. Then note what makes it better or worse: stress, sleep, hunger, time of day. This isn\'t about solving misophonia. It\'s about understanding your landscape so you can navigate it with more confidence and less fear.',
+        how: 'Create a simple map of your sound sensitivities. For each one, note: the specific sound, your intensity (1-10), whether it\'s worse from certain people, and what your body does in response. Then note what makes it better or worse: stress, sleep, hunger, time of day. This isn\'t about solving misophonia. It\'s about understanding your landscape so you can navigate it with more confidence and less fear.',
         when: 'Set aside 15 minutes once. Update it when you notice something new.',
       },
       {
         name: 'Self-compassion reset',
-        why: 'The guilt and shame are often harder than the triggers themselves.',
-        how: 'After a difficult trigger moment, place your hand on your chest and say quietly (or think): "This is hard. Other people feel this too. I\'m doing my best." This isn\'t positive thinking. It\'s acknowledgment. Research on self-compassion shows it reduces the secondary suffering: the guilt about your reaction, the shame about needing to leave, the frustration with yourself. Let yourself off the hook.',
-        when: 'After a trigger event, especially when you feel guilt or frustration with yourself.',
+        why: 'The guilt and shame are often harder than the sounds themselves.',
+        how: 'After a difficult moment, place your hand on your chest and say quietly (or think): "This is hard. Other people feel this too. I\'m doing my best." This isn\'t positive thinking. It\'s acknowledgment. Research on self-compassion shows it reduces the secondary suffering: the guilt about your reaction, the shame about needing to leave, the frustration with yourself. Let yourself off the hook.',
+        when: 'After a difficult moment, especially when you feel guilt or frustration with yourself.',
       },
     ],
     learnMore: [
@@ -116,7 +116,7 @@ export const GUIDE_CONTENT = {
     subtitle: 'You\'ve been carrying this a long time',
     accent: 'violet',
     glow: true,
-    intro: 'You\'ve been living with intense misophonia, likely for most of your life. The systems you\'ve built to cope, the relationships it\'s affected, the loneliness of feeling like no one understands. All of it is real. And the fact that you\'re here, looking for answers, says something about your strength.',
+    intro: 'You\'ve been living with intense misophonia, likely for most of your life. The systems you\'ve built to navigate your days, the relationships it\'s affected, the loneliness of feeling like no one understands. All of it is real. And the fact that you\'re here, looking for answers, says something about your strength.',
     whatsHappening: {
       heading: 'What\'s happening in your brain',
       body: 'Your brain\'s threat detection system has been running in overdrive, possibly for decades. Trigger sounds activate your amygdala with the same intensity as a genuine physical threat. Your body responds accordingly: adrenaline, cortisol, muscle tension, the overwhelming urge to fight or flee. This is not a choice and not a character flaw. Brain imaging studies show that people with severe misophonia have heightened connectivity between the auditory cortex, the anterior insular cortex (which processes emotions), and the amygdala. Your brain literally processes these sounds differently. Research from 2024 (Dixon et al.) suggests around 4.6% of people experience misophonia, and for people at the severe end, there have been only 3 randomized controlled trials ever completed for misophonia, with zero established first-line treatments. That means if you\'ve felt unsupported by the medical system, it\'s not because you haven\'t tried hard enough. It\'s because the system hasn\'t caught up yet. You have been managing this largely without support, and that takes immense resilience.',
@@ -126,7 +126,7 @@ export const GUIDE_CONTENT = {
         name: 'Physiological sigh',
         why: 'The fastest evidence-based reset for acute trigger moments.',
         how: 'Double inhale through your nose: one breath in, then immediately a second short sniff on top. Then a long, slow exhale through your mouth. One cycle can shift your nervous system in under 10 seconds. Practice this when you\'re calm first, so it becomes automatic when you need it. This practice was identified by Stanford neuroscientist Andrew Huberman as the most efficient real-time stress intervention. It works because the double inhale maximizes lung inflation, which maximizes CO2 offloading on the exhale, which directly calms the sympathetic nervous system.',
-        when: 'The instant you feel a trigger. Before the reaction peaks. Practice daily so it becomes muscle memory.',
+        when: 'The instant you feel a sound response. Before it peaks. Practice daily so it becomes muscle memory.',
       },
       {
         name: 'Exit planning',
