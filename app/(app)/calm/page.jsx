@@ -5,10 +5,9 @@
 
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
@@ -46,13 +45,7 @@ const SUPPORT_LEVELS = [
 
 export default function CalmPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
+  useAuthGuard();
 
   const handleSelect = (level) => {
     router.push(`/tools/3?duration=${level.id}`);

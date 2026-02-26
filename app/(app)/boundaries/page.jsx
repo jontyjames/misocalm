@@ -5,11 +5,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
+import { useAuthGuard } from '@/hooks';
 import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
@@ -70,16 +70,10 @@ const boundaryScripts = {
 
 export default function BoundariesPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { loading } = useAuthGuard();
   const [expandedSection, setExpandedSection] = useState('With Family');
   const [expandedScript, setExpandedScript] = useState(null);
   const [copied, setCopied] = useState(null);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
 
   const handleCopy = async (script, id) => {
     await navigator.clipboard.writeText(script);

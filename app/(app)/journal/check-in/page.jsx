@@ -5,13 +5,12 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { AppLayout, BreathworkCheckIn } from '@/components/composed';
 import { Spinner } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
 
 function CheckInContent() {
   const searchParams = useSearchParams();
@@ -22,14 +21,7 @@ function CheckInContent() {
 }
 
 export default function CheckInPage() {
-  const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
+  useAuthGuard();
 
   return (
     <AppLayout showNav={false}>

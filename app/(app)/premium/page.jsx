@@ -5,11 +5,12 @@
 
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, Sparkles, MessageCircle, BarChart3, Timer, Palette, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
+import { useAuthGuard } from '@/hooks';
 import { supabase } from '@/services/supabase';
 import { AppLayout } from '@/components/composed';
 import { Spinner } from '@/components/ui';
@@ -25,18 +26,13 @@ const FEATURES = [
 function PremiumContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  useAuthGuard();
+  const { user } = useAuth();
   const { isPremium, subscription, isLoading } = usePremiumContext();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [manageLoading, setManageLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
   const success = searchParams.get('success') === 'true';
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   const handleCheckout = async () => {
     setCheckoutLoading(true);

@@ -10,14 +10,15 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
-import { useChat } from '@/hooks';
+import { useAuthGuard, useChat } from '@/hooks';
 import { Button, Input, Spinner, PremiumGate } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
 
 export default function ChatPage() {
   const router = useRouter();
-  const { user, profile, isAuthenticated, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuthGuard();
+  const { user, profile } = useAuth();
   const {
     messages,
     loading: chatLoading,
@@ -27,12 +28,6 @@ export default function ChatPage() {
   } = useChat(user?.id);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   // Add initial greeting if no messages loaded
   useEffect(() => {

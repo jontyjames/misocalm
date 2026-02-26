@@ -7,15 +7,12 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { Spinner } from '@/components/ui';
-import { ROUTES } from '@/lib/constants';
 import AssessmentContent from './AssessmentContent';
 
 export default function AssessmentPage() {
-  const router = useRouter();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuthGuard();
 
   if (authLoading) {
     return (
@@ -23,11 +20,6 @@ export default function AssessmentPage() {
         <Spinner size="lg" />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    router.push(ROUTES.HOME);
-    return null;
   }
 
   return (

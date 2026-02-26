@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useUserTriggers } from '@/hooks';
+import { useAuthGuard, useUserTriggers } from '@/hooks';
 import { userTriggerService } from '@/services';
 import { TriggerChips, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
@@ -18,7 +18,8 @@ import { isValidTriggerName } from '@/lib/validators';
 
 export default function EditTriggersPage() {
   const router = useRouter();
-  const { user, isAuthenticated, loading } = useAuth();
+  useAuthGuard();
+  const { user } = useAuth();
   const { triggers: savedTriggers, addCustomTrigger, refresh: refreshTriggers } = useUserTriggers(user?.id);
 
   const [selected, setSelected] = useState([]);
@@ -28,12 +29,6 @@ export default function EditTriggersPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
 
   useEffect(() => {
     if (savedTriggers.length > 0) {

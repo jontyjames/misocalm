@@ -9,14 +9,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Heart, Clock, Sparkles, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useTriggerStats } from '@/hooks';
+import { useAuthGuard, useTriggerStats } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { JournalHistoryList, JournalInsights } from '@/components/composed/journal';
 import { ROUTES } from '@/lib/constants';
 
 export default function JournalPage() {
   const router = useRouter();
-  const { user, isAuthenticated, loading } = useAuth();
+  useAuthGuard();
+  const { user } = useAuth();
   const { stats } = useTriggerStats(user?.id, 7);
   const [view, setView] = useState('hub');
 
@@ -46,12 +47,6 @@ export default function JournalPage() {
       window.history.pushState({ view: newView }, '', '/journal');
     }
   };
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
 
   if (view !== 'hub') {
     return (

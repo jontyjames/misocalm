@@ -5,10 +5,9 @@
 
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ExternalLink, Phone, MessageSquare, Heart, BookOpen, Wind } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { Spinner, PageHeader } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
@@ -54,13 +53,7 @@ function Section({ title, icon: Icon, iconColor = 'text-indigo-400', children })
 
 export default function ResourcesPage() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push(ROUTES.HOME);
-    }
-  }, [isAuthenticated, loading, router]);
+  const { loading } = useAuthGuard();
 
   if (loading) {
     return (
