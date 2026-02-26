@@ -54,6 +54,9 @@ export default function FocusGuide() {
           flashVisible={state.flashVisible}
           flashAngle={state.flashAngle}
           flashCaptured={state.flashCaptured}
+          totalCaptured={state.totalCaptured}
+          phase={state.phase}
+          complete={state.complete}
         />
       )}
 

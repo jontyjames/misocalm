@@ -1,6 +1,6 @@
 /**
  * MiniFocusCanvas
- * Expanding concentric rings (tunnel preview) + center breathing dot.
+ * Sacred geometry shapes expanding from centre (tunnel preview).
  * Focus = cyan (741Hz solfeggio). 120x120 default, no interaction.
  */
 
@@ -9,8 +9,21 @@
 import React, { useEffect } from 'react';
 import useCanvasVisibility from '@/hooks/useCanvasVisibility';
 
-const RING_COUNT = 3; // Tesla's 3
-const TWO_PI = Math.PI * 2;
+const TAU = Math.PI * 2;
+const SHAPE_COUNT = 3;
+
+function strokePolygon(ctx, cx, cy, r, sides, rot, alpha) {
+  if (r < 1) return;
+  ctx.beginPath();
+  for (let i = 0; i <= sides; i++) {
+    const a = rot + (i / sides) * TAU;
+    i === 0 ? ctx.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r)
+            : ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+  }
+  ctx.strokeStyle = `rgba(34,211,238,${alpha})`;
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+}
 
 function MiniFocusCanvas({ size = 120 }) {
   const { containerRef, canvasRef, setRenderCallback, prefersReduced } = useCanvasVisibility();
@@ -28,6 +41,13 @@ function MiniFocusCanvas({ size = 120 }) {
     const cy = size / 2;
     let t = 0;
 
+    // Pre-computed shape configs (sides vary for visual interest)
+    const shapes = [
+      { sides: 5, rotOffset: 0 },
+      { sides: 7, rotOffset: TAU / 3 },
+      { sides: 3, rotOffset: (TAU * 2) / 3 },
+    ];
+
     setRenderCallback(() => {
       ctx.clearRect(0, 0, size, size);
       t += 0.02;
@@ -36,27 +56,24 @@ function MiniFocusCanvas({ size = 120 }) {
       const breathScale = 0.5 + 0.5 * Math.sin(t * 0.6);
       const dotRadius = 3 + breathScale * 3;
       ctx.beginPath();
-      ctx.arc(cx, cy, dotRadius, 0, TWO_PI);
+      ctx.arc(cx, cy, dotRadius, 0, TAU);
       ctx.fillStyle = `rgba(34,211,238,${0.4 + breathScale * 0.4})`;
       ctx.fill();
 
-      // Concentric expanding rings (tunnel effect)
-      for (let i = 0; i < RING_COUNT; i++) {
-        const phase = (t * 0.5 + i * 2.1) % 6.28;
-        const progress = phase / 6.28;
-        const radius = 6 + progress * size * 0.42;
-        const alpha = (1 - progress) * 0.5;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, TWO_PI);
-        ctx.strokeStyle = `rgba(34,211,238,${alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+      // Expanding sacred geometry shapes
+      for (let i = 0; i < SHAPE_COUNT; i++) {
+        const phase = (t * 0.4 + i * 2.1) % TAU;
+        const progress = phase / TAU;
+        const radius = 6 + progress * size * 0.4;
+        const alpha = (1 - progress) * 0.45;
+        const rotation = shapes[i].rotOffset + t * 0.15;
+        strokePolygon(ctx, cx, cy, radius, shapes[i].sides, rotation, alpha);
       }
 
-      // Subtle outer ambient ring
+      // Subtle ambient ring
       const ambientAlpha = 0.04 + Math.sin(t * 0.3) * 0.02;
       ctx.beginPath();
-      ctx.arc(cx, cy, size * 0.45, 0, TWO_PI);
+      ctx.arc(cx, cy, size * 0.45, 0, TAU);
       ctx.strokeStyle = `rgba(34,211,238,${ambientAlpha})`;
       ctx.lineWidth = 0.5;
       ctx.stroke();

@@ -147,9 +147,9 @@ export default function useFocusState() {
     await delay(610);
     setGuide('be still', false);
     await delay(2584);
-    setGuide('the tunnel opens from within', false);
+    setGuide('keep your gaze soft\non the centre', false);
     await delay(2584);
-    setGuide('notice the light when it comes', false);
+    setGuide('tap when you see the light', false);
     await delay(2584);
     setIntroActive(false);
 
