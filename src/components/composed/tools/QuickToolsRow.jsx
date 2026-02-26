@@ -110,8 +110,8 @@ export default function QuickToolsRow() {
 
                 {/* Description — triage text for dysregulated users */}
                 <p
-                  className="text-xs text-slate-300 font-light line-clamp-2 leading-relaxed"
-                  style={{ minHeight: PHI_SCALE[4] }} /* phi-5 (42px) — consistent card height */
+                  className="text-xs text-slate-300 font-light leading-relaxed"
+                  style={{ minHeight: PHI_SCALE[5] }} /* phi-6 (68px) — room for full descriptions */
                 >
                   {tool.description}
                 </p>
