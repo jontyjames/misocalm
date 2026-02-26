@@ -7,7 +7,14 @@
 
 'use client';
 
+import { useRef } from 'react';
+
 export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) {
+  // Freeze content when fading out so it doesn't flash to return-visit text
+  const frozenRef = useRef({ isFirstVisit, visits });
+  if (visible) frozenRef.current = { isFirstVisit, visits };
+  const show = frozenRef.current;
+
   return (
     <div
       style={{
@@ -34,7 +41,7 @@ export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) 
           animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
         }}
       >
-        {isFirstVisit ? 'The stillpoint' : 'Focus'}
+        {show.isFirstVisit ? 'The stillpoint' : 'Focus'}
       </p>
 
       <div
@@ -51,7 +58,7 @@ export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) 
         }}
         className="font-extralight text-slate-400"
       >
-        {isFirstVisit ? (
+        {show.isFirstVisit ? (
           <span className="block">about focus, and what cannot be taken from you</span>
         ) : (
           <>
@@ -61,7 +68,7 @@ export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) 
         )}
       </div>
 
-      {!isFirstVisit && visits > 1 && (
+      {!show.isFirstVisit && show.visits > 1 && (
         <p
           className="text-slate-300/50 text-xs font-light"
           style={{
@@ -70,7 +77,7 @@ export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) 
             animation: 'fadeIn 0.987s ease-out 0.987s forwards',
           }}
         >
-          visit {visits}
+          visit {show.visits}
         </p>
       )}
 
@@ -92,7 +99,7 @@ export default function FocusPrompt({ isFirstVisit, visits, onEnter, visible }) 
         }}
         className="font-extralight hover:bg-indigo-300/10 hover:border-indigo-300/40"
       >
-        {isFirstVisit ? 'Begin' : 'Enter'}
+        {show.isFirstVisit ? 'Begin' : 'Enter'}
       </button>
     </div>
   );

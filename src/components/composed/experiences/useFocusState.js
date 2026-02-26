@@ -216,6 +216,7 @@ export default function useFocusState() {
     await delay(2584);
     setComplete(true);
     await delay(1597);
+    setGuide('');
     setFreePlay(true);
   }, [visits, lastTeaching, setLastTeaching, delay, showFlash, setGuide, setIntroActive]);
 

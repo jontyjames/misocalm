@@ -7,7 +7,14 @@
 
 'use client';
 
+import { useRef } from 'react';
+
 export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
+  // Freeze content when fading out so it doesn't flash to return-visit text
+  const frozenRef = useRef({ isFirstVisit });
+  if (visible) frozenRef.current = { isFirstVisit };
+  const show = frozenRef.current;
+
   return (
     <div
       style={{
@@ -34,7 +41,7 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
           animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
         }}
       >
-        {isFirstVisit ? 'A small practice' : 'Grounding'}
+        {show.isFirstVisit ? 'A small practice' : 'Grounding'}
       </p>
 
       <div
@@ -51,7 +58,7 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
         }}
         className="font-extralight text-slate-400"
       >
-        {isFirstVisit ? (
+        {show.isFirstVisit ? (
           <span className="block">about finding where you are</span>
         ) : (
           <>
@@ -79,7 +86,7 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
         }}
         className="font-extralight hover:bg-indigo-300/10 hover:border-indigo-300/40"
       >
-        {isFirstVisit ? 'Begin' : 'Enter'}
+        {show.isFirstVisit ? 'Begin' : 'Enter'}
       </button>
     </div>
   );
