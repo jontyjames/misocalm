@@ -5,6 +5,8 @@
  * Context-aware via search params:
  *   ?type=check_in        - after a check-in (vs trigger log)
  *   ?from=breathwork       - check-in was post-practice (cycle complete, return to centre)
+ *   ?from=grounding        - check-in was post-grounding experience
+ *   ?from=focus            - check-in was post-focus experience
  *   ?entry={id}            - links deeper processing to original entry
  */
 
@@ -46,7 +48,8 @@ export default function PostLogIntegration() {
   const prefersReduced = useReducedMotion();
   const entryId = searchParams.get('entry');
   const isCheckIn = searchParams.get('type') === 'check_in';
-  const fromBreathwork = searchParams.get('from') === 'breathwork';
+  const from = searchParams.get('from');
+  const fromPractice = ['breathwork', 'grounding', 'focus'].includes(from);
 
   const affirmations = isCheckIn ? CHECK_IN_AFFIRMATIONS : TRIGGER_AFFIRMATIONS;
 
@@ -76,13 +79,13 @@ export default function PostLogIntegration() {
   const deeperParams = new URLSearchParams();
   if (entryId) deeperParams.set('entry', entryId);
   if (isCheckIn) deeperParams.set('type', 'check_in');
-  if (fromBreathwork) deeperParams.set('from', 'breathwork');
+  if (fromPractice) deeperParams.set('from', from);
   const deeperRoute = `${ROUTES.JOURNAL_DEEPER}?${deeperParams.toString()}`;
 
   let paths;
 
-  if (isCheckIn && fromBreathwork) {
-    // Post-breathwork check-in: cycle is complete, return to centre
+  if (isCheckIn && fromPractice) {
+    // Post-practice check-in: cycle is complete, return to centre
     // No "practice again" (that creates a loop)
     paths = [
       {

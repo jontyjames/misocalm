@@ -205,7 +205,7 @@ export default function ImpermanenceGuide() {
       >
         <p
           style={{
-            fontSize: 'clamp(1.05rem, 2.5vw, 1.35rem)',
+            fontSize: 'clamp(1.4rem, 4vw, 2rem)',
             letterSpacing: '0.08em',
             textAlign: 'center',
             opacity: state.guideText ? 1 : 0,
@@ -216,6 +216,7 @@ export default function ImpermanenceGuide() {
             padding: '0 26px',
             whiteSpace: 'pre-line',
             fontFamily: "'Josefin Sans', sans-serif",
+            textShadow: '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)',
           }}
           className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
         >

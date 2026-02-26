@@ -18,6 +18,8 @@ import {
   DEEPER_PROMPTS_TRIGGER,
   DEEPER_PROMPTS_CHECKIN,
   DEEPER_PROMPTS_BREATHWORK,
+  DEEPER_PROMPTS_GROUNDING,
+  DEEPER_PROMPTS_FOCUS,
 } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
 import DeeperClosing from './DeeperClosing';
@@ -26,18 +28,24 @@ const CLOSING_MESSAGES = {
   trigger: 'Thank you for going there',
   check_in: 'Thank you for checking in with yourself',
   breathwork: 'Thank you for staying present',
+  grounding: 'Thank you for coming back to your senses',
+  focus: 'Thank you for holding the centre',
 };
 
 const SUBTITLES = {
   trigger: 'There are no right answers. Write as much or as little as feels right.',
   check_in: 'Just notice what comes up. Nothing to fix.',
   breathwork: 'Let the practice settle. Notice what remains.',
+  grounding: 'Let the grounding settle. Notice what your senses found.',
+  focus: 'Let the stillness settle. Notice what your attention found.',
 };
 
 const PROMPT_POOLS = {
   trigger: DEEPER_PROMPTS_TRIGGER,
   check_in: DEEPER_PROMPTS_CHECKIN,
   breathwork: DEEPER_PROMPTS_BREATHWORK,
+  grounding: DEEPER_PROMPTS_GROUNDING,
+  focus: DEEPER_PROMPTS_FOCUS,
 };
 
 /**
@@ -59,11 +67,13 @@ function selectPrompts(pool) {
   return selected;
 }
 
+const EXPERIENCE_CONTEXTS = ['breathwork', 'grounding', 'focus'];
+
 function getContext(searchParams) {
   const isCheckIn = searchParams.get('type') === 'check_in';
-  const fromBreathwork = searchParams.get('from') === 'breathwork';
+  const from = searchParams.get('from');
 
-  if (isCheckIn && fromBreathwork) return 'breathwork';
+  if (isCheckIn && EXPERIENCE_CONTEXTS.includes(from)) return from;
   if (isCheckIn) return 'check_in';
   return 'trigger';
 }
