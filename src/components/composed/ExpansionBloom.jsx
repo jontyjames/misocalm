@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from '@/hooks';
 
 const SOLFEGGIO_GRADIENTS = {
@@ -19,25 +19,29 @@ export default function ExpansionBloom({ active = false, solfeggio = 'indigo', o
   const prefersReduced = useReducedMotion();
   const [visible, setVisible] = useState(false);
 
+  // Stable ref for onComplete — prevents timer restarts when parent re-renders
+  // (same pattern as BreathingBox.jsx onCycleCompleteRef)
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
+
   useEffect(() => {
     if (!active) return;
-    setVisible(true);
 
+    if (prefersReduced) {
+      const t = setTimeout(() => onCompleteRef.current?.(), 89); // fib-snap
+      return () => clearTimeout(t);
+    }
+
+    setVisible(true);
     const timer = setTimeout(() => {
       setVisible(false);
-      onComplete?.();
+      onCompleteRef.current?.();
     }, 1597); // fib-ceremony
 
     return () => clearTimeout(timer);
-  }, [active, onComplete]);
+  }, [active, prefersReduced]);
 
-  if (!visible || prefersReduced) {
-    // In reduced motion, still fire onComplete
-    if (active && prefersReduced && onComplete) {
-      setTimeout(onComplete, 89); // fib-snap
-    }
-    return null;
-  }
+  if (!visible) return null;
 
   return (
     <div

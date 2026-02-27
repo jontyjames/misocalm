@@ -236,12 +236,11 @@ export default function BreathingPlayer({
         )}
 
         {/* Completed: results + actions */}
-        {completed && (
+        {showCompletion && (
           <div
             className="text-center w-full max-w-xs"
             style={{
-              opacity: showCompletion ? 1 : 0,
-              transition: `opacity ${FIBONACCI_TIMING.sacred}ms ease-out`,
+              animation: `fadeIn ${FIBONACCI_TIMING.sacred}ms ease-out`,
             }}
           >
             <p
