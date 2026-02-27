@@ -79,8 +79,8 @@ export const TOOLS = [
   },
 ];
 
-// Hero experience rotation order (cycles daily, 5 = prime)
-export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence', 'focus'];
+// Hero experience rotation order (cycles daily)
+export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence', 'focus', 'sanctuary'];
 
 // Solfeggio colour per experience — drives Card's solfeggio prop
 export const EXPERIENCE_SOLFEGGIO = {
@@ -89,6 +89,7 @@ export const EXPERIENCE_SOLFEGGIO = {
   pulse: 'indigo',         // 528Hz — transformation, love, heartbeat
   impermanence: 'violet',  // 852Hz — spiritual order, letting go
   focus: 'cyan',           // 741Hz — awakening, clarity, attentional precision
+  sanctuary: 'slate',      // 396Hz — liberation from fear, safety, grounding
 };
 
 // Guided experiences
@@ -127,5 +128,12 @@ export const EXPERIENCES = [
     description: 'Hold the centre. The tunnel opens from within.',
     duration: '~3 min',
     route: ROUTES.EXPERIENCE_FOCUS,
+  },
+  {
+    id: 'sanctuary',
+    title: 'Sanctuary',
+    description: 'Breathe, and watch what your sensitivity builds.',
+    duration: '~4 min',
+    route: ROUTES.EXPERIENCE_SANCTUARY,
   },
 ];

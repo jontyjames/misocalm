@@ -142,6 +142,7 @@ export const ROUTES = {
   EXPERIENCE_PULSE: '/tools/experiences/pulse',
   EXPERIENCE_GROUNDING: '/tools/experiences/grounding',
   EXPERIENCE_FOCUS: '/tools/experiences/focus',
+  EXPERIENCE_SANCTUARY: '/tools/experiences/sanctuary',
 };
 
 // Attribution options (how did you find us)
@@ -281,6 +282,8 @@ export const STORAGE_KEYS = {
   GROUNDING_LAST_TEACHING: 'misocalm_grounding_last_teaching',
   FOCUS_VISITS: 'misocalm_focus_visits',
   FOCUS_LAST_TEACHING: 'misocalm_focus_last_teaching',
+  SANCTUARY_VISITS: 'misocalm_sanctuary_visits',
+  SANCTUARY_LAST_TEACHING: 'misocalm_sanctuary_last_teaching',
 };
 
 // Impermanence experience teachings (5, prime)
@@ -555,6 +558,70 @@ export const DEEPER_PROMPTS_FOCUS = [
   'What would you like to carry from this into the rest of your day?',
 ];
 
+// Sanctuary experience teachings (7, prime — each has 3 lines)
+export const SANCTUARY_TEACHINGS = [
+  {
+    lines: [
+      'this is what your sensitivity looks like',
+      'when it has space',
+      'it builds sanctuaries',
+    ],
+  },
+  {
+    lines: [
+      'you did not need to fight anything',
+      'you only needed to breathe',
+      'and the walls rose to meet you',
+    ],
+  },
+  {
+    lines: [
+      'every breath you took',
+      'was a foundation laid in silence',
+      'this is what you build when no one is watching',
+    ],
+  },
+  {
+    lines: [
+      'the sounds still come',
+      'but here they pass through',
+      'they cannot stay where breath lives',
+    ],
+  },
+  {
+    lines: [
+      'some part of you already knew',
+      'how to find this place',
+      'it was waiting for your breath to lead',
+    ],
+  },
+  {
+    lines: [
+      'you breathe in and the world softens',
+      'you breathe out and it holds',
+      'this is your architecture',
+    ],
+  },
+  {
+    lines: [
+      'you were never too sensitive',
+      'you were always building',
+      'towards this',
+    ],
+  },
+];
+
+// After sanctuary (7 prompts, prime)
+export const DEEPER_PROMPTS_SANCTUARY = [
+  'What did you notice about your breathing during that?',
+  'Is there a place in your body where the stillness lives right now?',
+  'What did it feel like to build something with nothing but breath?',
+  'Was there a moment where the space felt different?',
+  'What would it feel like to carry this sanctuary with you?',
+  'Did your breathing change as the practice deepened?',
+  'What does your sensitivity mean to you right now?',
+];
+
 // Threshold transition text — soft bridge between experience and app (13 total, prime)
 export const THRESHOLD_TEXT = {
   journal: [
@@ -736,4 +803,5 @@ export const DAILY_PRACTICES_ROTATION = [
   { type: 'experience', id: 'pulse',        name: 'Pulse',        label: 'Your Heartbeat',    route: ROUTES.EXPERIENCE_PULSE,        time: '~3 min', accent: 'indigo' },
   { type: 'experience', id: 'impermanence', name: 'Impermanence', label: 'What Remains',      route: ROUTES.EXPERIENCE_IMPERMANENCE, time: '~3 min', accent: 'violet' },
   { type: 'experience', id: 'focus',        name: 'Focus',        label: 'The Stillpoint',    route: ROUTES.EXPERIENCE_FOCUS,        time: '~3 min', accent: 'cyan' },
+  { type: 'experience', id: 'sanctuary',    name: 'Sanctuary',    label: 'Built by Breath',   route: ROUTES.EXPERIENCE_SANCTUARY,    time: '~4 min', accent: 'slate' },
 ];

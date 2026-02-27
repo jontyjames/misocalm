@@ -16,6 +16,7 @@ const SOLFEGGIO_RGBA = {
   cyan: '34,211,238',
   indigo: '99,102,241',
   violet: '139,92,246',
+  slate: '148,163,184',
 };
 
 function pickText(pool) {
