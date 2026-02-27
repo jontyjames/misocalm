@@ -5,21 +5,18 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Wind, Home } from 'lucide-react';
+import { Compass, Home } from 'lucide-react';
 import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
-import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
 import { useReducedMotion } from '@/hooks';
 import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
-export default function DeeperClosing({ message, context }) {
+export default function DeeperClosing({ message }) {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const [closingChars, setClosingChars] = useState(0);
   const [showPaths, setShowPaths] = useState(false);
-
-  const practice = useMemo(() => getBreathworkPractice(), []);
 
   useEffect(() => {
     if (closingChars < message.length) {
@@ -73,32 +70,6 @@ export default function DeeperClosing({ message, context }) {
 
         {showPaths && (
           <div className="space-y-4" style={{ animation: prefersReduced ? 'none' : 'fadeIn 0.377s ease-out' }}>
-            {/* Don't offer breathwork after breathwork (creates a loop) */}
-            {context !== 'breathwork' && (
-              <button
-                onClick={() => router.push(buildPracticeHref(practice))}
-                className={`relative w-full p-5 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
-                style={sacredGlassStyle('cyan')}
-              >
-                <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={GLASS_HIGHLIGHT_STYLE} />
-                <div className="absolute inset-0 pointer-events-none rounded-2xl" style={PHI_LAYERS_STYLE} />
-                <div className="absolute inset-0 pointer-events-none rounded-2xl" style={torusFlowStyle('cyan')} />
-                <div className="relative flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl border border-cyan-500/30 bg-cyan-500/20 flex items-center justify-center shrink-0">
-                    <Wind className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white mb-1" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-                      Breathe
-                    </h3>
-                    <p className="text-sm text-slate-300 font-light">
-                      Go straight into a calming practice
-                    </p>
-                  </div>
-                </div>
-              </button>
-            )}
-
             <button
               onClick={() => router.push(ROUTES.DASHBOARD)}
               className={`relative w-full p-5 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
@@ -117,6 +88,29 @@ export default function DeeperClosing({ message, context }) {
                   </h3>
                   <p className="text-sm text-slate-300 font-light">
                     Head back when you are ready
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => router.push(ROUTES.TOOLS)}
+              className={`relative w-full p-5 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
+              style={sacredGlassStyle('cyan')}
+            >
+              <div className="absolute inset-x-0 top-0 h-[1px] pointer-events-none" style={GLASS_HIGHLIGHT_STYLE} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={PHI_LAYERS_STYLE} />
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={torusFlowStyle('cyan')} />
+              <div className="relative flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl border border-cyan-500/30 bg-cyan-500/20 flex items-center justify-center shrink-0">
+                  <Compass className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white mb-1" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
+                    Return to practices
+                  </h3>
+                  <p className="text-sm text-slate-300 font-light">
+                    Find another practice when you are ready
                   </p>
                 </div>
               </div>

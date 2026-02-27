@@ -150,7 +150,7 @@ export default function DeeperProcessing() {
   };
 
   if (showClosing) {
-    return <DeeperClosing message={closingMessage} context={context} />;
+    return <DeeperClosing message={closingMessage} />;
   }
 
   return (

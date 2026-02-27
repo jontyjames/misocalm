@@ -14,8 +14,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Layers, Wind, Home } from 'lucide-react';
-import { ROUTES } from '@/lib/constants';
+import { Layers, Wind, Home, Compass } from 'lucide-react';
+import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
 import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { useReducedMotion } from '@/hooks';
@@ -66,10 +66,10 @@ export default function PostLogIntegration() {
 
   useEffect(() => {
     if (visibleChars < affirmation.length) {
-      const timer = setTimeout(() => setVisibleChars(v => v + 1), 34);
+      const timer = setTimeout(() => setVisibleChars(v => v + 1), FIBONACCI_TIMING.micro);
       return () => clearTimeout(timer);
     } else {
-      const timer = setTimeout(() => setShowPaths(true), 987);
+      const timer = setTimeout(() => setShowPaths(true), FIBONACCI_TIMING.breathe);
       return () => clearTimeout(timer);
     }
   }, [visibleChars, affirmation.length]);
@@ -86,7 +86,7 @@ export default function PostLogIntegration() {
 
   if (isCheckIn && fromPractice) {
     // Post-practice check-in: cycle is complete, return to centre
-    // No "practice again" (that creates a loop)
+    // 3 paths (prime): home, deeper, or practices
     paths = [
       {
         title: 'Return to sanctuary',
@@ -101,6 +101,13 @@ export default function PostLogIntegration() {
         icon: Layers,
         accent: 'violet',
         onClick: () => router.push(deeperRoute),
+      },
+      {
+        title: 'Return to practices',
+        description: 'Find another practice when you are ready',
+        icon: Compass,
+        accent: 'cyan',
+        onClick: () => router.push(ROUTES.TOOLS),
       },
     ];
   } else if (isCheckIn) {
