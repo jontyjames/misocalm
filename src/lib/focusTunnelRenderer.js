@@ -5,7 +5,7 @@
  * and expand toward the viewer over their lifetime. Sacred geometric cross-sections.
  * Colour depth zones: cyan (back) -> indigo (middle) -> violet (front).
  * Sacred inscriptions appear along tunnel walls when flashes are captured.
- * Max 23 rings (prime). Shape waves change every 5 rings (prime).
+ * Max 17 rings (prime). Shape waves change every 5 rings (prime).
  *
  * No React. Pure utility functions and classes.
  */
@@ -13,7 +13,7 @@
 import { PHI, FIBONACCI_TIMING } from './constants';
 
 const TAU = Math.PI * 2;
-const MAX_RINGS = 23; // prime — denser tunnel for neon wall effect
+const MAX_RINGS = 17; // prime
 
 // Solfeggio colour depth zones
 const ZONE_CYAN   = { r: 34, g: 211, b: 238 }; // back (clarity, light ahead)
@@ -25,8 +25,8 @@ const RING_SIDES = [3, 5, 7];
 // Star point options (prime)
 const STAR_POINTS = [5, 7];
 
-// Tunnel pace — dense enough for neon wall layers to overlap
-const TUNNEL_SPAWN_INTERVAL = FIBONACCI_TIMING.move; // 233ms — ~7-8 rings on screen
+// Tunnel pace — calming rhythm, slightly denser than breathe for neon overlap
+const TUNNEL_SPAWN_INTERVAL = FIBONACCI_TIMING.ease; // 610ms — ~4-5 rings on screen
 
 // 7 sacred inscription mark types (prime count)
 const MARK_TYPES = ['dot', 'circle', 'line', 'angle', 'triangle', 'arc', 'diamond'];
@@ -97,7 +97,7 @@ function createRingDrawFn(waveType, sides) {
 class TunnelRing {
   constructor(index, waveType, waveSides) {
     this.age = 0;
-    this.maxAge = 233; // fib-move frames (~3.9s at 60fps) — faster throughput
+    this.maxAge = 377; // fib-flow frames (~6.3s at 60fps) — calming pace
     this.alive = true;
     this.index = index;
     this.fn = createRingDrawFn(waveType, waveSides);
@@ -114,15 +114,14 @@ class TunnelRing {
     const t = this.age / this.maxAge; // 0=back(far), 1=front(near)
     const r = 6 + t * maxR; // LINEAR expansion — constant speed, no stalling at edges
 
-    // Alpha peaks while ring is on screen (t 0.15–0.4), fades before and after
-    // Ring crosses screen edge at ~t=0.45, so fade out well before maxAge
+    // Alpha: fade in, peak on-screen zone, fade out past screen edge (~t=0.45)
     let alpha;
-    if (t < 0.15) {
-      alpha = 0.1 + (t / 0.15) * 0.3; // 0.1 -> 0.4 (fade in)
+    if (t < 0.1) {
+      alpha = 0.1 + (t / 0.1) * 0.3; // 0.1 -> 0.4 (fade in)
     } else if (t < 0.4) {
       alpha = 0.4; // peak — on-screen tunnel wall zone
     } else {
-      alpha = 0.4 * Math.max(0, 1 - (t - 0.4) / 0.3); // 0.4 -> 0 by t=0.7
+      alpha = 0.4 * Math.max(0, 1 - (t - 0.4) / 0.25); // 0.4 -> 0 by t=0.65
     }
 
     if (alpha < 0.005) return; // skip drawing invisible rings (past screen)
@@ -301,14 +300,14 @@ function advanceWave(state) {
 
 function spawnRing(state) {
   const ring = new TunnelRing(state.ringCounter, state.waveType, state.waveSides);
-  // All rings same maxAge (233) — newer rings can NEVER overtake older ones
+  // All rings same maxAge (377) — newer rings can NEVER overtake older ones
   state.rings.push(ring);
   state.ringCounter++;
 
   // Advance wave every 5 rings (prime)
   if (state.ringCounter % 5 === 0) advanceWave(state);
 
-  // Enforce max 23 rings (prime)
+  // Enforce max 17 rings (prime)
   while (state.rings.length > MAX_RINGS) state.rings.shift();
 }
 
@@ -316,7 +315,7 @@ function spawnInscriptions(state, flashPositionPx, cx, cy, maxR) {
   // Find the closest ring to compute depth
   const nearestRing = state.rings.length > 0 ? state.rings[state.rings.length - 1] : null;
   const birthAge = nearestRing ? nearestRing.age : 0;
-  const ringMaxAge = nearestRing ? nearestRing.maxAge : 233;
+  const ringMaxAge = nearestRing ? nearestRing.maxAge : 377;
 
   // Angle from centre to flash position
   const baseAngle = Math.atan2(flashPositionPx.y - cy, flashPositionPx.x - cx);
