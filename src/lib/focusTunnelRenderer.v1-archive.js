@@ -1,3 +1,6 @@
+// ARCHIVE — pre-neon/surge version. Free play template preserved here.
+// This file is never imported — it's a reference copy only.
+
 /**
  * focusTunnelRenderer.js — pure canvas rendering for the Focus sacred portal tunnel
  *
@@ -48,7 +51,7 @@ function rgba(col, a) {
 
 // ─── Drawing primitives ────────────────────────────────────────────
 
-function strokePoly(ctx, cx, cy, r, sides, rot, colour, alpha, lw) {
+function strokePoly(ctx, cx, cy, r, sides, rot, colour, alpha) {
   if (r < 1) return;
   ctx.beginPath();
   for (let i = 0; i <= sides; i++) {
@@ -57,11 +60,11 @@ function strokePoly(ctx, cx, cy, r, sides, rot, colour, alpha, lw) {
     i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
   }
   ctx.strokeStyle = rgba(colour, alpha);
-  ctx.lineWidth = lw || 1.3;
+  ctx.lineWidth = 1.3;
   ctx.stroke();
 }
 
-function strokeStar(ctx, cx, cy, oR, iR, pts, rot, colour, alpha, lw) {
+function strokeStar(ctx, cx, cy, oR, iR, pts, rot, colour, alpha) {
   if (oR < 1) return;
   ctx.beginPath();
   for (let i = 0; i <= pts * 2; i++) {
@@ -72,13 +75,13 @@ function strokeStar(ctx, cx, cy, oR, iR, pts, rot, colour, alpha, lw) {
   }
   ctx.closePath();
   ctx.strokeStyle = rgba(colour, alpha);
-  ctx.lineWidth = lw || 1.1;
+  ctx.lineWidth = 1.1;
   ctx.stroke();
 }
 
-function strokeNestedPoly(ctx, cx, cy, r, sides, rot, colour, alpha, lw) {
-  strokePoly(ctx, cx, cy, r, sides, rot, colour, alpha, lw);
-  strokePoly(ctx, cx, cy, r / PHI, sides, rot + TAU / (sides * 2), colour, alpha / PHI, lw);
+function strokeNestedPoly(ctx, cx, cy, r, sides, rot, colour, alpha) {
+  strokePoly(ctx, cx, cy, r, sides, rot, colour, alpha);
+  strokePoly(ctx, cx, cy, r / PHI, sides, rot + TAU / (sides * 2), colour, alpha / PHI);
 }
 
 // ─── Tunnel Ring ───────────────────────────────────────────────────
@@ -86,10 +89,10 @@ function strokeNestedPoly(ctx, cx, cy, r, sides, rot, colour, alpha, lw) {
 // Shape wave types: polygon, star, nested polygon (cycle every 5 rings)
 function createRingDrawFn(waveType, sides) {
   switch (waveType) {
-    case 0: return (ctx, cx, cy, r, rot, col, a, lw) => strokePoly(ctx, cx, cy, r, sides, rot, col, a, lw);
-    case 1: return (ctx, cx, cy, r, rot, col, a, lw) => strokeStar(ctx, cx, cy, r, r * 0.5, sides, rot, col, a, lw);
-    case 2: return (ctx, cx, cy, r, rot, col, a, lw) => strokeNestedPoly(ctx, cx, cy, r, sides, rot, col, a, lw);
-    default: return (ctx, cx, cy, r, rot, col, a, lw) => strokePoly(ctx, cx, cy, r, sides, rot, col, a, lw);
+    case 0: return (ctx, cx, cy, r, rot, col, a) => strokePoly(ctx, cx, cy, r, sides, rot, col, a);
+    case 1: return (ctx, cx, cy, r, rot, col, a) => strokeStar(ctx, cx, cy, r, r * 0.5, sides, rot, col, a);
+    case 2: return (ctx, cx, cy, r, rot, col, a) => strokeNestedPoly(ctx, cx, cy, r, sides, rot, col, a);
+    default: return (ctx, cx, cy, r, rot, col, a) => strokePoly(ctx, cx, cy, r, sides, rot, col, a);
   }
 }
 
@@ -99,16 +102,17 @@ class TunnelRing {
     this.maxAge = 377; // fib-flow frames (~6.3s at 60fps)
     this.alive = true;
     this.index = index;
+    this.baseRot = (index * TAU) / (waveSides * PHI); // phi-spiral twist between rings
     this.fn = createRingDrawFn(waveType, waveSides);
     this.sides = waveSides;
   }
 
-  update(surgeMultiplier) {
-    this.age += surgeMultiplier;
+  update() {
+    this.age++;
     if (this.age > this.maxAge) this.alive = false;
   }
 
-  draw(ctx, cx, cy, maxR, globalRot) {
+  draw(ctx, cx, cy, maxR) {
     if (!this.alive) return;
     const t = this.age / this.maxAge; // 0=back(far), 1=front(near)
     const scale = easeOutCubic(t);
@@ -125,14 +129,7 @@ class TunnelRing {
     }
 
     const colour = zoneColour(t);
-
-    // Neon wall glow: three-layer stroke (outer glow, inner glow, core)
-    // Outer glow — the wall (lineWidth 16 / phi-3, very faint)
-    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.03, 16);
-    // Inner glow — the neon (lineWidth 6 / phi-0, soft)
-    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.08, 6);
-    // Core line — the structure (crisp, default lineWidth)
-    this.fn(ctx, cx, cy, r, globalRot, colour, alpha);
+    this.fn(ctx, cx, cy, r, this.baseRot, colour, alpha);
   }
 }
 
@@ -150,8 +147,8 @@ class InscriptionMark {
     this.size = 6 + Math.random() * 4; // phi-0 to phi-1 (6–10px)
   }
 
-  update(surgeMultiplier) {
-    this.life += surgeMultiplier;
+  update() {
+    this.life++;
     if (this.life > this.maxLife) this.alive = false;
   }
 
@@ -239,7 +236,7 @@ class CaptureRipple {
     this.alive = true;
   }
 
-  update(surgeMultiplier) { this.age += surgeMultiplier; if (this.age > 23) this.alive = false; }
+  update() { this.age++; if (this.age > 23) this.alive = false; }
 
   draw(ctx) {
     if (!this.alive) return;
@@ -259,7 +256,7 @@ class CaptureRipple {
 
 class PlayBeam {
   constructor(x, y) { this.x = x; this.y = y; this.age = 0; this.alive = true; }
-  update(surgeMultiplier) { this.age += surgeMultiplier; if (this.age > 23) this.alive = false; }
+  update() { this.age++; if (this.age > 23) this.alive = false; }
   draw(ctx, cx, cy) {
     const a = this.alive ? 0.35 * (1 - this.age / 23) : 0;
     if (a < 0.005) return;
@@ -284,8 +281,6 @@ export function createTunnelState() {
     ringCounter: 0,       // total rings spawned (for wave tracking)
     waveType: 0,          // current shape wave type (0=poly, 1=star, 2=nested)
     waveSides: pick(RING_SIDES),
-    surgeFrames: 0,       // countdown frames for capture surge
-    surgeMultiplier: 1,   // expansion speed multiplier (3 during surge)
   };
 }
 
@@ -340,19 +335,9 @@ export function renderTunnel(ctx, W, H, state, props) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // Global tunnel rotation — one slow revolution, constant pace (not affected by surge)
-  const globalRot = state.time * 0.0003;
-
-  // Surge decay: count down surge frames, reset multiplier when done
-  if (state.surgeFrames > 0) {
-    state.surgeFrames--;
-    state.surgeMultiplier = 3; // prime
-    if (state.surgeFrames === 0) state.surgeMultiplier = 1;
-  }
-
   const { flashVisible, flashPosition, flashCaptured, totalCaptured, complete, playTouch } = props;
 
-  // ── Capture: ring + inscriptions + ripple + surge ──
+  // ── Capture: ring + inscriptions + ripple ──
   if (totalCaptured > state.lastCapturedCount) {
     spawnRing(state);
     // Spawn inscriptions at flash position
@@ -362,8 +347,6 @@ export function renderTunnel(ctx, W, H, state, props) {
       state.ripples.push(new CaptureRipple(fpx.x, fpx.y));
     }
     state.lastCapturedCount = totalCaptured;
-    // Trigger capture surge
-    state.surgeFrames = 89; // fib-snap
   }
 
   // ── Constant auto-spawn — steady tunnel pace ──
@@ -380,31 +363,28 @@ export function renderTunnel(ctx, W, H, state, props) {
     spawnRing(state);
     // Sacred inscriptions continue in free play
     spawnInscriptions(state, { x: playTouch.x, y: playTouch.y }, cx, cy, maxR);
-    // Trigger surge on play touch
-    state.surgeFrames = 89; // fib-snap
   }
 
-  // ── Update + garbage collect (surge multiplier speeds expansion) ──
-  const sm = state.surgeMultiplier;
+  // ── Update + garbage collect ──
   for (let i = state.rings.length - 1; i >= 0; i--) {
-    state.rings[i].update(sm);
+    state.rings[i].update();
     if (!state.rings[i].alive) state.rings.splice(i, 1);
   }
   for (let i = state.inscriptions.length - 1; i >= 0; i--) {
-    state.inscriptions[i].update(sm);
+    state.inscriptions[i].update();
     if (!state.inscriptions[i].alive) state.inscriptions.splice(i, 1);
   }
   for (let i = state.ripples.length - 1; i >= 0; i--) {
-    state.ripples[i].update(sm);
+    state.ripples[i].update();
     if (!state.ripples[i].alive) state.ripples.splice(i, 1);
   }
   for (let i = state.beams.length - 1; i >= 0; i--) {
-    state.beams[i].update(sm);
+    state.beams[i].update();
     if (!state.beams[i].alive) state.beams.splice(i, 1);
   }
 
-  // ── Draw rings (oldest=back first, all share globalRot — no overtaking) ──
-  for (const ring of state.rings) ring.draw(ctx, cx, cy, maxR, globalRot);
+  // ── Draw rings (oldest=back first) ──
+  for (const ring of state.rings) ring.draw(ctx, cx, cy, maxR);
 
   // ── Draw inscriptions ──
   for (const mark of state.inscriptions) mark.draw(ctx, cx, cy, maxR);
