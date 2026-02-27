@@ -144,7 +144,7 @@ class InscriptionMark {
     this.angle = angle; // position around ring circumference
     this.type = markType;
     this.life = 0;
-    this.maxLife = 233; // fib-move frames (~3.8s)
+    this.maxLife = 610; // fib-ease frames (~10s, persists into free play)
     this.alive = true;
     this.size = 6 + Math.random() * 4; // phi-0 to phi-1 (6–10px)
   }
@@ -330,7 +330,8 @@ function spawnInscriptions(state, flashPositionPx, cx, cy, maxR) {
 
 export function renderTunnel(ctx, W, H, state, props) {
   const cx = W / 2, cy = H / 2;
-  const maxR = Math.min(W, H) * 0.55;
+  // Rings must expand past all screen edges (tunnel you travel through)
+  const maxR = Math.max(W, H) * 0.8;
   const now = Date.now();
   state.time += 16;
 
@@ -357,12 +358,14 @@ export function renderTunnel(ctx, W, H, state, props) {
     state.lastAutoSpawn = now;
   }
 
-  // ── Play touch: beam + ripple + ring ──
+  // ── Play touch: beam + ripple + ring + inscriptions ──
   if (playTouch && playTouch.id > state.lastPlayTouchId) {
     state.lastPlayTouchId = playTouch.id;
     state.beams.push(new PlayBeam(playTouch.x, playTouch.y));
     state.ripples.push(new CaptureRipple(playTouch.x, playTouch.y));
     spawnRing(state, true);
+    // Sacred inscriptions continue in free play
+    spawnInscriptions(state, { x: playTouch.x, y: playTouch.y }, cx, cy, maxR);
   }
 
   // ── Update + garbage collect ──

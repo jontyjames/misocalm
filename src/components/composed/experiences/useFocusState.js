@@ -149,8 +149,8 @@ export default function useFocusState() {
     });
   }, []);
 
-  // Hit radius: 68px (phi-6) — generous thumb target
-  const HIT_RADIUS = 68;
+  // Hit radius: 110px (phi-7) — very generous, ensures near-taps still count
+  const HIT_RADIUS = 110;
 
   const processTap = useCallback((tapX, tapY) => {
     if (!resolveFlashRef.current) return false;
