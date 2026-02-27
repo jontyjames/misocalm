@@ -25,13 +25,8 @@ const RING_SIDES = [3, 5, 7];
 // Star point options (prime)
 const STAR_POINTS = [5, 7];
 
-// Phase-responsive spawn intervals (all Fibonacci ms)
-const PHASE_SPAWN = {
-  PROMPT: FIBONACCI_TIMING.sacred, INTRO: FIBONACCI_TIMING.sacred,
-  FIRST_BLOOM: FIBONACCI_TIMING.ceremony, DEEPENING: FIBONACCI_TIMING.breathe,
-  FLOW: FIBONACCI_TIMING.ease, TEACHING: FIBONACCI_TIMING.ceremony,
-  COMPLETE: FIBONACCI_TIMING.ceremony,
-};
+// Constant tunnel pace — steady travelling speed, never fluctuates
+const TUNNEL_SPAWN_INTERVAL = FIBONACCI_TIMING.breathe; // 987ms (~6-7 rings visible)
 
 // 7 sacred inscription mark types (prime count)
 const MARK_TYPES = ['dot', 'circle', 'line', 'angle', 'triangle', 'arc', 'diamond'];
@@ -293,9 +288,9 @@ function advanceWave(state) {
   state.waveSides = pick(state.waveType === 1 ? STAR_POINTS : RING_SIDES);
 }
 
-function spawnRing(state, isCaptured) {
+function spawnRing(state) {
   const ring = new TunnelRing(state.ringCounter, state.waveType, state.waveSides);
-  if (isCaptured) ring.maxAge = 610; // fib-ease frames, captured rings persist longer (~10s)
+  // All rings same maxAge (377) — newer rings can NEVER overtake older ones
   state.rings.push(ring);
   state.ringCounter++;
 
@@ -337,11 +332,11 @@ export function renderTunnel(ctx, W, H, state, props) {
 
   ctx.clearRect(0, 0, W, H);
 
-  const { flashVisible, flashPosition, flashCaptured, totalCaptured, phase, complete, playTouch } = props;
+  const { flashVisible, flashPosition, flashCaptured, totalCaptured, complete, playTouch } = props;
 
   // ── Capture: ring + inscriptions + ripple ──
   if (totalCaptured > state.lastCapturedCount) {
-    spawnRing(state, true);
+    spawnRing(state);
     // Spawn inscriptions at flash position
     if (flashPosition) {
       const fpx = { x: (flashPosition.x / 100) * W, y: (flashPosition.y / 100) * H };
@@ -351,10 +346,9 @@ export function renderTunnel(ctx, W, H, state, props) {
     state.lastCapturedCount = totalCaptured;
   }
 
-  // ── Phase-responsive auto-spawn ──
-  const interval = PHASE_SPAWN[phase] || 1597;
-  if (now - state.lastAutoSpawn > interval && state.rings.length < MAX_RINGS) {
-    spawnRing(state, false);
+  // ── Constant auto-spawn — steady tunnel pace ──
+  if (now - state.lastAutoSpawn > TUNNEL_SPAWN_INTERVAL && state.rings.length < MAX_RINGS) {
+    spawnRing(state);
     state.lastAutoSpawn = now;
   }
 
@@ -363,7 +357,7 @@ export function renderTunnel(ctx, W, H, state, props) {
     state.lastPlayTouchId = playTouch.id;
     state.beams.push(new PlayBeam(playTouch.x, playTouch.y));
     state.ripples.push(new CaptureRipple(playTouch.x, playTouch.y));
-    spawnRing(state, true);
+    spawnRing(state);
     // Sacred inscriptions continue in free play
     spawnInscriptions(state, { x: playTouch.x, y: playTouch.y }, cx, cy, maxR);
   }
