@@ -39,8 +39,25 @@ function pickTeaching(visitIndex, lastIndex) {
   return { teaching: pick.t, index: pick.i };
 }
 
-function randomAngle() {
-  return Math.random() * Math.PI * 2;
+// Generate flash position (x, y) as viewport percentages (15-85% range)
+// Must be at least 25% of viewport diagonal away from centre
+function randomFlashPosition() {
+  const MIN = 15, MAX = 85, CENTRE = 50;
+  const MIN_DIST_PCT = 25; // 25% of diagonal
+  let x, y;
+  for (let tries = 0; tries < 37; tries++) { // prime attempts
+    x = MIN + Math.random() * (MAX - MIN);
+    y = MIN + Math.random() * (MAX - MIN);
+    const dx = x - CENTRE, dy = y - CENTRE;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist >= MIN_DIST_PCT) return { x, y };
+  }
+  // Fallback: push outward from centre
+  const angle = Math.random() * Math.PI * 2;
+  return {
+    x: CENTRE + Math.cos(angle) * MIN_DIST_PCT,
+    y: CENTRE + Math.sin(angle) * MIN_DIST_PCT,
+  };
 }
 
 export default function useFocusState() {
@@ -49,7 +66,7 @@ export default function useFocusState() {
   const [guideBright, setGuideBright] = useState(false);
   const [phase, setPhase] = useState('PROMPT');
   const [flashVisible, setFlashVisible] = useState(false);
-  const [flashAngle, setFlashAngle] = useState(0);
+  const [flashPosition, setFlashPosition] = useState(null); // { x, y } viewport percentages
   const [flashCaptured, setFlashCaptured] = useState(false);
   const [totalCaptured, setTotalCaptured] = useState(0);
   const [totalFlashes, setTotalFlashes] = useState(0);
@@ -65,6 +82,7 @@ export default function useFocusState() {
   const flashTimerRef = useRef(null);
   const captureDelayRef = useRef(null);
   const resolveFlashRef = useRef(null);
+  const flashPositionRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
     [seqTimerRef, guideTimerRef, flashTimerRef, captureDelayRef].forEach(ref => {
@@ -97,8 +115,9 @@ export default function useFocusState() {
   // Show a flash and wait for capture or timeout
   const showFlash = useCallback((windowMs) => {
     return new Promise((resolve) => {
-      const angle = randomAngle();
-      setFlashAngle(angle);
+      const pos = randomFlashPosition();
+      setFlashPosition(pos);
+      flashPositionRef.current = pos;
       setFlashVisible(true);
       setFlashCaptured(false);
       setTotalFlashes(f => f + 1);
@@ -130,12 +149,26 @@ export default function useFocusState() {
     });
   }, []);
 
-  const processTap = useCallback(() => {
-    if (resolveFlashRef.current) {
+  // Hit radius: 68px (phi-6) — generous thumb target
+  const HIT_RADIUS = 68;
+
+  const processTap = useCallback((tapX, tapY) => {
+    if (!resolveFlashRef.current) return false;
+    // If no coordinates provided, skip hit-test (keyboard fallback)
+    if (tapX == null || tapY == null) {
       resolveFlashRef.current();
       return true;
     }
-    return false;
+    // Hit-test: convert flash position percentages to pixels
+    const W = window.innerWidth, H = window.innerHeight;
+    const fx = (flashPositionRef.current?.x ?? 50) / 100 * W;
+    const fy = (flashPositionRef.current?.y ?? 50) / 100 * H;
+    const dx = tapX - fx, dy = tapY - fy;
+    if (Math.sqrt(dx * dx + dy * dy) <= HIT_RADIUS) {
+      resolveFlashRef.current();
+      return true;
+    }
+    return false; // miss — let capture window expire
   }, []);
 
   const runSequence = useCallback(async () => {
@@ -150,7 +183,7 @@ export default function useFocusState() {
     await delay(2584);
     setGuide('keep your gaze soft\non the centre', false);
     await delay(2584);
-    setGuide('tap when you see the light', false);
+    setGuide('tap where the light appears', false);
     await delay(2584);
     setIntroActive(false);
 
@@ -232,7 +265,7 @@ export default function useFocusState() {
     guideText,
     guideBright,
     flashVisible,
-    flashAngle,
+    flashPosition,
     flashCaptured,
     totalCaptured,
     totalFlashes,
