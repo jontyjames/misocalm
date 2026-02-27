@@ -5,7 +5,7 @@
  * and expand toward the viewer over their lifetime. Sacred geometric cross-sections.
  * Colour depth zones: cyan (back) -> indigo (middle) -> violet (front).
  * Sacred inscriptions appear along tunnel walls when flashes are captured.
- * Max 13 rings (prime). Shape waves change every 5 rings (prime).
+ * Max 23 rings (prime). Shape waves change every 5 rings (prime).
  *
  * No React. Pure utility functions and classes.
  */
@@ -13,7 +13,7 @@
 import { PHI, FIBONACCI_TIMING } from './constants';
 
 const TAU = Math.PI * 2;
-const MAX_RINGS = 13; // prime
+const MAX_RINGS = 23; // prime — denser tunnel for neon wall effect
 
 // Solfeggio colour depth zones
 const ZONE_CYAN   = { r: 34, g: 211, b: 238 }; // back (clarity, light ahead)
@@ -25,8 +25,8 @@ const RING_SIDES = [3, 5, 7];
 // Star point options (prime)
 const STAR_POINTS = [5, 7];
 
-// Constant tunnel pace — steady travelling speed, never fluctuates
-const TUNNEL_SPAWN_INTERVAL = FIBONACCI_TIMING.breathe; // 987ms (~6-7 rings visible)
+// Tunnel pace — dense enough for neon wall layers to overlap
+const TUNNEL_SPAWN_INTERVAL = FIBONACCI_TIMING.move; // 233ms — ~7-8 rings on screen
 
 // 7 sacred inscription mark types (prime count)
 const MARK_TYPES = ['dot', 'circle', 'line', 'angle', 'triangle', 'arc', 'diamond'];
@@ -36,9 +36,10 @@ function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
 // Get depth-zone colour based on expansion progress t (0=back, 1=front)
+// Zones compressed so all 3 colours are visible on screen (rings exit at ~t=0.45)
 function zoneColour(t) {
-  if (t < 0.33) return ZONE_CYAN;
-  if (t < 0.66) return ZONE_INDIGO;
+  if (t < 0.15) return ZONE_CYAN;
+  if (t < 0.35) return ZONE_INDIGO;
   return ZONE_VIOLET;
 }
 
@@ -96,7 +97,7 @@ function createRingDrawFn(waveType, sides) {
 class TunnelRing {
   constructor(index, waveType, waveSides) {
     this.age = 0;
-    this.maxAge = 377; // fib-flow frames (~6.3s at 60fps)
+    this.maxAge = 233; // fib-move frames (~3.9s at 60fps) — faster throughput
     this.alive = true;
     this.index = index;
     this.fn = createRingDrawFn(waveType, waveSides);
@@ -111,26 +112,28 @@ class TunnelRing {
   draw(ctx, cx, cy, maxR, globalRot) {
     if (!this.alive) return;
     const t = this.age / this.maxAge; // 0=back(far), 1=front(near)
-    const scale = easeOutCubic(t);
-    const r = 6 + scale * maxR; // 6px at back (phi-1), maxR at front
+    const r = 6 + t * maxR; // LINEAR expansion — constant speed, no stalling at edges
 
-    // Opacity: faint at back (0.1), brightest at middle (~0.4), fade at front (0.1)
+    // Alpha peaks while ring is on screen (t 0.15–0.4), fades before and after
+    // Ring crosses screen edge at ~t=0.45, so fade out well before maxAge
     let alpha;
-    if (t < 0.33) {
-      alpha = 0.1 + (t / 0.33) * 0.3; // 0.1 -> 0.4
-    } else if (t < 0.66) {
-      alpha = 0.4; // peak
+    if (t < 0.15) {
+      alpha = 0.1 + (t / 0.15) * 0.3; // 0.1 -> 0.4 (fade in)
+    } else if (t < 0.4) {
+      alpha = 0.4; // peak — on-screen tunnel wall zone
     } else {
-      alpha = 0.4 - ((t - 0.66) / 0.34) * 0.3; // 0.4 -> 0.1
+      alpha = 0.4 * Math.max(0, 1 - (t - 0.4) / 0.3); // 0.4 -> 0 by t=0.7
     }
+
+    if (alpha < 0.005) return; // skip drawing invisible rings (past screen)
 
     const colour = zoneColour(t);
 
     // Neon wall glow: three-layer stroke (outer glow, inner glow, core)
-    // Outer glow — the wall (lineWidth 16 / phi-3, very faint)
-    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.03, 16);
-    // Inner glow — the neon (lineWidth 6 / phi-0, soft)
-    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.08, 6);
+    // Outer glow — the wall (lineWidth 16 / phi-3)
+    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.08, 16);
+    // Inner glow — the neon (lineWidth 6 / phi-0)
+    this.fn(ctx, cx, cy, r, globalRot, colour, alpha * 0.2, 6);
     // Core line — the structure (crisp, default lineWidth)
     this.fn(ctx, cx, cy, r, globalRot, colour, alpha);
   }
@@ -298,14 +301,14 @@ function advanceWave(state) {
 
 function spawnRing(state) {
   const ring = new TunnelRing(state.ringCounter, state.waveType, state.waveSides);
-  // All rings same maxAge (377) — newer rings can NEVER overtake older ones
+  // All rings same maxAge (233) — newer rings can NEVER overtake older ones
   state.rings.push(ring);
   state.ringCounter++;
 
   // Advance wave every 5 rings (prime)
   if (state.ringCounter % 5 === 0) advanceWave(state);
 
-  // Enforce max 13 rings (prime)
+  // Enforce max 23 rings (prime)
   while (state.rings.length > MAX_RINGS) state.rings.shift();
 }
 
@@ -313,7 +316,7 @@ function spawnInscriptions(state, flashPositionPx, cx, cy, maxR) {
   // Find the closest ring to compute depth
   const nearestRing = state.rings.length > 0 ? state.rings[state.rings.length - 1] : null;
   const birthAge = nearestRing ? nearestRing.age : 0;
-  const ringMaxAge = nearestRing ? nearestRing.maxAge : 377;
+  const ringMaxAge = nearestRing ? nearestRing.maxAge : 233;
 
   // Angle from centre to flash position
   const baseAngle = Math.atan2(flashPositionPx.y - cy, flashPositionPx.x - cx);
@@ -333,8 +336,8 @@ function spawnInscriptions(state, flashPositionPx, cx, cy, maxR) {
 
 export function renderTunnel(ctx, W, H, state, props) {
   const cx = W / 2, cy = H / 2;
-  // Rings must expand past all screen edges (tunnel you travel through)
-  const maxR = Math.max(W, H) * 0.8;
+  // Rings expand well past screen edges — no lingering at periphery
+  const maxR = Math.max(W, H) * 1.2;
   const now = Date.now();
   state.time += 16;
 
