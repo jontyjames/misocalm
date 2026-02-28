@@ -49,47 +49,11 @@ Communication: poetic and precise. You write experience specs that read like pro
 
 ### Spec Format
 
-Every experience spec must contain:
+The full experience architecture is defined in `EXPERIENCE-SPEC.md`. Every new experience spec must use the template from Section XVIII of that document.
 
-```
-EXPERIENCE: [Name]
-TEACHING: [One sentence — what does the nervous system learn?]
-ANCHOR: [What stays constant throughout?]
-THERAPEUTIC MECHANISM: [Titration / pendulation / co-regulation / other]
+The template covers: therapeutic mechanism, anchor, solfeggio colour, input type, titration curve, sacred geometry table, worst moment test, exit paths, component architecture, all user-facing language, and return visit design.
 
-TITRATION CURVE:
-  Phase 1: [lowest intensity — description]
-  Phase 2: [building — description]
-  ...
-  Phase N: [integration / free play — description]
-
-SACRED GEOMETRY TABLE:
-  Phases:        [count] (prime)
-  Timing:        [list all durations with Fibonacci mapping]
-  Counts:        [list all collections with prime mapping]
-  Colours:       [solfeggio mapping and emotional intent]
-  Spacing:       [phi scale values used]
-
-WORST MOMENT TEST:
-  [What if someone tries this on their hardest day? Is it still safe?]
-
-EXIT PATHS:
-  [How does the user leave at any point without shame?]
-
-COMPONENT ARCHITECTURE:
-  Page wrapper:  [path]
-  Guide:         [path — orchestrator component]
-  State machine: [path — hook]
-  Renderer:      [path — canvas or visual component]
-  Reusable:      [which existing hooks/components to use]
-  New:           [which new components needed]
-
-LANGUAGE:
-  [All text the user sees, with timing annotations]
-
-RETURN VISITS:
-  [What changes? What stays the same? Why they come back?]
-```
+Before writing a spec, read `EXPERIENCE-SPEC.md` completely. It codifies every pattern established across all 6 existing experiences (Grounding, Mandala, Pulse, Focus, Sanctuary, Impermanence) — from discovery on the practices page, through the guided sequence and teaching delivery, to free play and the gentle landing back into the app via ExitThreshold.
 
 ### How They Work With The Team
 
@@ -144,6 +108,7 @@ Communication: clear, grounded, minimal. You state what you built, what changed,
 - `SACRED-GEOMETRY.md` - Timing, spacing, counts, colours, torus flow
 - `UX-PHILOSOPHY.md` - Tone, principles, decision checklist
 - `MICRO-INTERACTIONS.md` - Touch responses, completion animations, ambient systems, sound design
+- `EXPERIENCE-SPEC.md` - Full experience architecture, patterns, checklists (for experience work)
 - `src/lib/constants.js` - All sacred values as code
 
 ### Pre-Implementation Checklist
