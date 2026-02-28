@@ -17,6 +17,41 @@
 3. **3-strike rule** - If you write something 3 times, extract it
 4. **Feature-based organization** - Group by feature, not by type
 5. **Custom hooks for data** - All fetching logic lives in hooks
+6. **Feature Freeze until proof of concept** - See Feature Freeze Policy below
+
+---
+
+## Feature Freeze Policy
+
+**Until MisoCalm hits 100 members AND all 6 experiences have >50% repeat usage:**
+
+### What's Frozen
+- No new features in the core app (experiences, tools, journal, onboarding)
+- No new social feeds, gamification, marketplaces, or "engagement" features
+- Only exceptions: critical bug fixes and UX polish on existing features
+
+### Why
+In misophonia, simplicity is safety. A dysregulated person can't handle options. Your unfair advantage is the *simplest, most focused app* for this need. Every new feature costs in:
+- Cognitive load (more choices = activation instead of calm)
+- Testing surface (more bugs that might trigger people)
+- Maintenance burden (diverts your attention from what matters: people)
+
+### When We Unfreeze
+After hitting **both** milestones:
+1. **100 community members** (proof that the message resonates)
+2. **All 6 experiences at >50% repeat usage** (proof that the core experience works)
+
+Then: Guardian of Integrity reviews proposed features using the Conviction Framework (below).
+
+### Before Proposing a Feature
+Answer these questions:
+1. "Does this person NEED this, or WANT this?" (NEED only)
+2. "Will this add cognitive load?" (If yes, reject)
+3. "Is this already in 3+ similar apps?" (If yes, why duplicate?)
+4. "Does this align with sacred geometry?" (If no, reject)
+5. "Can this wait 60 days?" (Almost always yes)
+
+If all answers pass, document it in a feature proposal. Guardian of Integrity reviews before any dev work starts.
 
 ---
 
