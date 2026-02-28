@@ -95,7 +95,7 @@ export default function FocusGuide() {
           onClick={handleLeave}
           aria-label="Leave experience"
           style={{
-            position: 'fixed', top: 'clamp(16px, 3vh, 26px)', left: 16, zIndex: 8,
+            position: 'fixed', top: 'calc(env(safe-area-inset-top, 0px) + clamp(16px, 3vh, 26px))', left: 16, zIndex: 8,
             opacity: 0, animation: 'fadeIn 0.610s ease-out 0.377s forwards',
           }}
           className="flex items-center gap-1 py-4 px-4 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-300/60 transition-colors"

@@ -92,7 +92,7 @@ export default function SanctuaryGuide() {
           aria-label="Leave experience"
           style={{
             position: 'fixed',
-            top: 'clamp(16px, 3vh, 26px)',
+            top: 'calc(env(safe-area-inset-top, 0px) + clamp(16px, 3vh, 26px))',
             left: 16,
             zIndex: 8,
             padding: '16px 16px',

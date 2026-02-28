@@ -181,7 +181,7 @@ export default function ImpermanenceGuide() {
           aria-label="Leave experience"
           style={{
             position: 'fixed',
-            top: 'clamp(16px, 3vh, 26px)',
+            top: 'calc(env(safe-area-inset-top, 0px) + clamp(16px, 3vh, 26px))',
             left: 16,
             zIndex: 8,
             opacity: 0,

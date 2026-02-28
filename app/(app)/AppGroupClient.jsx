@@ -46,7 +46,7 @@ export default function AppGroupClient({ children }) {
       {/* Page content — padding transitions with nav to avoid layout snap */}
       <main
         id="main-content"
-        className={`relative ${reducedMotion ? '' : 'transition-[padding] duration-[233ms] ease-out'}`}
+        className={`relative safe-area-top ${reducedMotion ? '' : 'transition-[padding] duration-[233ms] ease-out'}`}
         style={{ paddingBottom: showNav ? '5rem' : 0 }}
       >
         <ErrorBoundary>
