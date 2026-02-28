@@ -29,6 +29,7 @@ const ACCENT_STYLES = {
   indigo: { bg: 'bg-indigo-500/15', border: 'border-indigo-500/20', text: 'text-indigo-400', rgba: 'rgba(99,102,241,' },
   violet: { bg: 'bg-violet-500/15', border: 'border-violet-500/20', text: 'text-violet-400', rgba: 'rgba(139,92,246,' },
   cyan:   { bg: 'bg-cyan-500/15',   border: 'border-cyan-500/20',   text: 'text-cyan-400',   rgba: 'rgba(34,211,238,' },
+  slate:  { bg: 'bg-slate-500/15',  border: 'border-slate-500/20',  text: 'text-slate-400',  rgba: 'rgba(148,163,184,' },
 };
 
 function getDailyMessage() {
