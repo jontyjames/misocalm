@@ -115,7 +115,7 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <BetaInstallBanner />
-      <div className="flex flex-col px-6 py-8 overflow-hidden" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 5rem)' }}>
+      <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
         <DashboardHeader profileName={profile?.name} />
 
         {/* Content — vertically centred */}

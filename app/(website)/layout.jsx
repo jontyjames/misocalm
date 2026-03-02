@@ -13,7 +13,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function WebsiteLayout({ children }) {
   return (
-    <div className="min-h-screen w-full bg-void-black relative overflow-hidden flex flex-col">
+    <div className="min-h-screen w-full bg-void-black relative flex flex-col">
       <Starfield />
 
       <WebsiteHeader />

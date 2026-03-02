@@ -30,10 +30,12 @@ function CosmicErrorFallback({ error, reset }) {
 
 export default function CosmicLayout({ children }) {
   return (
-    <div className="min-h-screen w-full bg-void-black relative overflow-hidden">
-      {/* Nebula glow effects */}
-      <div className="absolute top-0 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-indigo pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-cyan pointer-events-none" />
+    <div className="min-h-screen w-full bg-void-black relative">
+      {/* Nebula glow effects — own overflow container so they don't cause scrollbar */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-indigo" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-nebula-cyan" />
+      </div>
 
       <Starfield />
 
