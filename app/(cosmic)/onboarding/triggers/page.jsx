@@ -5,13 +5,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ProgressDots } from '@/components/ui';
 import { OnboardingTriggerSelector } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 2;
@@ -21,6 +22,10 @@ export default function TriggersPage() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'triggers', step_number: 2 });
+  }, []);
 
   const handleComplete = (selected) => {
     const existingData = JSON.parse(

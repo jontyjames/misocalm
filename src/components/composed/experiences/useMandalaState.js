@@ -11,6 +11,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, MANDALA_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 // Symmetry progressions by visit (all primes)
 const SYMMETRY_BY_VISIT = [
@@ -46,6 +47,7 @@ export default function useMandalaState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.MANDALA_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
   const touchCountRef = useRef(0);
   const waitingForTouchRef = useRef(false);
   const resolveTouchRef = useRef(null);
@@ -174,10 +176,13 @@ export default function useMandalaState() {
     setSymmetry(progression[progression.length - 1]);
     setGuide('play as long as you like');
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'mandala', experience_name: 'Mandala', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setFreePlay(true);
   }, [visits, lastTeaching, setLastTeaching, delay, waitForTouches, setGuide]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'mandala', experience_name: 'Mandala' });
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);

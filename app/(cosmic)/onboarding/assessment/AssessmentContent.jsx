@@ -5,13 +5,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion } from '@/hooks';
 import { ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 import { SACRED_GLASS_STATIC_CLASSES, sacredGlassStaticStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE } from '@/lib/sacredGlass';
 
 const TOTAL_ONBOARDING_STEPS = 6;
@@ -55,6 +56,12 @@ export default function AssessmentContent() {
   const [saving, setSaving] = useState(false);
 
   const isRetake = searchParams.get('from') === 'profile';
+
+  useEffect(() => {
+    if (!isRetake) {
+      track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'assessment', step_number: 5 });
+    }
+  }, [isRetake]);
 
   const handleSelect = async (value) => {
     setSelected(value);

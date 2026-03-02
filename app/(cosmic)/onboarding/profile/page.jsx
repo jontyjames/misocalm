@@ -5,13 +5,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion } from '@/hooks';
 import { Button, Input, ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 3;
@@ -27,6 +28,10 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'profile', step_number: 3 });
+  }, []);
 
   const validate = () => {
     const newErrors = {};

@@ -16,6 +16,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, SANCTUARY_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 // Breath detection thresholds (tuned for low-frequency breath)
 const BREATH_IN_THRESHOLD = 0.08;
@@ -55,6 +56,7 @@ export default function useSanctuaryState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.SANCTUARY_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
 
   // Breath detection refs
   const waitingForBreathRef = useRef(false);
@@ -235,6 +237,7 @@ export default function useSanctuaryState() {
     setLastTeaching(teachingIndex);
     setGuide('your sanctuary stands', true);
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'sanctuary', experience_name: 'Sanctuary', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setComplete(true);
     await delay(1597);
     setGuide('');
@@ -250,6 +253,8 @@ export default function useSanctuaryState() {
   }, [visits, lastTeaching, setLastTeaching, delay, doBreath, setGuide]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'sanctuary', experience_name: 'Sanctuary' });
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);

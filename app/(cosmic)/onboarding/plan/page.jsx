@@ -13,6 +13,7 @@ import { userTriggerService } from '@/services';
 import { Button, Spinner, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 import { GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
 const TOTAL_ONBOARDING_STEPS = 6;
@@ -27,6 +28,10 @@ export default function PlanPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'plan', step_number: 6 });
+  }, []);
 
   // Reveal content after letter animation finishes
   useEffect(() => {
@@ -99,6 +104,8 @@ export default function PlanPage() {
           console.warn('Trigger save error:', triggerErr);
         }
       }
+
+      track(EVENTS.ONBOARDING_COMPLETED, {});
 
       // Clear localStorage
       localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);

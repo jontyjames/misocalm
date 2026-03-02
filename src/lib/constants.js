@@ -10,6 +10,8 @@ export const DEBOUNCE_DELAY = 233; // Fibonacci: fib-move
 // Admin access
 export const ADMIN_EMAILS = [
   'jonty@thrivingwithmisophonia.com',
+  'jonty_ch@hotmail.com',
+  'jontycoats@gmail.com',
 ];
 
 // Top 10 most commonly reported triggers (based on misophonia research)

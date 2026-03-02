@@ -12,6 +12,7 @@ import { useReducedMotion } from '@/hooks';
 import { Button, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
 import { ROUTES, STORAGE_KEYS, FIBONACCI_TIMING } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 4;
@@ -28,6 +29,10 @@ export default function VerifyPage() {
   const [resent, setResent] = useState(false);
   const [localError, setLocalError] = useState(null);
   const inputRefs = useRef([]);
+
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'verify', step_number: 4 });
+  }, []);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem(STORAGE_KEYS.PENDING_EMAIL);

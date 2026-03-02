@@ -12,6 +12,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, GROUNDING_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const SENSES = [
   { id: 'see',   label: 'sight', count: 5, color: 'rgb(129,140,248)' },  // indigo-400
@@ -62,6 +63,7 @@ export default function useGroundingState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.GROUNDING_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
   const waitingForTapsRef = useRef(false);
   const tapCountRef = useRef(0);
   const resolveTapsRef = useRef(null);
@@ -259,10 +261,13 @@ export default function useGroundingState() {
     setLastTeaching(teachingIndex);
     setGuide('you brought yourself back', true, TIERS.SLOW);
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'grounding', experience_name: 'Grounding', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setComplete(true);
   }, [visits, lastTeaching, setLastTeaching, delay, waitForTaps, setGuide, setIntroActive]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'grounding', experience_name: 'Grounding' });
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);

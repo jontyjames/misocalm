@@ -13,6 +13,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, FOCUS_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 // Flash capture window by visit tier (ms, all Fibonacci)
 const CAPTURE_WINDOWS = {
@@ -77,6 +78,7 @@ export default function useFocusState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.FOCUS_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
   const seqTimerRef = useRef(null);
   const guideTimerRef = useRef(null);
   const flashTimerRef = useRef(null);
@@ -247,6 +249,7 @@ export default function useFocusState() {
     setLastTeaching(teachingIndex);
     setGuide('the centre held you', true);
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'focus', experience_name: 'Focus', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setComplete(true);
     await delay(1597);
     setGuide('');
@@ -254,6 +257,8 @@ export default function useFocusState() {
   }, [visits, lastTeaching, setLastTeaching, delay, showFlash, setGuide, setIntroActive]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'focus', experience_name: 'Focus' });
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);

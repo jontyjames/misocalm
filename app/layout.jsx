@@ -5,6 +5,7 @@ import { PremiumProvider } from '@/context/PremiumContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { NavProvider } from '@/context/NavContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import AnalyticsTracker from '@/components/AnalyticsTracker'
 
 const josefinSans = Josefin_Sans({
   subsets: ['latin'],
@@ -132,6 +133,7 @@ export default function RootLayout({ children }) {
             <PremiumProvider>
               <NavProvider>
                 <ErrorBoundary>
+                  <AnalyticsTracker />
                   {children}
                 </ErrorBoundary>
               </NavProvider>

@@ -13,6 +13,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, IMPERMANENCE_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const LOUD_THRESHOLD = 0.06;
 const SILENCE_THRESHOLD = 0.025;
@@ -37,6 +38,7 @@ export default function useImpermanenceState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.IMPERMANENCE_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
 
   // Sound detection state (frame-based, matching original)
   const waitingForSoundRef = useRef(false);
@@ -184,11 +186,14 @@ export default function useImpermanenceState() {
     setLastTeaching(teachingIndex);
     setGuide('play as long as you like');
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'impermanence', experience_name: 'Impermanence', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setFreePlay(true);
     waitingForSoundRef.current = true; // enable continuous sound detection
   }, [visits, lastTeaching, setLastTeaching, delay, listenForSound, setGuide]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'impermanence', experience_name: 'Impermanence' });
     setVisits((v) => v + 1);
     setStarted(true);
     // Start sequence after prompt screen fades

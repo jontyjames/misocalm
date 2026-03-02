@@ -8,6 +8,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { auth, db } from '@/services/supabase';
+import { identify, clearUserId as analyticsReset, track, EVENTS } from '@/lib/analytics';
 
 // Separate contexts for different concerns
 const AuthStateContext = createContext(null);
@@ -44,6 +45,7 @@ export function AuthProvider({ children }) {
 
         if (session?.user) {
           setUser(session.user);
+          identify(session.user.id);
           const userProfile = await fetchProfile(session.user.id);
           setProfile(userProfile);
         }
@@ -61,9 +63,13 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
+        identify(session.user.id);
+        track(EVENTS.LOGIN, { method: 'otp' });
         const userProfile = await fetchProfile(session.user.id);
         setProfile(userProfile);
       } else if (event === 'SIGNED_OUT') {
+        track(EVENTS.LOGOUT);
+        analyticsReset();
         setUser(null);
         setProfile(null);
       }

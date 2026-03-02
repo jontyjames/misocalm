@@ -5,13 +5,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { Button, ProgressDots } from '@/components/ui';
 import { BreathingCircle, BreathingAura } from '@/components/composed';
 import { ROUTES } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const TOTAL_ONBOARDING_STEPS = 6;
 const CURRENT_STEP = 1;
@@ -27,6 +28,10 @@ export default function FirstPracticePage() {
   const [feedbackMessage, setFeedbackMessage] = useState(null);
   const [breathPhase, setBreathPhase] = useState('GET_READY');
   const [breathScale, setBreathScale] = useState(1);
+
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'first-practice', step_number: 1 });
+  }, []);
 
   const handlePhaseChange = (phase, scale) => {
     setBreathPhase(phase);

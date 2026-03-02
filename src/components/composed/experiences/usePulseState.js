@@ -11,6 +11,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, PULSE_TEACHINGS } from '@/lib/constants';
+import { track, EVENTS } from '@/lib/analytics';
 
 const TAP_BUFFER_SIZE = 13; // prime
 const LOCK_THRESHOLD = 0.7;
@@ -60,6 +61,7 @@ export default function usePulseState() {
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.PULSE_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
+  const analyticsStartRef = useRef(null);
   const tapTimestamps = useRef([]);
   const tapCountRef = useRef(0);
   const waitingForTapsRef = useRef(false);
@@ -235,10 +237,13 @@ export default function usePulseState() {
     clearHaptic();
     setGuide('play as long as you like');
     await delay(2584);
+    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'pulse', experience_name: 'Pulse', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setFreePlay(true);
   }, [visits, lastTeaching, isFirstVisit, setLastTeaching, delay, waitForTaps, setGuide, startHapticSync, clearHaptic]);
 
   const enter = useCallback(() => {
+    analyticsStartRef.current = Date.now();
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'pulse', experience_name: 'Pulse' });
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);

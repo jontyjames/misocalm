@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button, Card, Badge } from '@/components/ui';
 import { ROUTES, ADMIN_EMAILS } from '@/lib/constants';
 import { RefreshCw, CheckCircle, XCircle, AlertCircle, Database, User, Key } from 'lucide-react';
+import AnalyticsDashboard from './AnalyticsDashboard';
 
 export default function DebugPage() {
   const router = useRouter();
@@ -264,6 +265,9 @@ export default function DebugPage() {
             </div>
           </div>
         </Card>
+
+        {/* Analytics Dashboard */}
+        <AnalyticsDashboard />
 
         {/* Environment Info */}
         <Card>
