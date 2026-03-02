@@ -71,6 +71,22 @@ async function getOverview(searchParams) {
     .select('id', { count: 'exact' })
     .gte('last_active_at', since);
 
+  // Traffic sources (UTM breakdown)
+  const { data: utmSessions } = await supabase
+    .from('analytics_sessions')
+    .select('utm_source, utm_medium, utm_campaign')
+    .gte('started_at', since)
+    .not('utm_source', 'is', null);
+
+  const sources = {};
+  (utmSessions || []).forEach(({ utm_source, utm_medium, utm_campaign }) => {
+    const key = utm_source || 'direct';
+    if (!sources[key]) sources[key] = { count: 0, mediums: {}, campaigns: {} };
+    sources[key].count++;
+    if (utm_medium) sources[key].mediums[utm_medium] = (sources[key].mediums[utm_medium] || 0) + 1;
+    if (utm_campaign) sources[key].campaigns[utm_campaign] = (sources[key].campaigns[utm_campaign] || 0) + 1;
+  });
+
   return {
     period_hours: hours,
     since,
@@ -79,6 +95,7 @@ async function getOverview(searchParams) {
     unique_visitors: uniqueAnons.size,
     active_sessions: sessionCount || 0,
     event_counts: eventCounts,
+    traffic_sources: sources,
   };
 }
 

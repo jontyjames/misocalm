@@ -78,6 +78,30 @@ function OverviewTab() {
         <StatCard icon={<Clock className="w-4 h-4 text-amber-400" />} label="Sessions" value={data.active_sessions} />
       </div>
 
+      {/* Traffic sources */}
+      {data.traffic_sources && Object.keys(data.traffic_sources).length > 0 && (
+        <div>
+          <h3 className="text-sm text-slate-400 font-light mb-3">Traffic sources</h3>
+          <div className="space-y-1.5">
+            {Object.entries(data.traffic_sources)
+              .sort(([, a], [, b]) => b.count - a.count)
+              .map(([source, info]) => (
+                <div key={source} className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-800/50">
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs text-cyan-300">{source}</code>
+                    {Object.keys(info.mediums).length > 0 && (
+                      <span className="text-xs text-slate-500">
+                        ({Object.entries(info.mediums).map(([m, c]) => `${m}: ${c}`).join(', ')})
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-sm text-white font-light">{info.count}</span>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
       {/* Event breakdown */}
       <div>
         <h3 className="text-sm text-slate-400 font-light mb-3">Events by type</h3>
@@ -310,6 +334,7 @@ function SessionsTab() {
           <thead>
             <tr className="text-slate-500 text-left">
               <th className="pb-2 font-light">Visitor</th>
+              <th className="pb-2 font-light">Source</th>
               <th className="pb-2 font-light">Device</th>
               <th className="pb-2 font-light">Entry</th>
               <th className="pb-2 font-light">Duration</th>
@@ -322,6 +347,13 @@ function SessionsTab() {
                 <td className="py-2">
                   <span className="font-mono text-white">{s.anonymous_id?.slice(0, 8)}</span>
                   {s.user_id && <Badge color="emerald" size="sm" className="ml-1">auth</Badge>}
+                </td>
+                <td className="py-2">
+                  {s.utm_source ? (
+                    <span className="text-cyan-300">{s.utm_source}{s.utm_medium ? ` / ${s.utm_medium}` : ''}</span>
+                  ) : (
+                    <span className="text-slate-600">direct</span>
+                  )}
                 </td>
                 <td className="py-2 text-slate-400">{s.device_type || '-'}</td>
                 <td className="py-2 text-slate-400 max-w-32 truncate">{s.entry_page || '-'}</td>

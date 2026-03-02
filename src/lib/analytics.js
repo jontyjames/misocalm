@@ -64,8 +64,11 @@ const MAX_BATCH_SIZE = 100;
 
 const STORAGE_KEY_ANON_ID = 'mc_anon_id';
 const STORAGE_KEY_SESSION = 'mc_session';
+const STORAGE_KEY_UTM = 'mc_utm';
 const IDB_NAME = 'mc_analytics';
 const IDB_STORE = 'pending_events';
+
+const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -83,6 +86,54 @@ function getDeviceType() {
   if (/tablet|ipad/i.test(ua)) return 'tablet';
   if (/mobile|iphone|android/i.test(ua) && !/tablet/i.test(ua)) return 'mobile';
   return 'desktop';
+}
+
+/**
+ * Parse UTM parameters from URL and persist for the session.
+ * Only captures on first visit (landing page), so the original source is preserved
+ * even as the user navigates to pages without UTM params.
+ */
+function captureUtm() {
+  if (!IS_BROWSER) return null;
+
+  // If we already captured UTMs this session, return them
+  const stored = sessionStorage.getItem(STORAGE_KEY_UTM);
+  if (stored) {
+    try { return JSON.parse(stored); } catch { /* re-capture */ }
+  }
+
+  // Parse from current URL
+  const params = new URLSearchParams(window.location.search);
+  const utm = {};
+  let hasAny = false;
+
+  for (const key of UTM_PARAMS) {
+    const val = params.get(key);
+    if (val) {
+      utm[key] = val.slice(0, 200); // cap length
+      hasAny = true;
+    }
+  }
+
+  if (hasAny) {
+    sessionStorage.setItem(STORAGE_KEY_UTM, JSON.stringify(utm));
+    return utm;
+  }
+
+  // Also check referrer for organic source detection
+  const ref = document.referrer;
+  if (ref) {
+    try {
+      const host = new URL(ref).hostname;
+      if (host && !host.includes('misocalm')) {
+        const organic = { utm_source: host, utm_medium: 'referral' };
+        sessionStorage.setItem(STORAGE_KEY_UTM, JSON.stringify(organic));
+        return organic;
+      }
+    } catch { /* invalid referrer */ }
+  }
+
+  return null;
 }
 
 // ─── IndexedDB helpers (offline fallback) ───────────────────
@@ -166,6 +217,9 @@ class Analytics {
     // Session management
     this._initSession();
 
+    // Capture UTM params from landing URL
+    this.utm = captureUtm();
+
     // Periodic flush
     this._flushTimer = setInterval(() => this.flush(), FLUSH_INTERVAL_MS);
 
@@ -240,6 +294,12 @@ class Analytics {
       device_type: getDeviceType(),
       entry_page: IS_BROWSER ? window.location.pathname : null,
       referrer: IS_BROWSER ? document.referrer || null : null,
+      // UTM tracking
+      utm_source: this.utm?.utm_source || null,
+      utm_medium: this.utm?.utm_medium || null,
+      utm_campaign: this.utm?.utm_campaign || null,
+      utm_term: this.utm?.utm_term || null,
+      utm_content: this.utm?.utm_content || null,
     };
   }
 

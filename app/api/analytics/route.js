@@ -123,6 +123,8 @@ export async function POST(request) {
 
     // ── Upsert session ────────────────────────────────────
     if (session && typeof session.id === 'string') {
+      const str = (v, max = 200) => typeof v === 'string' ? v.slice(0, max) : null;
+
       const sessionData = {
         id: session.id,
         anonymous_id: session.anonymous_id || validEvents[0]?.anonymous_id,
@@ -130,9 +132,15 @@ export async function POST(request) {
         started_at: session.started_at || new Date().toISOString(),
         last_active_at: session.last_active_at || new Date().toISOString(),
         duration_ms: typeof session.duration_ms === 'number' ? session.duration_ms : 0,
-        device_type: typeof session.device_type === 'string' ? session.device_type.slice(0, 20) : null,
-        entry_page: typeof session.entry_page === 'string' ? session.entry_page.slice(0, 500) : null,
-        referrer: typeof session.referrer === 'string' ? session.referrer.slice(0, 500) : null,
+        device_type: str(session.device_type, 20),
+        entry_page: str(session.entry_page, 500),
+        referrer: str(session.referrer, 500),
+        // UTM tracking
+        utm_source: str(session.utm_source),
+        utm_medium: str(session.utm_medium),
+        utm_campaign: str(session.utm_campaign),
+        utm_term: str(session.utm_term),
+        utm_content: str(session.utm_content),
       };
 
       const { error: sessionError } = await supabase
