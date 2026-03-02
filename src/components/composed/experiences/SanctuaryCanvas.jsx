@@ -170,6 +170,7 @@ export default function SanctuaryCanvas({ breathCount, breathPhase, audioLevel =
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) { rafRef.current = requestAnimationFrame(render); return; }
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
@@ -227,7 +228,7 @@ export default function SanctuaryCanvas({ breathCount, breathPhase, audioLevel =
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       dprRef.current = dpr;
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;

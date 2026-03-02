@@ -153,7 +153,7 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
   const lastPointerRef = useRef({ x: 0, y: 0, time: 0 });
   const lastFormTimeRef = useRef(0);
 
-  const handlePointerDown = useCallback((e) => {
+  const spawnForm = useCallback((clientX, clientY) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -163,8 +163,8 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     lastFormTimeRef.current = now;
 
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     const dpr = dprRef.current;
     const cx = canvas.width / dpr / 2;
     const cy = canvas.height / dpr / 2;
@@ -187,10 +187,23 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     onTouch?.({ x, y, speed });
   }, [onTouch]);
 
+  const handlePointerDown = useCallback((e) => {
+    // Skip if this is a touch event (handled by onTouchStart)
+    if (e.pointerType === 'touch') return;
+    spawnForm(e.clientX, e.clientY);
+  }, [spawnForm]);
+
+  const handleTouchStart = useCallback((e) => {
+    e.preventDefault(); // Prevent iOS scroll/zoom
+    const touch = e.touches[0];
+    if (touch) spawnForm(touch.clientX, touch.clientY);
+  }, [spawnForm]);
+
   const render = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) { rafRef.current = requestAnimationFrame(render); return; }
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
@@ -224,7 +237,7 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       dprRef.current = dpr;
       const displayW = window.innerWidth;
       const displayH = window.innerHeight;
@@ -253,6 +266,8 @@ export default function MandalaCanvas({ symmetry = 5, showYouDot = false, custom
       ref={canvasRef}
       className="mandala-canvas"
       onPointerDown={handlePointerDown}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchStart}
       style={{ position: 'fixed', inset: 0, zIndex: 0, touchAction: 'none', cursor: 'crosshair' }}
     />
   );

@@ -201,6 +201,7 @@ export default function SoundCanvas({ audioLevel = 0, pitch = 0.5, customColor =
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) { rafRef.current = requestAnimationFrame(render); return; }
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
@@ -257,7 +258,7 @@ export default function SoundCanvas({ audioLevel = 0, pitch = 0.5, customColor =
     if (!canvas) return;
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       dprRef.current = dpr;
       const displayW = window.innerWidth;
       const displayH = window.innerHeight;

@@ -139,15 +139,15 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
   propsRef.current = { rhythmData, customColor };
   const pointerRef = useRef({ downTime: 0, x: 0, y: 0 });
 
-  const handlePointerDown = useCallback((e) => {
-    pointerRef.current = { downTime: Date.now(), x: e.clientX, y: e.clientY };
+  const registerTapDown = useCallback((clientX, clientY) => {
+    pointerRef.current = { downTime: Date.now(), x: clientX, y: clientY };
   }, []);
 
-  const handlePointerUp = useCallback((e) => {
+  const registerTapUp = useCallback((clientX, clientY) => {
     const { downTime, x, y } = pointerRef.current;
     const elapsed = Date.now() - downTime;
-    const dx = e.clientX - x;
-    const dy = e.clientY - y;
+    const dx = clientX - x;
+    const dy = clientY - y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
     // Valid tap: quick + minimal movement
@@ -176,10 +176,33 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     onTap?.();
   }, [onTap]);
 
+  const handlePointerDown = useCallback((e) => {
+    if (e.pointerType === 'touch') return;
+    registerTapDown(e.clientX, e.clientY);
+  }, [registerTapDown]);
+
+  const handlePointerUp = useCallback((e) => {
+    if (e.pointerType === 'touch') return;
+    registerTapUp(e.clientX, e.clientY);
+  }, [registerTapUp]);
+
+  const handleTouchStart = useCallback((e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    if (touch) registerTapDown(touch.clientX, touch.clientY);
+  }, [registerTapDown]);
+
+  const handleTouchEnd = useCallback((e) => {
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    if (touch) registerTapUp(touch.clientX, touch.clientY);
+  }, [registerTapUp]);
+
   const render = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) { rafRef.current = requestAnimationFrame(render); return; }
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
@@ -235,7 +258,7 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       dprRef.current = dpr;
       const displayW = window.innerWidth;
       const displayH = window.innerHeight;
@@ -265,6 +288,8 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
       className="pulse-canvas"
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{ position: 'fixed', inset: 0, zIndex: 0, touchAction: 'none', cursor: 'pointer' }}
     />
   );

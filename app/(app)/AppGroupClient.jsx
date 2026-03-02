@@ -38,10 +38,12 @@ export default function AppGroupClient({ children }) {
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, [pathname, setShowNav]);
 
+  const immersive = isImmersiveRoute(pathname);
+
   return (
     <div className="min-h-screen bg-void-black relative overflow-x-hidden w-full sm:max-w-md sm:mx-auto">
-      {/* Starfield persists across all pages in this group (includes nebula glows) */}
-      <Starfield />
+      {/* Starfield hidden on immersive routes — experiences own their full canvas */}
+      {!immersive && <Starfield />}
 
       {/* Page content — padding transitions with nav to avoid layout snap */}
       <main
