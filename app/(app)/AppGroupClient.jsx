@@ -41,7 +41,7 @@ export default function AppGroupClient({ children }) {
   const immersive = isImmersiveRoute(pathname);
 
   return (
-    <div className="min-h-screen bg-void-black relative overflow-x-hidden w-full sm:max-w-md sm:mx-auto">
+    <div className="min-h-screen bg-void-black relative overflow-x-clip w-full sm:max-w-md sm:mx-auto">
       {/* Starfield hidden on immersive routes — experiences own their full canvas */}
       {!immersive && <Starfield />}
 

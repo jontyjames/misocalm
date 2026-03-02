@@ -58,7 +58,7 @@ export default function FocusGuide() {
   }, [state.clearSeqTimer]);
 
   return (
-    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {/* Canvas */}
       {state.started && (
         <FocusCanvas

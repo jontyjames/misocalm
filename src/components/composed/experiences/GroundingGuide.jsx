@@ -118,7 +118,7 @@ export default function GroundingGuide() {
   const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
 
   return (
-    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && composition && (
         <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}

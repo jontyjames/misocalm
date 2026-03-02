@@ -74,7 +74,7 @@ export default function JournalPage() {
 
   return (
     <AppLayout>
-      <div className="relative flex flex-col px-6 py-8 overflow-hidden" style={{ height: 'calc(100dvh - 5rem)', animation: 'fadeIn 0.61s ease-out' }}>
+      <div className="relative flex flex-col px-6 py-8 overflow-clip" style={{ height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))', animation: 'fadeIn 0.61s ease-out' }}>
         {/* Header */}
         <div className="flex items-center" style={{ minHeight: '36px' }}>
           <h1

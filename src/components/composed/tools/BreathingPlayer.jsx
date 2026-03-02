@@ -76,7 +76,7 @@ export default function BreathingPlayer({
   const showPrePractice = !isActive && !completed;
 
   return (
-    <div className="flex-1 relative overflow-hidden">
+    <div className="flex-1 relative overflow-clip">
       <ExpansionBloom active={showBloom} solfeggio="cyan" onComplete={handleBloomComplete} />
 
       {/* Breathing visual -- slightly above vertical centre, never moves */}
@@ -152,7 +152,7 @@ export default function BreathingPlayer({
       {/* Bottom zone -- pinned to bottom, same position for all states */}
       <div
         className="absolute left-0 right-0 bottom-0 z-10 flex flex-col items-center"
-        style={{ paddingBottom: PHI_SCALE[4], paddingLeft: PHI_SCALE[3], paddingRight: PHI_SCALE[3] }}
+        style={{ paddingBottom: `calc(${PHI_SCALE[4]}px + env(safe-area-inset-bottom, 0px))`, paddingLeft: PHI_SCALE[3], paddingRight: PHI_SCALE[3] }}
       >
         {/* Rounds + dots -- visible pre-practice and active, hidden on complete */}
         {!completed && (

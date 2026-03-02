@@ -27,7 +27,7 @@ export default function BreathworkCheckIn({ userId, fromBreathwork = false }) {
 
   return (
     <div
-      className="min-h-screen flex flex-col px-6 py-8"
+      className="min-h-screen flex flex-col px-6 py-8 safe-area-bottom"
       style={{ animation: prefersReduced ? 'none' : 'fadeIn 1.597s ease-out' }}
     >
       {/* Back */}

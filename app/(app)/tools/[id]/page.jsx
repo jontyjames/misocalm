@@ -138,7 +138,7 @@ export default function ToolPage() {
     if (timerPhase === 'playing') {
       return (
         <AppLayout showNav={false}>
-          <div className="fixed inset-0 overflow-hidden flex flex-col">
+          <div className="fixed inset-0 overflow-clip flex flex-col">
             <TimerPlayer
               tool={tool}
               config={{ ...timerConfig, skipCountdown: true }}

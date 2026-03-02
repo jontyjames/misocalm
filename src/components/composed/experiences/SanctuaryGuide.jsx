@@ -72,7 +72,7 @@ export default function SanctuaryGuide() {
   const handleKeepBreathing = useCallback(() => setPlaying(true), []);
 
   return (
-    <div style={{ background: '#030712', minHeight: '100dvh', overflow: 'hidden' }}>
+    <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && (
         <SanctuaryCanvas breathCount={state.breathCount} breathPhase={state.phase} audioLevel={bandsRef.current.low} />
       )}
