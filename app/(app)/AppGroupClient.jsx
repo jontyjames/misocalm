@@ -45,10 +45,13 @@ export default function AppGroupClient({ children }) {
       {/* Starfield hidden on immersive routes — experiences own their full canvas */}
       {!immersive && <Starfield />}
 
-      {/* Page content — padding transitions with nav to avoid layout snap */}
+      {/* Page content — padding transitions with nav to avoid layout snap.
+          IMPORTANT: No transition on immersive routes — iOS Safari treats ANY
+          transition as a containing block creator, which breaks position:fixed
+          on canvas elements inside this <main>. */}
       <main
         id="main-content"
-        className={`relative safe-area-top ${reducedMotion ? '' : 'transition-[padding] duration-[233ms] ease-out'}`}
+        className={`relative safe-area-top ${!immersive && !reducedMotion ? 'transition-[padding] duration-[233ms] ease-out' : ''}`}
         style={{ paddingBottom: showNav ? '5rem' : 0 }}
       >
         <ErrorBoundary>
