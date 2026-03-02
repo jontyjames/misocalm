@@ -135,7 +135,7 @@ export default memo(function Navigation() {
 
       {/* Context-aware aura glow beneath nav */}
       <div
-        className="fixed z-[49] left-1/2 -translate-x-1/2 pointer-events-none"
+        className="fixed z-[49] inset-x-0 mx-auto pointer-events-none"
         style={{
           bottom: 0,
           width: '80%',
@@ -149,7 +149,7 @@ export default memo(function Navigation() {
 
       {/* Floating pill navigation */}
       <nav
-        className="fixed z-50 left-1/2 -translate-x-1/2 safe-area-bottom"
+        className="fixed z-50 inset-x-0 flex justify-center safe-area-bottom"
         style={{ bottom: 26 }}
         aria-label="Main navigation"
       >
