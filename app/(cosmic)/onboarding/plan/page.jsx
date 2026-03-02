@@ -33,9 +33,9 @@ export default function PlanPage() {
     track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'plan', step_number: 6 });
   }, []);
 
-  // Reveal content after letter animation finishes
+  // Reveal content after letter animation finishes (~1.6s) + pause
   useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 2584);
+    const timer = setTimeout(() => setShowContent(true), 3194);
     return () => clearTimeout(timer);
   }, []);
 
@@ -165,13 +165,12 @@ export default function PlanPage() {
         </div>
 
         {/* Everything below fades in together after letter animation */}
+          <div className={`transition-opacity duration-[1597ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
 
-          {/* Logo — always visible */}
+          {/* Logo */}
           <div className="mb-10 flex justify-center">
             <Logo size="xl" />
           </div>
-
-          <div className={`transition-opacity duration-[1597ms] ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
           {/* Header */}
           <h1
             className="text-[2rem] text-white mb-3"
