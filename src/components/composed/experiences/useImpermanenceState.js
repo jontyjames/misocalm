@@ -144,14 +144,18 @@ export default function useImpermanenceState() {
     setGuide('your body is already here');
     await delay(2584);
     setGuide('breathe out');
+    await delay(1597); // fib-ceremony — time to read and start exhaling
+    setGuideText('breathe out\n3');
     await delay(987);
-    setGuideText('three');
+    setGuideText('breathe out\n2');
     await delay(987);
-    setGuideText('two');
+    setGuideText('breathe out\n1');
     await delay(987);
-    setGuideText('one');
+    setGuideText('breathe out\n0');
     await delay(610);
     setGuide('breathe in');
+    await delay(4181); // fib — calm, unhurried inhale
+    setGuide('now just breathe normally');
     await delay(2584);
     setGuide('');
     await delay(987);

@@ -184,14 +184,18 @@ export default function useGroundingState() {
     setGuide('your body is already here', false, TIERS.SLOW);
     await delay(2584);
     setGuide('breathe out', false, TIERS.SLOW);
+    await delay(1597); // fib-ceremony — time to read and start exhaling
+    setGuideText('breathe out\n3');
     await delay(987);
-    setGuideText('three');
+    setGuideText('breathe out\n2');
     await delay(987);
-    setGuideText('two');
+    setGuideText('breathe out\n1');
     await delay(987);
-    setGuideText('one');
+    setGuideText('breathe out\n0');
     await delay(610);
     setGuide('breathe in', false, TIERS.SLOW);
+    await delay(4181); // fib — calm, unhurried inhale
+    setGuide('now just breathe normally', false, TIERS.SLOW);
     await delay(2584);
     setGuide('', false, TIERS.SLOW);
     await delay(987);

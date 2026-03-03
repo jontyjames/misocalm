@@ -341,13 +341,15 @@ The universal moment of settling. Every experience includes the same breath thre
 ```
 "your body is already here"     — truism (pace: undeniable, directs attention inward)
 "breathe out"                   — instruction (pace: exhale first prepares the lungs)
-"three"                         — countdown (987ms each, instant text swap — no blanking gap)
-"two"
-"one"
-"breathe in"                    — lead (no timer — they choose the depth)
+"breathe out\n3"                — countdown below instruction (987ms each, instant text swap)
+"breathe out\n2"
+"breathe out\n1"
+"breathe out\n0"                — zero included: completion, not absence
+"breathe in"                    — lead (no timer — 4181ms, they choose the depth)
+"now just breathe normally"     — reorientation (returns body to its own rhythm)
 ```
 
-The three-count exhale followed by an untimed inhale teaches the body that it gets to choose. The countdown uses `setGuideText` directly (bypassing the standard blanking gap) so the numbers flow as a continuous rhythm.
+The "breathe out" instruction stays visible throughout the countdown, with the number appearing below it on a new line (`\n`). This keeps the instruction grounded — the user always knows what they're doing. The countdown uses `setGuideText` directly (bypassing the 377ms blanking gap) so the numbers flow as a continuous rhythm. The 4-step countdown (3, 2, 1, 0) uses 4 steps — the zero provides a moment of completion rather than ending abruptly at "1". After the unhurried inhale, "now just breathe normally" returns the body to its own rhythm before the experience begins.
 
 ### Timing
 
@@ -355,14 +357,16 @@ The three-count exhale followed by an untimed inhale teaches the body that it ge
 |------|-------|-----------|-------|
 | Initial settling gap | 610ms | fib-ease | Canvas visible, body arriving |
 | "your body is already here" hold | 2584ms | fib-sacred | Full integration |
-| "breathe out" hold | 987ms | fib-breathe | Start exhaling |
-| "three" hold | 987ms | fib-breathe | Countdown |
-| "two" hold | 987ms | fib-breathe | Countdown |
-| "one" hold | 610ms | fib-ease | Short pause after exhale |
-| "breathe in" hold | 2584ms | fib-sacred | Space for deep inhale |
+| "breathe out" hold (pre-countdown) | 1597ms | fib-ceremony | Time to read and start exhaling |
+| "breathe out\n3" hold | 987ms | fib-breathe | Countdown |
+| "breathe out\n2" hold | 987ms | fib-breathe | Countdown |
+| "breathe out\n1" hold | 987ms | fib-breathe | Countdown |
+| "breathe out\n0" hold | 610ms | fib-ease | Completion pause |
+| "breathe in" hold | 4181ms | fib | Calm, unhurried inhale |
+| "now just breathe normally" hold | 2584ms | fib-sacred | Reorientation |
 | Clearing gap | 987ms | fib-breathe | Settling silence |
 
-Total from sequence start: ~10,336ms.
+Total from sequence start: ~16,114ms (~16s). The longer duration compared to v1 is intentional — the body needs this time.
 
 ### Implementation
 
@@ -374,27 +378,32 @@ await delay(610);
 setGuide('your body is already here');
 await delay(2584);
 setGuide('breathe out');
+await delay(1597); // fib-ceremony — time to read and start exhaling
+setGuideText('breathe out\n3');
 await delay(987);
-setGuideText('three');   // direct — no blanking gap
+setGuideText('breathe out\n2');
 await delay(987);
-setGuideText('two');
+setGuideText('breathe out\n1');
 await delay(987);
-setGuideText('one');
+setGuideText('breathe out\n0');
 await delay(610);
 setGuide('breathe in');
+await delay(4181); // fib — calm, unhurried inhale
+setGuide('now just breathe normally');
 await delay(2584);
 setGuide('');
 await delay(987);
 ```
 
-For experiences without a formal Intro phase (Impermanence, Pulse, Mandala), the breath flows directly into the first guided phase. For experiences with an Intro (Grounding, Focus, Sanctuary), the breath precedes the letter-by-letter GroundingIntro.
+For experiences without a formal Intro phase (Impermanence, Pulse, Mandala), the breath flows directly into the first guided phase. For experiences with an Intro (Grounding, Focus, Sanctuary), the breath precedes the letter-by-letter intro sequence.
 
 ### Language Analysis
 
 - **"your body is already here"**: Truism. The body IS there. "Already" presupposes the body knows what to do.
-- **"breathe out"**: Direct, simple. Exhale-first activates parasympathetic response and empties the lungs for a deeper inhale.
-- **"three... two... one..."**: Countdown provides structure without pressure. 3 steps = prime count.
-- **"breathe in"**: No timer, no count. After the structured exhale, the inhale is permission to take as much as you need.
+- **"breathe out"**: Direct, simple. Exhale-first activates parasympathetic response and empties the lungs for a deeper inhale. Stays visible throughout the countdown as an anchor.
+- **"3... 2... 1... 0"**: Countdown provides structure without pressure. 4 steps (counting to zero, not from zero). Numbers appear below "breathe out" using `\n`, keeping the instruction visible.
+- **"breathe in"**: No timer, no count. 4181ms (Fibonacci) gives space for a calm, unhurried inhale.
+- **"now just breathe normally"**: Reorientation. "Just" is permissive — no performance required. Returns the body to its own rhythm before the experience asks anything of it.
 
 ### References
 
