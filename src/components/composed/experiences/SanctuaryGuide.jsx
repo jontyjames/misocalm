@@ -1,18 +1,18 @@
 /**
  * SanctuaryGuide — orchestrates the full Sanctuary experience
  *
- * Breath-reactive generative sacred geometry. Hands-free: just breathe.
- * Microphone detects breath (low-frequency band), each cycle adds
- * sacred geometry to build a sanctuary landscape.
+ * Slide-reactive generative sacred geometry. Slide up to inhale, down to exhale.
+ * Each cycle adds sacred geometry to build a sanctuary landscape.
  * Solfeggio: slate (396Hz — Liberation from Fear).
+ * No microphone, no permissions. Full user control.
  */
 
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import { useMicrophone, useReducedMotion } from '@/hooks';
+import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
 import SanctuaryCanvas from './SanctuaryCanvas';
 import SanctuaryComplete from './SanctuaryComplete';
@@ -24,64 +24,173 @@ import useSanctuaryState from './useSanctuaryState';
 const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
 const GUIDE_TRANSITION = { in: '0.987s', out: '0.610s' };
 
+function normalizeY(clientY) {
+  return Math.max(0, Math.min(1, clientY / window.innerHeight));
+}
+
 export default function SanctuaryGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const mic = useMicrophone();
   const state = useSanctuaryState();
   const [playing, setPlaying] = useState(false);
   const [exitTransition, setExitTransition] = useState(null);
-  const rafRef = useRef(null);
-  const bandsRef = useRef(mic.bands);
-  bandsRef.current = mic.bands;
+  const touchActiveRef = useRef(false);
 
-  // Feed low-frequency band to breath detector every frame (ref avoids RAF teardown)
-  useEffect(() => {
-    if (!mic.isListening || !state.started) return;
-    const tick = () => {
-      state.processBreathFrame(bandsRef.current.low);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [mic.isListening, state.started, state.processBreathFrame]);
-
-  const handleEnter = useCallback(async () => {
-    const success = await mic.startListening();
-    if (success) state.enter();
-  }, [mic, state]);
+  const handleEnter = useCallback(() => {
+    state.enter();
+  }, [state]);
 
   const handleLeave = useCallback(() => {
-    mic.stopListening();
     state.clearSeqTimer();
     router.push(ROUTES.TOOLS);
-  }, [mic, state.clearSeqTimer, router]);
+  }, [state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
-    mic.stopListening();
     state.clearSeqTimer();
     setExitTransition({ destination: ROUTES.DASHBOARD, solfeggio: 'slate' });
-  }, [mic, state.clearSeqTimer]);
+  }, [state.clearSeqTimer]);
 
   const handleJournal = useCallback(() => {
-    mic.stopListening();
     state.clearSeqTimer();
     setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=sanctuary`, solfeggio: 'slate' });
-  }, [mic, state.clearSeqTimer]);
+  }, [state.clearSeqTimer]);
 
   const handleKeepBreathing = useCallback(() => setPlaying(true), []);
+
+  // --- Touch/pointer handlers (dual-handler pattern from MandalaCanvas) ---
+
+  const handleSlideMove = useCallback((clientY) => {
+    state.processSlide(normalizeY(clientY));
+  }, [state.processSlide]);
+
+  const handlePointerDown = useCallback((e) => {
+    if (e.pointerType === 'touch') return; // handled by onTouchStart
+    touchActiveRef.current = true;
+    state.startTouch();
+    handleSlideMove(e.clientY);
+  }, [state.startTouch, handleSlideMove]);
+
+  const handlePointerMove = useCallback((e) => {
+    if (e.pointerType === 'touch') return;
+    if (!touchActiveRef.current) return;
+    handleSlideMove(e.clientY);
+  }, [handleSlideMove]);
+
+  const handlePointerUp = useCallback((e) => {
+    if (e.pointerType === 'touch') return;
+    touchActiveRef.current = false;
+    state.endTouch();
+  }, [state.endTouch]);
+
+  const handleTouchStart = useCallback((e) => {
+    e.preventDefault();
+    touchActiveRef.current = true;
+    state.startTouch();
+    const touch = e.touches[0];
+    if (touch) handleSlideMove(touch.clientY);
+  }, [state.startTouch, handleSlideMove]);
+
+  const handleTouchMove = useCallback((e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    if (touch) handleSlideMove(touch.clientY);
+  }, [handleSlideMove]);
+
+  const handleTouchEnd = useCallback((e) => {
+    e.preventDefault();
+    touchActiveRef.current = false;
+    state.endTouch();
+  }, [state.endTouch]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && (
-        <SanctuaryCanvas breathCount={state.breathCount} breathPhase={state.phase} audioLevel={bandsRef.current.low} />
+        <SanctuaryCanvas breathCount={state.breathCount} breathPhase={state.phase} treePalette={state.treePalette} />
+      )}
+
+      {/* Touch wrapper — full screen, below exit button */}
+      {state.started && (
+        <div
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ position: 'fixed', inset: 0, zIndex: 1, touchAction: 'none' }}
+        />
+      )}
+
+      {/* Breath rail — thin vertical indicator on right edge */}
+      {state.started && (
+        <div
+          style={{
+            position: 'fixed',
+            right: 26, // phi-4
+            top: 0,
+            bottom: 0,
+            zIndex: 3,
+            width: 2,
+            pointerEvents: 'none',
+            opacity: state.isTouching ? 1 : 0,
+            transition: 'opacity 0.377s ease', // fib-flow
+          }}
+        >
+          {/* Rail line */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '10%',
+              bottom: '10%',
+              left: 0,
+              width: 1,
+              background: 'rgba(148, 163, 184, 0.1)', // slate-400
+            }}
+          />
+          {/* Threshold marker — inhale (0.382) */}
+          <div
+            style={{
+              position: 'absolute',
+              top: `${38.2}%`,
+              left: -3,
+              width: 8,
+              height: 1,
+              background: 'rgba(148, 163, 184, 0.15)',
+            }}
+          />
+          {/* Threshold marker — exhale (0.618) */}
+          <div
+            style={{
+              position: 'absolute',
+              top: `${61.8}%`,
+              left: -3,
+              width: 8,
+              height: 1,
+              background: 'rgba(148, 163, 184, 0.15)',
+            }}
+          />
+          {/* Glowing orb tracking breath position */}
+          <div
+            style={{
+              position: 'absolute',
+              top: `${state.breathPosition * 100}%`,
+              left: -3,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: 'rgba(148, 163, 184, 0.6)',
+              boxShadow: '0 0 8px rgba(148, 163, 184, 0.3)',
+              transform: 'translateY(-50%)',
+              transition: 'top 89ms ease-out', // fib-snap
+            }}
+          />
+        </div>
       )}
 
       <SanctuaryPrompt
         isFirstVisit={state.isFirstVisit}
         visits={state.visits}
         onEnter={handleEnter}
-        denied={mic.denied}
         visible={!state.started}
       />
 

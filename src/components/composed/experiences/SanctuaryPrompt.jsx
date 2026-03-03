@@ -9,7 +9,7 @@
 
 import { useRef } from 'react';
 
-export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied, visible }) {
+export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, visible }) {
   const frozenRef = useRef({ isFirstVisit, visits });
   if (visible) frozenRef.current = { isFirstVisit, visits };
   const show = frozenRef.current;
@@ -83,9 +83,9 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
           maxWidth: 280,
           padding: '0 26px',
         }}
-        className="font-extralight text-slate-400"
+        className="font-extralight text-slate-400/60"
       >
-        Works best in a quiet space without much background noise
+        slide up to breathe in, down to breathe out
       </p>
 
       <button
@@ -108,12 +108,6 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
       >
         {show.isFirstVisit ? 'Begin' : 'Enter'}
       </button>
-
-      {denied && (
-        <p className="text-slate-400/60 text-xs font-light mt-4 text-center" style={{ maxWidth: 280, padding: '0 26px' }}>
-          Microphone access is needed for this experience
-        </p>
-      )}
     </div>
   );
 }

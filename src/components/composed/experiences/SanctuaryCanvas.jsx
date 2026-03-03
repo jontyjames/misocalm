@@ -15,19 +15,32 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
+import SparkBurst from './SparkBurst';
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.02)';
 const TAU = Math.PI * 2;
 
-// Slate 396Hz palette — warm greys with soft blue undertone
-const SLATE = {
-  bright: { r: 203, g: 213, b: 225 }, // slate-300
-  mid:    { r: 148, g: 163, b: 184 }, // slate-400
-  dim:    { r: 100, g: 116, b: 139 }, // slate-500
-};
+// Slate fallback (used when treePalette is null)
+const SLATE_FALLBACK = { r: 148, g: 163, b: 184 }; // slate-400
+
+// How many palette colours each phase reveals — consecutive primes (2, 3, 5)
+const PHASE_COLOUR_COUNT = { FOUNDATION: 2, RISING: 3, CANOPY: 5 };
+
+// Alpha warmth multiplier builds across phases — phi-derived
+const PHASE_WARMTH = { FOUNDATION: 1.0, RISING: 1.1, CANOPY: 1.236 };
+
+function pickTreeColor(palette, phase, amplitude) {
+  if (!palette) return SLATE_FALLBACK;
+  const count = PHASE_COLOUR_COUNT[phase] || 5;
+  const available = palette.slice(0, count);
+  const jitter = Math.random() * 0.618;
+  const bias = amplitude * 0.618 + jitter * 0.382;
+  const idx = Math.min(available.length - 1, Math.floor(bias * available.length));
+  return available[idx];
+}
 
 class FoundationArc {
-  constructor(cx, cy, W, H, amplitude) {
+  constructor(cx, cy, W, H, amplitude, palette, phase) {
     this.age = 0;
     this.maxAge = 359; // prime
     const spread = 0.3 + amplitude * 0.618;
@@ -38,9 +51,8 @@ class FoundationArc {
     this.startAngle = Math.PI + (Math.random() - 0.5) * 0.618;
     this.endAngle = TAU + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.5 + amplitude * 1.5;
-    const c = amplitude > 0.6 ? SLATE.bright : SLATE.mid;
-    this.color = c;
-    this.baseAlpha = 0.15 + amplitude * 0.25;
+    this.color = pickTreeColor(palette, phase, amplitude);
+    this.baseAlpha = (0.15 + amplitude * 0.25) * (PHASE_WARMTH[phase] || 1);
   }
   update() { this.age++; return this.age < this.maxAge; }
   draw(ctx) {
@@ -57,7 +69,7 @@ class FoundationArc {
 }
 
 class RisingPillar {
-  constructor(cx, cy, W, H, amplitude) {
+  constructor(cx, cy, W, H, amplitude, palette, phase) {
     this.age = 0;
     this.maxAge = 359;
     const xSpread = 0.4 + amplitude * 0.3;
@@ -65,9 +77,8 @@ class RisingPillar {
     this.topY = H * (0.25 + (1 - amplitude) * 0.2);
     this.bottomY = H * (0.7 + Math.random() * 0.1);
     this.lineWidth = 0.3 + amplitude * 1.2;
-    const c = amplitude > 0.7 ? SLATE.bright : SLATE.mid;
-    this.color = c;
-    this.baseAlpha = 0.1 + amplitude * 0.2;
+    this.color = pickTreeColor(palette, phase, amplitude);
+    this.baseAlpha = (0.1 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
     // Small diamond or circle at the top
     this.capSize = 3 + amplitude * 5;
     this.capSides = [3, 5, 7][Math.floor(Math.random() * 3)];
@@ -105,7 +116,7 @@ class RisingPillar {
 }
 
 class CanopyArc {
-  constructor(cx, cy, W, H, amplitude) {
+  constructor(cx, cy, W, H, amplitude, palette, phase) {
     this.age = 0;
     this.maxAge = 359;
     this.cx = cx + (Math.random() - 0.5) * W * 0.3;
@@ -114,9 +125,8 @@ class CanopyArc {
     this.startAngle = (Math.random() - 0.5) * 0.618;
     this.endAngle = Math.PI + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.3 + amplitude * 1;
-    const c = amplitude > 0.5 ? SLATE.bright : SLATE.mid;
-    this.color = c;
-    this.baseAlpha = 0.08 + amplitude * 0.2;
+    this.color = pickTreeColor(palette, phase, amplitude);
+    this.baseAlpha = (0.08 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
     // Radial spokes from arc centre
     this.spokeCount = [3, 5, 7][Math.floor(Math.random() * 3)];
     this.spokeLen = 16 + amplitude * 26;
@@ -151,20 +161,20 @@ class CanopyArc {
   }
 }
 
-function createShape(phase, cx, cy, W, H, amplitude) {
-  if (phase === 'FOUNDATION') return new FoundationArc(cx, cy, W, H, amplitude);
-  if (phase === 'RISING') return new RisingPillar(cx, cy, W, H, amplitude);
-  return new CanopyArc(cx, cy, W, H, amplitude);
+function createShape(phase, cx, cy, W, H, amplitude, palette) {
+  if (phase === 'FOUNDATION') return new FoundationArc(cx, cy, W, H, amplitude, palette, phase);
+  if (phase === 'RISING') return new RisingPillar(cx, cy, W, H, amplitude, palette, phase);
+  return new CanopyArc(cx, cy, W, H, amplitude, palette, phase);
 }
 
-export default function SanctuaryCanvas({ breathCount, breathPhase, audioLevel = 0 }) {
+export default function SanctuaryCanvas({ breathCount, breathPhase, treePalette }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ shapes: [], time: 0, smoothLevel: 0, lastBreathCount: 0 });
+  const stateRef = useRef({ shapes: [], sparks: [], time: 0, lastBreathCount: 0 });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
-  const propsRef = useRef({ breathCount, breathPhase, audioLevel });
-  propsRef.current = { breathCount, breathPhase, audioLevel };
+  const propsRef = useRef({ breathCount, breathPhase, treePalette });
+  propsRef.current = { breathCount, breathPhase, treePalette };
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -183,24 +193,27 @@ export default function SanctuaryCanvas({ breathCount, breathPhase, audioLevel =
     // Gentle fade trail — sanctuary persists
     ctx.fillStyle = VOID_COLOR;
     ctx.fillRect(0, 0, W, H);
-    // Smooth audio for ambient glow
-    s.smoothLevel += (props.audioLevel - s.smoothLevel) * 0.1;
 
-    // Spawn shapes on each new breath
+    // Spawn shapes + sparks on each new breath
     if (props.breathCount > s.lastBreathCount) {
       const diff = props.breathCount - s.lastBreathCount;
+      const phase = props.breathPhase || 'FOUNDATION';
+      const palette = props.treePalette;
       for (let i = 0; i < diff; i++) {
         const amp = 0.3 + Math.random() * 0.7;
-        const shape = createShape(props.breathPhase || 'FOUNDATION', cx, cy, W, H, amp);
-        s.shapes.push(shape);
+        s.shapes.push(createShape(phase, cx, cy, W, H, amp, palette));
         // Add 2 companion shapes for richness (3 total per breath, prime)
-        s.shapes.push(createShape(props.breathPhase || 'FOUNDATION', cx, cy, W, H, amp * 0.618));
-        s.shapes.push(createShape(props.breathPhase || 'FOUNDATION', cx, cy, W, H, amp * 0.382));
+        s.shapes.push(createShape(phase, cx, cy, W, H, amp * 0.618, palette));
+        s.shapes.push(createShape(phase, cx, cy, W, H, amp * 0.382, palette));
+        // Bioluminescent sparks — phase-available colours
+        const count = PHASE_COLOUR_COUNT[phase] || 5;
+        const sparkColors = palette ? palette.slice(0, count) : null;
+        s.sparks.push(new SparkBurst(W, H, phase, sparkColors));
       }
       s.lastBreathCount = props.breathCount;
     }
 
-    // Update and draw
+    // Update and draw shapes
     for (let i = s.shapes.length - 1; i >= 0; i--) {
       if (!s.shapes[i].update()) { s.shapes.splice(i, 1); continue; }
     }
@@ -208,17 +221,16 @@ export default function SanctuaryCanvas({ breathCount, breathPhase, audioLevel =
       shape.draw(ctx, s.time);
     }
 
-    // Ambient breath glow at centre bottom (the hearth)
-    if (s.smoothLevel > 0.01) {
-      const glowR = 42 + s.smoothLevel * 68;
-      const hearthY = H * 0.85;
-      const grad = ctx.createRadialGradient(cx, hearthY, 0, cx, hearthY, glowR);
-      grad.addColorStop(0, `rgba(148,163,184,${s.smoothLevel * 0.08})`);
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(cx, hearthY, glowR, 0, TAU);
-      ctx.fill();
+    // Update and draw sparks (additive glow)
+    for (let i = s.sparks.length - 1; i >= 0; i--) {
+      if (!s.sparks[i].update()) { s.sparks.splice(i, 1); continue; }
+    }
+    if (s.sparks.length > 0) {
+      ctx.globalCompositeOperation = 'screen';
+      for (const burst of s.sparks) {
+        burst.draw(ctx);
+      }
+      ctx.globalCompositeOperation = 'source-over';
     }
 
     rafRef.current = requestAnimationFrame(render);

@@ -1,14 +1,13 @@
 /**
- * useSanctuaryState — breath-driven state machine for the Sanctuary experience
+ * useSanctuaryState — slide-driven state machine for the Sanctuary experience
  *
- * Detects breath cycles via microphone (low-frequency band).
+ * Detects breath cycles via vertical slide gesture (up = inhale, down = exhale).
  * 13 guided breath cycles across 3 phases: Foundation (3), Rising (5), Canopy (5).
  * All counts are prime. Promise-based async sequence.
  *
- * Breath detection: uses bands.low from useMicrophone. Inhale raises level,
- * exhale drops it. A full cycle = rise above threshold then fall below.
- * Only low frequencies register — trigger sounds (high-freq clicks, chewing)
- * pass through without affecting the canvas.
+ * Slide detection: user slides finger/pointer UP past 0.382 threshold (phi complement),
+ * then DOWN past 0.618 threshold (phi) to complete one breath cycle.
+ * No microphone, no permissions, full user control.
  */
 
 'use client';
@@ -17,11 +16,19 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, SANCTUARY_TEACHINGS } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
+import { lerpColor } from './ColourRibbon';
 
-// Breath detection thresholds (tuned for low-frequency breath)
-const BREATH_IN_THRESHOLD = 0.08;
-const BREATH_OUT_THRESHOLD = 0.03;
-const MIN_BREATH_FRAMES = 23; // prime — minimum frames for a valid breath
+// 5 random solfeggio-arc positions → sorted → interpolated colours
+function generateTreePalette() {
+  const positions = Array.from({ length: 5 }, () => Math.random());
+  positions.sort((a, b) => a - b);
+  return positions.map(t => lerpColor(t));
+}
+
+// Slide detection thresholds (normalised Y: 0 = top, 1 = bottom)
+const SLIDE_UP_THRESHOLD = 0.382;   // phi complement — finger must cross above this
+const SLIDE_DOWN_THRESHOLD = 0.618; // phi — finger must cross below this to complete cycle
+const SLIDE_TIMEOUT = 29000;        // prime — timeout so sequence never hangs
 
 // Phases
 const PHASES = {
@@ -52,16 +59,19 @@ export default function useSanctuaryState() {
   const [freePlay, setFreePlay] = useState(false);
   const [introActive, setIntroActive] = useState(false);
   const [breathCount, setBreathCount] = useState(0);
+  const [breathPosition, setBreathPosition] = useState(0.5); // 0=top, 1=bottom
+  const [treePalette, setTreePalette] = useState(null);
+  const [isTouching, setIsTouching] = useState(false);
   const [visits, setVisits] = useLocalStorage(STORAGE_KEYS.SANCTUARY_VISITS, 0);
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.SANCTUARY_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
   const analyticsStartRef = useRef(null);
 
-  // Breath detection refs
-  const waitingForBreathRef = useRef(false);
-  const hasInhaledRef = useRef(false);
-  const breathFramesRef = useRef(0);
+  // Slide detection refs
+  const waitingForSlideRef = useRef(false);
+  const hasSlideUpRef = useRef(false);   // finger crossed above SLIDE_UP_THRESHOLD
+  const peakYRef = useRef(1);            // minimum Y reached during inhale (for amplitude)
   const resolveBreathRef = useRef(null);
 
   const seqTimerRef = useRef(null);
@@ -96,24 +106,58 @@ export default function useSanctuaryState() {
     });
   }, []);
 
-  // Wait for one full breath cycle. Returns a promise.
-  // Times out after 29s (prime) so sequence never hangs.
-  const listenForBreath = useCallback(() => {
+  // Process slide input — called on pointer/touch move with normalised Y (0=top, 1=bottom)
+  const processSlide = useCallback((normalizedY) => {
+    setBreathPosition(normalizedY);
+
+    if (!waitingForSlideRef.current) return;
+
+    // Detect slide up (inhale) — finger crosses above threshold
+    if (normalizedY < SLIDE_UP_THRESHOLD && !hasSlideUpRef.current) {
+      hasSlideUpRef.current = true;
+      peakYRef.current = normalizedY;
+    }
+
+    // Track peak (minimum Y) during inhale for amplitude
+    if (hasSlideUpRef.current && normalizedY < peakYRef.current) {
+      peakYRef.current = normalizedY;
+    }
+
+    // Detect slide down (exhale) — finger crosses below threshold after inhale
+    if (hasSlideUpRef.current && normalizedY > SLIDE_DOWN_THRESHOLD) {
+      // Amplitude: deeper slide = stronger geometry (0-1 based on how high they went)
+      const amplitude = Math.min(1, Math.max(0.3, 1 - peakYRef.current / SLIDE_UP_THRESHOLD));
+      waitingForSlideRef.current = false;
+      hasSlideUpRef.current = false;
+      peakYRef.current = 1;
+
+      // Haptic feedback (13ms, prime — matches Mandala)
+      if (navigator.vibrate) navigator.vibrate(13);
+
+      if (resolveBreathRef.current) {
+        resolveBreathRef.current(amplitude);
+        resolveBreathRef.current = null;
+      }
+    }
+  }, []);
+
+  // Wait for one full slide cycle. Returns a promise.
+  const listenForSlide = useCallback(() => {
     return new Promise((resolve) => {
-      waitingForBreathRef.current = true;
-      hasInhaledRef.current = false;
-      breathFramesRef.current = 0;
+      waitingForSlideRef.current = true;
+      hasSlideUpRef.current = false;
+      peakYRef.current = 1;
 
       interactionTimerRef.current = setTimeout(() => {
-        if (waitingForBreathRef.current) {
-          waitingForBreathRef.current = false;
-          hasInhaledRef.current = false;
-          breathFramesRef.current = 0;
+        if (waitingForSlideRef.current) {
+          waitingForSlideRef.current = false;
+          hasSlideUpRef.current = false;
+          peakYRef.current = 1;
           resolveBreathRef.current = null;
           interactionTimerRef.current = null;
           resolve({ amplitude: 0.5 }); // default amplitude on timeout
         }
-      }, 34000);
+      }, SLIDE_TIMEOUT);
 
       resolveBreathRef.current = (amplitude) => {
         if (interactionTimerRef.current) {
@@ -125,40 +169,15 @@ export default function useSanctuaryState() {
     });
   }, []);
 
-  // Called every frame from the guide component (fed low-freq band)
-  const processBreathFrame = useCallback((lowBand) => {
-    if (!waitingForBreathRef.current) return;
-
-    // Detect inhale (breath in raises low-freq energy)
-    if (lowBand > BREATH_IN_THRESHOLD && !hasInhaledRef.current) {
-      hasInhaledRef.current = true;
-      breathFramesRef.current = 0;
-    }
-
-    // Count frames during breath
-    if (hasInhaledRef.current) {
-      breathFramesRef.current++;
-    }
-
-    // Detect exhale completion (energy drops back down)
-    if (hasInhaledRef.current && lowBand < BREATH_OUT_THRESHOLD && breathFramesRef.current > MIN_BREATH_FRAMES) {
-      const amplitude = Math.min(1, lowBand * 5 + breathFramesRef.current / 144);
-      waitingForBreathRef.current = false;
-      hasInhaledRef.current = false;
-      breathFramesRef.current = 0;
-      if (resolveBreathRef.current) {
-        resolveBreathRef.current(amplitude);
-        resolveBreathRef.current = null;
-      }
-    }
-  }, []);
+  const startTouch = useCallback(() => setIsTouching(true), []);
+  const endTouch = useCallback(() => setIsTouching(false), []);
 
   // One breath cycle that updates count and returns amplitude
   const doBreath = useCallback(async () => {
-    const result = await listenForBreath();
+    const result = await listenForSlide();
     setBreathCount(c => c + 1);
     return result;
-  }, [listenForBreath]);
+  }, [listenForSlide]);
 
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
@@ -180,6 +199,8 @@ export default function useSanctuaryState() {
     setGuide('breathe in');
     await delay(4181); // fib — calm, unhurried inhale
     setGuide('now just breathe normally');
+    await delay(2584);
+    setGuide('slide up to breathe in\nslide down to breathe out');
     await delay(2584);
     setGuide('');
     await delay(987);
@@ -263,7 +284,7 @@ export default function useSanctuaryState() {
     await delay(1597);
     setGuide('');
     setFreePlay(true);
-    // Free play: keep detecting breaths to add geometry
+    // Free play: keep detecting slides to add geometry
     const freeLoop = async () => {
       while (true) {
         await doBreath();
@@ -276,6 +297,7 @@ export default function useSanctuaryState() {
   const enter = useCallback(() => {
     analyticsStartRef.current = Date.now();
     track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'sanctuary', experience_name: 'Sanctuary' });
+    setTreePalette(generateTreePalette());
     setVisits((v) => v + 1);
     setStarted(true);
     seqTimerRef.current = setTimeout(runSequence, 1597);
@@ -290,10 +312,15 @@ export default function useSanctuaryState() {
     freePlay,
     introActive,
     breathCount,
+    breathPosition,
+    isTouching,
     isFirstVisit,
     visits,
+    treePalette,
     enter,
-    processBreathFrame,
+    processSlide,
+    startTouch,
+    endTouch,
     clearSeqTimer,
   };
 }
