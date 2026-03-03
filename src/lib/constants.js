@@ -292,14 +292,14 @@ export const STORAGE_KEYS = {
 export const IMPERMANENCE_TEACHINGS = [
   {
     lines: [
-      'every sound you have ever feared',
+      'every sound you have ever heard',
       'has already gone',
       'but you are still here',
     ],
   },
   {
     lines: [
-      'the sound was never the danger',
+      'the sound was never the whole story',
       'it was the story your body told about it',
     ],
   },
@@ -367,7 +367,7 @@ export const MANDALA_TEACHINGS = [
     lines: [
       'wholeness is not something you build',
       'it is something you already are',
-      'this mandala knew that before you touched it',
+      'this pattern knew that before you arrived',
     ],
   },
   {
@@ -404,7 +404,7 @@ export const PULSE_TEACHINGS = [
       'this rhythm',
       'was there before the sounds',
       'it will be there after',
-      'it does not care',
+      'it does not waver',
       'what the world throws at you',
     ],
   },
@@ -429,10 +429,10 @@ export const PULSE_TEACHINGS = [
   {
     lines: [
       'you did not choose',
-      'to be sensitive',
-      'but you chose',
-      'to keep going',
-      'feel that courage',
+      'to feel this deeply',
+      'and you chose',
+      'to keep showing up',
+      'feel that',
     ],
   },
   {
@@ -450,8 +450,8 @@ export const PULSE_TEACHINGS = [
 export const GROUNDING_TEACHINGS = [
   {
     lines: [
-      'you just brought yourself back',
-      'with nothing but your attention',
+      'you just moved through five senses',
+      'and your nervous system followed',
       'that is not a small thing',
     ],
   },
@@ -464,15 +464,15 @@ export const GROUNDING_TEACHINGS = [
   },
   {
     lines: [
-      'the world around you held still',
-      'while you found your way back',
-      'it has always been holding you',
+      'the sounds were there the whole time',
+      'and you were here the whole time',
+      'both things can be true',
     ],
   },
   {
     lines: [
       'five senses',
-      'fifteen anchors',
+      'fifteen moments of choosing',
       'and the thread that connects them all is you',
     ],
   },
@@ -490,18 +490,18 @@ export const DEEPER_PROMPTS_GROUNDING = [
   'What did you notice about where you are right now?',
   'Was there a sense that felt easier to connect with?',
   'How does your body feel compared to when you started?',
-  'Did anything surprise you about what you noticed?',
+  'Did anything surprise you about what your body noticed?',
   'Which moment felt most grounding?',
   'What is one thing you noticed that you want to remember?',
-  'How does this space feel to you right now?',
+  'If you could carry one feeling from this into the rest of your day, which would it be?',
 ];
 
 // Focus experience teachings (7, prime)
 export const FOCUS_TEACHINGS = [
   {
     lines: [
-      'your attention was yours this whole time',
-      'no sound ever took it',
+      'your attention was always yours',
+      'no sound has ever owned it',
       'it only borrowed what you gave',
     ],
   },
@@ -537,7 +537,7 @@ export const FOCUS_TEACHINGS = [
     lines: [
       'every time you came back to the centre',
       'your nervous system learned',
-      'that you are the one who chooses',
+      'that you are the one who decides',
     ],
   },
   {
@@ -556,7 +556,7 @@ export const DEEPER_PROMPTS_FOCUS = [
   'How does the stillness feel compared to before you started?',
   'Did anything at the edges pull your attention? How did it feel to come back?',
   'What does it feel like to know your attention is yours?',
-  'Was there a moment where the tunnel felt deepest?',
+  'Was there a moment where you forgot everything else?',
   'What would you like to carry from this into the rest of your day?',
 ];
 
@@ -579,7 +579,7 @@ export const SANCTUARY_TEACHINGS = [
   {
     lines: [
       'every breath you took',
-      'was a foundation laid in silence',
+      'was your nervous system learning',
       'this is what you build when no one is watching',
     ],
   },
@@ -619,7 +619,7 @@ export const DEEPER_PROMPTS_SANCTUARY = [
   'Is there a place in your body where the stillness lives right now?',
   'What did it feel like to build something with nothing but breath?',
   'Was there a moment where the space felt different?',
-  'What would it feel like to carry this sanctuary with you?',
+  'Where in your life could you use this breath?',
   'Did your breathing change as the practice deepened?',
   'What does your sensitivity mean to you right now?',
 ];

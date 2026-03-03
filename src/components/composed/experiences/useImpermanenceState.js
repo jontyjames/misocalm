@@ -139,6 +139,23 @@ export default function useImpermanenceState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here');
+    await delay(2584);
+    setGuide('breathe out');
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in');
+    await delay(2584);
+    setGuide('');
+    await delay(987);
+
     // Show "you" label
     setShowYouLabel(true);
     await delay(1597); // fib-ceremony
@@ -148,9 +165,11 @@ export default function useImpermanenceState() {
     await delay(1597);
     await listenForSound();
     await delay(987); // fib-breathe
-    setGuide('all sounds go', true);
+    setGuide('it came', true);
     await delay(1597);
-    setGuide('but you still remain', true);
+    setGuide('and it went', true);
+    await delay(1597);
+    setGuide('and you are still here', true);
     await delay(2584); // fib-sacred
     setGuide('');
     await delay(2584);
@@ -160,9 +179,9 @@ export default function useImpermanenceState() {
     await delay(1597);
     await listenForSound();
     await delay(987);
-    setGuide('that one filled the whole space');
+    setGuide('that one was bigger');
     await delay(1597);
-    setGuide('and it still went', true);
+    setGuide('and it still left', true);
     await delay(2584);
     setGuide('');
     await delay(2584);

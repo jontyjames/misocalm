@@ -177,13 +177,30 @@ export default function useFocusState() {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
     const windowMs = getWindowMs(visits + 1);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here');
+    await delay(2584);
+    setGuide('breathe out');
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in');
+    await delay(2584);
+    setGuide('');
+    await delay(987);
+
     // INTRO — centred, letter-by-letter
     setPhase('INTRO');
     setIntroActive(true);
     await delay(610);
     setGuide('be still', false);
     await delay(2584);
-    setGuide('keep your gaze soft\non the centre', false);
+    setGuide('let your gaze soften', false);
     await delay(2584);
     setGuide('tap where the light appears', false);
     await delay(2584);
@@ -202,12 +219,12 @@ export default function useFocusState() {
     }
 
     await delay(610);
-    setGuide('you are learning to see', true);
+    setGuide('your eyes knew where to look', true);
     await delay(2584);
 
     // DEEPENING — 5 flashes (prime), shorter gaps
     setPhase('DEEPENING');
-    setGuide('it moves closer now', false);
+    setGuide('going deeper now', false);
     await delay(1597);
     setGuide('');
     await delay(610);
@@ -247,7 +264,7 @@ export default function useFocusState() {
     // COMPLETE
     setPhase('COMPLETE');
     setLastTeaching(teachingIndex);
-    setGuide('the centre held you', true);
+    setGuide('the centre is yours', true);
     await delay(2584);
     track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'focus', experience_name: 'Focus', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setComplete(true);

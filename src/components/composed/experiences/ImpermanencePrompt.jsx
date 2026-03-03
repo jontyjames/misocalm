@@ -1,15 +1,15 @@
 /**
- * SanctuaryPrompt — entry screen for the Sanctuary experience
+ * ImpermanencePrompt — entry screen for the Impermanence experience
  *
  * Frozen ref pattern prevents content flash during fade-out.
- * Slate solfeggio accent (396Hz — liberation from fear).
+ * Violet solfeggio accent (741Hz — self-expression).
  */
 
 'use client';
 
 import { useRef } from 'react';
 
-export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied, visible }) {
+export default function ImpermanencePrompt({ isFirstVisit, visits, onEnter, denied, visible }) {
   const frozenRef = useRef({ isFirstVisit, visits });
   if (visible) frozenRef.current = { isFirstVisit, visits };
   const show = frozenRef.current;
@@ -40,7 +40,7 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
           animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
         }}
       >
-        {show.isFirstVisit ? 'A quiet shelter' : 'Sanctuary'}
+        {show.isFirstVisit ? 'A small experiment' : 'Impermanence'}
       </p>
 
       <div
@@ -58,11 +58,12 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
         className="font-extralight text-slate-400"
       >
         {show.isFirstVisit ? (
-          <span className="block">about breath, and what it builds</span>
+          <span className="block">about sound, and what remains</span>
         ) : (
           <>
             <span className="block">Welcome back.</span>
-            <span className="block mt-2">Your breath remembers the way.</span>
+            <span className="block mt-2">Same space. Something has shifted.</span>
+            <span className="block">Notice what's different this time.</span>
             {show.visits > 0 && (
               <span className="block mt-4 text-slate-300/50 text-xs">
                 visit {show.visits + 1}
@@ -94,8 +95,8 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
           fontFamily: "'Josefin Sans', sans-serif",
           fontSize: '0.9rem',
           letterSpacing: '0.12em',
-          border: '1px solid rgba(148, 163, 184, 0.25)',
-          background: 'rgba(148, 163, 184, 0.04)',
+          border: '1px solid rgba(165, 180, 252, 0.25)',
+          background: 'rgba(165, 180, 252, 0.04)',
           padding: '16px 42px',
           borderRadius: 999,
           cursor: 'pointer',
@@ -104,14 +105,14 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, denied,
           transition: 'all 0.377s ease',
           color: '#e2e8f0',
         }}
-        className="font-extralight hover:bg-slate-400/10 hover:border-slate-400/40"
+        className="font-extralight hover:bg-indigo-300/10 hover:border-indigo-300/40"
       >
         {show.isFirstVisit ? 'Begin' : 'Enter'}
       </button>
 
       {denied && (
-        <p className="text-slate-400/60 text-xs font-light mt-4 text-center" style={{ maxWidth: 280, padding: '0 26px' }}>
-          Microphone access is needed for this experience
+        <p className="text-rose-400/60 text-xs font-light mt-4">
+          Microphone access is needed for this experience.
         </p>
       )}
     </div>

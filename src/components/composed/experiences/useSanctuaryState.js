@@ -163,13 +163,30 @@ export default function useSanctuaryState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here');
+    await delay(2584);
+    setGuide('breathe out');
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in');
+    await delay(2584);
+    setGuide('');
+    await delay(987);
+
     // INTRO — centred, letter-by-letter
     setPhase(PHASES.INTRO);
     setIntroActive(true);
     await delay(610);
-    setGuide('breathe', false);
+    setGuide('let your shoulders drop', false);
     await delay(2584);
-    setGuide('just breathe', false);
+    setGuide('breathe', false);
     await delay(2584);
     setGuide('and watch what you build', false);
     await delay(2584);

@@ -2,132 +2,31 @@
  * PulseCanvas — tap-driven heartbeat visualisation
  *
  * Each tap creates expanding rings of light from centre.
- * Slow fade trail creates a "pulse portrait" — unique to each session.
- * Anticipation ring appears after rhythm lock.
- * "You" dot breathing syncs to detected rhythm.
+ * Three visual tiers build as rhythm consistency deepens:
+ *   Tier 1–2: indigo → violet rings, phi-7 cap (110px)
+ *   Tier 3 (rhythm lock): phi-8 cap (178px), corona halo,
+ *     particle echoes, colour deepening, breathing edges
+ * Slow fade trail creates a "pulse portrait" unique to each session.
  */
 
 'use client';
 
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
+import {
+  PulseRing, Particle, consistencyColor, deepColor,
+  drawYouDot, drawAnticipationRing,
+} from './PulseEffects';
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.03)';
 const MAX_TAP_DURATION = 233; // fib-move
 const MAX_TAP_MOVEMENT = 10; // px
 
-function consistencyColor(consistency) {
-  if (consistency < 0.4) return { r: 165, g: 180, b: 252 }; // indigo (warm, no judgment)
-  if (consistency < 0.7) return { r: 196, g: 181, b: 253 }; // violet (mid)
-  return { r: 103, g: 232, b: 249 }; // cyan (awakening, clarity)
-}
-
-class PulseRing {
-  constructor(cx, cy, maxRadius, color) {
-    this.cx = cx;
-    this.cy = cy;
-    this.radius = 6; // phi-1 start
-    this.maxRadius = maxRadius;
-    this.age = 0;
-    this.maxAge = 200;
-    this.alive = true;
-    this.color = color;
-    this.startWidth = 3;
-  }
-
-  update() {
-    this.age++;
-    if (this.age > this.maxAge) { this.alive = false; return; }
-    // Ease-out expansion
-    const t = this.age / this.maxAge;
-    const ease = 1 - (1 - t) * (1 - t);
-    this.radius = 6 + (this.maxRadius - 6) * ease;
-  }
-
-  draw(ctx) {
-    const life = Math.max(0, 1 - this.age / this.maxAge);
-    const { r, g, b } = this.color;
-    const alpha = 0.6 * life;
-    const width = this.startWidth * life + 0.5;
-
-    if (alpha < 0.005) return;
-
-    // Ring stroke
-    ctx.beginPath();
-    ctx.arc(this.cx, this.cy, this.radius, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-    ctx.lineWidth = width;
-    ctx.stroke();
-
-    // Inner glow halo
-    const grad = ctx.createRadialGradient(
-      this.cx, this.cy, Math.max(0, this.radius - 6),
-      this.cx, this.cy, this.radius + 6
-    );
-    grad.addColorStop(0, 'transparent');
-    grad.addColorStop(0.5, `rgba(${r},${g},${b},${alpha * 0.12})`);
-    grad.addColorStop(1, 'transparent');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(this.cx, this.cy, this.radius + 6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-function drawYouDot(ctx, cx, cy, time, rhythmAvg) {
-  // Sync breathing to detected rhythm, or default sine wave
-  let breathe;
-  if (rhythmAvg > 0) {
-    const period = rhythmAvg;
-    const phase = (time % period) / period;
-    breathe = 1 + Math.sin(phase * Math.PI * 2) * 0.2;
-  } else {
-    breathe = 1 + Math.sin(time * 0.004) * 0.15;
-  }
-  const radius = 4 * breathe;
-
-  // Centre glow (warm, 42px phi-5 radius)
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 42);
-  grad.addColorStop(0, 'rgba(226, 232, 240, 0.08)');
-  grad.addColorStop(1, 'transparent');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 42, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Core dot
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(226, 232, 240, ${0.5 + breathe * 0.15})`;
-  ctx.fill();
-
-  // Tiny ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius + 8, 0, Math.PI * 2);
-  ctx.strokeStyle = `rgba(226, 232, 240, ${0.04 + breathe * 0.02})`;
-  ctx.lineWidth = 0.5;
-  ctx.stroke();
-}
-
-function drawAnticipationRing(ctx, cx, cy, lastTapTime, avgInterval, now) {
-  if (avgInterval <= 0) return;
-  const elapsed = now - lastTapTime;
-  const predicted = avgInterval;
-  const t = elapsed / predicted;
-  if (t < 0 || t > 1.3) return;
-
-  const radius = 6 + (110 - 6) * Math.min(1, t);
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = `rgba(226, 232, 240, 0.08)`;
-  ctx.lineWidth = 1;
-  ctx.stroke();
-}
-
 export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap }) {
   const canvasRef = useRef(null);
   const stateRef = useRef({
     rings: [],
+    particles: [],
     startTime: Date.now(),
     lastTapTime: 0,
     tapCount: 0,
@@ -150,7 +49,6 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     const dy = clientY - y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
-    // Valid tap: quick + minimal movement
     if (elapsed > MAX_TAP_DURATION || dist > MAX_TAP_MOVEMENT) return;
 
     const canvas = canvasRef.current;
@@ -159,20 +57,31 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     const cx = canvas.width / dpr / 2;
     const cy = canvas.height / dpr / 2;
     const s = stateRef.current;
+    const rd = propsRef.current.rhythmData;
+    const isLocked = rd.isLocked;
 
     s.tapCount++;
     s.lastTapTime = Date.now();
 
-    // Ring max radius grows with each tap (up to phi-7)
-    const maxRadius = Math.min(110, 42 + s.tapCount * 5);
+    // Tier 3: cap lifts to phi-8 (178) after rhythm lock
+    const cap = isLocked ? 178 : 110; // phi-8 / phi-7
+    const maxRadius = Math.min(cap, 42 + s.tapCount * 5);
+
+    // Colour deepening at tier 3
     const color = propsRef.current.customColor
-      || consistencyColor(propsRef.current.rhythmData.consistency || 0);
+      || (isLocked ? deepColor(rd.consistency || 0) : consistencyColor(rd.consistency || 0));
 
     s.rings.push(new PulseRing(cx, cy, maxRadius, color));
 
-    // Haptic
-    if (navigator.vibrate) navigator.vibrate(23); // prime
+    // Particles at tier 3 — 7 per ring (prime), soft cap at 199 (prime)
+    if (isLocked && maxRadius > 110 && s.particles.length < 199) {
+      for (let i = 0; i < 7; i++) {
+        const angle = (Math.PI * 2 * i / 7) + Math.random() * 0.3;
+        s.particles.push(new Particle(cx, cy, angle, maxRadius * 0.6, color));
+      }
+    }
 
+    if (navigator.vibrate) navigator.vibrate(23); // prime
     onTap?.();
   }, [onTap]);
 
@@ -219,7 +128,7 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     // Anticipation ring (after rhythm lock)
     const rd = propsRef.current.rhythmData;
     if (rd.isLocked && s.lastTapTime > 0) {
-      drawAnticipationRing(ctx, cx, cy, s.lastTapTime, rd.avg, now);
+      drawAnticipationRing(ctx, cx, cy, s.lastTapTime, rd.avg, now, rd.isLocked);
     }
 
     // Update and draw rings
@@ -227,9 +136,14 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
       s.rings[i].update();
       if (!s.rings[i].alive) s.rings.splice(i, 1);
     }
-    for (const ring of s.rings) {
-      ring.draw(ctx);
+    for (const ring of s.rings) ring.draw(ctx);
+
+    // Update and draw particles
+    for (let i = s.particles.length - 1; i >= 0; i--) {
+      s.particles[i].update();
+      if (!s.particles[i].alive) s.particles.splice(i, 1);
     }
+    for (const p of s.particles) p.draw(ctx);
 
     // Centre glow pulse on tap (377ms fade)
     if (s.lastTapTime > 0) {
@@ -249,7 +163,7 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
     }
 
     // "You" dot — breathing synced to rhythm if locked
-    drawYouDot(ctx, cx, cy, rd.isLocked ? elapsed : elapsed, rd.isLocked ? rd.avg : 0);
+    drawYouDot(ctx, cx, cy, elapsed, rd.isLocked ? rd.avg : 0);
 
     rafRef.current = requestAnimationFrame(render);
   }, []);
@@ -267,6 +181,7 @@ export default function PulseCanvas({ rhythmData = {}, customColor = null, onTap
       canvas.style.width = `${displayW}px`;
       canvas.style.height = `${displayH}px`;
       const ctx = canvas.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 0); // reset before re-scaling (resize resets canvas buffer but not transform)
       ctx.scale(dpr, dpr);
     };
     resize();

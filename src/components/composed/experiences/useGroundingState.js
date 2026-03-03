@@ -179,15 +179,32 @@ export default function useGroundingState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here', false, TIERS.SLOW);
+    await delay(2584);
+    setGuide('breathe out', false, TIERS.SLOW);
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in', false, TIERS.SLOW);
+    await delay(2584);
+    setGuide('', false, TIERS.SLOW);
+    await delay(987);
+
     // INTRO — centred, larger, letter-by-letter
     setPhase('INTRO');
     setIntroActive(true);
     await delay(610);
     setGuide('you are here', false, TIERS.SLOW);
     await delay(2584);
-    setGuide('your senses know the way', false, TIERS.SLOW);
+    setGuide('feel the weight of your hands', false, TIERS.SLOW);
     await delay(2584);
-    setGuide('let them guide you', false, TIERS.SLOW);
+    setGuide('your senses will do the rest', false, TIERS.SLOW);
     await delay(2584);
     setIntroActive(false);
 
@@ -199,7 +216,7 @@ export default function useGroundingState() {
     setGuide('five things you can see\nlook around you\ntap for each one', false, TIERS.STANDARD);
     await waitForTaps(5);
     await delay(987);
-    setGuide('five anchors, just through your eyes', true, TIERS.SLOW);
+    setGuide('you just chose where to look', true, TIERS.SLOW);
     await delay(2584);
 
     // TOUCH (cyan glow)
@@ -210,7 +227,7 @@ export default function useGroundingState() {
     setGuide('four things you can feel\nreach out\ntap for each one', false, TIERS.STANDARD);
     await waitForTaps(4);
     await delay(987);
-    setGuide('your hands already know where you are', true, TIERS.SLOW);
+    setGuide('your body already knows where you are', true, TIERS.SLOW);
     await delay(2584);
 
     // HEAR (violet glow)
@@ -221,7 +238,7 @@ export default function useGroundingState() {
     setGuide('three things you can hear\nlet the sounds find you\ntap for each one', false, TIERS.STANDARD);
     await waitForTaps(3);
     await delay(987);
-    setGuide('the world is still here, holding you', true, TIERS.SLOW);
+    setGuide('you chose where to listen', true, TIERS.SLOW);
     await delay(2584);
 
     // SMELL (slate-warm glow)
@@ -259,7 +276,7 @@ export default function useGroundingState() {
     // COMPLETE
     setPhase('COMPLETE');
     setLastTeaching(teachingIndex);
-    setGuide('you brought yourself back', true, TIERS.SLOW);
+    setGuide('you are here', true, TIERS.SLOW);
     await delay(2584);
     track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'grounding', experience_name: 'Grounding', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setComplete(true);

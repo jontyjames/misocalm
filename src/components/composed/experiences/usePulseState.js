@@ -180,13 +180,32 @@ export default function usePulseState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here');
+    await delay(2584);
+    setGuide('breathe out');
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in');
+    await delay(2584);
+    setGuide('');
+    await delay(987);
+
     // Phase: FIND_PULSE
     setPhase('FIND_PULSE');
     await delay(987);
     if (isFirstVisit) {
       setGuide('find your pulse\nyour wrist, your neck, your chest');
       await delay(2584); // fib-sacred
-      setGuide('when you feel it\ntap the screen with each beat');
+      setGuide('when you feel it');
+      await delay(1597); // fib-ceremony — let them find it
+      setGuide('tap with each beat');
     } else {
       setGuide('find your pulse\ntap with each beat');
     }
@@ -205,10 +224,10 @@ export default function usePulseState() {
     await delay(377);
 
     if (lockAnalysis.isLocked) {
-      setGuide('i feel you', true);
+      setGuide('there you are', true);
       startHapticSync(lockAnalysis.avg);
     } else {
-      setGuide('i feel you', true);
+      setGuide('there you are', true);
     }
     await delay(2584);
 

@@ -16,9 +16,11 @@ Reference: `MISOCALM-AGENTS.md` for the agent pipeline and review checklists.
 Every MisoCalm experience follows the same arc. Not because of convention, but because the nervous system needs a shape it can trust: arrival, engagement, integration, release.
 
 ```
-Discovery  ->  Prompt  ->  Intro  ->  Guided Phases  ->  Teaching  ->  Free Play  ->  Exit
-  (app)        (entry)    (frame)     (the stretch)     (landing)    (ownership)    (return)
+Discovery  ->  Prompt  ->  Breath  ->  Intro  ->  Guided Phases  ->  Teaching  ->  Free Play  ->  Exit
+  (app)        (entry)    (settle)    (frame)     (the stretch)     (landing)    (ownership)    (return)
 ```
+
+The **Breath** phase is the universal threshold — the same in all six experiences. It settles the body before the experience-specific content begins. See Section VII-A.
 
 The user finds the experience in the app. They choose to enter. A brief poetic frame sets the emotional context. The guided phases build in intensity (titration). A teaching lands while the body is open. Free play gives them ownership. The exit carries them gently back into the app.
 
@@ -214,7 +216,7 @@ Fixed to the top of the screen. Consistent across ALL experiences:
 Guide text itself:
 - `fontSize: 'clamp(1.4rem, 4vw, 2rem)'`
 - `fontFamily: "'Josefin Sans', sans-serif"`, `fontWeight: 200`
-- `textShadow: '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)'`
+- `textShadow: '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)'` (phi-3 and phi-5 glow radii)
 - `letterSpacing: '0.08em'`, `lineHeight: 1.8`, `whiteSpace: 'pre-line'`
 - `maxWidth: 440`, `padding: '0 26px'`
 - Opacity and transform transitions on text presence
@@ -319,6 +321,85 @@ Toggled via `state.introActive`. When intro is active, the standard guide text z
 **Reduced motion**: When `prefers-reduced-motion` is active, display intro text as a single fade-in rather than character-by-character. GroundingIntro handles this internally.
 
 **Exit during intro**: The exit button ("leave") must be visible and functional during the intro phase. `handleLeave` must work from the moment `state.started` is true, regardless of `introActive` state. A dysregulated user may panic during the intro and need immediate exit.
+
+---
+
+## VII-A. Breath Threshold
+
+The universal moment of settling. Every experience includes the same breath threshold sequence after the prompt screen begins to fade and before any experience-specific content begins. This is the INDUCTION phase from the Five-Phase Therapeutic Script (see `Strategy/Product/SUBCONSCIOUS-REPROGRAMMING-RESEARCH.md`).
+
+### Purpose
+
+- Directs attention to the body (somatic experiencing)
+- Uses permissive language that bypasses resistance
+- Anchors the "power of one breath" as a portable tool
+- Establishes a consistent ritual the nervous system learns to trust across all six experiences
+- The exhale-first pattern prepares the lungs and activates the parasympathetic nervous system
+
+### Wording (universal, all 6 experiences)
+
+```
+"your body is already here"     — truism (pace: undeniable, directs attention inward)
+"breathe out"                   — instruction (pace: exhale first prepares the lungs)
+"three"                         — countdown (987ms each, instant text swap — no blanking gap)
+"two"
+"one"
+"breathe in"                    — lead (no timer — they choose the depth)
+```
+
+The three-count exhale followed by an untimed inhale teaches the body that it gets to choose. The countdown uses `setGuideText` directly (bypassing the standard blanking gap) so the numbers flow as a continuous rhythm.
+
+### Timing
+
+| Step | Delay | Fibonacci | Notes |
+|------|-------|-----------|-------|
+| Initial settling gap | 610ms | fib-ease | Canvas visible, body arriving |
+| "your body is already here" hold | 2584ms | fib-sacred | Full integration |
+| "breathe out" hold | 987ms | fib-breathe | Start exhaling |
+| "three" hold | 987ms | fib-breathe | Countdown |
+| "two" hold | 987ms | fib-breathe | Countdown |
+| "one" hold | 610ms | fib-ease | Short pause after exhale |
+| "breathe in" hold | 2584ms | fib-sacred | Space for deep inhale |
+| Clearing gap | 987ms | fib-breathe | Settling silence |
+
+Total from sequence start: ~10,336ms.
+
+### Implementation
+
+In every state hook's `runSequence()` function, before any experience-specific code:
+
+```javascript
+// === BREATH THRESHOLD (universal) ===
+await delay(610);
+setGuide('your body is already here');
+await delay(2584);
+setGuide('breathe out');
+await delay(987);
+setGuideText('three');   // direct — no blanking gap
+await delay(987);
+setGuideText('two');
+await delay(987);
+setGuideText('one');
+await delay(610);
+setGuide('breathe in');
+await delay(2584);
+setGuide('');
+await delay(987);
+```
+
+For experiences without a formal Intro phase (Impermanence, Pulse, Mandala), the breath flows directly into the first guided phase. For experiences with an Intro (Grounding, Focus, Sanctuary), the breath precedes the letter-by-letter GroundingIntro.
+
+### Language Analysis
+
+- **"your body is already here"**: Truism. The body IS there. "Already" presupposes the body knows what to do.
+- **"breathe out"**: Direct, simple. Exhale-first activates parasympathetic response and empties the lungs for a deeper inhale.
+- **"three... two... one..."**: Countdown provides structure without pressure. 3 steps = prime count.
+- **"breathe in"**: No timer, no count. After the structured exhale, the inhale is permission to take as much as you need.
+
+### References
+
+- Subconscious reprogramming research: `Strategy/Product/SUBCONSCIOUS-REPROGRAMMING-RESEARCH.md`
+- Experience script upgrades: `Strategy/Product/EXPERIENCE-SCRIPT-UPGRADES.md`
 
 ---
 

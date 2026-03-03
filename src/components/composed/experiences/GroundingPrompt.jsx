@@ -63,7 +63,7 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
         ) : (
           <>
             <span className="block">Welcome back.</span>
-            <span className="block mt-2">Your senses remember.</span>
+            <span className="block mt-2">Your body remembers this place.</span>
           </>
         )}
       </div>
@@ -76,7 +76,7 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
           letterSpacing: '0.12em',
           border: '1px solid rgba(165, 180, 252, 0.25)',
           background: 'rgba(165, 180, 252, 0.04)',
-          padding: '14px 42px',
+          padding: '16px 42px',
           borderRadius: 999,
           cursor: 'pointer',
           opacity: 0,

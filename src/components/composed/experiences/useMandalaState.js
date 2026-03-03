@@ -126,6 +126,23 @@ export default function useMandalaState() {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
     const progression = getSymmetryProgression(visits + 1);
 
+    // === BREATH THRESHOLD (universal) ===
+    await delay(610);
+    setGuide('your body is already here');
+    await delay(2584);
+    setGuide('breathe out');
+    await delay(987);
+    setGuideText('three');
+    await delay(987);
+    setGuideText('two');
+    await delay(987);
+    setGuideText('one');
+    await delay(610);
+    setGuide('breathe in');
+    await delay(2584);
+    setGuide('');
+    await delay(987);
+
     // Phase: FIRST_TOUCH
     setPhase('FIRST_TOUCH');
     setShowYouDot(true);
@@ -146,7 +163,7 @@ export default function useMandalaState() {
     // Phase: GROWTH — 5 more touches (prime)
     setPhase('GROWTH');
     if (progression.length > 1) setSymmetry(progression[1]);
-    setGuide('the pattern is listening');
+    setGuide('the pattern follows you');
     await waitForTouches(5);
     await delay(610);
     if (progression.length > 2) setSymmetry(progression[2]);

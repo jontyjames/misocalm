@@ -18,6 +18,7 @@ import { ROUTES } from '@/lib/constants';
 import SoundCanvas from './SoundCanvas';
 import ColourRibbon from './ColourRibbon';
 import useImpermanenceState from './useImpermanenceState';
+import ImpermanencePrompt from './ImpermanencePrompt';
 import ExitThreshold from './ExitThreshold';
 
 export default function ImpermanenceGuide() {
@@ -50,12 +51,18 @@ export default function ImpermanenceGuide() {
     mic.stopListening();
     state.clearSeqTimer();
     router.push(ROUTES.TOOLS);
-  }, [mic, state, router]);
+  }, [mic, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     mic.stopListening();
     state.clearSeqTimer();
-    setExitTransition({ destination: ROUTES.TOOLS, solfeggio: 'violet' });
+    setExitTransition({ destination: ROUTES.DASHBOARD, solfeggio: 'violet' });
+  }, [mic, state.clearSeqTimer]);
+
+  const handleJournal = useCallback(() => {
+    mic.stopListening();
+    state.clearSeqTimer();
+    setExitTransition({ destination: ROUTES.CHECK_IN + '?from=impermanence', solfeggio: 'violet' });
   }, [mic, state.clearSeqTimer]);
 
   return (
@@ -69,110 +76,14 @@ export default function ImpermanenceGuide() {
         showYouLabel={state.showYouLabel}
       />
 
-      {/* Prompt screen (overlays everything, fades out on enter) */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#030712',
-          transition: 'opacity 1.597s ease, visibility 1.597s ease',
-          ...(state.started ? { opacity: 0, visibility: 'hidden', pointerEvents: 'none' } : {}),
-        }}
-      >
-        <p
-          className="tracking-widest text-slate-200"
-          style={{
-            fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
-            fontFamily: "'Josefin Sans', sans-serif",
-            fontWeight: 200,
-            marginBottom: 10,
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
-          }}
-        >
-          {state.isFirstVisit ? 'A small experiment' : 'Impermanence'}
-        </p>
-
-        <div
-          style={{
-            fontSize: 'clamp(0.8rem, 1.8vw, 0.9rem)',
-            letterSpacing: '0.06em',
-            marginBottom: 42,
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
-            textAlign: 'center',
-            lineHeight: 1.8,
-            maxWidth: 340,
-            padding: '0 26px',
-          }}
-          className="font-extralight text-slate-400"
-        >
-          {state.isFirstVisit ? (
-            <>
-              <span className="block">about sound, and what remains</span>
-            </>
-          ) : (
-            <>
-              <span className="block">Welcome back.</span>
-              <span className="block mt-2">Same space, same stillness.</span>
-              <span className="block">See what you notice this time.</span>
-              {state.visits > 0 && (
-                <span className="block mt-4 text-slate-300/50 text-xs">
-                  visit {state.visits + 1}
-                </span>
-              )}
-            </>
-          )}
-        </div>
-
-        <p
-          style={{
-            fontSize: 'clamp(0.7rem, 1.5vw, 0.78rem)',
-            letterSpacing: '0.04em',
-            marginBottom: 26,
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 0.987s forwards',
-            textAlign: 'center',
-            maxWidth: 280,
-            padding: '0 26px',
-          }}
-          className="font-extralight text-slate-400"
-        >
-          Works best in a quiet space without much background noise
-        </p>
-
-        <button
-          onClick={handleEnter}
-          style={{
-            fontFamily: "'Josefin Sans', sans-serif",
-            fontSize: '0.9rem',
-            letterSpacing: '0.12em',
-            border: '1px solid rgba(165, 180, 252, 0.25)',
-            background: 'rgba(165, 180, 252, 0.04)',
-            padding: '14px 42px',
-            borderRadius: 999,
-            cursor: 'pointer',
-            opacity: 0,
-            animation: 'fadeInUp 1.597s ease-out 1.597s forwards',
-            transition: 'all 0.377s ease',
-            color: '#e2e8f0',
-          }}
-          className="font-extralight hover:bg-indigo-300/10 hover:border-indigo-300/40"
-        >
-          {state.isFirstVisit ? 'Begin' : 'Enter'}
-        </button>
-
-        {mic.denied && (
-          <p className="text-rose-400/60 text-xs font-light mt-4">
-            Microphone access is needed for this experience.
-          </p>
-        )}
-      </div>
+      {/* Prompt screen */}
+      <ImpermanencePrompt
+        isFirstVisit={state.isFirstVisit}
+        visits={state.visits}
+        onEnter={handleEnter}
+        denied={mic.denied}
+        visible={!state.started}
+      />
 
       {/* Exit button — always available once started */}
       {state.started && (
@@ -185,7 +96,7 @@ export default function ImpermanenceGuide() {
             left: 16,
             zIndex: 8,
             opacity: 0,
-            animation: 'fadeIn 0.987s ease-out 1.597s forwards',
+            animation: 'fadeIn 0.610s ease-out 0.377s forwards',
           }}
           className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
         >
@@ -224,7 +135,7 @@ export default function ImpermanenceGuide() {
             padding: '0 26px',
             whiteSpace: 'pre-line',
             fontFamily: "'Josefin Sans', sans-serif",
-            textShadow: '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)',
+            textShadow: '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)',
           }}
           className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
         >
@@ -248,15 +159,24 @@ export default function ImpermanenceGuide() {
               zIndex: 5,
               display: 'flex',
               justifyContent: 'center',
+              gap: 26,
             }}
           >
+            <button
+              onClick={handleJournal}
+              className="text-slate-300/60 text-xs font-light tracking-widest
+                         hover:text-slate-200/90 transition-colors"
+              style={{ transition: 'color 0.377s ease' }}
+            >
+              reflect in your journal
+            </button>
             <button
               onClick={handleReturn}
               className="text-slate-300/60 text-xs font-light tracking-widest
                          hover:text-slate-200/90 transition-colors"
               style={{ transition: 'color 0.377s ease' }}
             >
-              return to sanctuary
+              done
             </button>
           </div>
         </>

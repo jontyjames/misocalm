@@ -38,7 +38,12 @@ export default function MandalaGuide() {
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: ROUTES.TOOLS, solfeggio: 'violet' });
+    setExitTransition({ destination: ROUTES.DASHBOARD, solfeggio: 'violet' });
+  }, [state.clearSeqTimer]);
+
+  const handleJournal = useCallback(() => {
+    state.clearSeqTimer();
+    setExitTransition({ destination: ROUTES.CHECK_IN + '?from=mandala', solfeggio: 'violet' });
   }, [state.clearSeqTimer]);
 
   const activeSymmetry = state.freePlay ? freeSymmetry : state.symmetry;
@@ -101,7 +106,7 @@ export default function MandalaGuide() {
           ) : (
             <>
               <span className="block">Welcome back.</span>
-              <span className="block mt-2">Same centre, new patterns.</span>
+              <span className="block mt-2">Same centre. Your hands remember.</span>
               {state.visits > 0 && (
                 <span className="block mt-4 text-slate-300/50 text-xs">
                   visit {state.visits + 1}
@@ -119,7 +124,7 @@ export default function MandalaGuide() {
             letterSpacing: '0.12em',
             border: '1px solid rgba(165, 180, 252, 0.25)',
             background: 'rgba(165, 180, 252, 0.04)',
-            padding: '14px 42px',
+            padding: '16px 42px',
             borderRadius: 999,
             cursor: 'pointer',
             opacity: 0,
@@ -144,7 +149,7 @@ export default function MandalaGuide() {
             left: 16,
             zIndex: 8,
             opacity: 0,
-            animation: 'fadeIn 0.987s ease-out 1.597s forwards',
+            animation: 'fadeIn 0.610s ease-out 0.377s forwards',
           }}
           className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
         >
@@ -183,7 +188,7 @@ export default function MandalaGuide() {
             padding: '0 26px',
             whiteSpace: 'pre-line',
             fontFamily: "'Josefin Sans', sans-serif",
-            textShadow: '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)',
+            textShadow: '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)',
           }}
           className={`font-extralight ${state.guideBright ? 'text-slate-200' : 'text-slate-300'}`}
         >
@@ -209,15 +214,24 @@ export default function MandalaGuide() {
               zIndex: 5,
               display: 'flex',
               justifyContent: 'center',
+              gap: 26,
             }}
           >
+            <button
+              onClick={handleJournal}
+              className="text-slate-300/60 text-xs font-light tracking-widest
+                         hover:text-slate-200/90 transition-colors"
+              style={{ transition: 'color 0.377s ease' }}
+            >
+              reflect in your journal
+            </button>
             <button
               onClick={handleReturn}
               className="text-slate-300/60 text-xs font-light tracking-widest
                          hover:text-slate-200/90 transition-colors"
               style={{ transition: 'color 0.377s ease' }}
             >
-              return to sanctuary
+              done
             </button>
           </div>
         </>

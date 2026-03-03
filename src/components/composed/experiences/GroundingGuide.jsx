@@ -32,7 +32,7 @@ const TIER_TRANSITIONS = {
   FLASH:    { in: '0.089s', out: '0.144s' },
 };
 
-const TEXT_SHADOW = '0 0 20px rgba(3,7,18,0.8), 0 0 40px rgba(3,7,18,0.5)';
+const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
 
 export default function GroundingGuide() {
   const router = useRouter();
@@ -195,7 +195,7 @@ export default function GroundingGuide() {
             left: 16,
             zIndex: 8,
             opacity: 0,
-            animation: 'fadeIn 0.987s ease-out 1.597s forwards',
+            animation: 'fadeIn 0.610s ease-out 0.377s forwards',
           }}
           className="flex items-center gap-1 text-slate-400/40 text-xs font-light tracking-wider hover:text-slate-300/60 transition-colors"
         >
