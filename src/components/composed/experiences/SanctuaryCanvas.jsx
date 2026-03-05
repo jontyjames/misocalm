@@ -1,14 +1,13 @@
 /**
- * SanctuaryCanvas — full-screen breath-reactive sacred geometry renderer
+ * SanctuaryCanvas — full-screen breath-reactive bioluminescent tree renderer
  *
- * Builds a sanctuary landscape from breath. Three visual layers:
- * - Foundation: curved arcs at the base (bottom third)
- * - Rising: vertical pillars and lines (middle)
- * - Canopy: overhead dome arcs and radial geometry (top)
+ * Builds a Tree of Life from breath. Shape types blend across breaths:
+ * roots (1-3) → trunk (3-6) → branches (5-9) → leaves (7-11).
+ * Ambient DriftSparkles float between breaths.
  *
- * Colour: solfeggio palette from Tree of Life random positions.
- * Breath amplitude controls geometry size, brightness, and complexity.
- * Shapes persist — what you build stays. Capped at 127 (Mersenne prime).
+ * Double-stroke glow on all shapes. Sparks via SparkBurst (additive).
+ * Sacred numbers: MAX_SHAPES=127 (Mersenne prime), MAX_DRIFT_SPARKLES=89 (fib),
+ * DPR capped at 2, spawn probability 0.146 (1/phi⁴).
  */
 
 'use client';
@@ -16,16 +15,17 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import SparkBurst from './SparkBurst';
-import { createShape, MAX_SHAPES, PHASE_COLOUR_COUNT } from './SanctuaryShapes';
+import { createTreeShape, DriftSparkle } from './SanctuaryShapes';
+import { MAX_SHAPES, MAX_DRIFT_SPARKLES, pickShapeType } from './SanctuaryShapeData';
 
-export default function SanctuaryCanvas({ breathCount, breathPhase, treePalette }) {
+export default function SanctuaryCanvas({ breathCount, treePalette }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ shapes: [], sparks: [], time: 0, lastBreathCount: 0 });
+  const stateRef = useRef({ shapes: [], sparks: [], driftSparkles: [], time: 0, lastBreathCount: 0 });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
-  const propsRef = useRef({ breathCount, breathPhase, treePalette });
-  propsRef.current = { breathCount, breathPhase, treePalette };
+  const propsRef = useRef({ breathCount, treePalette });
+  propsRef.current = { breathCount, treePalette };
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -41,42 +41,54 @@ export default function SanctuaryCanvas({ breathCount, breathPhase, treePalette 
     const props = propsRef.current;
 
     s.time++;
-
-    // Clear each frame — shapes manage their own persistence via alpha floor
     ctx.clearRect(0, 0, W, H);
 
-    // Spawn shapes + sparks on each new breath
+    // Spawn shapes on each new breath
     if (props.breathCount > s.lastBreathCount) {
       const diff = props.breathCount - s.lastBreathCount;
-      const phase = props.breathPhase || 'FOUNDATION';
       const palette = props.treePalette;
       for (let i = 0; i < diff; i++) {
-        const amp = 0.3 + Math.random() * 0.7;
-        s.shapes.push(createShape(phase, cx, cy, W, H, amp, palette));
-        // Add 2 companion shapes for richness (3 total per breath, prime)
-        s.shapes.push(createShape(phase, cx, cy, W, H, amp * 0.618, palette));
-        s.shapes.push(createShape(phase, cx, cy, W, H, amp * 0.382, palette));
-        // Bioluminescent sparks — phase-available colours
-        const sparkPhase = phase === 'FREE_PLAY'
-          ? ['FOUNDATION', 'RISING', 'CANOPY'][Math.floor(Math.random() * 3)]
-          : phase;
-        const count = phase === 'FREE_PLAY' ? 5 : (PHASE_COLOUR_COUNT[sparkPhase] || 5);
-        const sparkColors = palette ? palette.slice(0, count) : null;
-        s.sparks.push(new SparkBurst(W, H, sparkPhase, sparkColors));
+        const breathNum = s.lastBreathCount + i + 1;
+        const amp = 0.382 + Math.random() * 0.618;
+        // 3 shapes per breath (prime) — primary, phi, phi-complement amplitudes
+        const ampScales = [1, 0.618, 0.382];
+        for (let j = 0; j < 3; j++) {
+          const shapeType = pickShapeType(breathNum);
+          s.shapes.push(createTreeShape(shapeType, cx, cy, W, H, amp * ampScales[j], palette));
+        }
+        // Bioluminescent sparks — full palette
+        const sparkColors = palette ? palette.slice(0, 5) : null;
+        const sparkZone = pickShapeType(breathNum);
+        s.sparks.push(new SparkBurst(W, H, sparkZone, sparkColors));
       }
       s.lastBreathCount = props.breathCount;
     }
 
-    // Update shapes — they never self-remove, cap enforces limit
+    // Ambient drift sparkles — spawn when breathing has started
+    if (props.breathCount > 0 && s.driftSparkles.length < MAX_DRIFT_SPARKLES) {
+      if (Math.random() < 0.146) {
+        s.driftSparkles.push(new DriftSparkle(W, H, props.treePalette));
+      }
+    }
+
+    // Update shapes — persist forever, cap enforces limit
     for (const shape of s.shapes) { shape.update(); }
     while (s.shapes.length > MAX_SHAPES) { s.shapes.shift(); }
 
-    // Draw shapes
+    // Draw shapes (tree layer)
     for (const shape of s.shapes) {
       shape.draw(ctx, s.time);
     }
 
-    // Update and draw sparks (additive glow)
+    // Update and draw drift sparkles
+    for (let i = s.driftSparkles.length - 1; i >= 0; i--) {
+      if (!s.driftSparkles[i].update()) { s.driftSparkles.splice(i, 1); continue; }
+    }
+    for (const sparkle of s.driftSparkles) {
+      sparkle.draw(ctx);
+    }
+
+    // Update and draw spark bursts (additive glow)
     for (let i = s.sparks.length - 1; i >= 0; i--) {
       if (!s.sparks[i].update()) { s.sparks.splice(i, 1); continue; }
     }

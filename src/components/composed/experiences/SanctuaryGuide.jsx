@@ -1,10 +1,11 @@
 /**
  * SanctuaryGuide — orchestrates the full Sanctuary experience
  *
- * Slide-reactive generative sacred geometry. Slide up to inhale, down to exhale.
- * Each cycle adds sacred geometry to build a sanctuary landscape.
- * Solfeggio: slate (396Hz — Liberation from Fear).
+ * Guided-to-solo breath flow. 11 breaths build a bioluminescent Tree of Life.
+ * Slide up to inhale, down to exhale. Solfeggio: slate (396Hz).
  * No microphone, no permissions. Full user control.
+ *
+ * Orb smoothing: 55ms (fib) during touch, 610ms (fib) on release.
  */
 
 'use client';
@@ -17,7 +18,6 @@ import { ROUTES } from '@/lib/constants';
 import SanctuaryCanvas from './SanctuaryCanvas';
 import SanctuaryComplete from './SanctuaryComplete';
 import SanctuaryPrompt from './SanctuaryPrompt';
-import GroundingIntro from './GroundingIntro';
 import ExitThreshold from './ExitThreshold';
 import useSanctuaryState from './useSanctuaryState';
 
@@ -105,7 +105,7 @@ export default function SanctuaryGuide() {
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && (
-        <SanctuaryCanvas breathCount={state.breathCount} breathPhase={state.phase} treePalette={state.treePalette} />
+        <SanctuaryCanvas breathCount={state.breathCount} treePalette={state.treePalette} />
       )}
 
       {/* Touch wrapper — full screen, below exit button */}
@@ -178,10 +178,10 @@ export default function SanctuaryGuide() {
               width: 10,
               height: 10,
               borderRadius: '50%',
-              background: 'rgba(148, 163, 184, 0.6)',
-              boxShadow: '0 0 10px rgba(148, 163, 184, 0.35), 0 0 26px rgba(148, 163, 184, 0.12)',
+              background: 'rgba(148, 163, 184, 0.618)',
+              boxShadow: '0 0 10px rgba(148, 163, 184, 0.382), 0 0 26px rgba(148, 163, 184, 0.146)',
               transform: `translateY(calc(${state.breathPosition * 100}dvh - 5px))`,
-              transition: 'transform 377ms cubic-bezier(0.382, 0, 0.236, 1)', // fib-flow, breath-like smoothing
+              transition: `transform ${state.isTouching ? '55ms' : '610ms'} cubic-bezier(0.382, 0, 0.236, 1)`, // 55ms=fib touch tracking, 610ms=fib release drift
               willChange: 'transform',
             }}
           />
@@ -206,8 +206,9 @@ export default function SanctuaryGuide() {
             left: 16,
             zIndex: 8,
             padding: '16px 16px',
-            opacity: 0,
-            animation: 'fadeIn 0.610s ease-out 0.377s forwards',
+            ...(prefersReduced
+              ? { opacity: 1 }
+              : { opacity: 0, animation: 'fadeIn 0.610s ease-out 0.377s forwards' }),
           }}
           className="flex items-center gap-1 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors"
         >
@@ -216,11 +217,8 @@ export default function SanctuaryGuide() {
         </button>
       )}
 
-      {/* Intro text — centred, letter-by-letter */}
-      {state.introActive && <GroundingIntro text={state.guideText} />}
-
       {/* Guide text — upper portion */}
-      {!state.introActive && (
+      {(
         <div
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, zIndex: 3,
@@ -254,7 +252,7 @@ export default function SanctuaryGuide() {
       {state.started && state.breathCount > 0 && !state.complete && (
         <div style={{ position: 'fixed', bottom: 'clamp(68px, 12vh, 110px)', left: 0, right: 0, zIndex: 3, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
           <p className="text-slate-300/30 text-xs font-light tracking-widest" style={{ transition: 'opacity 0.377s ease' }}>
-            {state.breathCount} breath{state.breathCount !== 1 ? 's' : ''}
+            {state.breathCount} of {state.totalBreaths}
           </p>
         </div>
       )}

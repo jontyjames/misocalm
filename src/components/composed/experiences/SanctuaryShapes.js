@@ -1,184 +1,211 @@
 /**
- * SanctuaryShapes — shape classes for the Sanctuary Tree of Life
+ * SanctuaryShapes — bioluminescent Tree of Life shape classes
  *
- * Extracted from SanctuaryCanvas. Three shape types build the tree:
- * - FoundationArc: curved arcs at the base (roots)
- * - RisingPillar: vertical pillars with cap shapes (trunk)
- * - CanopyArc: overhead domes with radial spokes (crown)
+ * 5 shape types build an organic, glowing tree:
+ * - RootCurve: organic bezier curves at the base
+ * - TrunkLine: vertical lines with sine wobble
+ * - BranchCurve: Fibonacci spiral-inspired arcs
+ * - LeafOrnament: sacred geometric shapes at branch tips
+ * - DriftSparkle: ambient floating particles
  *
- * Persistence model: shapes bloom in, then settle to a ghostly alpha floor.
- * They never fully disappear — what you build stays.
- *
- * Sacred numbers: MIN_ALPHA=0.618 (phi), SETTLE_AGE=233 (fib),
- * MAX_SHAPES=127 (Mersenne prime 2^7-1), geoLife floor=0.618 (phi).
+ * Double-stroke glow: halo at 0.146 (1/phi⁴), core RGB+26.
+ * Persistence: shapes bloom then settle to MIN_ALPHA=0.618 (phi).
  */
 
-const TAU = Math.PI * 2;
+import {
+  TAU, MIN_ALPHA, SETTLE_AGE, SLATE_FALLBACK,
+  TYPE_WARMTH, SHAPE_ZONES,
+  pickTreeColor, settleLife, glowStroke, pickShapeType,
+} from './SanctuaryShapeData';
 
-// Persistence constants
-const MIN_ALPHA = 0.618;   // alpha floor — phi
-const SETTLE_AGE = 233;    // frames to reach persistent state — Fibonacci
-const MAX_SHAPES = 127;    // array cap — Mersenne prime (2^7-1)
+// Golden angle for natural branch distribution — 137.5° in radians
+const GOLDEN_ANGLE = 2.399;
 
-// Slate fallback (used when treePalette is null)
-const SLATE_FALLBACK = { r: 148, g: 163, b: 184 }; // slate-400
-
-// How many palette colours each phase reveals — consecutive primes (2, 3, 5)
-const PHASE_COLOUR_COUNT = { FOUNDATION: 2, RISING: 3, CANOPY: 5 };
-
-// Alpha warmth multiplier builds across phases — phi-derived
-const PHASE_WARMTH = { FOUNDATION: 1.0, RISING: 1.1, CANOPY: 1.236 };
-
-function pickTreeColor(palette, phase, amplitude, overrideCount) {
-  if (!palette) return SLATE_FALLBACK;
-  const count = overrideCount || PHASE_COLOUR_COUNT[phase] || 5;
-  const available = palette.slice(0, count);
-  const jitter = Math.random() * 0.618;
-  const bias = amplitude * 0.618 + jitter * 0.382;
-  const idx = Math.min(available.length - 1, Math.floor(bias * available.length));
-  return available[idx];
-}
-
-// Settle-based life: fast bloom fade, then holds at MIN_ALPHA forever
-function settleLife(age) {
-  const settleT = Math.min(1, age / SETTLE_AGE);
-  return MIN_ALPHA + (1 - MIN_ALPHA) * (1 - settleT * settleT);
-}
-
-// Geometry life for CanopyArc: settles at phi instead of collapsing
-function geoLife(age) {
-  const settleT = Math.min(1, age / SETTLE_AGE);
-  return 0.618 + 0.382 * (1 - settleT);
-}
-
-class FoundationArc {
-  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
+class RootCurve {
+  constructor(cx, _cy, W, H, amplitude, palette, colorCount, warmth) {
     this.age = 0;
-    const spread = 0.3 + amplitude * 0.618;
-    const baseY = H * (0.75 + Math.random() * 0.15);
-    this.cx = cx + (Math.random() - 0.5) * W * spread;
-    this.cy = baseY;
-    this.radius = 42 + amplitude * 68;
-    this.startAngle = Math.PI + (Math.random() - 0.5) * 0.618;
-    this.endAngle = TAU + (Math.random() - 0.5) * 0.618;
-    this.lineWidth = 0.5 + amplitude * 1.5;
-    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.3 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
+    const zone = SHAPE_ZONES.ROOT;
+    const spread = 0.236 + amplitude * 0.618;
+    this.x1 = cx + (Math.random() - 0.5) * W * spread;
+    this.y1 = H * (zone.minY + Math.random() * (zone.maxY - zone.minY));
+    const curveWidth = 42 + amplitude * 68;
+    this.cpx = this.x1 + (Math.random() - 0.5) * curveWidth;
+    this.cpy = this.y1 - (10 + amplitude * 26);
+    this.x2 = this.x1 + (Math.random() - 0.5) * curveWidth * 0.618;
+    this.y2 = this.y1 + (Math.random() - 0.5) * 16;
+    this.lineWidth = 0.5 + amplitude * 1.618;
+    this.color = pickTreeColor(palette, 'ROOT', amplitude, colorCount);
+    this.baseAlpha = (0.236 + amplitude * 0.382) * warmth;
+  }
+  update() { this.age++; return true; }
+  draw(ctx) {
+    const a = this.baseAlpha * settleLife(this.age);
+    if (a < 0.005) return;
+    ctx.beginPath();
+    ctx.moveTo(this.x1, this.y1);
+    ctx.quadraticCurveTo(this.cpx, this.cpy, this.x2, this.y2);
+    glowStroke(ctx, this.color, a, this.lineWidth * (0.5 + settleLife(this.age) * 0.5));
+  }
+}
+
+class TrunkLine {
+  constructor(cx, _cy, W, H, amplitude, palette, colorCount, warmth) {
+    this.age = 0;
+    const zone = SHAPE_ZONES.TRUNK;
+    const xSpread = 0.236 + amplitude * 0.236;
+    this.x = cx + (Math.random() - 0.5) * W * xSpread;
+    this.topY = H * zone.minY + (1 - amplitude) * H * 0.146;
+    this.bottomY = H * (zone.maxY - Math.random() * 0.090);
+    this.wobbleAmp = 2 + amplitude * 5;
+    this.wobbleFreq = 0.01 + Math.random() * 0.01;
+    this.wobblePhase = Math.random() * TAU;
+    this.lineWidth = 0.236 + amplitude * 1.236;
+    this.color = pickTreeColor(palette, 'TRUNK', amplitude, colorCount);
+    this.baseAlpha = (0.236 + amplitude * 0.382) * warmth;
+  }
+  update() { this.age++; return true; }
+  draw(ctx, time) {
+    const life = settleLife(this.age);
+    const a = this.baseAlpha * life;
+    if (a < 0.005) return;
+    const revealProgress = Math.min(1, this.age / 55);
+    const currentTop = this.bottomY - (this.bottomY - this.topY) * revealProgress;
+    const segments = 13;
+    ctx.beginPath();
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const y = this.bottomY - (this.bottomY - currentTop) * t;
+      const wobble = Math.sin(y * this.wobbleFreq + time * 0.003 + this.wobblePhase) * this.wobbleAmp * t * life;
+      i === 0 ? ctx.moveTo(this.x + wobble, y) : ctx.lineTo(this.x + wobble, y);
+    }
+    glowStroke(ctx, this.color, a, this.lineWidth);
+  }
+}
+
+class BranchCurve {
+  constructor(cx, _cy, W, H, amplitude, palette, colorCount, warmth) {
+    this.age = 0;
+    const zone = SHAPE_ZONES.BRANCH;
+    const angle = Math.random() * TAU;
+    const goldenOffset = Math.floor(Math.random() * 7) * GOLDEN_ANGLE;
+    this.cx = cx + Math.cos(goldenOffset) * W * 0.146;
+    this.cy = H * (zone.minY + Math.random() * (zone.maxY - zone.minY));
+    const reach = 42 + amplitude * 68;
+    const branchAngle = angle + goldenOffset;
+    this.cpx = this.cx + Math.cos(branchAngle) * reach * 0.618;
+    this.cpy = this.cy + Math.sin(branchAngle) * reach * 0.382 - reach * 0.236;
+    this.ex = this.cx + Math.cos(branchAngle) * reach;
+    this.ey = this.cy + Math.sin(branchAngle) * reach * 0.618 - reach * 0.382;
+    this.lineWidth = 0.236 + amplitude * 1;
+    this.color = pickTreeColor(palette, 'BRANCH', amplitude, colorCount);
+    this.baseAlpha = (0.236 + amplitude * 0.382) * warmth;
   }
   update() { this.age++; return true; }
   draw(ctx) {
     const life = settleLife(this.age);
     const a = this.baseAlpha * life;
     if (a < 0.005) return;
-    const { r, g, b } = this.color;
+    const reveal = Math.min(1, this.age / 42);
     ctx.beginPath();
-    ctx.arc(this.cx, this.cy, this.radius, this.startAngle, this.endAngle);
-    ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
-    ctx.lineWidth = this.lineWidth * (0.5 + life * 0.5);
-    ctx.stroke();
+    ctx.moveTo(this.cx, this.cy);
+    const mx = this.cx + (this.cpx - this.cx) * reveal;
+    const my = this.cy + (this.cpy - this.cy) * reveal;
+    const ex = this.cx + (this.ex - this.cx) * reveal;
+    const ey = this.cy + (this.ey - this.cy) * reveal;
+    ctx.quadraticCurveTo(mx, my, ex, ey);
+    glowStroke(ctx, this.color, a, this.lineWidth);
   }
 }
 
-class RisingPillar {
-  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
+class LeafOrnament {
+  constructor(cx, _cy, W, H, amplitude, palette, colorCount, warmth) {
     this.age = 0;
-    const xSpread = 0.4 + amplitude * 0.3;
-    this.x = cx + (Math.random() - 0.5) * W * xSpread;
-    this.topY = H * (0.25 + (1 - amplitude) * 0.2);
-    this.bottomY = H * (0.7 + Math.random() * 0.1);
-    this.lineWidth = 0.3 + amplitude * 1.2;
-    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.25 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
-    this.capSize = 3 + amplitude * 5;
-    this.capSides = [3, 5, 7][Math.floor(Math.random() * 3)];
+    const zone = SHAPE_ZONES.LEAF;
+    this.cx = cx + (Math.random() - 0.5) * W * 0.618;
+    this.cy = H * (zone.minY + Math.random() * (zone.maxY - zone.minY));
+    this.sides = [3, 5, 7][Math.floor(Math.random() * 3)];
+    this.radius = 3 + amplitude * 7;
+    this.rotation = Math.random() * TAU;
+    this.rotSpeed = (Math.random() - 0.5) * 0.003;
+    this.color = pickTreeColor(palette, 'LEAF', amplitude, colorCount);
+    this.baseAlpha = (0.236 + amplitude * 0.382) * warmth;
+    this.lineWidth = 0.5 + amplitude * 0.5;
   }
   update() { this.age++; return true; }
   draw(ctx, time) {
     const life = settleLife(this.age);
     const a = this.baseAlpha * life;
     if (a < 0.005) return;
-    const { r, g, b } = this.color;
-    const revealProgress = Math.min(1, this.age / 55);
-    const currentTop = this.bottomY - (this.bottomY - this.topY) * revealProgress;
+    const r = this.radius * Math.min(1, this.age / 34);
+    const rot = this.rotation + time * this.rotSpeed;
     ctx.beginPath();
-    ctx.moveTo(this.x, this.bottomY);
-    ctx.lineTo(this.x, currentTop);
-    ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
-    ctx.lineWidth = this.lineWidth;
-    ctx.stroke();
-    if (revealProgress > 0.8) {
-      const capAlpha = a * ((revealProgress - 0.8) / 0.2);
+    for (let i = 0; i <= this.sides; i++) {
+      const angle = (i / this.sides) * TAU + rot;
+      const px = this.cx + Math.cos(angle) * r * life;
+      const py = this.cy + Math.sin(angle) * r * life;
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    glowStroke(ctx, this.color, a, this.lineWidth);
+    // Core glow dot
+    if (r > 2) {
+      const { r: cr, g: cg, b: cb } = this.color;
+      const dotR = r * 0.382;
+      const grad = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, dotR);
+      grad.addColorStop(0, `rgba(${Math.min(255, cr + 26)},${Math.min(255, cg + 26)},${Math.min(255, cb + 26)},${a * 0.618})`);
+      grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
       ctx.beginPath();
-      for (let i = 0; i <= this.capSides; i++) {
-        const angle = (i / this.capSides) * TAU + time * 0.00618;
-        const px = this.x + Math.cos(angle) * this.capSize * life;
-        const py = currentTop + Math.sin(angle) * this.capSize * life;
-        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-      }
-      ctx.strokeStyle = `rgba(${r},${g},${b},${capAlpha})`;
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
+      ctx.arc(this.cx, this.cy, dotR, 0, TAU);
+      ctx.fillStyle = grad;
+      ctx.fill();
     }
   }
 }
 
-class CanopyArc {
-  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
+class DriftSparkle {
+  constructor(W, H, palette) {
     this.age = 0;
-    this.cx = cx + (Math.random() - 0.5) * W * 0.3;
-    this.cy = H * (0.15 + Math.random() * 0.2);
-    this.radius = 68 + amplitude * 110;
-    this.startAngle = (Math.random() - 0.5) * 0.618;
-    this.endAngle = Math.PI + (Math.random() - 0.5) * 0.618;
-    this.lineWidth = 0.3 + amplitude * 1;
-    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.2 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
-    this.spokeCount = [3, 5, 7][Math.floor(Math.random() * 3)];
-    this.spokeLen = 16 + amplitude * 26;
+    this.x = W * (0.146 + Math.random() * 0.708);
+    this.y = H * (0.090 + Math.random() * 0.764);
+    this.vx = (Math.random() - 0.5) * 0.146;
+    this.vy = -(0.056 + Math.random() * 0.090);
+    this.maxRadius = 1 + Math.random() * 2;
+    this.color = palette ? palette[Math.floor(Math.random() * palette.length)] : SLATE_FALLBACK;
+    this.life = SETTLE_AGE;
   }
-  update() { this.age++; return true; }
-  draw(ctx, time) {
-    const life = settleLife(this.age);
-    const gl = geoLife(this.age);
-    const a = this.baseAlpha * life;
-    if (a < 0.005) return;
+  update() {
+    this.age++;
+    this.x += this.vx;
+    this.y += this.vy;
+    return this.age < this.life;
+  }
+  draw(ctx) {
+    const t = this.age / this.life;
+    const brightness = t < 0.382 ? t / 0.382 : (1 - t) / 0.618;
+    const alpha = Math.max(0, brightness) * 0.382;
+    const radius = this.maxRadius * Math.max(0, brightness);
+    if (radius < 0.236) return;
     const { r, g, b } = this.color;
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
+    grad.addColorStop(0, `rgba(${Math.min(255, r + 26)},${Math.min(255, g + 26)},${Math.min(255, b + 26)},${alpha})`);
+    grad.addColorStop(0.618, `rgba(${r},${g},${b},${alpha * 0.382})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
     ctx.beginPath();
-    ctx.arc(this.cx, this.cy, this.radius * (0.618 + gl * 0.382), this.startAngle, this.endAngle);
-    ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
-    ctx.lineWidth = this.lineWidth;
-    ctx.stroke();
-    if (this.age > 34) {
-      const spokeAlpha = a * 0.618;
-      for (let i = 0; i < this.spokeCount; i++) {
-        const angle = this.startAngle + (i / (this.spokeCount - 1 || 1)) * (this.endAngle - this.startAngle);
-        const innerR = this.radius * 0.618 * gl;
-        const outerR = innerR + this.spokeLen * gl;
-        ctx.beginPath();
-        ctx.moveTo(this.cx + Math.cos(angle) * innerR, this.cy + Math.sin(angle) * innerR);
-        ctx.lineTo(this.cx + Math.cos(angle) * outerR, this.cy + Math.sin(angle) * outerR);
-        ctx.strokeStyle = `rgba(${r},${g},${b},${spokeAlpha})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
+    ctx.arc(this.x, this.y, radius, 0, TAU);
+    ctx.fillStyle = grad;
+    ctx.fill();
   }
 }
 
-const FREE_PLAY_ZONES = ['FOUNDATION', 'RISING', 'CANOPY'];
-
-function createShape(phase, cx, cy, W, H, amplitude, palette) {
-  let effectivePhase = phase;
-  let colorCount;
-
-  if (phase === 'FREE_PLAY') {
-    effectivePhase = FREE_PLAY_ZONES[Math.floor(Math.random() * 3)];
-    colorCount = 5; // full palette in free play
+function createTreeShape(shapeType, cx, cy, W, H, amplitude, palette) {
+  const warmth = TYPE_WARMTH[shapeType] || 1;
+  const colorCount = null; // use type defaults
+  switch (shapeType) {
+    case 'TRUNK': return new TrunkLine(cx, cy, W, H, amplitude, palette, colorCount, warmth);
+    case 'BRANCH': return new BranchCurve(cx, cy, W, H, amplitude, palette, colorCount, warmth);
+    case 'LEAF': return new LeafOrnament(cx, cy, W, H, amplitude, palette, colorCount, warmth);
+    default: return new RootCurve(cx, cy, W, H, amplitude, palette, colorCount, warmth);
   }
-
-  if (effectivePhase === 'FOUNDATION') return new FoundationArc(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
-  if (effectivePhase === 'RISING') return new RisingPillar(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
-  return new CanopyArc(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
 }
 
-export { createShape, MAX_SHAPES, PHASE_COLOUR_COUNT };
+export { createTreeShape, DriftSparkle };

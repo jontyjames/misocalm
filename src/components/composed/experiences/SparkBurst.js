@@ -10,11 +10,15 @@ const SPARK_COUNT = 7;   // prime, sacred
 const SPARK_LIFE = 89;   // Fibonacci
 const BLOOM_PEAK = 13;   // prime — age at max brightness
 
-// Phase spawn zones (normalised Y: 0=top, 1=bottom)
+// Spawn zones (normalised Y: 0=top, 1=bottom) — supports both legacy and new shape types
 const PHASE_ZONES = {
   FOUNDATION: { minY: 0.65, maxY: 0.9 },
   RISING:     { minY: 0.3,  maxY: 0.7 },
   CANOPY:     { minY: 0.1,  maxY: 0.4 },
+  ROOT:       { minY: 0.70, maxY: 0.90 },
+  TRUNK:      { minY: 0.30, maxY: 0.75 },
+  BRANCH:     { minY: 0.090, maxY: 0.50 },
+  LEAF:       { minY: 0.090, maxY: 0.45 },
 };
 
 class Spark {

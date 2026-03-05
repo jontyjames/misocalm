@@ -1,13 +1,12 @@
 /**
- * useSanctuaryState — slide-driven state machine for the Sanctuary experience
+ * useSanctuaryState — guided-to-solo breath state machine for Sanctuary
  *
- * Detects breath cycles via vertical slide gesture (up = inhale, down = exhale).
- * 13 guided breath cycles across 3 phases: Foundation (3), Rising (5), Canopy (5).
- * All counts are prime. Promise-based async sequence.
+ * 11 breaths (prime). 3 guided with mid-breath cues, 8 solo.
+ * 3-tier return visits: FULL (1-2), FAMILIAR (3-6), MINIMAL (7+).
+ * Slide detection extracted to useSlideDetection.
  *
- * Slide detection: user slides finger/pointer UP past 0.382 threshold (phi complement),
- * then DOWN past 0.618 threshold (phi) to complete one breath cycle.
- * No microphone, no permissions, full user control.
+ * Sacred numbers: 11 breaths (prime), 3 guided (prime), timing Fibonacci,
+ * thresholds phi pair (0.382/0.618).
  */
 
 'use client';
@@ -17,30 +16,37 @@ import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS, SANCTUARY_TEACHINGS, FIBONACCI_TIMING } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 import { lerpColor } from './ColourRibbon';
+import useSlideDetection from './useSlideDetection';
 
-// 5 random solfeggio-arc positions → sorted → interpolated colours
+const TOTAL_BREATHS = 11;
+
 function generateTreePalette() {
   const positions = Array.from({ length: 5 }, () => Math.random());
   positions.sort((a, b) => a - b);
   return positions.map(t => lerpColor(t));
 }
 
-// Slide detection thresholds (normalised Y: 0 = top, 1 = bottom)
-const SLIDE_UP_THRESHOLD = 0.382;   // phi complement — finger must cross above this
-const SLIDE_DOWN_THRESHOLD = 0.618; // phi — finger must cross below this to complete cycle
-const SLIDE_TIMEOUT = 29000;        // prime — timeout so sequence never hangs
-
-// Phases
 const PHASES = {
   PROMPT: 'PROMPT',
-  INTRO: 'INTRO',
-  FOUNDATION: 'FOUNDATION',
-  RISING: 'RISING',
-  CANOPY: 'CANOPY',
+  OPENING: 'OPENING',
+  GUIDED: 'GUIDED',
+  SOLO: 'SOLO',
   TEACHING: 'TEACHING',
   COMPLETE: 'COMPLETE',
   FREE_PLAY: 'FREE_PLAY',
 };
+
+const GUIDED_CUES = [
+  { inhale: 'breathe in', exhale: 'let it go' },
+  { inhale: 'breathe in', exhale: 'softer' },
+  { inhale: 'breathe in', exhale: 'good' },
+];
+
+function getVisitTier(visits) {
+  if (visits <= 1) return 'FULL';
+  if (visits <= 5) return 'FAMILIAR';
+  return 'MINIMAL';
+}
 
 function pickTeaching(visitIndex, lastIndex) {
   if (visitIndex < SANCTUARY_TEACHINGS.length) {
@@ -52,39 +58,29 @@ function pickTeaching(visitIndex, lastIndex) {
 }
 
 export default function useSanctuaryState() {
+  const slide = useSlideDetection();
   const [started, setStarted] = useState(false);
   const [guideText, setGuideText] = useState('');
   const [guideBright, setGuideBright] = useState(false);
   const [phase, setPhase] = useState(PHASES.PROMPT);
   const [complete, setComplete] = useState(false);
   const [freePlay, setFreePlay] = useState(false);
-  const [introActive, setIntroActive] = useState(false);
   const [breathCount, setBreathCount] = useState(0);
-  const [breathPosition, setBreathPosition] = useState(0.5); // 0=top, 1=bottom
   const [treePalette, setTreePalette] = useState(null);
-  const [isTouching, setIsTouching] = useState(false);
   const [visits, setVisits] = useLocalStorage(STORAGE_KEYS.SANCTUARY_VISITS, 0);
   const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.SANCTUARY_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
   const analyticsStartRef = useRef(null);
-
-  // Slide detection refs
-  const waitingForSlideRef = useRef(false);
-  const hasSlideUpRef = useRef(false);   // finger crossed above SLIDE_UP_THRESHOLD
-  const peakYRef = useRef(1);            // minimum Y reached during inhale (for amplitude)
-  const resolveBreathRef = useRef(null);
-
   const seqTimerRef = useRef(null);
   const guideTimerRef = useRef(null);
-  const interactionTimerRef = useRef(null);
 
   const clearSeqTimer = useCallback(() => {
-    [seqTimerRef, guideTimerRef, interactionTimerRef].forEach(ref => {
+    [seqTimerRef, guideTimerRef].forEach(ref => {
       if (ref.current) { clearTimeout(ref.current); ref.current = null; }
     });
-    resolveBreathRef.current = null;
-  }, []);
+    slide.cleanup();
+  }, [slide.cleanup]);
 
   useEffect(() => () => clearSeqTimer(), [clearSeqTimer]);
 
@@ -97,7 +93,7 @@ export default function useSanctuaryState() {
         setGuideText(text);
         setGuideBright(bright);
         guideTimerRef.current = null;
-      }, 377); // fib-flow
+      }, FIBONACCI_TIMING.flow);
     }
   }, []);
 
@@ -107,190 +103,103 @@ export default function useSanctuaryState() {
     });
   }, []);
 
-  // Process slide input — called on pointer/touch move with normalised Y (0=top, 1=bottom)
-  const processSlide = useCallback((normalizedY) => {
-    setBreathPosition(normalizedY);
-
-    if (!waitingForSlideRef.current) return;
-
-    // Detect slide up (inhale) — finger crosses above threshold
-    if (normalizedY < SLIDE_UP_THRESHOLD && !hasSlideUpRef.current) {
-      hasSlideUpRef.current = true;
-      peakYRef.current = normalizedY;
-    }
-
-    // Track peak (minimum Y) during inhale for amplitude
-    if (hasSlideUpRef.current && normalizedY < peakYRef.current) {
-      peakYRef.current = normalizedY;
-    }
-
-    // Detect slide down (exhale) — finger crosses below threshold after inhale
-    if (hasSlideUpRef.current && normalizedY > SLIDE_DOWN_THRESHOLD) {
-      // Amplitude: deeper slide = stronger geometry (0-1 based on how high they went)
-      const amplitude = Math.min(1, Math.max(0.3, 1 - peakYRef.current / SLIDE_UP_THRESHOLD));
-      waitingForSlideRef.current = false;
-      hasSlideUpRef.current = false;
-      peakYRef.current = 1;
-
-      // Haptic feedback (13ms, prime — matches Mandala)
-      if (navigator.vibrate) navigator.vibrate(13);
-
-      if (resolveBreathRef.current) {
-        resolveBreathRef.current(amplitude);
-        resolveBreathRef.current = null;
-      }
-    }
-  }, []);
-
-  // Wait for one full slide cycle. Returns a promise.
-  const listenForSlide = useCallback(() => {
-    return new Promise((resolve) => {
-      waitingForSlideRef.current = true;
-      hasSlideUpRef.current = false;
-      peakYRef.current = 1;
-
-      interactionTimerRef.current = setTimeout(() => {
-        if (waitingForSlideRef.current) {
-          waitingForSlideRef.current = false;
-          hasSlideUpRef.current = false;
-          peakYRef.current = 1;
-          resolveBreathRef.current = null;
-          interactionTimerRef.current = null;
-          resolve({ amplitude: 0.5 }); // default amplitude on timeout
-        }
-      }, SLIDE_TIMEOUT);
-
-      resolveBreathRef.current = (amplitude) => {
-        if (interactionTimerRef.current) {
-          clearTimeout(interactionTimerRef.current);
-          interactionTimerRef.current = null;
-        }
-        resolve({ amplitude });
-      };
-    });
-  }, []);
-
-  const startTouch = useCallback(() => setIsTouching(true), []);
-  const endTouch = useCallback(() => setIsTouching(false), []);
-
-  // One breath cycle that updates count and returns amplitude
-  const doBreath = useCallback(async () => {
-    const result = await listenForSlide();
+  const doBreath = useCallback(async (cues) => {
+    const result = await slide.listenForSlide(cues);
     setBreathCount(c => c + 1);
     return result;
-  }, [listenForSlide]);
+  }, [slide.listenForSlide]);
 
   const runSequence = useCallback(async () => {
+    const tier = getVisitTier(visits);
+    const guidedCount = tier === 'FULL' ? 3 : tier === 'FAMILIAR' ? 2 : 1;
+    const soloCount = TOTAL_BREATHS - guidedCount;
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
-    // === BREATH THRESHOLD (universal) ===
-    await delay(610);
-    setGuide('your body is already here');
-    await delay(2584);
-    setGuide('breathe out');
-    await delay(1597); // fib-ceremony — time to read and start exhaling
-    setGuideText('breathe out\n3');
-    await delay(987);
-    setGuideText('breathe out\n2');
-    await delay(987);
-    setGuideText('breathe out\n1');
-    await delay(987);
-    setGuideText('breathe out\n0');
-    await delay(610);
-    setGuide('breathe in');
-    await delay(FIBONACCI_TIMING.long); // calm, unhurried inhale
-    setGuide('now just breathe normally');
-    await delay(2584);
-    setGuide('touch anywhere and slide up to breathe in\nslide down to breathe out\nthe bar on the right follows your breath');
-    await delay(FIBONACCI_TIMING.vast); // stressed reader needs ~6.8s for 3-line instruction
-    setGuide('');
-    await delay(987);
+    // === OPENING ===
+    setPhase(PHASES.OPENING);
+    await delay(FIBONACCI_TIMING.ease);
 
-    // INTRO — centred, letter-by-letter
-    setPhase(PHASES.INTRO);
-    setIntroActive(true);
-    await delay(610);
-    setGuide('let your shoulders drop', false);
-    await delay(2584);
-    setGuide('breathe', false);
-    await delay(2584);
-    setGuide('and watch what you build', false);
-    await delay(2584);
-    setIntroActive(false);
-
-    // FOUNDATION — 3 breath cycles (prime), ground-level arcs
-    setPhase(PHASES.FOUNDATION);
-    setGuide('lay the foundation', false);
-    await delay(1597);
-    setGuide('');
-    await delay(610);
-
-    for (let i = 0; i < 3; i++) {
-      await doBreath();
-      await delay(377);
+    if (tier === 'FULL') {
+      setGuide('your body is already here');
+      await delay(FIBONACCI_TIMING.sacred);
+      setGuide('breathe out');
+      await delay(FIBONACCI_TIMING.sacred);
+      setGuide('breathe in');
+      await delay(FIBONACCI_TIMING.sacred);
+      setGuide(TOTAL_BREATHS + ' breaths together');
+      await delay(FIBONACCI_TIMING.sacred);
+      setGuide('touch anywhere and slide up to breathe in\nslide down to breathe out\nthe bar on the right follows your breath');
+      await delay(FIBONACCI_TIMING.long);
+    } else if (tier === 'FAMILIAR') {
+      setGuide('welcome back');
+      await delay(FIBONACCI_TIMING.ceremony);
+      setGuide(TOTAL_BREATHS + ' breaths');
+      await delay(FIBONACCI_TIMING.ceremony);
+    } else {
+      setGuide('welcome back');
+      await delay(FIBONACCI_TIMING.sacred);
     }
 
-    await delay(610);
-    setGuide('the ground holds', true);
-    await delay(2584);
-
-    // RISING — 5 breath cycles (prime), vertical pillars
-    setPhase(PHASES.RISING);
-    setGuide('let it rise', false);
-    await delay(1597);
     setGuide('');
-    await delay(610);
+    await delay(FIBONACCI_TIMING.ease);
 
-    for (let i = 0; i < 5; i++) {
-      await doBreath();
-      await delay(377);
+    // === GUIDED ===
+    setPhase(PHASES.GUIDED);
+    for (let i = 0; i < guidedCount; i++) {
+      const cue = GUIDED_CUES[i] || GUIDED_CUES[0];
+      await doBreath({
+        onInhale: () => setGuide(cue.inhale),
+        onExhale: () => setGuide(cue.exhale, true),
+      });
+      await delay(FIBONACCI_TIMING.flow);
+      setGuide('');
+      await delay(FIBONACCI_TIMING.shift);
     }
 
-    await delay(610);
-    setGuide('something is taking shape', true);
-    await delay(2584);
-
-    // CANOPY — 5 breath cycles (prime), overhead dome
-    setPhase(PHASES.CANOPY);
-    setGuide('close the sky', false);
-    await delay(1597);
+    setGuide('there you go', true);
+    await delay(FIBONACCI_TIMING.ceremony);
     setGuide('');
-    await delay(610);
+    await delay(FIBONACCI_TIMING.ease);
 
-    for (let i = 0; i < 5; i++) {
+    // === SOLO ===
+    setPhase(PHASES.SOLO);
+    for (let i = 0; i < soloCount; i++) {
       await doBreath();
-      await delay(377);
+      await delay(FIBONACCI_TIMING.flow);
     }
 
-    await delay(987);
+    await delay(FIBONACCI_TIMING.breathe);
     setGuide('');
-    await delay(1597);
+    await delay(FIBONACCI_TIMING.ceremony);
 
-    // TEACHING
+    // === TEACHING ===
     setPhase(PHASES.TEACHING);
     for (const line of teaching.lines) {
       setGuide(line, true);
-      await delay(2584);
+      await delay(FIBONACCI_TIMING.sacred);
     }
     setGuide('');
-    await delay(2584);
+    await delay(FIBONACCI_TIMING.sacred);
 
-    // COMPLETE
+    // === COMPLETE ===
     setPhase(PHASES.COMPLETE);
     setLastTeaching(teachingIndex);
     setGuide('your sanctuary stands', true);
-    await delay(2584);
-    track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'sanctuary', experience_name: 'Sanctuary', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
+    await delay(FIBONACCI_TIMING.sacred);
+    track(EVENTS.EXPERIENCE_COMPLETED, {
+      experience_id: 'sanctuary', experience_name: 'Sanctuary',
+      duration_ms: Date.now() - (analyticsStartRef.current || Date.now()),
+    });
     setComplete(true);
-    await delay(1597);
+    await delay(FIBONACCI_TIMING.ceremony);
     setGuide('');
     setFreePlay(true);
     setPhase(PHASES.FREE_PLAY);
-    // Free play: keep detecting slides to add geometry
+
     const freeLoop = async () => {
       while (true) {
         await doBreath();
-        await delay(377);
+        await delay(FIBONACCI_TIMING.flow);
       }
     };
     freeLoop();
@@ -302,7 +211,7 @@ export default function useSanctuaryState() {
     setTreePalette(generateTreePalette());
     setVisits((v) => v + 1);
     setStarted(true);
-    seqTimerRef.current = setTimeout(runSequence, 1597);
+    seqTimerRef.current = setTimeout(runSequence, FIBONACCI_TIMING.ceremony);
   }, [setVisits, runSequence]);
 
   return {
@@ -312,17 +221,17 @@ export default function useSanctuaryState() {
     guideBright,
     complete,
     freePlay,
-    introActive,
     breathCount,
-    breathPosition,
-    isTouching,
+    breathPosition: slide.breathPosition,
+    isTouching: slide.isTouching,
     isFirstVisit,
     visits,
     treePalette,
+    totalBreaths: TOTAL_BREATHS,
     enter,
-    processSlide,
-    startTouch,
-    endTouch,
+    processSlide: slide.processSlide,
+    startTouch: slide.startTouch,
+    endTouch: slide.endTouch,
     clearSeqTimer,
   };
 }
