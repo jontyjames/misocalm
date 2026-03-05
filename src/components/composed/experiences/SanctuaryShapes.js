@@ -9,14 +9,14 @@
  * Persistence model: shapes bloom in, then settle to a ghostly alpha floor.
  * They never fully disappear — what you build stays.
  *
- * Sacred numbers: MIN_ALPHA=0.089 (fib-89), SETTLE_AGE=233 (fib),
+ * Sacred numbers: MIN_ALPHA=0.233 (fib-233), SETTLE_AGE=233 (fib),
  * MAX_SHAPES=127 (Mersenne prime 2^7-1), geoLife floor=0.618 (phi).
  */
 
 const TAU = Math.PI * 2;
 
 // Persistence constants
-const MIN_ALPHA = 0.089;   // alpha floor — Fibonacci 89 as decimal
+const MIN_ALPHA = 0.233;   // alpha floor — Fibonacci 233 as decimal
 const SETTLE_AGE = 233;    // frames to reach persistent state — Fibonacci
 const MAX_SHAPES = 127;    // array cap — Mersenne prime (2^7-1)
 
@@ -52,7 +52,7 @@ function geoLife(age) {
 }
 
 class FoundationArc {
-  constructor(cx, cy, W, H, amplitude, palette, phase) {
+  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
     this.age = 0;
     const spread = 0.3 + amplitude * 0.618;
     const baseY = H * (0.75 + Math.random() * 0.15);
@@ -62,7 +62,7 @@ class FoundationArc {
     this.startAngle = Math.PI + (Math.random() - 0.5) * 0.618;
     this.endAngle = TAU + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.5 + amplitude * 1.5;
-    this.color = pickTreeColor(palette, phase, amplitude);
+    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
     this.baseAlpha = (0.15 + amplitude * 0.25) * (PHASE_WARMTH[phase] || 1);
   }
   update() { this.age++; return true; }
@@ -80,14 +80,14 @@ class FoundationArc {
 }
 
 class RisingPillar {
-  constructor(cx, cy, W, H, amplitude, palette, phase) {
+  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
     this.age = 0;
     const xSpread = 0.4 + amplitude * 0.3;
     this.x = cx + (Math.random() - 0.5) * W * xSpread;
     this.topY = H * (0.25 + (1 - amplitude) * 0.2);
     this.bottomY = H * (0.7 + Math.random() * 0.1);
     this.lineWidth = 0.3 + amplitude * 1.2;
-    this.color = pickTreeColor(palette, phase, amplitude);
+    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
     this.baseAlpha = (0.1 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
     this.capSize = 3 + amplitude * 5;
     this.capSides = [3, 5, 7][Math.floor(Math.random() * 3)];
@@ -123,7 +123,7 @@ class RisingPillar {
 }
 
 class CanopyArc {
-  constructor(cx, cy, W, H, amplitude, palette, phase) {
+  constructor(cx, cy, W, H, amplitude, palette, phase, colorCount) {
     this.age = 0;
     this.cx = cx + (Math.random() - 0.5) * W * 0.3;
     this.cy = H * (0.15 + Math.random() * 0.2);
@@ -131,7 +131,7 @@ class CanopyArc {
     this.startAngle = (Math.random() - 0.5) * 0.618;
     this.endAngle = Math.PI + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.3 + amplitude * 1;
-    this.color = pickTreeColor(palette, phase, amplitude);
+    this.color = pickTreeColor(palette, phase, amplitude, colorCount);
     this.baseAlpha = (0.08 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
     this.spokeCount = [3, 5, 7][Math.floor(Math.random() * 3)];
     this.spokeLen = 16 + amplitude * 26;
@@ -173,12 +173,12 @@ function createShape(phase, cx, cy, W, H, amplitude, palette) {
 
   if (phase === 'FREE_PLAY') {
     effectivePhase = FREE_PLAY_ZONES[Math.floor(Math.random() * 3)];
-    colorCount = 5; // full palette
+    colorCount = 5; // full palette in free play
   }
 
-  if (effectivePhase === 'FOUNDATION') return new FoundationArc(cx, cy, W, H, amplitude, palette, effectivePhase);
-  if (effectivePhase === 'RISING') return new RisingPillar(cx, cy, W, H, amplitude, palette, effectivePhase);
-  return new CanopyArc(cx, cy, W, H, amplitude, palette, effectivePhase);
+  if (effectivePhase === 'FOUNDATION') return new FoundationArc(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
+  if (effectivePhase === 'RISING') return new RisingPillar(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
+  return new CanopyArc(cx, cy, W, H, amplitude, palette, effectivePhase, colorCount);
 }
 
 export { createShape, MAX_SHAPES, PHASE_COLOUR_COUNT };

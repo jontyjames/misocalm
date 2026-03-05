@@ -264,7 +264,7 @@ export default function SanctuaryGuide() {
 
       {/* Free play — done button */}
       {playing && (
-        <div style={{ position: 'fixed', bottom: 'clamp(26px, 5vh, 42px)', left: 0, right: 0, zIndex: 8, display: 'flex', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 0, right: 0, zIndex: 8, display: 'flex', justifyContent: 'center' }}>
           <button onClick={() => setPlaying(false)} className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-200/90 transition-colors" style={{ padding: '16px 26px' }}>done</button>
         </div>
       )}
