@@ -39,6 +39,7 @@ const PHASES = {
   CANOPY: 'CANOPY',
   TEACHING: 'TEACHING',
   COMPLETE: 'COMPLETE',
+  FREE_PLAY: 'FREE_PLAY',
 };
 
 function pickTeaching(visitIndex, lastIndex) {
@@ -284,6 +285,7 @@ export default function useSanctuaryState() {
     await delay(1597);
     setGuide('');
     setFreePlay(true);
+    setPhase(PHASES.FREE_PLAY);
     // Free play: keep detecting slides to add geometry
     const freeLoop = async () => {
       while (true) {
