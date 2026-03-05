@@ -173,15 +173,16 @@ export default function SanctuaryGuide() {
           <div
             style={{
               position: 'absolute',
-              top: `${state.breathPosition * 100}%`,
+              top: 0,
               left: -4,
               width: 10,
               height: 10,
               borderRadius: '50%',
               background: 'rgba(148, 163, 184, 0.6)',
               boxShadow: '0 0 10px rgba(148, 163, 184, 0.35), 0 0 26px rgba(148, 163, 184, 0.12)',
-              transform: 'translateY(-50%)',
-              transition: 'top 233ms cubic-bezier(0.23, 1, 0.32, 1)', // fib-move, ease-out-quint
+              transform: `translateY(calc(${state.breathPosition * 100}dvh - 5px))`,
+              transition: 'transform 377ms cubic-bezier(0.382, 0, 0.236, 1)', // fib-flow, breath-like smoothing
+              willChange: 'transform',
             }}
           />
         </div>

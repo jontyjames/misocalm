@@ -1,7 +1,7 @@
 /**
  * SanctuaryComplete — post-completion torus flow paths
  *
- * Screenshot reminder (each sanctuary is unique), keep breathing,
+ * Impermanence message (each sanctuary is unique), keep breathing,
  * journal integration, and return to sanctuary.
  */
 
@@ -25,14 +25,12 @@ export default function SanctuaryComplete({ onKeepBreathing, onJournal, onReturn
         background: 'linear-gradient(to top, rgba(3,7,18,0.85) 0%, rgba(3,7,18,0.5) 60%, transparent 100%)',
       }}
     >
-      {/* Screenshot reminder */}
+      {/* Impermanence */}
       <p
         className="text-slate-300/70 text-xs font-light tracking-widest text-center"
         style={{ marginBottom: 26, lineHeight: 1.8, fontFamily: "'Josefin Sans', sans-serif" }}
       >
         this sanctuary will never be built again
-        <br />
-        <span className="text-slate-300/50">screenshot to keep what you made</span>
       </p>
 
       {/* Keep breathing (free play) */}

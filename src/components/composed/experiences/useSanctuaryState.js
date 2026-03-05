@@ -14,7 +14,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
-import { STORAGE_KEYS, SANCTUARY_TEACHINGS } from '@/lib/constants';
+import { STORAGE_KEYS, SANCTUARY_TEACHINGS, FIBONACCI_TIMING } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 import { lerpColor } from './ColourRibbon';
 
@@ -198,11 +198,11 @@ export default function useSanctuaryState() {
     setGuideText('breathe out\n0');
     await delay(610);
     setGuide('breathe in');
-    await delay(4181); // fib — calm, unhurried inhale
+    await delay(FIBONACCI_TIMING.long); // calm, unhurried inhale
     setGuide('now just breathe normally');
     await delay(2584);
     setGuide('touch anywhere and slide up to breathe in\nslide down to breathe out\nthe bar on the right follows your breath');
-    await delay(2584);
+    await delay(FIBONACCI_TIMING.vast); // stressed reader needs ~6.8s for 3-line instruction
     setGuide('');
     await delay(987);
 

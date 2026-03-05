@@ -179,6 +179,8 @@ export const FIBONACCI_TIMING = {
   breathe: 987,  // emotional moments
   ceremony: 1597, // page ceremonies
   sacred: 2584,  // full sequences
+  long: 4181,    // deep pauses
+  vast: 6765,    // extended reading windows
 };
 
 // Solfeggio frequency-colour mapping
