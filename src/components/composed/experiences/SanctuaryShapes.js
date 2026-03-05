@@ -9,14 +9,14 @@
  * Persistence model: shapes bloom in, then settle to a ghostly alpha floor.
  * They never fully disappear — what you build stays.
  *
- * Sacred numbers: MIN_ALPHA=0.233 (fib-233), SETTLE_AGE=233 (fib),
+ * Sacred numbers: MIN_ALPHA=0.618 (phi), SETTLE_AGE=233 (fib),
  * MAX_SHAPES=127 (Mersenne prime 2^7-1), geoLife floor=0.618 (phi).
  */
 
 const TAU = Math.PI * 2;
 
 // Persistence constants
-const MIN_ALPHA = 0.233;   // alpha floor — Fibonacci 233 as decimal
+const MIN_ALPHA = 0.618;   // alpha floor — phi
 const SETTLE_AGE = 233;    // frames to reach persistent state — Fibonacci
 const MAX_SHAPES = 127;    // array cap — Mersenne prime (2^7-1)
 
@@ -63,7 +63,7 @@ class FoundationArc {
     this.endAngle = TAU + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.5 + amplitude * 1.5;
     this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.15 + amplitude * 0.25) * (PHASE_WARMTH[phase] || 1);
+    this.baseAlpha = (0.3 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
   }
   update() { this.age++; return true; }
   draw(ctx) {
@@ -88,7 +88,7 @@ class RisingPillar {
     this.bottomY = H * (0.7 + Math.random() * 0.1);
     this.lineWidth = 0.3 + amplitude * 1.2;
     this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.1 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
+    this.baseAlpha = (0.25 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
     this.capSize = 3 + amplitude * 5;
     this.capSides = [3, 5, 7][Math.floor(Math.random() * 3)];
   }
@@ -132,7 +132,7 @@ class CanopyArc {
     this.endAngle = Math.PI + (Math.random() - 0.5) * 0.618;
     this.lineWidth = 0.3 + amplitude * 1;
     this.color = pickTreeColor(palette, phase, amplitude, colorCount);
-    this.baseAlpha = (0.08 + amplitude * 0.2) * (PHASE_WARMTH[phase] || 1);
+    this.baseAlpha = (0.2 + amplitude * 0.382) * (PHASE_WARMTH[phase] || 1);
     this.spokeCount = [3, 5, 7][Math.floor(Math.random() * 3)];
     this.spokeLen = 16 + amplitude * 26;
   }

@@ -132,7 +132,7 @@ export default function SanctuaryGuide() {
             zIndex: 3,
             width: 2,
             pointerEvents: 'none',
-            opacity: state.isTouching ? 1 : 0,
+            opacity: state.isTouching ? 1 : 0.382,
             transition: 'opacity 0.377s ease', // fib-flow
           }}
         >

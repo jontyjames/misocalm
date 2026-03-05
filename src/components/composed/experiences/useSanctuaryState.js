@@ -201,7 +201,7 @@ export default function useSanctuaryState() {
     await delay(4181); // fib — calm, unhurried inhale
     setGuide('now just breathe normally');
     await delay(2584);
-    setGuide('slide up to breathe in\nslide down to breathe out');
+    setGuide('touch anywhere and slide up to breathe in\nslide down to breathe out\nthe bar on the right follows your breath');
     await delay(2584);
     setGuide('');
     await delay(987);

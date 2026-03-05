@@ -85,7 +85,7 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, visible
         }}
         className="font-extralight text-slate-400/60"
       >
-        slide up to breathe in, down to breathe out
+        touch anywhere, slide up to breathe in, down to breathe out
       </p>
 
       <button
