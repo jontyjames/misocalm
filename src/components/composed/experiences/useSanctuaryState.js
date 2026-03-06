@@ -113,15 +113,15 @@ export default function useSanctuaryState() {
     setGuide('time to connect with your breath');
     await delay(FIBONACCI_TIMING.sacred);
 
-    // Countdown exhale — 3, 2, 1
+    // Countdown exhale — breathe out... 3... 2... 1
     setGuide('breathe out');
-    await delay(FIBONACCI_TIMING.breathe);
+    await delay(FIBONACCI_TIMING.sacred);
     setGuide('3');
-    await delay(FIBONACCI_TIMING.breathe);
+    await delay(FIBONACCI_TIMING.ceremony);
     setGuide('2');
-    await delay(FIBONACCI_TIMING.breathe);
+    await delay(FIBONACCI_TIMING.ceremony);
     setGuide('1');
-    await delay(FIBONACCI_TIMING.breathe);
+    await delay(FIBONACCI_TIMING.ceremony);
 
     setGuide('');
     await delay(FIBONACCI_TIMING.ease);

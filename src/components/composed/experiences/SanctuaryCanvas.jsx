@@ -60,21 +60,22 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
         const schedule = REVEAL_SCHEDULE[breathNum];
         if (!schedule) continue;
 
-        // Create shapes from schedule
+        // Create shapes from schedule (skip indices that exceed generated arrays)
+        const sk = s.skeleton;
         for (const idx of schedule.roots) {
-          s.roots.push(new TreeRoot(s.skeleton, idx, palette));
+          if (idx < sk.roots.length) s.roots.push(new TreeRoot(sk, idx, palette));
         }
         for (const idx of schedule.trunkSegs) {
-          s.trunks.push(new TreeTrunk(s.skeleton, idx, palette));
+          if (idx < sk.trunkSegments.length) s.trunks.push(new TreeTrunk(sk, idx, palette));
         }
         for (const idx of schedule.branches) {
-          s.branches.push(new TreeBranch(s.skeleton, idx, palette, false));
+          if (idx < sk.branches.length) s.branches.push(new TreeBranch(sk, idx, palette, false));
         }
         for (const idx of schedule.subBranches) {
-          s.branches.push(new TreeBranch(s.skeleton, idx, palette, true));
+          if (idx < sk.subBranches.length) s.branches.push(new TreeBranch(sk, idx, palette, true));
         }
         for (const idx of schedule.leaves) {
-          s.leaves.push(new TreeLeaf(s.skeleton, idx, palette));
+          if (idx < sk.leaves.length) s.leaves.push(new TreeLeaf(sk, idx, palette));
         }
 
         // Spark burst near the tree
