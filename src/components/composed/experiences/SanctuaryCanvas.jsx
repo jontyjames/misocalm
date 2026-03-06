@@ -1,13 +1,14 @@
 /**
  * SanctuaryCanvas — full-screen breath-reactive bioluminescent tree renderer
  *
- * Builds a Tree of Life from breath. Shape types blend across breaths:
- * roots (1-3) → trunk (3-6) → branches (5-9) → leaves (7-11).
- * Ambient DriftSparkles float between breaths.
+ * Generates a tree skeleton on mount. Each breath reveals the next layer
+ * via REVEAL_SCHEDULE. By breath 6 the tree is alive. By breath 11 it's radiant.
  *
- * Double-stroke glow on all shapes. Sparks via SparkBurst (additive).
+ * Draw order: roots → trunk → branches → leaves → sparkles (bottom to top).
+ * Ambient DriftSparkles float after breath 5. SparkBursts on each breath (additive).
+ *
  * Sacred numbers: MAX_SHAPES=127 (Mersenne prime), MAX_DRIFT_SPARKLES=89 (fib),
- * DPR capped at 2, spawn probability 0.146 (1/phi⁴).
+ * DPR capped at 2, drift spawn probability 0.146 (1/phi^4).
  */
 
 'use client';
@@ -15,12 +16,16 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import SparkBurst from './SparkBurst';
-import { createTreeShape, DriftSparkle } from './SanctuaryShapes';
-import { MAX_SHAPES, MAX_DRIFT_SPARKLES, pickShapeType } from './SanctuaryShapeData';
+import { TreeRoot, TreeTrunk, TreeBranch, TreeLeaf, DriftSparkle } from './SanctuaryShapes';
+import { MAX_SHAPES, MAX_DRIFT_SPARKLES, generateTree, REVEAL_SCHEDULE } from './SanctuaryShapeData';
 
 export default function SanctuaryCanvas({ breathCount, treePalette }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ shapes: [], sparks: [], driftSparkles: [], time: 0, lastBreathCount: 0 });
+  const stateRef = useRef({
+    roots: [], trunks: [], branches: [], leaves: [],
+    sparks: [], driftSparkles: [],
+    time: 0, lastBreathCount: 0, skeleton: null,
+  });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
@@ -35,58 +40,82 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
-    const cx = W / 2;
-    const cy = H / 2;
     const s = stateRef.current;
     const props = propsRef.current;
+
+    // Generate skeleton on first render
+    if (!s.skeleton && W > 0 && H > 0) {
+      s.skeleton = generateTree(W, H);
+    }
 
     s.time++;
     ctx.clearRect(0, 0, W, H);
 
     // Spawn shapes on each new breath
-    if (props.breathCount > s.lastBreathCount) {
+    if (props.breathCount > s.lastBreathCount && s.skeleton) {
       const diff = props.breathCount - s.lastBreathCount;
       const palette = props.treePalette;
       for (let i = 0; i < diff; i++) {
         const breathNum = s.lastBreathCount + i + 1;
-        const amp = 0.382 + Math.random() * 0.618;
-        // 3 shapes per breath (prime) — primary, phi, phi-complement amplitudes
-        const ampScales = [1, 0.618, 0.382];
-        for (let j = 0; j < 3; j++) {
-          const shapeType = pickShapeType(breathNum);
-          s.shapes.push(createTreeShape(shapeType, cx, cy, W, H, amp * ampScales[j], palette));
+        const schedule = REVEAL_SCHEDULE[breathNum];
+        if (!schedule) continue;
+
+        // Create shapes from schedule
+        for (const idx of schedule.roots) {
+          s.roots.push(new TreeRoot(s.skeleton, idx, palette));
         }
-        // Bioluminescent sparks — full palette
+        for (const idx of schedule.trunkSegs) {
+          s.trunks.push(new TreeTrunk(s.skeleton, idx, palette));
+        }
+        for (const idx of schedule.branches) {
+          s.branches.push(new TreeBranch(s.skeleton, idx, palette, false));
+        }
+        for (const idx of schedule.subBranches) {
+          s.branches.push(new TreeBranch(s.skeleton, idx, palette, true));
+        }
+        for (const idx of schedule.leaves) {
+          s.leaves.push(new TreeLeaf(s.skeleton, idx, palette));
+        }
+
+        // Spark burst near the tree
         const sparkColors = palette ? palette.slice(0, 5) : null;
-        const sparkZone = pickShapeType(breathNum);
-        s.sparks.push(new SparkBurst(W, H, sparkZone, sparkColors));
+        const sparkPhase = breathNum <= 2 ? 'ROOT' : breathNum <= 4 ? 'TRUNK' : breathNum <= 6 ? 'BRANCH' : 'LEAF';
+        s.sparks.push(new SparkBurst(W, H, sparkPhase, sparkColors));
       }
       s.lastBreathCount = props.breathCount;
     }
 
-    // Ambient drift sparkles — spawn when breathing has started
-    if (props.breathCount > 0 && s.driftSparkles.length < MAX_DRIFT_SPARKLES) {
+    // Ambient drift sparkles after breath 5
+    if (props.breathCount >= 5 && s.driftSparkles.length < MAX_DRIFT_SPARKLES) {
       if (Math.random() < 0.146) {
         s.driftSparkles.push(new DriftSparkle(W, H, props.treePalette));
       }
     }
 
-    // Update shapes — persist forever, cap enforces limit
-    for (const shape of s.shapes) { shape.update(); }
-    while (s.shapes.length > MAX_SHAPES) { s.shapes.shift(); }
+    // Update all layers
+    for (const shape of s.roots) shape.update();
+    for (const shape of s.trunks) shape.update();
+    for (const shape of s.branches) shape.update();
+    for (const shape of s.leaves) shape.update();
 
-    // Draw shapes (tree layer)
-    for (const shape of s.shapes) {
-      shape.draw(ctx, s.time);
+    // Draw order: roots → trunk → branches → leaves (bottom to top)
+    for (const shape of s.roots) shape.draw(ctx, s.time);
+    for (const shape of s.trunks) shape.draw(ctx, s.time);
+    for (const shape of s.branches) shape.draw(ctx, s.time);
+    for (const shape of s.leaves) shape.draw(ctx, s.time);
+
+    // Cap total shapes
+    const total = s.roots.length + s.trunks.length + s.branches.length + s.leaves.length;
+    if (total > MAX_SHAPES) {
+      const excess = total - MAX_SHAPES;
+      s.roots.splice(0, Math.min(excess, s.roots.length));
     }
 
     // Update and draw drift sparkles
     for (let i = s.driftSparkles.length - 1; i >= 0; i--) {
       if (!s.driftSparkles[i].update()) { s.driftSparkles.splice(i, 1); continue; }
     }
-    for (const sparkle of s.driftSparkles) {
-      sparkle.draw(ctx);
-    }
+    for (const sparkle of s.driftSparkles) sparkle.draw(ctx);
 
     // Update and draw spark bursts (additive glow)
     for (let i = s.sparks.length - 1; i >= 0; i--) {
@@ -94,9 +123,7 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
     }
     if (s.sparks.length > 0) {
       ctx.globalCompositeOperation = 'screen';
-      for (const burst of s.sparks) {
-        burst.draw(ctx);
-      }
+      for (const burst of s.sparks) burst.draw(ctx);
       ctx.globalCompositeOperation = 'source-over';
     }
 
@@ -115,6 +142,8 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
       canvas.style.height = `${window.innerHeight}px`;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
+      // Regenerate skeleton on resize
+      stateRef.current.skeleton = null;
     };
     resize();
     window.addEventListener('resize', resize);

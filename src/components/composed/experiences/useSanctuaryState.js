@@ -1,9 +1,12 @@
 /**
  * useSanctuaryState — guided-to-solo breath state machine for Sanctuary
  *
- * 11 breaths (prime). 3 guided with mid-breath cues, 8 solo.
- * 3-tier return visits: FULL (1-2), FAMILIAR (3-6), MINIMAL (7+).
+ * 11 breaths (prime). 3 guided + 8 solo. Same flow every visit.
+ * No tiers. Everyone gets the full gentle landing every time.
  * Slide detection extracted to useSlideDetection.
+ *
+ * Opening: settle breath (countdown 3-2-1) → deep inhale →
+ * instruction → 3 guided breaths → "now 8 on your own" → 8 solo.
  *
  * Sacred numbers: 11 breaths (prime), 3 guided (prime), timing Fibonacci,
  * thresholds phi pair (0.382/0.618).
@@ -19,6 +22,8 @@ import { lerpColor } from './ColourRibbon';
 import useSlideDetection from './useSlideDetection';
 
 const TOTAL_BREATHS = 11;
+const GUIDED_COUNT = 3;
+const SOLO_COUNT = TOTAL_BREATHS - GUIDED_COUNT;
 
 function generateTreePalette() {
   const positions = Array.from({ length: 5 }, () => Math.random());
@@ -35,18 +40,6 @@ const PHASES = {
   COMPLETE: 'COMPLETE',
   FREE_PLAY: 'FREE_PLAY',
 };
-
-const GUIDED_CUES = [
-  { inhale: 'breathe in', exhale: 'let it go' },
-  { inhale: 'breathe in', exhale: 'softer' },
-  { inhale: 'breathe in', exhale: 'good' },
-];
-
-function getVisitTier(visits) {
-  if (visits <= 1) return 'FULL';
-  if (visits <= 5) return 'FAMILIAR';
-  return 'MINIMAL';
-}
 
 function pickTeaching(visitIndex, lastIndex) {
   if (visitIndex < SANCTUARY_TEACHINGS.length) {
@@ -110,60 +103,88 @@ export default function useSanctuaryState() {
   }, [slide.listenForSlide]);
 
   const runSequence = useCallback(async () => {
-    const tier = getVisitTier(visits);
-    const guidedCount = tier === 'FULL' ? 3 : tier === 'FAMILIAR' ? 2 : 1;
-    const soloCount = TOTAL_BREATHS - guidedCount;
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
-    // === OPENING ===
+    // === OPENING (same every visit) ===
     setPhase(PHASES.OPENING);
     await delay(FIBONACCI_TIMING.ease);
 
-    if (tier === 'FULL') {
-      setGuide('your body is already here');
-      await delay(FIBONACCI_TIMING.sacred);
-      setGuide('breathe out');
-      await delay(FIBONACCI_TIMING.sacred);
-      setGuide('breathe in');
-      await delay(FIBONACCI_TIMING.sacred);
-      setGuide(TOTAL_BREATHS + ' breaths together');
-      await delay(FIBONACCI_TIMING.sacred);
-      setGuide('touch anywhere and slide up to breathe in\nslide down to breathe out\nthe bar on the right follows your breath');
-      await delay(FIBONACCI_TIMING.long);
-    } else if (tier === 'FAMILIAR') {
-      setGuide('welcome back');
-      await delay(FIBONACCI_TIMING.ceremony);
-      setGuide(TOTAL_BREATHS + ' breaths');
-      await delay(FIBONACCI_TIMING.ceremony);
-    } else {
-      setGuide('welcome back');
-      await delay(FIBONACCI_TIMING.sacred);
-    }
+    // Settle them in
+    setGuide('time to connect with your breath');
+    await delay(FIBONACCI_TIMING.sacred);
+
+    // Countdown exhale — 3, 2, 1
+    setGuide('breathe out');
+    await delay(FIBONACCI_TIMING.breathe);
+    setGuide('3');
+    await delay(FIBONACCI_TIMING.breathe);
+    setGuide('2');
+    await delay(FIBONACCI_TIMING.breathe);
+    setGuide('1');
+    await delay(FIBONACCI_TIMING.breathe);
 
     setGuide('');
     await delay(FIBONACCI_TIMING.ease);
 
-    // === GUIDED ===
-    setPhase(PHASES.GUIDED);
-    for (let i = 0; i < guidedCount; i++) {
-      const cue = GUIDED_CUES[i] || GUIDED_CUES[0];
-      await doBreath({
-        onInhale: () => setGuide(cue.inhale),
-        onExhale: () => setGuide(cue.exhale, true),
-      });
-      await delay(FIBONACCI_TIMING.flow);
-      setGuide('');
-      await delay(FIBONACCI_TIMING.shift);
-    }
+    // Deep inhale
+    setGuide('breathe in deep');
+    await delay(FIBONACCI_TIMING.long);
 
+    setGuide('');
+    await delay(FIBONACCI_TIMING.ease);
+
+    // Instruction
+    setGuide('now we will breathe together');
+    await delay(FIBONACCI_TIMING.sacred);
+    setGuide('touch the screen while you breathe');
+    await delay(FIBONACCI_TIMING.sacred);
+    setGuide('the breathing bar will follow you');
+    await delay(FIBONACCI_TIMING.sacred);
+
+    setGuide('');
+    await delay(FIBONACCI_TIMING.ease);
+
+    // === GUIDED (3 breaths) ===
+    setPhase(PHASES.GUIDED);
+
+    // Breath 1 — instructional, they learn by doing
+    await doBreath({
+      onInhale: () => setGuide('slide your finger up\nwhen you breathe in'),
+      onExhale: () => setGuide('slide your finger down\nwhen you breathe out', true),
+    });
+    await delay(FIBONACCI_TIMING.flow);
+    setGuide('');
+    await delay(FIBONACCI_TIMING.shift);
+
+    // Breath 2
+    await doBreath({
+      onInhale: () => setGuide('breathe in'),
+      onExhale: () => setGuide('let it go', true),
+    });
+    await delay(FIBONACCI_TIMING.flow);
+    setGuide('');
+    await delay(FIBONACCI_TIMING.shift);
+
+    // Breath 3
+    await doBreath({
+      onInhale: () => setGuide('breathe in'),
+      onExhale: () => setGuide('good', true),
+    });
+    await delay(FIBONACCI_TIMING.flow);
+    setGuide('');
+    await delay(FIBONACCI_TIMING.shift);
+
+    // Bridge
     setGuide('there you go', true);
     await delay(FIBONACCI_TIMING.ceremony);
+    setGuide('now 8 on your own');
+    await delay(FIBONACCI_TIMING.sacred);
     setGuide('');
     await delay(FIBONACCI_TIMING.ease);
 
-    // === SOLO ===
+    // === SOLO (8 breaths) ===
     setPhase(PHASES.SOLO);
-    for (let i = 0; i < soloCount; i++) {
+    for (let i = 0; i < SOLO_COUNT; i++) {
       await doBreath();
       await delay(FIBONACCI_TIMING.flow);
     }
