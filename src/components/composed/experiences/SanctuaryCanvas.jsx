@@ -1,12 +1,12 @@
 /**
- * SanctuaryCanvas — bioluminescent tree of life renderer
+ * SanctuaryCanvas — dot-based bioluminescent tree of life
  *
- * Recursive tree generated on mount. Each breath reveals deeper branches.
- * Multi-layer glow per segment. Fade trails for memory. Additive blending.
- * Gentle breathing animation — the tree pulses with life.
+ * 377 glowing dots form a tree silhouette. Each breath reveals more dots.
+ * Roots spread at the base, trunk rises through the center, canopy blooms
+ * as a cloud of light. Fade trails create memory. Additive blending for glow.
  *
- * Sacred numbers: MAX_DRIFT_SPARKLES=89 (fib), fade trail alpha=0.03,
- * DPR capped at 2, drift spawn probability 0.146 (1/phi^4).
+ * Sacred numbers: 377 dots (fib), MAX_DRIFT_SPARKLES=89 (fib),
+ * fade trail alpha 0.03, breathing sine period ~4s.
  */
 
 'use client';
@@ -14,22 +14,21 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import SparkBurst from './SparkBurst';
-import { drawGlowSegment, drawLeafGlow, DriftSparkle } from './SanctuaryShapes';
-import { MAX_DRIFT_SPARKLES, generateTree, getRevealDepth, pickTreeColor } from './SanctuaryShapeData';
+import { drawDot, DriftSparkle } from './SanctuaryShapes';
+import { MAX_DRIFT_SPARKLES, generateTree, pickDotColor } from './SanctuaryShapeData';
 
-const VOID_COLOR = 'rgba(3, 7, 18, 0.04)'; // slow fade trail
+const VOID_COLOR = 'rgba(3, 7, 18, 0.035)';
 
 export default function SanctuaryCanvas({ breathCount, treePalette }) {
   const canvasRef = useRef(null);
   const stateRef = useRef({
-    segments: null,
-    revealedDepth: -1,
+    dots: null,
+    dotAges: null,
+    dotColors: null,
     sparks: [],
     driftSparkles: [],
     time: 0,
     lastBreathCount: 0,
-    segmentAges: null,    // age per segment for bloom animation
-    segmentColors: null,  // pre-picked color per segment
   });
   const rafRef = useRef(null);
   const dprRef = useRef(1);
@@ -48,85 +47,70 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
     const s = stateRef.current;
     const props = propsRef.current;
 
-    // Generate tree on first render
-    if (!s.segments && W > 0 && H > 0) {
-      s.segments = generateTree(W, H);
-      s.segmentAges = new Array(s.segments.length).fill(-1); // -1 = not revealed
-      s.segmentColors = s.segments.map(seg =>
-        pickTreeColor(props.treePalette, seg.depth, 11)
-      );
+    // Generate dots on first render
+    if (!s.dots && W > 0 && H > 0) {
+      s.dots = generateTree(W, H);
+      s.dotAges = new Array(s.dots.length).fill(-1);
+      s.dotColors = s.dots.map(d => pickDotColor(props.treePalette, d.zone));
     }
 
     s.time++;
 
-    // Fade trail — don't clear fully, let old frames ghost
+    // Fade trail
     ctx.fillStyle = VOID_COLOR;
     ctx.fillRect(0, 0, W, H);
 
-    // On new breath: reveal more depth + spark burst
-    if (props.breathCount > s.lastBreathCount && s.segments) {
-      const newDepth = getRevealDepth(props.breathCount);
-      if (newDepth > s.revealedDepth) {
-        // Mark newly revealed segments
-        for (let i = 0; i < s.segments.length; i++) {
-          if (s.segmentAges[i] === -1 && s.segments[i].depth <= newDepth) {
-            s.segmentAges[i] = 0;
-          }
+    // On new breath: reveal dots for this breath number + spark burst
+    if (props.breathCount > s.lastBreathCount && s.dots) {
+      for (let i = 0; i < s.dots.length; i++) {
+        if (s.dotAges[i] === -1 && s.dots[i].breath <= props.breathCount) {
+          s.dotAges[i] = 0;
         }
-        s.revealedDepth = newDepth;
       }
 
       // Spark burst
       const palette = props.treePalette;
       const sparkColors = palette ? palette.slice(0, 5) : null;
-      const breathNum = props.breathCount;
-      const sparkPhase = breathNum <= 2 ? 'ROOT' : breathNum <= 4 ? 'TRUNK' : breathNum <= 6 ? 'BRANCH' : 'LEAF';
-      s.sparks.push(new SparkBurst(W, H, sparkPhase, sparkColors));
+      const bn = props.breathCount;
+      const phase = bn <= 2 ? 'ROOT' : bn <= 4 ? 'TRUNK' : 'BRANCH';
+      s.sparks.push(new SparkBurst(W, H, phase, sparkColors));
 
       s.lastBreathCount = props.breathCount;
     }
 
-    // Ambient drift sparkles after breath 5
+    // Drift sparkles after breath 5
     if (props.breathCount >= 5 && s.driftSparkles.length < MAX_DRIFT_SPARKLES) {
       if (Math.random() < 0.146) {
         s.driftSparkles.push(new DriftSparkle(W, H, props.treePalette));
       }
     }
 
-    // Breathing animation — subtle global pulse
-    const breathe = 0.85 + 0.15 * Math.sin(s.time * 0.015);
+    // Breathing animation
+    const breathe = 0.82 + 0.18 * Math.sin(s.time * 0.012);
 
-    // Draw tree segments with multi-layer glow
-    if (s.segments) {
-      // Use additive blending for bioluminescent glow
+    // Draw dots with additive blending
+    if (s.dots) {
       ctx.globalCompositeOperation = 'screen';
 
-      for (let i = 0; i < s.segments.length; i++) {
-        const age = s.segmentAges[i];
-        if (age < 0) continue; // not revealed yet
+      for (let i = 0; i < s.dots.length; i++) {
+        const age = s.dotAges[i];
+        if (age < 0) continue;
 
-        s.segmentAges[i]++;
-        const seg = s.segments[i];
-        const color = s.segmentColors[i];
+        s.dotAges[i]++;
+        const dot = s.dots[i];
+        const color = s.dotColors[i];
 
-        // Bloom in: fade from 0 to full over ~60 frames
-        const bloomT = Math.min(1, age / 60);
+        // Bloom in over ~45 frames
+        const bloomT = Math.min(1, age / 45);
         const alpha = bloomT * breathe;
 
-        drawGlowSegment(ctx, seg, color, alpha);
-
-        // Leaf glow at tips (segments with no children at deepest revealed depth)
-        if (seg.depth >= s.revealedDepth - 1 && seg.depth >= 5 && bloomT > 0.5) {
-          const leafAlpha = (bloomT - 0.5) * 2 * breathe * 0.6;
-          const leafRadius = 6 + (seg.depth - 5) * 2;
-          drawLeafGlow(ctx, seg.x1, seg.y1, leafRadius, color, leafAlpha);
-        }
+        drawDot(ctx, dot.x, dot.y, dot.size * bloomT, color, alpha);
       }
 
       ctx.globalCompositeOperation = 'source-over';
     }
 
-    // Update and draw drift sparkles
+    // Drift sparkles
     for (let i = s.driftSparkles.length - 1; i >= 0; i--) {
       if (!s.driftSparkles[i].update()) { s.driftSparkles.splice(i, 1); continue; }
     }
@@ -134,7 +118,7 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
     for (const sparkle of s.driftSparkles) sparkle.draw(ctx);
     ctx.globalCompositeOperation = 'source-over';
 
-    // Update and draw spark bursts
+    // Spark bursts
     for (let i = s.sparks.length - 1; i >= 0; i--) {
       if (!s.sparks[i].update()) { s.sparks.splice(i, 1); continue; }
     }
@@ -159,8 +143,7 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
       canvas.style.height = `${window.innerHeight}px`;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
-      // Regenerate tree on resize
-      stateRef.current.segments = null;
+      stateRef.current.dots = null;
     };
     resize();
     window.addEventListener('resize', resize);
