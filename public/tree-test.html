@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { margin: 0; padding: 0; }
+  body { background: #030712; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+function resize() {
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.scale(dpr, dpr);
+}
+resize();
+
+const W = window.innerWidth;
+const H = window.innerHeight;
+const cx = W / 2;
+
+// --- THE TREE ---
+// All segments stored as { x0, y0, x1, y1, width, type, delay, children }
+// Built by recursive function, drawn with grow animation
+
+const segments = [];
+let maxDelay = 0;
+
+function addSegment(x0, y0, x1, y1, width, type, delay) {
+  segments.push({ x0, y0, x1, y1, width, type, delay, progress: 0 });
+  if (delay > maxDelay) maxDelay = delay;
+}
+
+// --- ROOTS ---
+function buildRoots() {
+  const baseY = H * 0.72;
+  const angles = [-0.9, -0.5, -0.15, 0.15, 0.5, 0.9];
+  angles.forEach((angle, i) => {
+    const len = W * (0.15 + Math.random() * 0.15);
+    const endX = cx + Math.sin(angle) * len;
+    const endY = baseY + Math.abs(Math.cos(angle * 0.5)) * len * 0.4 + len * 0.15;
+    const w = 2.5 - Math.abs(angle) * 0.8;
+    addSegment(cx, baseY, endX, Math.min(endY, H * 0.92), w, 'root', 200 + i * 150);
+
+    // Small root offshoots
+    if (Math.random() < 0.7) {
+      const t = 0.5 + Math.random() * 0.3;
+      const mx = cx + (endX - cx) * t;
+      const my = baseY + (endY - baseY) * t;
+      const subLen = len * 0.3;
+      const subAngle = angle + (Math.random() - 0.5) * 0.6;
+      const sx = mx + Math.sin(subAngle) * subLen;
+      const sy = my + Math.abs(Math.cos(subAngle * 0.3)) * subLen * 0.3 + subLen * 0.1;
+      addSegment(mx, my, sx, Math.min(sy, H * 0.94), w * 0.6, 'root', 400 + i * 150);
+    }
+  });
+}
+
+// --- TRUNK + BRANCHES (recursive) ---
+function buildBranch(x, y, angle, length, width, depth, delay) {
+  if (depth > 8 || width < 0.5 || length < 4) return;
+
+  const wobble = (Math.random() - 0.5) * 0.15 / (width * 0.2 + 1);
+  const endAngle = angle + wobble;
+  const endX = x + Math.cos(endAngle) * length;
+  const endY = y + Math.sin(endAngle) * length;
+  const type = depth <= 1 ? 'trunk' : depth <= 4 ? 'branch' : 'twig';
+
+  addSegment(x, y, endX, endY, width, type, delay);
+
+  // How many children
+  const childCount = depth < 2 ? 2 : depth < 4 ? (Math.random() < 0.7 ? 2 : 1) : (Math.random() < 0.5 ? 2 : 1);
+
+  for (let i = 0; i < childCount; i++) {
+    // Spread angle — wider at lower depths for natural canopy
+    const spread = (0.3 + Math.random() * 0.3) * (depth < 3 ? 1.2 : 0.8);
+    const childAngle = endAngle + (i === 0 ? -spread : spread) + (Math.random() - 0.5) * 0.15;
+    const childLength = length * (0.65 + Math.random() * 0.15);
+    const childWidth = width * (0.6 + Math.random() * 0.12);
+    const childDelay = delay + 80 + Math.random() * 40;
+
+    buildBranch(endX, endY, childAngle, childLength, childWidth, depth + 1, childDelay);
+  }
+}
+
+// Build the tree
+buildRoots();
+
+// Trunk starts from base going up
+const trunkBase = H * 0.72;
+const trunkLength = H * 0.22;
+buildBranch(cx, trunkBase, -Math.PI / 2 + (Math.random() - 0.5) * 0.04, trunkLength, 6, 0, 800);
+
+// --- COLORS ---
+function getColor(type) {
+  switch(type) {
+    case 'root':   return { r: 120, g: 140, b: 200 };
+    case 'trunk':  return { r: 140, g: 160, b: 220 };
+    case 'branch': return { r: 160, g: 180, b: 240 };
+    case 'twig':   return { r: 180, g: 200, b: 255 };
+    default:       return { r: 148, g: 163, b: 184 };
+  }
+}
+
+// --- DRAW ---
+function drawSegment(seg, globalAlpha) {
+  const p = seg.progress;
+  if (p <= 0) return;
+
+  const { r, g, b } = getColor(seg.type);
+  const ex = seg.x0 + (seg.x1 - seg.x0) * p;
+  const ey = seg.y0 + (seg.y1 - seg.y0) * p;
+
+  ctx.lineCap = 'round';
+
+  // Layer 1: wide faint halo
+  ctx.beginPath();
+  ctx.moveTo(seg.x0, seg.y0);
+  ctx.lineTo(ex, ey);
+  ctx.strokeStyle = `rgba(${r},${g},${b},${0.04 * globalAlpha})`;
+  ctx.lineWidth = seg.width * 6;
+  ctx.stroke();
+
+  // Layer 2: medium glow
+  ctx.beginPath();
+  ctx.moveTo(seg.x0, seg.y0);
+  ctx.lineTo(ex, ey);
+  ctx.strokeStyle = `rgba(${r},${g},${b},${0.1 * globalAlpha})`;
+  ctx.lineWidth = seg.width * 3;
+  ctx.stroke();
+
+  // Layer 3: bright core
+  ctx.beginPath();
+  ctx.moveTo(seg.x0, seg.y0);
+  ctx.lineTo(ex, ey);
+  ctx.strokeStyle = `rgba(${Math.min(255,r+30)},${Math.min(255,g+30)},${Math.min(255,b+30)},${0.4 * globalAlpha})`;
+  ctx.lineWidth = seg.width;
+  ctx.stroke();
+
+  // Layer 4: white-hot center (thick segments only)
+  if (seg.width > 2) {
+    ctx.beginPath();
+    ctx.moveTo(seg.x0, seg.y0);
+    ctx.lineTo(ex, ey);
+    ctx.strokeStyle = `rgba(220,230,255,${0.15 * globalAlpha})`;
+    ctx.lineWidth = seg.width * 0.3;
+    ctx.stroke();
+  }
+
+  // Leaf glow at tips of twigs
+  if (seg.type === 'twig' && p > 0.8 && seg.width < 1.5) {
+    const grad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 8);
+    grad.addColorStop(0, `rgba(${Math.min(255,r+50)},${Math.min(255,g+50)},${Math.min(255,b+50)},${0.3 * globalAlpha})`);
+    grad.addColorStop(0.5, `rgba(${r},${g},${b},${0.1 * globalAlpha})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    ctx.beginPath();
+    ctx.arc(ex, ey, 8, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+}
+
+// --- SEED ---
+function drawSeed(time) {
+  const seedY = H * 0.72;
+  const pulse = 0.7 + 0.3 * Math.sin(time * 0.003);
+  const r = 5 * pulse;
+  const grad = ctx.createRadialGradient(cx, seedY, 0, cx, seedY, r * 4);
+  grad.addColorStop(0, `rgba(200, 210, 255, ${0.6 * pulse})`);
+  grad.addColorStop(0.3, `rgba(140, 160, 220, ${0.2 * pulse})`);
+  grad.addColorStop(1, 'rgba(140, 160, 220, 0)');
+  ctx.beginPath();
+  ctx.arc(cx, seedY, r * 4, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Core dot
+  ctx.beginPath();
+  ctx.arc(cx, seedY, r * 0.8, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(220, 230, 255, ${0.8 * pulse})`;
+  ctx.fill();
+}
+
+// --- ANIMATION LOOP ---
+let startTime = null;
+
+function animate(timestamp) {
+  if (!startTime) startTime = timestamp;
+  const elapsed = timestamp - startTime;
+
+  // Fade trail
+  ctx.fillStyle = 'rgba(3, 7, 18, 0.03)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Breathing
+  const breathe = 0.85 + 0.15 * Math.sin(elapsed * 0.001);
+
+  // Draw seed
+  drawSeed(elapsed);
+
+  // Update and draw segments
+  ctx.globalCompositeOperation = 'screen';
+  for (const seg of segments) {
+    // Grow: progress goes 0→1 based on elapsed time vs delay
+    const growTime = 600; // ms to fully grow a segment
+    if (elapsed > seg.delay) {
+      seg.progress = Math.min(1, (elapsed - seg.delay) / growTime);
+    }
+    drawSegment(seg, breathe);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+
+  requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
