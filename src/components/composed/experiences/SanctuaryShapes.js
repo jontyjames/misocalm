@@ -1,178 +1,91 @@
 /**
- * SanctuaryShapes — structure-anchored bioluminescent tree shape classes
+ * SanctuaryShapes — bioluminescent tree rendering
  *
- * 4 tree classes + 1 ambient:
- * - TreeRoot: bezier curve from trunk base outward/downward
- * - TreeTrunk: bezier segment along the trunk spine, grows upward
- * - TreeBranch: bezier curve from branch point outward
- * - TreeLeaf: sacred geometric shape at branch/sub-branch tip
- * - DriftSparkle: ambient floating particles
+ * Multi-layer glow drawing: each branch segment is drawn 4 times
+ * at decreasing widths and increasing brightness, creating a
+ * natural bioluminescent halo effect.
  *
- * Every shape takes its position from the pre-generated tree skeleton.
- * Double-stroke glow: halo at 0.146 (1/phi^4), core RGB+26.
- * Shapes bloom then settle to MIN_ALPHA=0.618 (phi).
+ * DriftSparkle provides ambient floating particles.
  *
- * Sacred numbers: SETTLE_AGE=233 (fib), leaf bloom=34 frames (fib),
- * branch reveal=55 frames (fib), trunk reveal=89 frames (fib).
+ * Sacred numbers: SETTLE_AGE=233 (fib), gradient stops at phi.
  */
 
 import {
   TAU, MIN_ALPHA, SETTLE_AGE, SLATE_FALLBACK,
-  pickTreeColor, settleLife, glowStroke,
+  settleLife, pickTreeColor,
 } from './SanctuaryShapeData';
 
-class TreeRoot {
-  constructor(skeleton, index, palette) {
-    this.age = 0;
-    const def = skeleton.roots[index];
-    if (!def) return;
-    this.x0 = def.x0; this.y0 = def.y0;
-    this.cpx = def.cpx; this.cpy = def.cpy;
-    this.x1 = def.x1; this.y1 = def.y1;
-    this.lineWidth = def.lineWidth;
-    this.color = pickTreeColor(palette, 'ROOT');
-    this.valid = true;
-  }
-  update() { this.age++; return true; }
-  draw(ctx) {
-    if (!this.valid) return;
-    const life = settleLife(this.age);
-    const a = 0.8 * life;
-    if (a < 0.005) return;
-    const reveal = Math.min(1, this.age / 55);
+/**
+ * Draw a single branch segment with multi-layer glow.
+ * 4 passes: wide faint outer → medium → bright core → white-hot center.
+ */
+function drawGlowSegment(ctx, seg, color, alpha) {
+  const { r, g, b } = color;
+  const { x0, y0, cpx, cpy, x1, y1, width } = seg;
+
+  const layers = [
+    { widthMul: 5,   alphaMul: 0.04 },  // wide outer halo
+    { widthMul: 3,   alphaMul: 0.08 },  // medium glow
+    { widthMul: 1.5, alphaMul: 0.2  },  // inner glow
+    { widthMul: 1,   alphaMul: 0.5  },  // bright core
+  ];
+
+  ctx.lineCap = 'round';
+
+  for (const layer of layers) {
+    const a = alpha * layer.alphaMul;
+    if (a < 0.003) continue;
+
+    // Brighten core layers
+    const brighten = layer.alphaMul > 0.3 ? 30 : layer.alphaMul > 0.1 ? 15 : 0;
+    const cr = Math.min(255, r + brighten);
+    const cg = Math.min(255, g + brighten);
+    const cb = Math.min(255, b + brighten);
+
+    ctx.strokeStyle = `rgba(${cr},${cg},${cb},${a})`;
+    ctx.lineWidth = width * layer.widthMul;
     ctx.beginPath();
-    ctx.moveTo(this.x0, this.y0);
-    const mx = this.x0 + (this.cpx - this.x0) * reveal;
-    const my = this.y0 + (this.cpy - this.y0) * reveal;
-    const ex = this.x0 + (this.x1 - this.x0) * reveal;
-    const ey = this.y0 + (this.y1 - this.y0) * reveal;
-    ctx.quadraticCurveTo(mx, my, ex, ey);
-    glowStroke(ctx, this.color, a, this.lineWidth * (0.5 + life * 0.5));
+    ctx.moveTo(x0, y0);
+    ctx.quadraticCurveTo(cpx, cpy, x1, y1);
+    ctx.stroke();
+  }
+
+  // White-hot center for thick branches
+  if (width > 2 && alpha > 0.3) {
+    ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.15})`;
+    ctx.lineWidth = width * 0.3;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.quadraticCurveTo(cpx, cpy, x1, y1);
+    ctx.stroke();
   }
 }
 
-class TreeTrunk {
-  constructor(skeleton, segIndex, palette) {
-    this.age = 0;
-    const seg = skeleton.trunkSegments[segIndex];
-    if (!seg) return;
-    this.trunkPoint = skeleton.trunkPoint;
-    this.t0 = seg.t0;
-    this.t1 = seg.t1;
-    this.lineWidth = seg.lineWidth;
-    this.color = pickTreeColor(palette, 'TRUNK');
-    this.valid = true;
-  }
-  update() { this.age++; return true; }
-  draw(ctx) {
-    if (!this.valid) return;
-    const life = settleLife(this.age);
-    const a = 0.85 * life;
-    if (a < 0.005) return;
-    const reveal = Math.min(1, this.age / 89);
-    const steps = 8;
-    ctx.beginPath();
-    for (let i = 0; i <= steps; i++) {
-      const localT = i / steps;
-      const visibleT = localT * reveal;
-      const globalT = this.t0 + (this.t1 - this.t0) * visibleT;
-      const p = this.trunkPoint(globalT);
-      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
-    }
-    glowStroke(ctx, this.color, a, this.lineWidth * (0.6 + life * 0.4));
-  }
-}
+/**
+ * Draw a leaf glow at a branch tip — soft radial burst.
+ */
+function drawLeafGlow(ctx, x, y, radius, color, alpha) {
+  const { r, g, b } = color;
+  if (alpha < 0.01 || radius < 1) return;
 
-class TreeBranch {
-  constructor(skeleton, index, palette, isSub) {
-    this.age = 0;
-    const arr = isSub ? skeleton.subBranches : skeleton.branches;
-    const def = arr[index];
-    if (!def) return;
-    this.x0 = def.x0; this.y0 = def.y0;
-    this.cpx = def.cpx; this.cpy = def.cpy;
-    this.x1 = def.x1; this.y1 = def.y1;
-    this.lineWidth = def.lineWidth;
-    this.isSub = isSub;
-    this.color = pickTreeColor(palette, 'BRANCH');
-    this.valid = true;
-  }
-  update() { this.age++; return true; }
-  draw(ctx) {
-    if (!this.valid) return;
-    const life = settleLife(this.age);
-    const a = (this.isSub ? 0.7 : 0.8) * life;
-    if (a < 0.005) return;
-    const reveal = Math.min(1, this.age / 55);
-    ctx.beginPath();
-    ctx.moveTo(this.x0, this.y0);
-    const mx = this.x0 + (this.cpx - this.x0) * reveal;
-    const my = this.y0 + (this.cpy - this.y0) * reveal;
-    const ex = this.x0 + (this.x1 - this.x0) * reveal;
-    const ey = this.y0 + (this.y1 - this.y0) * reveal;
-    ctx.quadraticCurveTo(mx, my, ex, ey);
-    glowStroke(ctx, this.color, a, this.lineWidth * (0.5 + life * 0.5));
-  }
-}
-
-class TreeLeaf {
-  constructor(skeleton, index, palette) {
-    this.age = 0;
-    const def = skeleton.leaves[index];
-    if (!def) return;
-    this.cx = def.cx; this.cy = def.cy;
-    this.sides = def.sides;
-    this.radius = def.radius;
-    this.rotation = def.rotation;
-    this.rotSpeed = def.rotSpeed;
-    this.color = pickTreeColor(palette, 'LEAF');
-    this.lineWidth = 0.8;
-    this.valid = true;
-  }
-  update() { this.age++; return true; }
-  draw(ctx, time) {
-    if (!this.valid) return;
-    const life = settleLife(this.age);
-    const a = 0.75 * life;
-    if (a < 0.005) return;
-    const bloom = Math.min(1, this.age / 34);
-    const r = this.radius * bloom;
-    const rot = this.rotation + (time || 0) * this.rotSpeed;
-
-    // Sacred geometric shape
-    ctx.beginPath();
-    for (let i = 0; i <= this.sides; i++) {
-      const angle = (i / this.sides) * TAU + rot;
-      const px = this.cx + Math.cos(angle) * r * life;
-      const py = this.cy + Math.sin(angle) * r * life;
-      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    glowStroke(ctx, this.color, a, this.lineWidth);
-
-    // Core glow dot
-    if (r > 2) {
-      const { r: cr, g: cg, b: cb } = this.color;
-      const dotR = r * 0.382;
-      const grad = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, dotR);
-      grad.addColorStop(0, `rgba(${Math.min(255, cr + 26)},${Math.min(255, cg + 26)},${Math.min(255, cb + 26)},${a * 0.618})`);
-      grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-      ctx.beginPath();
-      ctx.arc(this.cx, this.cy, dotR, 0, TAU);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    }
-  }
+  const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  grad.addColorStop(0, `rgba(${Math.min(255, r + 40)},${Math.min(255, g + 40)},${Math.min(255, b + 40)},${alpha * 0.5})`);
+  grad.addColorStop(0.382, `rgba(${r},${g},${b},${alpha * 0.25})`);
+  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, TAU);
+  ctx.fillStyle = grad;
+  ctx.fill();
 }
 
 class DriftSparkle {
   constructor(W, H, palette) {
     this.age = 0;
-    this.x = W * (0.146 + Math.random() * 0.708);
-    this.y = H * (0.090 + Math.random() * 0.764);
-    this.vx = (Math.random() - 0.5) * 0.146;
-    this.vy = -(0.056 + Math.random() * 0.090);
-    this.maxRadius = 1 + Math.random() * 2;
+    this.x = W * (0.1 + Math.random() * 0.8);
+    this.y = H * (0.05 + Math.random() * 0.8);
+    this.vx = (Math.random() - 0.5) * 0.15;
+    this.vy = -(0.05 + Math.random() * 0.1);
+    this.maxRadius = 1 + Math.random() * 2.5;
     this.color = palette ? palette[Math.floor(Math.random() * palette.length)] : SLATE_FALLBACK;
     this.life = SETTLE_AGE;
   }
@@ -185,9 +98,9 @@ class DriftSparkle {
   draw(ctx) {
     const t = this.age / this.life;
     const brightness = t < 0.382 ? t / 0.382 : (1 - t) / 0.618;
-    const alpha = Math.max(0, brightness) * 0.382;
+    const alpha = Math.max(0, brightness) * 0.4;
     const radius = this.maxRadius * Math.max(0, brightness);
-    if (radius < 0.236) return;
+    if (radius < 0.3) return;
     const { r, g, b } = this.color;
     const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
     grad.addColorStop(0, `rgba(${Math.min(255, r + 26)},${Math.min(255, g + 26)},${Math.min(255, b + 26)},${alpha})`);
@@ -200,4 +113,4 @@ class DriftSparkle {
   }
 }
 
-export { TreeRoot, TreeTrunk, TreeBranch, TreeLeaf, DriftSparkle };
+export { drawGlowSegment, drawLeafGlow, DriftSparkle };
