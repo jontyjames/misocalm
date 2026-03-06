@@ -1,5 +1,5 @@
 /**
- * SanctuaryPrompt — entry screen for the Sanctuary experience
+ * AlivePrompt — entry screen for the Alive experience
  *
  * Frozen ref pattern prevents content flash during fade-out.
  * Slate solfeggio accent (396Hz — liberation from fear).
@@ -9,7 +9,7 @@
 
 import { useRef } from 'react';
 
-export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, visible }) {
+export default function AlivePrompt({ isFirstVisit, visits, onEnter, visible }) {
   const frozenRef = useRef({ isFirstVisit, visits });
   if (visible) frozenRef.current = { isFirstVisit, visits };
   const show = frozenRef.current;
@@ -40,7 +40,7 @@ export default function SanctuaryPrompt({ isFirstVisit, visits, onEnter, visible
           animation: 'fadeInUp 1.597s ease-out 0.610s forwards',
         }}
       >
-        {show.isFirstVisit ? 'A quiet shelter' : 'Sanctuary'}
+        {show.isFirstVisit ? 'Feel what\'s alive' : 'Alive'}
       </p>
 
       <div

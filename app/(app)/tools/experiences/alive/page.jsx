@@ -1,6 +1,6 @@
 /**
- * Sanctuary Experience Page
- * A breath-reactive guided practice that builds sacred geometry from breath.
+ * Alive Experience Page
+ * A breath-reactive guided practice that builds a bioluminescent organism from breath.
  */
 
 'use client';
@@ -11,8 +11,8 @@ import { useAuthGuard } from '@/hooks';
 import { useNav } from '@/context/NavContext';
 import { Spinner } from '@/components/ui';
 
-const SanctuaryGuide = dynamic(
-  () => import('@/components/composed/experiences/SanctuaryGuide'),
+const AliveGuide = dynamic(
+  () => import('@/components/composed/experiences/AliveGuide'),
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center bg-void-black">
@@ -23,7 +23,7 @@ const SanctuaryGuide = dynamic(
   }
 );
 
-export default function SanctuaryPage() {
+export default function AlivePage() {
   const { isAuthenticated, loading } = useAuthGuard();
   const { setShowNav } = useNav();
 
@@ -38,5 +38,5 @@ export default function SanctuaryPage() {
     </div>
   );
 
-  return <SanctuaryGuide />;
+  return <AliveGuide />;
 }

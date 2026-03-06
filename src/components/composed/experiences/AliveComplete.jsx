@@ -1,13 +1,13 @@
 /**
- * SanctuaryComplete — post-completion torus flow paths
+ * AliveComplete — post-completion torus flow paths
  *
- * Impermanence message (each sanctuary is unique), keep breathing,
- * journal integration, and return to sanctuary.
+ * Impermanence message (each session is unique), keep breathing,
+ * journal integration, and return to centre.
  */
 
 'use client';
 
-export default function SanctuaryComplete({ onKeepBreathing, onJournal, onReturn }) {
+export default function AliveComplete({ onKeepBreathing, onJournal, onReturn }) {
   return (
     <div
       style={{
@@ -30,7 +30,7 @@ export default function SanctuaryComplete({ onKeepBreathing, onJournal, onReturn
         className="text-slate-300/70 text-xs font-light tracking-widest text-center"
         style={{ marginBottom: 26, lineHeight: 1.8, fontFamily: "'Josefin Sans', sans-serif" }}
       >
-        this sanctuary will never be built again
+        this will never pulse the same way again
       </p>
 
       {/* Keep breathing (free play) */}

@@ -1,5 +1,5 @@
 /**
- * SanctuaryShapes — Tendril, BreathRing, DriftSparkle
+ * AliveShapes — Tendril, BreathRing, DriftSparkle
  *
  * Living Light: bioluminescent organism made of wobbling bezier tendrils,
  * expanding breath rings, and ambient drift sparkles.
@@ -13,7 +13,7 @@
  * glow stops at phi (0.382, 0.618), sparkle life 233 (fib).
  */
 
-import { TAU, SLATE_FALLBACK, BLOOM_FRAMES } from './SanctuaryShapeData';
+import { TAU, SLATE_FALLBACK, BLOOM_FRAMES } from './AliveShapeData';
 
 const SETTLE_AGE = 233; // Fibonacci — DriftSparkle lifespan
 

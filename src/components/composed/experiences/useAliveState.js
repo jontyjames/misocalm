@@ -1,12 +1,12 @@
 /**
- * useSanctuaryState — guided-to-solo breath state machine for Sanctuary
+ * useAliveState — guided-to-solo breath state machine for Alive
  *
  * 11 breaths (prime). 3 guided + 8 solo. Same flow every visit.
  * No tiers. Everyone gets the full gentle landing every time.
  * Slide detection extracted to useSlideDetection.
  *
- * Opening: settle breath (countdown 3-2-1) → deep inhale →
- * "now we will breathe together" → 3 guided breaths → 8 solo.
+ * Opening: welcome → breathe out → countdown 3-2-1 →
+ * breathe in deep → "now we will breathe together" → 3 guided → 8 solo.
  *
  * Sacred numbers: 11 breaths (prime), 3 guided (prime), timing Fibonacci,
  * thresholds phi pair (0.382/0.618).
@@ -16,7 +16,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
-import { STORAGE_KEYS, SANCTUARY_TEACHINGS, FIBONACCI_TIMING } from '@/lib/constants';
+import { STORAGE_KEYS, ALIVE_TEACHINGS, FIBONACCI_TIMING } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 import { lerpColor } from './ColourRibbon';
 import useSlideDetection from './useSlideDetection';
@@ -42,15 +42,15 @@ const PHASES = {
 };
 
 function pickTeaching(visitIndex, lastIndex) {
-  if (visitIndex < SANCTUARY_TEACHINGS.length) {
-    return { teaching: SANCTUARY_TEACHINGS[visitIndex], index: visitIndex };
+  if (visitIndex < ALIVE_TEACHINGS.length) {
+    return { teaching: ALIVE_TEACHINGS[visitIndex], index: visitIndex };
   }
-  const pool = SANCTUARY_TEACHINGS.map((t, i) => ({ t, i })).filter(({ i }) => i !== lastIndex);
+  const pool = ALIVE_TEACHINGS.map((t, i) => ({ t, i })).filter(({ i }) => i !== lastIndex);
   const pick = pool[Math.floor(Math.random() * pool.length)];
   return { teaching: pick.t, index: pick.i };
 }
 
-export default function useSanctuaryState() {
+export default function useAliveState() {
   const slide = useSlideDetection();
   const [started, setStarted] = useState(false);
   const [guideText, setGuideText] = useState('');
@@ -60,8 +60,8 @@ export default function useSanctuaryState() {
   const [freePlay, setFreePlay] = useState(false);
   const [breathCount, setBreathCount] = useState(0);
   const [treePalette, setTreePalette] = useState(null);
-  const [visits, setVisits] = useLocalStorage(STORAGE_KEYS.SANCTUARY_VISITS, 0);
-  const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.SANCTUARY_LAST_TEACHING, -1);
+  const [visits, setVisits] = useLocalStorage(STORAGE_KEYS.ALIVE_VISITS, 0);
+  const [lastTeaching, setLastTeaching] = useLocalStorage(STORAGE_KEYS.ALIVE_LAST_TEACHING, -1);
 
   const isFirstVisit = visits === 0;
   const analyticsStartRef = useRef(null);
@@ -105,13 +105,12 @@ export default function useSanctuaryState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
-    // === OPENING (same every visit) ===
+    // === OPENING (tightened ~11.6s) ===
     setPhase(PHASES.OPENING);
-    await delay(FIBONACCI_TIMING.ease);
 
-    // Settle them in
-    setGuide("let's breathe together");
-    await delay(FIBONACCI_TIMING.sacred);
+    // Welcome
+    setGuide('welcome');
+    await delay(FIBONACCI_TIMING.ceremony);
 
     // Countdown exhale — breathe out... 3... 2... 1
     setGuide('breathe out');
@@ -123,15 +122,9 @@ export default function useSanctuaryState() {
     setGuide('1');
     await delay(FIBONACCI_TIMING.breathe);
 
-    setGuide('');
-    await delay(FIBONACCI_TIMING.ease);
-
     // Deep inhale
     setGuide('breathe in deep');
-    await delay(FIBONACCI_TIMING.long);
-
-    setGuide('');
-    await delay(FIBONACCI_TIMING.ease);
+    await delay(FIBONACCI_TIMING.sacred);
 
     // Instruction — straight into guided breathing
     setGuide('now we will breathe together');
@@ -201,10 +194,10 @@ export default function useSanctuaryState() {
     // === COMPLETE ===
     setPhase(PHASES.COMPLETE);
     setLastTeaching(teachingIndex);
-    setGuide('your sanctuary stands', true);
+    setGuide('you are alive', true);
     await delay(FIBONACCI_TIMING.sacred);
     track(EVENTS.EXPERIENCE_COMPLETED, {
-      experience_id: 'sanctuary', experience_name: 'Sanctuary',
+      experience_id: 'alive', experience_name: 'Alive',
       duration_ms: Date.now() - (analyticsStartRef.current || Date.now()),
     });
     setComplete(true);
@@ -224,7 +217,7 @@ export default function useSanctuaryState() {
 
   const enter = useCallback(() => {
     analyticsStartRef.current = Date.now();
-    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'sanctuary', experience_name: 'Sanctuary' });
+    track(EVENTS.EXPERIENCE_STARTED, { experience_id: 'alive', experience_name: 'Alive' });
     setTreePalette(generateTreePalette());
     setVisits((v) => v + 1);
     setStarted(true);

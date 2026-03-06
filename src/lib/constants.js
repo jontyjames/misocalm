@@ -144,7 +144,7 @@ export const ROUTES = {
   EXPERIENCE_PULSE: '/tools/experiences/pulse',
   EXPERIENCE_GROUNDING: '/tools/experiences/grounding',
   EXPERIENCE_FOCUS: '/tools/experiences/focus',
-  EXPERIENCE_SANCTUARY: '/tools/experiences/sanctuary',
+  EXPERIENCE_ALIVE: '/tools/experiences/alive',
 };
 
 // Attribution options (how did you find us)
@@ -286,8 +286,8 @@ export const STORAGE_KEYS = {
   GROUNDING_LAST_TEACHING: 'misocalm_grounding_last_teaching',
   FOCUS_VISITS: 'misocalm_focus_visits',
   FOCUS_LAST_TEACHING: 'misocalm_focus_last_teaching',
-  SANCTUARY_VISITS: 'misocalm_sanctuary_visits',
-  SANCTUARY_LAST_TEACHING: 'misocalm_sanctuary_last_teaching',
+  ALIVE_VISITS: 'misocalm_alive_visits',
+  ALIVE_LAST_TEACHING: 'misocalm_alive_last_teaching',
 };
 
 // Impermanence experience teachings (5, prime)
@@ -562,8 +562,8 @@ export const DEEPER_PROMPTS_FOCUS = [
   'What would you like to carry from this into the rest of your day?',
 ];
 
-// Sanctuary experience teachings (7, prime — each has 3 lines)
-export const SANCTUARY_TEACHINGS = [
+// Alive experience teachings (7, prime — each has 3 lines)
+export const ALIVE_TEACHINGS = [
   {
     lines: [
       'this is what your sensitivity looks like',
@@ -615,8 +615,8 @@ export const SANCTUARY_TEACHINGS = [
   },
 ];
 
-// After sanctuary (7 prompts, prime)
-export const DEEPER_PROMPTS_SANCTUARY = [
+// After alive (7 prompts, prime)
+export const DEEPER_PROMPTS_ALIVE = [
   'What did you notice about your breathing during that?',
   'Is there a place in your body where the stillness lives right now?',
   'What did it feel like to build something with nothing but breath?',
@@ -807,5 +807,5 @@ export const DAILY_PRACTICES_ROTATION = [
   { type: 'experience', id: 'pulse',        name: 'Pulse',        label: 'Your Heartbeat',    route: ROUTES.EXPERIENCE_PULSE,        time: '~3 min', accent: 'indigo' },
   { type: 'experience', id: 'impermanence', name: 'Impermanence', label: 'What Remains',      route: ROUTES.EXPERIENCE_IMPERMANENCE, time: '~3 min', accent: 'violet' },
   { type: 'experience', id: 'focus',        name: 'Focus',        label: 'The Stillpoint',    route: ROUTES.EXPERIENCE_FOCUS,        time: '~3 min', accent: 'cyan' },
-  { type: 'experience', id: 'sanctuary',    name: 'Sanctuary',    label: 'Built by Breath',   route: ROUTES.EXPERIENCE_SANCTUARY,    time: '~4 min', accent: 'slate' },
+  { type: 'experience', id: 'alive',         name: 'Alive',        label: 'Breathe Life',      route: ROUTES.EXPERIENCE_ALIVE,        time: '~4 min', accent: 'slate' },
 ];

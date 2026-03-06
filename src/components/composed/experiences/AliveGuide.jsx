@@ -1,5 +1,5 @@
 /**
- * SanctuaryGuide — orchestrates the full Sanctuary experience
+ * AliveGuide — orchestrates the full Alive experience
  *
  * Guided-to-solo breath flow. 11 breaths build a bioluminescent Tree of Life.
  * Slide up to inhale, down to exhale. Solfeggio: slate (396Hz).
@@ -15,11 +15,11 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
-import SanctuaryCanvas from './SanctuaryCanvas';
-import SanctuaryComplete from './SanctuaryComplete';
-import SanctuaryPrompt from './SanctuaryPrompt';
+import AliveCanvas from './AliveCanvas';
+import AliveComplete from './AliveComplete';
+import AlivePrompt from './AlivePrompt';
 import ExitThreshold from './ExitThreshold';
-import useSanctuaryState from './useSanctuaryState';
+import useAliveState from './useAliveState';
 
 const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
 const GUIDE_TRANSITION = { in: '0.987s', out: '0.610s' };
@@ -28,10 +28,10 @@ function normalizeY(clientY) {
   return Math.max(0, Math.min(1, clientY / window.innerHeight));
 }
 
-export default function SanctuaryGuide() {
+export default function AliveGuide() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const state = useSanctuaryState();
+  const state = useAliveState();
   const [playing, setPlaying] = useState(false);
   const [exitTransition, setExitTransition] = useState(null);
   const touchActiveRef = useRef(false);
@@ -52,7 +52,7 @@ export default function SanctuaryGuide() {
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=sanctuary`, solfeggio: 'slate' });
+    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=alive`, solfeggio: 'slate' });
   }, [state.clearSeqTimer]);
 
   const handleKeepBreathing = useCallback(() => setPlaying(true), []);
@@ -105,7 +105,7 @@ export default function SanctuaryGuide() {
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && (
-        <SanctuaryCanvas breathCount={state.breathCount} treePalette={state.treePalette} />
+        <AliveCanvas breathCount={state.breathCount} treePalette={state.treePalette} />
       )}
 
       {/* Touch wrapper — full screen, below exit button */}
@@ -188,7 +188,7 @@ export default function SanctuaryGuide() {
         </div>
       )}
 
-      <SanctuaryPrompt
+      <AlivePrompt
         isFirstVisit={state.isFirstVisit}
         visits={state.visits}
         onEnter={handleEnter}
@@ -258,7 +258,7 @@ export default function SanctuaryGuide() {
       )}
 
       {state.complete && !playing && (
-        <SanctuaryComplete onKeepBreathing={handleKeepBreathing} onJournal={handleJournal} onReturn={handleReturn} />
+        <AliveComplete onKeepBreathing={handleKeepBreathing} onJournal={handleJournal} onReturn={handleReturn} />
       )}
 
       {/* Free play — done button */}

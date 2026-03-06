@@ -1,5 +1,5 @@
 /**
- * SanctuaryCanvas — Living Light bioluminescent organism
+ * AliveCanvas — Living Light bioluminescent organism
  *
  * Seed dot at center breathes. Tendrils grow outward with wobbling bezier
  * curves. Rings pulse on each breath. Everything breathes together.
@@ -17,15 +17,15 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import SparkBurst from './SparkBurst';
-import { Tendril, BreathRing, DriftSparkle } from './SanctuaryShapes';
+import { Tendril, BreathRing, DriftSparkle } from './AliveShapes';
 import {
   MAX_DRIFT_SPARKLES, SECTOR_COUNT,
   spawnTendrils, pickRingColor, drawSeedDot,
-} from './SanctuaryShapeData';
+} from './AliveShapeData';
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.025)';
 
-export default function SanctuaryCanvas({ breathCount, treePalette }) {
+export default function AliveCanvas({ breathCount, treePalette }) {
   const canvasRef = useRef(null);
   const stateRef = useRef({
     tendrils: [],

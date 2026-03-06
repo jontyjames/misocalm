@@ -1,5 +1,5 @@
 /**
- * SanctuaryShapeData — tendril spawning + sector-based coverage
+ * AliveShapeData — tendril spawning + sector-based coverage
  *
  * Living Light: bioluminescent organism grows from seed dot.
  * 71 tendrils (prime) across 11 breaths. 13 sectors (prime) ensure
@@ -73,17 +73,18 @@ function pickRingColor(breathIndex, palette) {
 
 /**
  * Draw the seed dot — breathing center glow, always on top.
+ * baseRadius 8 (was 5), halo radius * 8 (was * 5) for more presence.
  */
 function drawSeedDot(ctx, cx, cy, breatheScale, palette) {
   const color = palette && palette.length > 0 ? palette[0] : SLATE_FALLBACK;
   const { r, g, b } = color;
-  const baseRadius = 5;
+  const baseRadius = 8;
   const radius = baseRadius * (0.8 + 0.4 * breatheScale);
 
   ctx.globalCompositeOperation = 'source-over';
 
   // Outer halo
-  const haloRadius = radius * 5;
+  const haloRadius = radius * 8;
   const haloGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, haloRadius);
   haloGrad.addColorStop(0, `rgba(${r},${g},${b},${0.15 * breatheScale})`);
   haloGrad.addColorStop(0.382, `rgba(${r},${g},${b},${0.08 * breatheScale})`);
