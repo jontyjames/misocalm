@@ -110,7 +110,7 @@ export default function useSanctuaryState() {
     await delay(FIBONACCI_TIMING.ease);
 
     // Settle them in
-    setGuide('time to connect with your breath');
+    setGuide("let's breathe together");
     await delay(FIBONACCI_TIMING.sacred);
 
     // Countdown exhale — breathe out... 3... 2... 1

@@ -1,176 +1,162 @@
 /**
- * SanctuaryShapeData — dot-based tree of life generator
+ * SanctuaryShapeData — tendril spawning + sector-based coverage
  *
- * Generates a tree silhouette from hundreds of glowing dots.
- * Trunk = dense tapered column. Canopy = cloud of overlapping circles.
- * Roots = curves spreading from base. Each breath reveals more dots.
- * The tree emerges through density, like a pointillist painting.
+ * Living Light: bioluminescent organism grows from seed dot.
+ * 71 tendrils (prime) across 11 breaths. 13 sectors (prime) ensure
+ * full-screen coverage. After breath 3, tendrils branch from tips.
  *
- * Sacred numbers: dot count 233 (fib), MAX_DRIFT_SPARKLES=89 (fib),
- * canopy circles 7 (sacred), root curves 5 (prime).
+ * Sacred numbers: tendril counts all prime, total 71 (prime),
+ * 13 sectors (prime), branch probability 0.618 (phi),
+ * bloom-in 34 frames (Fibonacci), glow stops at phi (0.382, 0.618).
  */
 
 const TAU = Math.PI * 2;
-const MIN_ALPHA = 0.618;
-const SETTLE_AGE = 233;
-const MAX_DRIFT_SPARKLES = 89;
+const MAX_DRIFT_SPARKLES = 89; // Fibonacci
 const SLATE_FALLBACK = { r: 148, g: 163, b: 184 };
-const TOTAL_DOTS = 377; // Fibonacci — plenty for a lush tree
 
-function settleLife(age) {
-  const settleT = Math.min(1, age / SETTLE_AGE);
-  return MIN_ALPHA + (1 - MIN_ALPHA) * (1 - settleT * settleT);
+// Tendril counts per breath — all prime, total 71 (prime)
+const TENDRIL_COUNTS = [5, 3, 5, 3, 7, 5, 7, 5, 7, 11, 13];
+
+// 13 sectors (prime) for full-screen coverage
+const SECTOR_COUNT = 13;
+
+// After breath 3, phi-fraction of new tendrils branch from existing tips
+const BRANCH_AFTER_BREATH = 3;
+const BRANCH_PROBABILITY = 0.618;
+
+// Bloom-in duration (Fibonacci)
+const BLOOM_FRAMES = 34;
+
+/**
+ * Pick angles targeting emptiest sectors.
+ * sectorCounts: mutable 13-element array tracking tendrils per sector.
+ */
+function pickTendrilAngles(count, sectorCounts) {
+  const angles = [];
+  const sectorWidth = TAU / SECTOR_COUNT;
+
+  for (let i = 0; i < count; i++) {
+    let minCount = Infinity;
+    let candidates = [];
+    for (let s = 0; s < SECTOR_COUNT; s++) {
+      if (sectorCounts[s] < minCount) {
+        minCount = sectorCounts[s];
+        candidates = [s];
+      } else if (sectorCounts[s] === minCount) {
+        candidates.push(s);
+      }
+    }
+    const sector = candidates[Math.floor(Math.random() * candidates.length)];
+    sectorCounts[sector]++;
+
+    const baseAngle = sector * sectorWidth;
+    const jitter = (Math.random() - 0.5) * sectorWidth * 0.8;
+    angles.push(baseAngle + sectorWidth / 2 + jitter);
+  }
+  return angles;
 }
 
-function pickDotColor(palette, zone) {
+/**
+ * Map breath index (1-11) to palette color index (0-4).
+ * 0=grounding, 1=building, 2=transformation, 3=expression, 4=transcendence
+ */
+function pickTendrilColor(breathIndex, palette) {
   if (!palette || palette.length === 0) return SLATE_FALLBACK;
-  const ranges = {
-    root: [0, 1],
-    trunk: [1, 2],
-    canopy: [2, 4],
-  };
-  const [lo, hi] = ranges[zone] || [0, 4];
-  const idx = lo + Math.floor(Math.random() * (hi - lo + 1));
+  let idx;
+  if (breathIndex <= 2) idx = 0;
+  else if (breathIndex <= 4) idx = 1;
+  else if (breathIndex <= 6) idx = 2;
+  else if (breathIndex <= 9) idx = 3;
+  else idx = 4;
   return palette[Math.min(idx, palette.length - 1)];
 }
 
-/**
- * Check if point (px, py) is inside any of the canopy circles.
- */
-function inCanopy(px, py, circles) {
-  for (const c of circles) {
-    const dx = px - c.x;
-    const dy = py - c.y;
-    if (dx * dx + dy * dy < c.r * c.r) return true;
-  }
-  return false;
+function pickRingColor(breathIndex, palette) {
+  return pickTendrilColor(breathIndex, palette);
 }
 
 /**
- * Generate all dot positions for the tree.
- * Returns array of { x, y, zone, size, breath } sorted by breath.
+ * Draw the seed dot — breathing center glow, always on top.
  */
-function generateTree(W, H) {
-  const cx = W / 2;
-  const dots = [];
+function drawSeedDot(ctx, cx, cy, breatheScale, palette) {
+  const color = palette && palette.length > 0 ? palette[0] : SLATE_FALLBACK;
+  const { r, g, b } = color;
+  const baseRadius = 5;
+  const radius = baseRadius * (0.8 + 0.4 * breatheScale);
 
-  // --- TREE PROPORTIONS ---
-  const trunkBaseY = H * 0.78;
-  const trunkTopY = H * 0.42;
-  const trunkWidth = W * 0.04;
-  const canopyCenterY = H * 0.30;
-  const canopyRadius = W * 0.35;
+  ctx.globalCompositeOperation = 'source-over';
 
-  // --- CANOPY SHAPE: 7 overlapping circles (sacred count) ---
-  const canopyCircles = [
-    { x: cx, y: canopyCenterY, r: canopyRadius * 0.7 },                          // main
-    { x: cx - canopyRadius * 0.4, y: canopyCenterY - canopyRadius * 0.1, r: canopyRadius * 0.5 },  // left upper
-    { x: cx + canopyRadius * 0.4, y: canopyCenterY - canopyRadius * 0.05, r: canopyRadius * 0.5 }, // right upper
-    { x: cx - canopyRadius * 0.25, y: canopyCenterY + canopyRadius * 0.35, r: canopyRadius * 0.45 }, // left lower
-    { x: cx + canopyRadius * 0.3, y: canopyCenterY + canopyRadius * 0.3, r: canopyRadius * 0.45 },  // right lower
-    { x: cx - canopyRadius * 0.1, y: canopyCenterY - canopyRadius * 0.4, r: canopyRadius * 0.35 },  // top left
-    { x: cx + canopyRadius * 0.15, y: canopyCenterY - canopyRadius * 0.35, r: canopyRadius * 0.35 }, // top right
-  ];
+  // Outer halo
+  const haloRadius = radius * 5;
+  const haloGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, haloRadius);
+  haloGrad.addColorStop(0, `rgba(${r},${g},${b},${0.15 * breatheScale})`);
+  haloGrad.addColorStop(0.382, `rgba(${r},${g},${b},${0.08 * breatheScale})`);
+  haloGrad.addColorStop(0.618, `rgba(${r},${g},${b},${0.03 * breatheScale})`);
+  haloGrad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.beginPath();
+  ctx.arc(cx, cy, haloRadius, 0, TAU);
+  ctx.fillStyle = haloGrad;
+  ctx.fill();
 
-  // --- SEED (breath 1) ---
-  // Small bright cluster at the very bottom — the origin of life
-  const seedCount = 13; // prime
-  const seedY = H * 0.88;
-  for (let i = 0; i < seedCount; i++) {
-    const angle = Math.random() * TAU;
-    const dist = Math.random() * W * 0.025;
-    dots.push({
-      x: cx + Math.cos(angle) * dist,
-      y: seedY + Math.sin(angle) * dist * 0.6,
-      zone: 'root',
-      size: 2 + Math.random() * 2.5,
-      breath: 1,
+  // Core dot
+  const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+  const cR = Math.min(255, r + 50);
+  const cG = Math.min(255, g + 50);
+  const cB = Math.min(255, b + 50);
+  coreGrad.addColorStop(0, `rgba(${cR},${cG},${cB},${0.9 * breatheScale})`);
+  coreGrad.addColorStop(0.618, `rgba(${r},${g},${b},${0.5 * breatheScale})`);
+  coreGrad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, TAU);
+  ctx.fillStyle = coreGrad;
+  ctx.fill();
+}
+
+/**
+ * Spawn tendrils for a given breath.
+ * Returns array of tendril configs for Tendril class.
+ */
+function spawnTendrils(breathIndex, existingTendrils, cx, cy, W, H, palette, sectorCounts) {
+  const idx = breathIndex - 1;
+  if (idx < 0 || idx >= TENDRIL_COUNTS.length) return [];
+
+  const count = TENDRIL_COUNTS[idx];
+  const diagonal = Math.sqrt(W * W + H * H);
+  const canBranch = breathIndex > BRANCH_AFTER_BREATH && existingTendrils.length > 0;
+  const angles = pickTendrilAngles(count, sectorCounts);
+  const configs = [];
+
+  for (let i = 0; i < count; i++) {
+    const angle = angles[i];
+    // Later breaths reach further
+    const reachScale = 0.6 + (breathIndex / 11) * 0.5;
+    const maxLength = diagonal * (0.08 + Math.random() * 0.30) * reachScale;
+    const color = pickTendrilColor(breathIndex, palette);
+    const wobblePhase = Math.random() * TAU;
+    const wobbleSpeed = 0.013 + Math.random() * 0.027;
+    const wobbleAmp = 8 + Math.random() * 27;
+
+    let startX = cx;
+    let startY = cy;
+
+    if (canBranch && Math.random() < BRANCH_PROBABILITY) {
+      const parent = existingTendrils[Math.floor(Math.random() * existingTendrils.length)];
+      if (parent.tipX !== undefined && parent.tipY !== undefined) {
+        startX = parent.tipX;
+        startY = parent.tipY;
+      }
+    }
+
+    configs.push({
+      startX, startY, angle, maxLength, color,
+      wobblePhase, wobbleSpeed, wobbleAmp,
     });
   }
-
-  // --- ROOT DOTS (breath 2-3) ---
-  // 5 root curves spreading wide from seed
-  const rootCount = 34; // Fibonacci
-  const rootAngles = [-1.0, -0.5, 0, 0.5, 1.0];
-  for (let i = 0; i < rootCount; i++) {
-    const curveIdx = i % 5;
-    const baseAngle = rootAngles[curveIdx];
-    const t = (i / rootCount) * 0.8 + Math.random() * 0.2;
-    const angle = baseAngle + (Math.random() - 0.5) * 0.3;
-    const reach = W * (0.08 + t * 0.35);
-    const x = cx + Math.sin(angle) * reach + (Math.random() - 0.5) * 8;
-    const y = seedY + t * H * 0.08 + Math.random() * 6;
-    dots.push({
-      x, y,
-      zone: 'root',
-      size: 1.5 + Math.random() * 2,
-      breath: i < 17 ? 2 : 3,
-    });
-  }
-
-  // --- TRUNK DOTS (breath 3-5) ---
-  // Grows upward from seed to canopy
-  const trunkCount = 55; // Fibonacci
-  for (let i = 0; i < trunkCount; i++) {
-    const t = i / trunkCount; // 0=base, 1=top
-    const taper = 1 - t * 0.5;
-    const x = cx + (Math.random() - 0.5) * trunkWidth * taper * 2;
-    const y = trunkBaseY - t * (trunkBaseY - trunkTopY);
-    const wobble = Math.sin(t * 5 + Math.random()) * trunkWidth * 0.3;
-    dots.push({
-      x: x + wobble,
-      y: y + (Math.random() - 0.5) * 4,
-      zone: 'trunk',
-      size: 1.5 + (1 - t) * 2 + Math.random() * 1.5,
-      breath: t < 0.33 ? 3 : t < 0.66 ? 4 : 5,
-    });
-  }
-
-  // --- CANOPY DOTS (breath 4-11) ---
-  // Scatter dots within canopy circles, denser toward center
-  const canopyCount = TOTAL_DOTS - seedCount - rootCount - trunkCount;
-  let placed = 0;
-  let attempts = 0;
-  while (placed < canopyCount && attempts < canopyCount * 5) {
-    attempts++;
-    // Pick a random point in the canopy bounding box
-    const x = cx + (Math.random() - 0.5) * canopyRadius * 2.2;
-    const y = canopyCenterY + (Math.random() - 0.5) * canopyRadius * 1.8;
-
-    if (!inCanopy(x, y, canopyCircles)) continue;
-
-    // Distance from canopy center → determines breath and density
-    const dx = x - cx;
-    const dy = y - canopyCenterY;
-    const dist = Math.sqrt(dx * dx + dy * dy) / canopyRadius;
-
-    // Inner dots revealed first, outer dots later
-    let breath;
-    if (dist < 0.25) breath = 5 + Math.floor(Math.random() * 2);       // 5-6
-    else if (dist < 0.45) breath = 6 + Math.floor(Math.random() * 2);  // 6-7
-    else if (dist < 0.65) breath = 7 + Math.floor(Math.random() * 2);  // 7-8
-    else if (dist < 0.80) breath = 8 + Math.floor(Math.random() * 2);  // 8-9
-    else breath = 9 + Math.floor(Math.random() * 2);                   // 9-10
-
-    dots.push({
-      x: x + (Math.random() - 0.5) * 3,
-      y: y + (Math.random() - 0.5) * 3,
-      zone: 'canopy',
-      size: 1.5 + Math.random() * 3.5,
-      breath: Math.min(breath, 11),
-    });
-    placed++;
-  }
-
-  // Sort by breath number for progressive reveal
-  dots.sort((a, b) => a.breath - b.breath);
-
-  return dots;
+  return configs;
 }
 
 export {
-  TAU, MIN_ALPHA, SETTLE_AGE, MAX_DRIFT_SPARKLES,
-  SLATE_FALLBACK,
-  settleLife, pickDotColor,
-  generateTree,
+  TAU, MAX_DRIFT_SPARKLES, SLATE_FALLBACK, BLOOM_FRAMES,
+  SECTOR_COUNT, TENDRIL_COUNTS,
+  spawnTendrils, pickTendrilColor, pickRingColor, drawSeedDot,
 };

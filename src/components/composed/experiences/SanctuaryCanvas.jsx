@@ -1,12 +1,15 @@
 /**
- * SanctuaryCanvas — dot-based bioluminescent tree of life
+ * SanctuaryCanvas — Living Light bioluminescent organism
  *
- * 377 glowing dots form a tree silhouette. Each breath reveals more dots.
- * Roots spread at the base, trunk rises through the center, canopy blooms
- * as a cloud of light. Fade trails create memory. Additive blending for glow.
+ * Seed dot at center breathes. Tendrils grow outward with wobbling bezier
+ * curves. Rings pulse on each breath. Everything breathes together.
+ * Tendrils persist and accumulate — by breath 11, the screen is alive.
  *
- * Sacred numbers: 377 dots (fib), MAX_DRIFT_SPARKLES=89 (fib),
- * fade trail alpha 0.03, breathing sine period ~4s.
+ * Render order: fade trail → tendrils → rings → drift sparkles →
+ * spark bursts → seed dot (always on top).
+ *
+ * Sacred numbers: 71 tendrils (prime), fade 0.025, breathe period ~0.008,
+ * MAX_DRIFT_SPARKLES 89 (fib).
  */
 
 'use client';
@@ -14,19 +17,22 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks';
 import SparkBurst from './SparkBurst';
-import { drawDot, DriftSparkle } from './SanctuaryShapes';
-import { MAX_DRIFT_SPARKLES, generateTree, pickDotColor } from './SanctuaryShapeData';
+import { Tendril, BreathRing, DriftSparkle } from './SanctuaryShapes';
+import {
+  MAX_DRIFT_SPARKLES, SECTOR_COUNT,
+  spawnTendrils, pickRingColor, drawSeedDot,
+} from './SanctuaryShapeData';
 
-const VOID_COLOR = 'rgba(3, 7, 18, 0.035)';
+const VOID_COLOR = 'rgba(3, 7, 18, 0.025)';
 
 export default function SanctuaryCanvas({ breathCount, treePalette }) {
   const canvasRef = useRef(null);
   const stateRef = useRef({
-    dots: null,
-    dotAges: null,
-    dotColors: null,
+    tendrils: [],
+    rings: [],
     sparks: [],
     driftSparkles: [],
+    sectorCounts: new Array(SECTOR_COUNT).fill(0),
     time: 0,
     lastBreathCount: 0,
   });
@@ -44,89 +50,92 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
     const dpr = dprRef.current;
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
+    if (W <= 0 || H <= 0) { rafRef.current = requestAnimationFrame(render); return; }
+
     const s = stateRef.current;
     const props = propsRef.current;
-
-    // Generate dots on first render
-    if (!s.dots && W > 0 && H > 0) {
-      s.dots = generateTree(W, H);
-      s.dotAges = new Array(s.dots.length).fill(-1);
-      s.dotColors = s.dots.map(d => pickDotColor(props.treePalette, d.zone));
-    }
-
+    const cx = W / 2;
+    const cy = H / 2;
     s.time++;
 
-    // Fade trail
+    // 1. Fade trail — tendrils persist strongly, rings ghost away
     ctx.fillStyle = VOID_COLOR;
     ctx.fillRect(0, 0, W, H);
 
-    // On new breath: reveal dots for this breath number + spark burst
-    if (props.breathCount > s.lastBreathCount && s.dots) {
-      for (let i = 0; i < s.dots.length; i++) {
-        if (s.dotAges[i] === -1 && s.dots[i].breath <= props.breathCount) {
-          s.dotAges[i] = 0;
-        }
+    // 2. Breathing scale — global sine modulates all alphas
+    const breatheScale = 0.82 + 0.18 * Math.sin(s.time * 0.008);
+
+    // 3. On new breath: spawn tendrils + ring + SparkBurst
+    if (props.breathCount > s.lastBreathCount) {
+      const palette = props.treePalette;
+
+      // Catch up all missed breaths (handles resize recovery)
+      for (let b = s.lastBreathCount + 1; b <= props.breathCount; b++) {
+        const configs = spawnTendrils(
+          b, s.tendrils, cx, cy, W, H, palette, s.sectorCounts,
+        );
+        for (const cfg of configs) s.tendrils.push(new Tendril(cfg));
+
+        const ringColor = pickRingColor(b, palette);
+        s.rings.push(new BreathRing(cx, cy, ringColor));
       }
 
-      // Spark burst
-      const palette = props.treePalette;
+      // SparkBurst for current breath only
       const sparkColors = palette ? palette.slice(0, 5) : null;
       const bn = props.breathCount;
-      const phase = bn <= 2 ? 'ROOT' : bn <= 4 ? 'TRUNK' : 'BRANCH';
+      const phase = bn <= 3 ? 'FOUNDATION' : bn <= 7 ? 'RISING' : 'CANOPY';
       s.sparks.push(new SparkBurst(W, H, phase, sparkColors));
 
       s.lastBreathCount = props.breathCount;
     }
 
-    // Drift sparkles after breath 5
+    // 4. Drift sparkles after breath 5
     if (props.breathCount >= 5 && s.driftSparkles.length < MAX_DRIFT_SPARKLES) {
       if (Math.random() < 0.146) {
         s.driftSparkles.push(new DriftSparkle(W, H, props.treePalette));
       }
     }
 
-    // Breathing animation
-    const breathe = 0.82 + 0.18 * Math.sin(s.time * 0.012);
+    // 5. Update & draw tendrils (screen blend)
+    ctx.globalCompositeOperation = 'screen';
+    for (const tendril of s.tendrils) {
+      tendril.update(s.time);
+      tendril.draw(ctx, breatheScale);
+    }
+    ctx.globalCompositeOperation = 'source-over';
 
-    // Draw dots with additive blending
-    if (s.dots) {
+    // 6. Update & draw rings (screen blend)
+    for (let i = s.rings.length - 1; i >= 0; i--) {
+      if (!s.rings[i].update()) { s.rings.splice(i, 1); }
+    }
+    if (s.rings.length > 0) {
       ctx.globalCompositeOperation = 'screen';
-
-      for (let i = 0; i < s.dots.length; i++) {
-        const age = s.dotAges[i];
-        if (age < 0) continue;
-
-        s.dotAges[i]++;
-        const dot = s.dots[i];
-        const color = s.dotColors[i];
-
-        // Bloom in over ~45 frames
-        const bloomT = Math.min(1, age / 45);
-        const alpha = bloomT * breathe;
-
-        drawDot(ctx, dot.x, dot.y, dot.size * bloomT, color, alpha);
-      }
-
+      for (const ring of s.rings) ring.draw(ctx, breatheScale);
       ctx.globalCompositeOperation = 'source-over';
     }
 
-    // Drift sparkles
+    // 7. Drift sparkles (screen blend)
     for (let i = s.driftSparkles.length - 1; i >= 0; i--) {
-      if (!s.driftSparkles[i].update()) { s.driftSparkles.splice(i, 1); continue; }
+      if (!s.driftSparkles[i].update()) { s.driftSparkles.splice(i, 1); }
     }
-    ctx.globalCompositeOperation = 'screen';
-    for (const sparkle of s.driftSparkles) sparkle.draw(ctx);
-    ctx.globalCompositeOperation = 'source-over';
+    if (s.driftSparkles.length > 0) {
+      ctx.globalCompositeOperation = 'screen';
+      for (const sparkle of s.driftSparkles) sparkle.draw(ctx);
+      ctx.globalCompositeOperation = 'source-over';
+    }
 
-    // Spark bursts
+    // 8. Spark bursts (screen blend)
     for (let i = s.sparks.length - 1; i >= 0; i--) {
-      if (!s.sparks[i].update()) { s.sparks.splice(i, 1); continue; }
+      if (!s.sparks[i].update()) { s.sparks.splice(i, 1); }
     }
     if (s.sparks.length > 0) {
       ctx.globalCompositeOperation = 'screen';
       for (const burst of s.sparks) burst.draw(ctx);
       ctx.globalCompositeOperation = 'source-over';
     }
+
+    // 9. Seed dot (source-over, always on top)
+    drawSeedDot(ctx, cx, cy, breatheScale, props.treePalette);
 
     rafRef.current = requestAnimationFrame(render);
   }, []);
@@ -143,7 +152,14 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
       canvas.style.height = `${window.innerHeight}px`;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
-      stateRef.current.dots = null;
+      // Reset visual state on resize
+      const s = stateRef.current;
+      s.tendrils = [];
+      s.rings = [];
+      s.sparks = [];
+      s.driftSparkles = [];
+      s.sectorCounts = new Array(SECTOR_COUNT).fill(0);
+      s.lastBreathCount = 0;
     };
     resize();
     window.addEventListener('resize', resize);
