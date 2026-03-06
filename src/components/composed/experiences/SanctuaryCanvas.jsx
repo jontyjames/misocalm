@@ -72,7 +72,7 @@ export default function SanctuaryCanvas({ breathCount, treePalette }) {
       // Catch up all missed breaths (handles resize recovery)
       for (let b = s.lastBreathCount + 1; b <= props.breathCount; b++) {
         const configs = spawnTendrils(
-          b, s.tendrils, cx, cy, W, H, palette, s.sectorCounts,
+          b, cx, cy, W, H, palette, s.sectorCounts,
         );
         for (const cfg of configs) s.tendrils.push(new Tendril(cfg));
 

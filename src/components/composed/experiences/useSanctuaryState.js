@@ -6,7 +6,7 @@
  * Slide detection extracted to useSlideDetection.
  *
  * Opening: settle breath (countdown 3-2-1) → deep inhale →
- * instruction → 3 guided breaths → "now 8 on your own" → 8 solo.
+ * "now we will breathe together" → 3 guided breaths → 8 solo.
  *
  * Sacred numbers: 11 breaths (prime), 3 guided (prime), timing Fibonacci,
  * thresholds phi pair (0.382/0.618).
@@ -117,11 +117,11 @@ export default function useSanctuaryState() {
     setGuide('breathe out');
     await delay(FIBONACCI_TIMING.sacred);
     setGuide('3');
-    await delay(FIBONACCI_TIMING.ceremony);
+    await delay(FIBONACCI_TIMING.breathe);
     setGuide('2');
-    await delay(FIBONACCI_TIMING.ceremony);
+    await delay(FIBONACCI_TIMING.breathe);
     setGuide('1');
-    await delay(FIBONACCI_TIMING.ceremony);
+    await delay(FIBONACCI_TIMING.breathe);
 
     setGuide('');
     await delay(FIBONACCI_TIMING.ease);
@@ -133,16 +133,12 @@ export default function useSanctuaryState() {
     setGuide('');
     await delay(FIBONACCI_TIMING.ease);
 
-    // Instruction
+    // Instruction — straight into guided breathing
     setGuide('now we will breathe together');
-    await delay(FIBONACCI_TIMING.sacred);
-    setGuide('touch the screen while you breathe');
-    await delay(FIBONACCI_TIMING.sacred);
-    setGuide('the breathing bar will follow you');
-    await delay(FIBONACCI_TIMING.sacred);
+    await delay(FIBONACCI_TIMING.ceremony);
 
     setGuide('');
-    await delay(FIBONACCI_TIMING.ease);
+    await delay(FIBONACCI_TIMING.shift);
 
     // === GUIDED (3 breaths) ===
     setPhase(PHASES.GUIDED);

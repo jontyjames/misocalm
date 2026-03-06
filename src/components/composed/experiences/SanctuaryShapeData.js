@@ -3,11 +3,11 @@
  *
  * Living Light: bioluminescent organism grows from seed dot.
  * 71 tendrils (prime) across 11 breaths. 13 sectors (prime) ensure
- * full-screen coverage. After breath 3, tendrils branch from tips.
+ * full-screen coverage. All tendrils radiate from center.
  *
  * Sacred numbers: tendril counts all prime, total 71 (prime),
- * 13 sectors (prime), branch probability 0.618 (phi),
- * bloom-in 34 frames (Fibonacci), glow stops at phi (0.382, 0.618).
+ * 13 sectors (prime), bloom-in 34 frames (Fibonacci),
+ * glow stops at phi (0.382, 0.618).
  */
 
 const TAU = Math.PI * 2;
@@ -19,10 +19,6 @@ const TENDRIL_COUNTS = [5, 3, 5, 3, 7, 5, 7, 5, 7, 11, 13];
 
 // 13 sectors (prime) for full-screen coverage
 const SECTOR_COUNT = 13;
-
-// After breath 3, phi-fraction of new tendrils branch from existing tips
-const BRANCH_AFTER_BREATH = 3;
-const BRANCH_PROBABILITY = 0.618;
 
 // Bloom-in duration (Fibonacci)
 const BLOOM_FRAMES = 34;
@@ -116,13 +112,12 @@ function drawSeedDot(ctx, cx, cy, breatheScale, palette) {
  * Spawn tendrils for a given breath.
  * Returns array of tendril configs for Tendril class.
  */
-function spawnTendrils(breathIndex, existingTendrils, cx, cy, W, H, palette, sectorCounts) {
+function spawnTendrils(breathIndex, cx, cy, W, H, palette, sectorCounts) {
   const idx = breathIndex - 1;
   if (idx < 0 || idx >= TENDRIL_COUNTS.length) return [];
 
   const count = TENDRIL_COUNTS[idx];
   const diagonal = Math.sqrt(W * W + H * H);
-  const canBranch = breathIndex > BRANCH_AFTER_BREATH && existingTendrils.length > 0;
   const angles = pickTendrilAngles(count, sectorCounts);
   const configs = [];
 
@@ -136,19 +131,8 @@ function spawnTendrils(breathIndex, existingTendrils, cx, cy, W, H, palette, sec
     const wobbleSpeed = 0.013 + Math.random() * 0.027;
     const wobbleAmp = 8 + Math.random() * 27;
 
-    let startX = cx;
-    let startY = cy;
-
-    if (canBranch && Math.random() < BRANCH_PROBABILITY) {
-      const parent = existingTendrils[Math.floor(Math.random() * existingTendrils.length)];
-      if (parent.tipX !== undefined && parent.tipY !== undefined) {
-        startX = parent.tipX;
-        startY = parent.tipY;
-      }
-    }
-
     configs.push({
-      startX, startY, angle, maxLength, color,
+      startX: cx, startY: cy, angle, maxLength, color,
       wobblePhase, wobbleSpeed, wobbleAmp,
     });
   }
