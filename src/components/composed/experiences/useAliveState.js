@@ -5,8 +5,8 @@
  * No tiers. Everyone gets the full gentle landing every time.
  * Slide detection extracted to useSlideDetection.
  *
- * Opening: welcome → breathe out → countdown 3-2-1 →
- * breathe in deep → "now we will breathe together" → 3 guided → 8 solo.
+ * Opening: welcome → "you are here" → "let's take a breath" →
+ * exhale countdown 3-2-1-0 → deep inhale → screen intro → 3 guided → 8 solo.
  *
  * Sacred numbers: 11 breaths (prime), 3 guided (prime), timing Fibonacci,
  * thresholds phi pair (0.382/0.618).
@@ -105,15 +105,18 @@ export default function useAliveState() {
   const runSequence = useCallback(async () => {
     const { teaching, index: teachingIndex } = pickTeaching(visits, lastTeaching);
 
-    // === OPENING (tightened ~11.6s) ===
+    // === OPENING ===
     setPhase(PHASES.OPENING);
 
-    // Welcome
     setGuide('welcome');
     await delay(FIBONACCI_TIMING.ceremony);
+    setGuide('you are here');
+    await delay(FIBONACCI_TIMING.breathe);
+    setGuide("let's take a breath");
+    await delay(FIBONACCI_TIMING.ceremony);
 
-    // Countdown exhale — breathe out... 3... 2... 1
-    setGuide('breathe out');
+    // Guided exhale countdown
+    setGuide('start by breathing out');
     await delay(FIBONACCI_TIMING.sacred);
     setGuide('3');
     await delay(FIBONACCI_TIMING.breathe);
@@ -121,52 +124,52 @@ export default function useAliveState() {
     await delay(FIBONACCI_TIMING.breathe);
     setGuide('1');
     await delay(FIBONACCI_TIMING.breathe);
+    setGuide('0');
+    await delay(FIBONACCI_TIMING.breathe);
 
-    // Deep inhale
-    setGuide('breathe in deep');
-    await delay(FIBONACCI_TIMING.sacred);
-
-    // Instruction — straight into guided breathing
-    setGuide('now we will breathe together');
-    await delay(FIBONACCI_TIMING.ceremony);
+    // Deep inhale hold (~4s)
+    setGuide('now breathe in');
+    await delay(FIBONACCI_TIMING.long);
 
     setGuide('');
     await delay(FIBONACCI_TIMING.shift);
 
-    // === GUIDED (3 breaths) ===
+    // === GUIDED ===
     setPhase(PHASES.GUIDED);
 
-    // Breath 1 — timed demonstration (teaches the mechanic, no touch required)
-    setGuide('slide your finger up\nwhen you breathe in');
-    await delay(FIBONACCI_TIMING.sacred);       // 2584ms — inhale window
-    setGuide('slide your finger down\nwhen you breathe out', true);
-    await delay(FIBONACCI_TIMING.sacred);       // 2584ms — exhale window
-    setBreathCount(c => c + 1);                 // count it (triggers canvas tendril spawn)
-    await delay(FIBONACCI_TIMING.flow);         // 377ms gap
+    // Introduce screen interaction
+    setGuide('now we will interact with the screen\nwhile we breathe');
+    await delay(FIBONACCI_TIMING.long);
+    setGuide('the bar on the right\nwill follow your breath');
+    await delay(FIBONACCI_TIMING.long);
     setGuide('');
-    await delay(FIBONACCI_TIMING.shift);        // 144ms
+    await delay(FIBONACCI_TIMING.shift);
 
-    // Breath 2
-    await doBreath({
-      onInhale: () => setGuide('breathe in'),
-      onExhale: () => setGuide('let it go', true),
-    });
+    // Breath 1 — timed demo (no touch required)
+    setGuide('swipe down to breathe out');
+    await delay(FIBONACCI_TIMING.sacred);
+    setGuide('swipe up to breathe in');
+    await delay(FIBONACCI_TIMING.sacred);
+    setBreathCount(c => c + 1);
     await delay(FIBONACCI_TIMING.flow);
     setGuide('');
     await delay(FIBONACCI_TIMING.shift);
 
-    // Breath 3
-    await doBreath({
-      onInhale: () => setGuide('breathe in'),
-      onExhale: () => setGuide('good', true),
-    });
+    // Breath 2 — real touch
+    setGuide('another one');
+    await doBreath();
+    await delay(FIBONACCI_TIMING.flow);
+    setGuide('');
+    await delay(FIBONACCI_TIMING.shift);
+
+    // Breath 3 — real touch
+    setGuide('one more together');
+    await doBreath();
     await delay(FIBONACCI_TIMING.flow);
     setGuide('');
     await delay(FIBONACCI_TIMING.shift);
 
     // Bridge
-    setGuide('there you go', true);
-    await delay(FIBONACCI_TIMING.ceremony);
     setGuide('now 8 on your own');
     await delay(FIBONACCI_TIMING.sacred);
     setGuide('');
