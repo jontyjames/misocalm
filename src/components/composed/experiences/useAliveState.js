@@ -109,11 +109,11 @@ export default function useAliveState() {
     setPhase(PHASES.OPENING);
 
     setGuide('welcome');
-    await delay(FIBONACCI_TIMING.ceremony);
+    await delay(FIBONACCI_TIMING.sacred);
     setGuide('you are here');
-    await delay(FIBONACCI_TIMING.breathe);
-    setGuide("let's take a breath");
     await delay(FIBONACCI_TIMING.ceremony);
+    setGuide("let's take a breath");
+    await delay(FIBONACCI_TIMING.sacred);
 
     // Guided exhale countdown
     setGuide('start by breathing out');
