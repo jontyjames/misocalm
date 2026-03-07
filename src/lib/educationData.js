@@ -903,3 +903,12 @@ export function getVoicePages(slug, voiceKey) {
   const mod = getEducationModule(slug);
   return mod?.voices?.[voiceKey]?.pages || null;
 }
+
+/**
+ * Light summary of a module (no voice content)
+ */
+export function getModuleSummary(slug) {
+  const mod = getEducationModule(slug);
+  if (!mod) return null;
+  return { slug: mod.slug, title: mod.title, description: mod.description };
+}

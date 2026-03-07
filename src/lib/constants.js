@@ -161,6 +161,10 @@ export const ATTRIBUTION_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
+// ─── Font Shorthands ──────────────────────────────────────────────
+export const MONO = { fontFamily: 'var(--font-mono), monospace', fontWeight: 300 };
+export const JOSEFIN = { fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300 };
+
 // ─── Sacred Geometry & Harmonics ───────────────────────────────────
 
 // Golden Ratio

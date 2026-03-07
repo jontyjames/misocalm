@@ -524,6 +524,12 @@ body {
   50% { opacity: 0; }
 }
 
+/* Education card ambient border breathe — 7.1s prime duration */
+@keyframes glowBreathe {
+  0%, 100% { border-color: rgba(0,255,65,0.06); }
+  50% { border-color: rgba(0,255,65,0.1); }
+}
+
 /* Reduced motion: disable mantra pattern and overlay animations */
 @media (prefers-reduced-motion: reduce) {
   .mantra-pattern,

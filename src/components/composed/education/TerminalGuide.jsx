@@ -1,25 +1,29 @@
 /**
  * TerminalGuide
  * Orchestrator for the full-screen terminal education experience.
- * Phase: 'select' (voice selector) → 'terminal' (teaching) → 'select' (pick another).
+ * Phase: 'select' (voice selector) -> 'terminal' (teaching) -> 'torus' (what's next).
  */
 
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
 import { useLocalStorage } from '@/hooks';
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { ROUTES, STORAGE_KEYS, PHI_SCALE } from '@/lib/constants';
+import { EDUCATION_MODULES } from '@/lib/educationData';
 import useTerminalState from './useTerminalState';
 import TerminalStars from './TerminalStars';
 import TerminalWindow from './TerminalWindow';
 import VoiceSelector from './VoiceSelector';
+import TorusNavigator from './TorusNavigator';
+import TerminalBackButton from './TerminalBackButton';
 
 export default function TerminalGuide({ module }) {
   const router = useRouter();
   const [phase, setPhase] = useState('select');
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [returning, setReturning] = useState(false);
+  const [lastCompletedVoice, setLastCompletedVoice] = useState(null);
   const [starsVisible, setStarsVisible] = useState(false);
   const [terminalVisible, setTerminalVisible] = useState(false);
   const [exitVisible, setExitVisible] = useState(false);
@@ -40,7 +44,15 @@ export default function TerminalGuide({ module }) {
     advance,
   } = useTerminalState(pages, module.slug, selectedVoice);
 
-  // Entry sequence — Fibonacci timed
+  // Reset phase when module changes (navigated from torus)
+  useEffect(() => {
+    setPhase('select');
+    setSelectedVoice(null);
+    setReturning(false);
+    setLastCompletedVoice(null);
+  }, [module.slug]);
+
+  // Entry sequence
   useEffect(() => {
     const t1 = setTimeout(() => setStarsVisible(true), 89);
     return () => clearTimeout(t1);
@@ -57,28 +69,39 @@ export default function TerminalGuide({ module }) {
     }
   }, [phase, selectedVoice]);
 
-  // When terminal completes, return to selector
+  // When terminal completes, transition to torus
   useEffect(() => {
     if (allComplete && phase === 'terminal') {
       const t = setTimeout(() => {
-        setPhase('select');
+        setLastCompletedVoice(selectedVoice);
+        setPhase('torus');
         setSelectedVoice(null);
         setTerminalVisible(false);
         setExitVisible(false);
       }, 987);
       return () => clearTimeout(t);
     }
-  }, [allComplete, phase]);
+  }, [allComplete, phase, selectedVoice]);
 
   const handleVoiceSelect = useCallback((voiceKey) => {
     setSelectedVoice(voiceKey);
     setPhase('terminal');
   }, []);
 
+  const handleSelectVoiceFromTorus = useCallback((voiceKey) => {
+    setReturning(true);
+    setSelectedVoice(voiceKey);
+    setPhase('select');
+  }, []);
+
+  const handleModuleChange = useCallback((slug) => {
+    router.replace(`/tools/education/${slug}`);
+  }, [router]);
+
   const handleExit = () => router.push(ROUTES.TOOLS);
 
   const handleTap = () => {
-    if (allComplete) return; // auto-returns to select
+    if (allComplete) return;
     advance();
   };
 
@@ -98,6 +121,8 @@ export default function TerminalGuide({ module }) {
           module={module}
           visits={visits}
           onSelect={handleVoiceSelect}
+          moduleTitle={module.title}
+          returning={returning}
         />
       )}
 
@@ -107,26 +132,11 @@ export default function TerminalGuide({ module }) {
           className="absolute inset-0 flex flex-col items-center justify-center"
           onClick={handleTap}
         >
-          {/* Exit button — top left */}
-          <button
-            onClick={(e) => { e.stopPropagation(); setPhase('select'); setSelectedVoice(null); }}
-            className="fixed top-0 left-0 flex items-center text-slate-400 safe-area-top"
-            style={{
-              padding: 16,
-              gap: 6,
-              fontSize: 13,
-              fontFamily: 'var(--font-mono), monospace',
-              fontWeight: 300,
-              opacity: exitVisible ? 0.4 : 0,
-              transition: 'opacity 610ms ease',
-              zIndex: 51,
-              background: 'rgba(3,7,18,0.4)',
-              borderRadius: '0 0 10px 0',
-            }}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            back
-          </button>
+          {/* Exit button */}
+          <TerminalBackButton
+            onClick={() => { setPhase('select'); setSelectedVoice(null); }}
+            visible={exitVisible}
+          />
 
           {/* Terminal */}
           <div
@@ -144,10 +154,10 @@ export default function TerminalGuide({ module }) {
             />
           </div>
 
-          {/* Progress dots — bottom centre */}
+          {/* Progress dots */}
           <div
             className="fixed bottom-0 left-0 right-0 flex justify-center safe-area-bottom"
-            style={{ paddingBottom: 26, gap: 10, zIndex: 51 }}
+            style={{ paddingBottom: PHI_SCALE[3], gap: PHI_SCALE[1], zIndex: 51 }}
           >
             {Array.from({ length: totalPages }, (_, i) => (
               <div
@@ -173,7 +183,7 @@ export default function TerminalGuide({ module }) {
             <div
               className="fixed bottom-0 left-0 right-0 text-center safe-area-bottom"
               style={{
-                paddingBottom: 42,
+                paddingBottom: PHI_SCALE[4],
                 fontFamily: 'var(--font-mono), monospace',
                 fontWeight: 300,
                 fontSize: 12,
@@ -185,6 +195,19 @@ export default function TerminalGuide({ module }) {
             </div>
           )}
         </div>
+      )}
+
+      {/* Torus phase */}
+      {phase === 'torus' && lastCompletedVoice && (
+        <TorusNavigator
+          currentModule={module}
+          completedVoiceKey={lastCompletedVoice}
+          visits={visits}
+          allModules={EDUCATION_MODULES}
+          onSelectVoice={handleSelectVoiceFromTorus}
+          onModuleChange={handleModuleChange}
+          onExit={handleExit}
+        />
       )}
     </div>
   );
