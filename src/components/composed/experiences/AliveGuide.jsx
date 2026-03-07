@@ -105,7 +105,7 @@ export default function AliveGuide() {
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
       {state.started && (
-        <AliveCanvas breathCount={state.breathCount} treePalette={state.treePalette} />
+        <AliveCanvas breathCount={state.breathCount} treePalette={state.treePalette} freePlay={state.freePlay} />
       )}
 
       {/* Touch wrapper — full screen, below exit button */}

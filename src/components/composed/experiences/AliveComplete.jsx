@@ -25,21 +25,13 @@ export default function AliveComplete({ onKeepBreathing, onJournal, onReturn }) 
         background: 'linear-gradient(to top, rgba(3,7,18,0.85) 0%, rgba(3,7,18,0.5) 60%, transparent 100%)',
       }}
     >
-      {/* Impermanence */}
-      <p
-        className="text-slate-300/70 text-xs font-light tracking-widest text-center"
-        style={{ marginBottom: 26, lineHeight: 1.8, fontFamily: "'Josefin Sans', sans-serif" }}
-      >
-        this will never pulse the same way again
-      </p>
-
-      {/* Keep breathing (free play) */}
+      {/* Keep playing (free play) */}
       <button
         onClick={onKeepBreathing}
         className="text-slate-200/90 text-sm font-light tracking-widest hover:text-slate-100 transition-colors"
         style={{ transition: 'color 0.377s ease', marginBottom: 16, padding: '16px 26px' }}
       >
-        keep breathing
+        keep playing
       </button>
 
       {/* Torus flow paths */}

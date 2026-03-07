@@ -58,13 +58,8 @@ function pickTendrilAngles(count, sectorCounts) {
  */
 function pickTendrilColor(breathIndex, palette) {
   if (!palette || palette.length === 0) return SLATE_FALLBACK;
-  let idx;
-  if (breathIndex <= 2) idx = 0;
-  else if (breathIndex <= 4) idx = 1;
-  else if (breathIndex <= 6) idx = 2;
-  else if (breathIndex <= 9) idx = 3;
-  else idx = 4;
-  return palette[Math.min(idx, palette.length - 1)];
+  const idx = (breathIndex - 1) % palette.length;
+  return palette[idx];
 }
 
 function pickRingColor(breathIndex, palette) {
@@ -75,10 +70,12 @@ function pickRingColor(breathIndex, palette) {
  * Draw the seed dot — breathing center glow, always on top.
  * baseRadius 8 (was 5), halo radius * 8 (was * 5) for more presence.
  */
-function drawSeedDot(ctx, cx, cy, breatheScale, palette) {
+function drawSeedDot(ctx, cx, cy, breatheScale, palette, time, freePlay) {
   const color = palette && palette.length > 0 ? palette[0] : SLATE_FALLBACK;
   const { r, g, b } = color;
-  const baseRadius = 8;
+  const baseRadius = freePlay
+    ? 8 + 13 * (0.5 + 0.5 * Math.sin(time * 0.003))
+    : 8;
   const radius = baseRadius * (0.8 + 0.4 * breatheScale);
 
   ctx.globalCompositeOperation = 'source-over';
@@ -115,17 +112,21 @@ function drawSeedDot(ctx, cx, cy, breatheScale, palette) {
  */
 function spawnTendrils(breathIndex, cx, cy, W, H, palette, sectorCounts) {
   const idx = breathIndex - 1;
-  if (idx < 0 || idx >= TENDRIL_COUNTS.length) return [];
+  if (idx < 0) return [];
 
-  const count = TENDRIL_COUNTS[idx];
+  const isFreePlay = idx >= TENDRIL_COUNTS.length;
+  const count = isFreePlay
+    ? TENDRIL_COUNTS[idx % TENDRIL_COUNTS.length]
+    : TENDRIL_COUNTS[idx];
   const diagonal = Math.sqrt(W * W + H * H);
   const angles = pickTendrilAngles(count, sectorCounts);
   const configs = [];
 
   for (let i = 0; i < count; i++) {
     const angle = angles[i];
-    // Later breaths reach further
-    const reachScale = 0.6 + (breathIndex / 11) * 0.5;
+    // Later breaths reach further (cap at 11 for free play)
+    const effectiveBreath = isFreePlay ? ((idx % 11) + 1) : breathIndex;
+    const reachScale = 0.6 + (effectiveBreath / 11) * 0.5;
     const maxLength = diagonal * (0.08 + Math.random() * 0.30) * reachScale;
     const color = pickTendrilColor(breathIndex, palette);
     const wobblePhase = Math.random() * TAU;
@@ -135,6 +136,7 @@ function spawnTendrils(breathIndex, cx, cy, W, H, palette, sectorCounts) {
     configs.push({
       startX: cx, startY: cy, angle, maxLength, color,
       wobblePhase, wobbleSpeed, wobbleAmp,
+      lifespan: isFreePlay ? 610 : null,
     });
   }
   return configs;

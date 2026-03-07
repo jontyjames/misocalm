@@ -27,6 +27,7 @@ class Tendril {
     this.wobblePhase = config.wobblePhase;
     this.wobbleSpeed = config.wobbleSpeed;
     this.wobbleAmp = config.wobbleAmp;
+    this.lifespan = config.lifespan || null;
     this.age = 0;
     this.tipX = this.startX;
     this.tipY = this.startY;
@@ -40,6 +41,7 @@ class Tendril {
 
   update(time) {
     this.age++;
+    if (this.lifespan && this.age > this.lifespan) return false;
 
     // Ease-out growth over ~120 frames (~2s at 60fps)
     const growT = Math.min(1, this.age / 120);
@@ -62,12 +64,17 @@ class Tendril {
     this.endY = endY;
     this.tipX = endX;
     this.tipY = endY;
+    return true;
   }
 
   draw(ctx, breatheScale) {
     const { r, g, b } = this.color;
     const bloomT = Math.min(1, this.age / BLOOM_FRAMES);
-    const alpha = bloomT * breatheScale;
+    // Fade out during final BLOOM_FRAMES when lifespan is set
+    const fadeOut = (this.lifespan && this.age > this.lifespan - BLOOM_FRAMES)
+      ? Math.max(0, (this.lifespan - this.age) / BLOOM_FRAMES)
+      : 1;
+    const alpha = bloomT * fadeOut * breatheScale;
     if (alpha < 0.005) return;
 
     // Layer 1: Wide dim halo stroke (5x width, ~15% alpha)

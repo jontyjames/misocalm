@@ -25,7 +25,7 @@ import {
 
 const VOID_COLOR = 'rgba(3, 7, 18, 0.025)';
 
-export default function AliveCanvas({ breathCount, treePalette }) {
+export default function AliveCanvas({ breathCount, treePalette, freePlay }) {
   const canvasRef = useRef(null);
   const stateRef = useRef({
     tendrils: [],
@@ -39,8 +39,8 @@ export default function AliveCanvas({ breathCount, treePalette }) {
   const rafRef = useRef(null);
   const dprRef = useRef(1);
   const prefersReduced = useReducedMotion();
-  const propsRef = useRef({ breathCount, treePalette });
-  propsRef.current = { breathCount, treePalette };
+  const propsRef = useRef({ breathCount, treePalette, freePlay });
+  propsRef.current = { breathCount, treePalette, freePlay };
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -96,10 +96,15 @@ export default function AliveCanvas({ breathCount, treePalette }) {
       }
     }
 
-    // 5. Update & draw tendrils (screen blend)
+    // 5. Update & draw tendrils (screen blend) — remove dead free-play tendrils
     ctx.globalCompositeOperation = 'screen';
+    for (let i = s.tendrils.length - 1; i >= 0; i--) {
+      const alive = s.tendrils[i].update(s.time);
+      if (alive === false) {
+        s.tendrils.splice(i, 1);
+      }
+    }
     for (const tendril of s.tendrils) {
-      tendril.update(s.time);
       tendril.draw(ctx, breatheScale);
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -135,7 +140,7 @@ export default function AliveCanvas({ breathCount, treePalette }) {
     }
 
     // 9. Seed dot (source-over, always on top)
-    drawSeedDot(ctx, cx, cy, breatheScale, props.treePalette);
+    drawSeedDot(ctx, cx, cy, breatheScale, props.treePalette, s.time, props.freePlay);
 
     rafRef.current = requestAnimationFrame(render);
   }, []);

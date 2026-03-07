@@ -26,9 +26,9 @@ const GUIDED_COUNT = 3;
 const SOLO_COUNT = TOTAL_BREATHS - GUIDED_COUNT;
 
 function generateTreePalette() {
-  const positions = Array.from({ length: 5 }, () => Math.random());
-  positions.sort((a, b) => a - b);
-  return positions.map(t => lerpColor(t));
+  const base = Math.random();
+  const PHI = 0.618033988749895;
+  return Array.from({ length: 5 }, (_, i) => lerpColor((base + i * PHI) % 1));
 }
 
 const PHASES = {
@@ -136,14 +136,15 @@ export default function useAliveState() {
     // === GUIDED (3 breaths) ===
     setPhase(PHASES.GUIDED);
 
-    // Breath 1 — instructional, they learn by doing
-    await doBreath({
-      onInhale: () => setGuide('slide your finger up\nwhen you breathe in'),
-      onExhale: () => setGuide('slide your finger down\nwhen you breathe out', true),
-    });
-    await delay(FIBONACCI_TIMING.flow);
+    // Breath 1 — timed demonstration (teaches the mechanic, no touch required)
+    setGuide('slide your finger up\nwhen you breathe in');
+    await delay(FIBONACCI_TIMING.sacred);       // 2584ms — inhale window
+    setGuide('slide your finger down\nwhen you breathe out', true);
+    await delay(FIBONACCI_TIMING.sacred);       // 2584ms — exhale window
+    setBreathCount(c => c + 1);                 // count it (triggers canvas tendril spawn)
+    await delay(FIBONACCI_TIMING.flow);         // 377ms gap
     setGuide('');
-    await delay(FIBONACCI_TIMING.shift);
+    await delay(FIBONACCI_TIMING.shift);        // 144ms
 
     // Breath 2
     await doBreath({
