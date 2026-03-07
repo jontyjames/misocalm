@@ -518,6 +518,12 @@ body {
   50% { transform: scale(1.15); opacity: 1; }
 }
 
+/* Terminal cursor blink — 1.597s Fibonacci ceremony timing */
+@keyframes terminalBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* Reduced motion: disable mantra pattern and overlay animations */
 @media (prefers-reduced-motion: reduce) {
   .mantra-pattern,

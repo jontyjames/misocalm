@@ -145,6 +145,9 @@ export const ROUTES = {
   EXPERIENCE_GROUNDING: '/tools/experiences/grounding',
   EXPERIENCE_FOCUS: '/tools/experiences/focus',
   EXPERIENCE_ALIVE: '/tools/experiences/alive',
+  EDUCATION_NERVOUS_SYSTEM: '/tools/education/your-nervous-system',
+  EDUCATION_BREATHWORK: '/tools/education/why-breathwork-works',
+  EDUCATION_NEUROPLASTICITY: '/tools/education/your-brain-can-learn',
 };
 
 // Attribution options (how did you find us)
@@ -288,6 +291,7 @@ export const STORAGE_KEYS = {
   FOCUS_LAST_TEACHING: 'misocalm_focus_last_teaching',
   ALIVE_VISITS: 'misocalm_alive_visits',
   ALIVE_LAST_TEACHING: 'misocalm_alive_last_teaching',
+  EDUCATION_VISITS: 'misocalm_education_visits',
 };
 
 // Impermanence experience teachings (5, prime)

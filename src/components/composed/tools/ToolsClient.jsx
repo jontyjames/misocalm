@@ -12,6 +12,7 @@ import { ToolsSkeleton } from '@/components/composed/skeletons';
 import HeroExperience from './HeroExperience';
 import QuickToolsRow from './QuickToolsRow';
 import ExperienceGrid from './ExperienceGrid';
+import EducationSection from './EducationSection';
 import ComingSoonSection from './ComingSoonSection';
 
 export default function ToolsClient() {
@@ -47,6 +48,7 @@ export default function ToolsClient() {
         </div>
         <QuickToolsRow />
         <ExperienceGrid />
+        <EducationSection />
         <ComingSoonSection />
       </div>
     </AppLayout>

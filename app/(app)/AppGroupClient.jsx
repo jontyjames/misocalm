@@ -14,7 +14,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useNav } from '@/context/NavContext';
 import { useReducedMotion } from '@/hooks';
 
-const IMMERSIVE_PREFIXES = ['/tools/experiences/'];
+const IMMERSIVE_PREFIXES = ['/tools/experiences/', '/tools/education/'];
 
 function isImmersiveRoute(pathname) {
   return IMMERSIVE_PREFIXES.some(prefix => pathname.startsWith(prefix));

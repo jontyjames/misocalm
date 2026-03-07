@@ -1,5 +1,5 @@
 import './globals.css'
-import { Josefin_Sans } from 'next/font/google'
+import { Josefin_Sans, JetBrains_Mono } from 'next/font/google'
 import { AuthProvider } from '@/context/AuthContext'
 import { PremiumProvider } from '@/context/PremiumContext'
 import { QueryProvider } from '@/providers/QueryProvider'
@@ -12,6 +12,13 @@ const josefinSans = Josefin_Sans({
   weight: ['100', '200', '300'],
   display: 'swap',
   variable: '--font-josefin',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['300'],
+  display: 'swap',
+  variable: '--font-mono',
 })
 
 export const metadata = {
@@ -81,7 +88,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={josefinSans.variable}>
+    <html lang="en" className={`${josefinSans.variable} ${jetbrainsMono.variable}`}>
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
