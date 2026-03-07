@@ -19,7 +19,7 @@ export default function TerminalBackButton({ onClick, visible = true }) {
         fontSize: 13,
         ...MONO,
         color: 'rgba(148,163,184,0.6)',
-        opacity: visible ? 0.4 : 0,
+        opacity: visible ? 0.7 : 0,
         transition: 'opacity 610ms ease',
         zIndex: 51,
         background: 'rgba(3,7,18,0.4)',

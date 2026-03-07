@@ -12,7 +12,7 @@ import { getModuleProgress } from './useEducationProgress';
 
 const CARD_STYLE = {
   background: 'rgba(0,255,65,0.04)',
-  border: '1px solid rgba(0,255,65,0.1)',
+  border: '1px solid rgba(0,255,65,0.25)',
 };
 
 function cardTransition(visible, i, offset = 0) {
@@ -37,41 +37,42 @@ export default function TorusCards({
 }) {
   return (
     <div className="mx-auto flex flex-col" style={{ width: 'calc(100vw - 84px)', maxWidth: 540 }}>
-      {/* Section 1: unread voices in this module */}
-      {!allDone && unreadVoices.length > 0 && (
-        <div style={{ marginBottom: PHI_SCALE[4] }}>
-          <div style={{ ...MONO, fontSize: 11, color: 'rgba(0,255,65,0.35)', marginBottom: PHI_SCALE[1], opacity: cardsVisible ? 1 : 0, transition: 'opacity 377ms ease' }}>
-            this module
-          </div>
-          <div className="flex flex-col" style={{ gap: PHI_SCALE[1] }}>
-            {unreadVoices.map((key, i) => {
-              const voice = currentModule.voices[key];
-              return (
-                <button
-                  key={key}
-                  onClick={() => onSelectVoice(key)}
-                  className="w-full text-left rounded-xl p-4"
-                  style={{ ...CARD_STYLE, ...cardTransition(cardsVisible, i) }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span style={{ ...JOSEFIN, fontSize: 16, color: '#00ff41' }}>{voice.name}</span>
-                    <span style={{ ...MONO, fontSize: 11, color: 'rgba(0,255,65,0.2)' }}>{voice.duration}</span>
-                  </div>
-                  <div style={{ marginTop: PHI_SCALE[0] }}>
-                    <span style={{ ...MONO, fontSize: 12, color: 'rgba(0,255,65,0.5)' }}>{voice.description}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+      {/* Section 1: all voices in this module */}
+      <div style={{ marginBottom: PHI_SCALE[4] }}>
+        <div style={{ ...MONO, fontSize: 11, color: 'rgba(0,255,65,0.35)', marginBottom: PHI_SCALE[1], opacity: cardsVisible ? 1 : 0, transition: 'opacity 377ms ease' }}>
+          {allDone ? 'read again' : 'this module'}
         </div>
-      )}
+        <div className="flex flex-col" style={{ gap: PHI_SCALE[1] }}>
+          {VOICE_KEYS.map((key, i) => {
+            const voice = currentModule.voices[key];
+            const read = (visits?.[currentModule.slug]?.[key] || 0) > 0;
+            return (
+              <button
+                key={key}
+                onClick={() => onSelectVoice(key)}
+                className="w-full text-left rounded-xl p-4"
+                style={{ ...CARD_STYLE, ...cardTransition(cardsVisible, i) }}
+              >
+                <div className="flex items-center justify-between">
+                  <span style={{ ...JOSEFIN, fontSize: 16, color: read ? 'rgba(0,255,65,0.6)' : '#00ff41' }}>{voice.name}</span>
+                  <span style={{ ...MONO, fontSize: 11, color: 'rgba(0,255,65,0.2)' }}>
+                    {read ? 'read' : voice.duration}
+                  </span>
+                </div>
+                <div style={{ marginTop: PHI_SCALE[0] }}>
+                  <span style={{ ...MONO, fontSize: 12, color: 'rgba(0,255,65,0.5)' }}>{voice.description}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Section 2: other unfinished modules */}
       {!allDone && unfinishedModules.length > 0 && (
         <div>
           <div style={{ ...MONO, fontSize: 11, color: 'rgba(0,255,65,0.35)', marginBottom: PHI_SCALE[1], opacity: cardsVisible ? 1 : 0, transition: 'opacity 377ms ease' }}>
-            {unreadVoices.length > 0 ? 'or explore something new' : 'other modules'}
+            {!allDone ? 'or explore something new' : 'other modules'}
           </div>
           <div className="flex flex-col" style={{ gap: PHI_SCALE[1] }}>
             {unfinishedModules.map((mod, i) => {
@@ -81,7 +82,7 @@ export default function TorusCards({
                   key={mod.slug}
                   onClick={() => onModuleChange(mod.slug)}
                   className="w-full text-left rounded-xl p-4"
-                  style={{ ...CARD_STYLE, borderColor: 'rgba(0,255,65,0.08)', ...cardTransition(cardsVisible, i, unreadVoices.length * 55) }}
+                  style={{ ...CARD_STYLE, borderColor: 'rgba(0,255,65,0.2)', ...cardTransition(cardsVisible, i, VOICE_KEYS.length * 55) }}
                 >
                   <div className="flex items-center justify-between">
                     <span style={{ ...JOSEFIN, fontSize: 15, color: 'rgba(0,255,65,0.8)' }}>{mod.title}</span>
@@ -97,23 +98,6 @@ export default function TorusCards({
         </div>
       )}
 
-      {/* All done: read again */}
-      {allDone && (
-        <button
-          onClick={() => onSelectVoice(VOICE_KEYS[0])}
-          className="w-full text-left rounded-xl p-4"
-          style={{
-            ...CARD_STYLE,
-            ...cardTransition(cardsVisible, 0),
-            ...MONO,
-            fontSize: 13,
-            color: 'rgba(0,255,65,0.5)',
-          }}
-        >
-          read again
-        </button>
-      )}
-
       {/* Return to misocalm */}
       <button
         onClick={onExit}
@@ -121,7 +105,7 @@ export default function TorusCards({
           marginTop: PHI_SCALE[3],
           ...MONO,
           fontSize: 12,
-          color: 'rgba(0,255,65,0.3)',
+          color: 'rgba(0,255,65,0.5)',
           opacity: cardsVisible ? 1 : 0,
           transition: 'opacity 377ms ease 144ms',
           background: 'none',

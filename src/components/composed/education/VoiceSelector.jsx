@@ -126,7 +126,7 @@ export default function VoiceSelector({ module, visits, onSelect, moduleTitle, r
               className="w-full text-left rounded-xl p-4 relative"
               style={{
                 background: 'rgba(0,255,65,0.04)',
-                border: '1px solid rgba(0,255,65,0.1)',
+                border: '1px solid rgba(0,255,65,0.25)',
                 opacity: cardsVisible ? 1 : 0,
                 transform: cardsVisible ? 'translateY(0)' : 'translateY(8px)',
                 transition: `opacity 377ms ease ${i * 55}ms, transform 377ms ease ${i * 55}ms`,
