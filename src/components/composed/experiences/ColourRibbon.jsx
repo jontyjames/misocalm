@@ -4,8 +4,8 @@
  * A thin gradient strip at the bottom of the screen. Drag to choose
  * a bloom colour. Feels like dipping your finger in ink.
  *
- * Palette: slate → indigo → violet → cyan → soft white
- * (5 anchor points, prime, solfeggio arc)
+ * Palette: slate → indigo → violet → magenta → cyan → green → soft white
+ * (7 anchor points, prime, solfeggio arc)
  *
  * Height: 3px (Tesla's 3). Touch target: 44px (a11y minimum).
  * Fade-in: 2584ms (fib-sacred).
@@ -17,13 +17,15 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
 import { STORAGE_KEYS } from '@/lib/constants';
 
-// Solfeggio arc: 5 colour stops (prime)
+// Solfeggio arc: 7 colour stops (prime)
 const STOPS = [
-  { pos: 0, r: 148, g: 163, b: 184 },    // slate-400  (396Hz)
-  { pos: 0.25, r: 165, g: 180, b: 252 },  // indigo-300 (528Hz)
-  { pos: 0.5, r: 196, g: 181, b: 253 },   // violet-300 (852Hz)
-  { pos: 0.75, r: 103, g: 232, b: 249 },  // cyan-300   (741Hz)
-  { pos: 1, r: 226, g: 232, b: 240 },     // slate-200  (963Hz)
+  { pos: 0, r: 148, g: 163, b: 184 },          // slate-400   (396Hz — grounding)
+  { pos: 0.167, r: 165, g: 180, b: 252 },      // indigo-300  (528Hz — transformation)
+  { pos: 0.333, r: 196, g: 181, b: 253 },      // violet-300  (852Hz — intuition)
+  { pos: 0.5, r: 232, g: 121, b: 249 },        // magenta-300 (higher harmonic — heart)
+  { pos: 0.667, r: 103, g: 232, b: 249 },      // cyan-300    (741Hz — expression)
+  { pos: 0.833, r: 74, g: 222, b: 128 },       // green-400   (639Hz — connection)
+  { pos: 1, r: 226, g: 232, b: 240 },          // slate-200   (963Hz — transcendence)
 ];
 
 function lerpColor(t) {
