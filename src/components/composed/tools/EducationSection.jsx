@@ -34,7 +34,7 @@ export default function EducationSection() {
       </h2>
       <div
         className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
-        style={{ gap: PHI_SCALE[1] }}
+        style={{ gap: PHI_SCALE[1], overscrollBehaviorX: 'contain', touchAction: 'pan-x' }}
       >
         {EDUCATION_MODULES.map((mod, i) => {
           const voicesRead = getVoicesRead(mod.slug);

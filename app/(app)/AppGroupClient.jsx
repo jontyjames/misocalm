@@ -51,7 +51,7 @@ export default function AppGroupClient({ children }) {
           on canvas elements inside this <main>. */}
       <main
         id="main-content"
-        className={`relative safe-area-top ${!immersive && !reducedMotion ? 'transition-[padding] duration-[233ms] ease-out' : ''}`}
+        className="relative safe-area-top"
         style={{ paddingBottom: showNav ? '5rem' : 0 }}
       >
         <ErrorBoundary>

@@ -41,7 +41,7 @@ export default function ExperienceGrid() {
       </h2>
       <div
         className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
-        style={{ gap: PHI_SCALE[1] }} /* phi-2 (10px) */
+        style={{ gap: PHI_SCALE[1], overscrollBehaviorX: 'contain', touchAction: 'pan-x' }}
       >
         {remaining.map((exp) => {
           const Canvas = CANVAS_MAP[exp.id];
