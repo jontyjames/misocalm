@@ -54,7 +54,7 @@ export default memo(function Starfield({ count = 37 }) {
   }, [count]);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 overflow-hidden pointer-events-none z-0" style={{ '--scroll-y': '0' }}>
+    <div ref={containerRef} className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none z-0" style={{ '--scroll-y': '0' }}>
       {/* Cosmic drift: 89s ambient colour breathing (Fibonacci) */}
       {!prefersReduced && (
         <div
