@@ -12,7 +12,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Clock, Moon, Anchor, Feather, Orbit } from 'lucide-react';
-import { Card } from '@/components/ui';
+import { Card, ScrollRow, SectionHeading } from '@/components/ui';
 import { ROUTES, PHI_SCALE } from '@/lib/constants';
 import { TOOLS } from '@/lib/toolsData';
 
@@ -43,22 +43,8 @@ export default function QuickToolsRow() {
 
   return (
     <section>
-      <h2
-        className="text-lg text-white"
-        style={{
-          fontFamily: "'Josefin Sans', sans-serif",
-          fontWeight: 200,
-          marginBottom: PHI_SCALE[1], /* phi-2 (10px) */
-          textShadow: '0 0 16px rgba(99,102,241,0.3)',
-        }}
-      >
-        Tools
-      </h2>
-      {/* gap: phi-2 (10px), horizontal padding matches page px-6 */}
-      <div
-        className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
-        style={{ gap: PHI_SCALE[1], overscrollBehaviorX: 'contain', touchAction: 'pan-x' }}
-      >
+      <SectionHeading glowColor="rgba(99,102,241,0.3)">Tools</SectionHeading>
+      <ScrollRow>
         {activeTools.map((tool) => {
           const toolIcon = TOOL_ICONS[tool.id];
           const Icon = toolIcon?.icon;
@@ -67,60 +53,64 @@ export default function QuickToolsRow() {
 
           return (
             <div key={tool.id} className="shrink-0" style={{ width: 137 }}>
-            <Card
-              onClick={() => router.push(`${ROUTES.TOOLS}/${tool.id}`)}
-              padding="p-3" /* 12px */
-              solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
-            >
-              <div className="flex flex-col">
-                {/* Icon + duration row */}
-                <div
-                  className="flex items-center"
-                  style={{ gap: PHI_SCALE[1], marginBottom: PHI_SCALE[0] }} /* phi-2 (10px) gap, phi-1 (6px) mb */
-                >
-                  {Icon && (
-                    <div
-                      className={`flex items-center justify-center shrink-0 rounded-lg border border-white/[0.12] ${iconColor}`}
-                      style={{
-                        width: PHI_SCALE[3],  /* phi-4 (26px) */
-                        height: PHI_SCALE[3], /* phi-4 (26px) */
-                        background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
-                        boxShadow: `0 0 ${PHI_SCALE[1]}px ${iconGlow}`, /* phi-2 (10px) spread */
-                      }}
-                    >
-                      <Icon className="w-4 h-4" />
-                    </div>
-                  )}
-                  <span
-                    className="text-xs text-slate-400 flex items-center"
-                    style={{ gap: PHI_SCALE[0] }} /* phi-1 (6px) */
+              <Card
+                onClick={() => router.push(`${ROUTES.TOOLS}/${tool.id}`)}
+                padding="p-3"
+                solfeggio={TOOL_SOLFEGGIO[tool.id] || 'indigo'}
+              >
+                <div className="flex flex-col">
+                  {/* Icon + duration row */}
+                  <div
+                    className="flex items-center"
+                    style={{ gap: PHI_SCALE[1], marginBottom: PHI_SCALE[0] }}
                   >
-                    <Clock className="w-3 h-3 shrink-0" />
-                    ~{tool.duration_minutes} min
-                  </span>
+                    {Icon && (
+                      <div
+                        className={`flex items-center justify-center shrink-0 rounded-lg border border-white/[0.12] ${iconColor}`}
+                        style={{
+                          width: PHI_SCALE[3],
+                          height: PHI_SCALE[3],
+                          background: `radial-gradient(circle at center, ${iconGlow}, rgba(255,255,255,0.04))`,
+                          boxShadow: `0 0 ${PHI_SCALE[1]}px ${iconGlow}`,
+                        }}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </div>
+                    )}
+                    <span
+                      className="text-xs text-slate-400 flex items-center"
+                      style={{ gap: PHI_SCALE[0] }}
+                    >
+                      <Clock className="w-3 h-3 shrink-0" />
+                      ~{tool.duration_minutes} min
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    className="text-white text-sm truncate w-full"
+                    style={{
+                      fontFamily: "'Josefin Sans', sans-serif",
+                      fontWeight: 300,
+                      marginBottom: PHI_SCALE[0],
+                    }}
+                  >
+                    {tool.title}
+                  </h3>
+
+                  {/* Description — triage text for dysregulated users */}
+                  <p
+                    className="text-xs text-slate-300 font-light leading-relaxed overflow-hidden"
+                    style={{ height: PHI_SCALE[5] }}
+                  >
+                    {tool.description}
+                  </p>
                 </div>
-
-                {/* Title */}
-                <h3
-                  className="text-white font-light text-sm truncate w-full"
-                  style={{ marginBottom: PHI_SCALE[0] }} /* phi-1 (6px) */
-                >
-                  {tool.title}
-                </h3>
-
-                {/* Description — triage text for dysregulated users */}
-                <p
-                  className="text-xs text-slate-300 font-light leading-relaxed overflow-hidden"
-                  style={{ height: PHI_SCALE[5] }} /* phi-6 (68px) — fixed height locks all cards equal */
-                >
-                  {tool.description}
-                </p>
-              </div>
-            </Card>
+              </Card>
             </div>
           );
         })}
-      </div>
+      </ScrollRow>
     </section>
   );
 }

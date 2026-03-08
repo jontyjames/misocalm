@@ -1,7 +1,7 @@
 /**
  * Shared dynamic-import map for mini experience canvases.
  * Must live at module scope (Next.js dynamic() requirement).
- * Used by HeroExperience and ExperienceGrid.
+ * Used by HeroExperience and ExperienceRow.
  */
 
 import dynamic from 'next/dynamic';

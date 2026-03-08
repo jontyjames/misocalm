@@ -1,6 +1,6 @@
 /**
  * ToolsClient
- * Orchestrator for the practices page: hero + tools row + experience grid + coming soon.
+ * Orchestrator for the practices page: hero + tools row + experience row + coming soon.
  * Thin component — composes sections and handles auth guard.
  */
 
@@ -11,7 +11,7 @@ import { AppLayout } from '@/components/composed';
 import { ToolsSkeleton } from '@/components/composed/skeletons';
 import HeroExperience from './HeroExperience';
 import QuickToolsRow from './QuickToolsRow';
-import ExperienceGrid from './ExperienceGrid';
+import ExperienceRow from './ExperienceRow';
 import EducationSection from './EducationSection';
 import ComingSoonSection from './ComingSoonSection';
 
@@ -47,7 +47,7 @@ export default function ToolsClient() {
           <HeroExperience />
         </div>
         <QuickToolsRow />
-        <ExperienceGrid />
+        <ExperienceRow />
         <EducationSection />
         <ComingSoonSection />
       </div>

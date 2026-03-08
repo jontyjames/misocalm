@@ -17,4 +17,6 @@ export { default as ProgressDots } from './ProgressDots';
 export { default as PremiumGate } from './PremiumGate';
 export { default as BackButton } from './BackButton';
 export { default as PageHeader } from './PageHeader';
+export { default as ScrollRow } from './ScrollRow';
+export { default as SectionHeading } from './SectionHeading';
 export { Skeleton, SkeletonText, SkeletonCard } from './Skeleton';

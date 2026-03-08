@@ -7,8 +7,9 @@
 'use client';
 
 import { useLocalStorage } from '@/hooks';
-import { PHI_SCALE, STORAGE_KEYS } from '@/lib/constants';
+import { STORAGE_KEYS } from '@/lib/constants';
 import { EDUCATION_MODULES, VOICE_KEYS } from '@/lib/educationData';
+import { ScrollRow, SectionHeading } from '@/components/ui';
 import EducationCard from './EducationCard';
 
 export default function EducationSection() {
@@ -21,21 +22,8 @@ export default function EducationSection() {
 
   return (
     <section>
-      <h2
-        className="text-lg text-white"
-        style={{
-          fontFamily: "'Josefin Sans', sans-serif",
-          fontWeight: 200,
-          marginBottom: PHI_SCALE[1],
-          textShadow: '0 0 16px rgba(0,255,65,0.2)',
-        }}
-      >
-        Learn
-      </h2>
-      <div
-        className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
-        style={{ gap: PHI_SCALE[1], overscrollBehaviorX: 'contain', touchAction: 'pan-x' }}
-      >
+      <SectionHeading glowColor="rgba(0,255,65,0.2)">Learn</SectionHeading>
+      <ScrollRow>
         {EDUCATION_MODULES.map((mod, i) => {
           const voicesRead = getVoicesRead(mod.slug);
           return (
@@ -48,7 +36,7 @@ export default function EducationSection() {
             />
           );
         })}
-      </div>
+      </ScrollRow>
     </section>
   );
 }
