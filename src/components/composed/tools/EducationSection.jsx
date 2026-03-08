@@ -1,6 +1,6 @@
 /**
  * EducationSection
- * "Understand" section on the Practices page.
+ * "Learn" section on the Practices page.
  * Horizontal scroll row of 3 cards (prime) at 157px width.
  */
 
@@ -30,7 +30,7 @@ export default function EducationSection() {
           textShadow: '0 0 16px rgba(0,255,65,0.2)',
         }}
       >
-        Understand
+        Learn
       </h2>
       <div
         className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 pb-[6px]"
