@@ -24,7 +24,7 @@ export default function ToolsClient() {
 
   return (
     <AppLayout>
-      <div className="px-6 py-8 pb-32 space-y-8" style={{ animation: 'fadeIn 0.377s ease-out' }}>
+      <div className="px-6 py-8 pb-32 space-y-8 overflow-x-clip" style={{ animation: 'fadeIn 0.377s ease-out' }}>
         <h1
           className="text-2xl text-white"
           style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
