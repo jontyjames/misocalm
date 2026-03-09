@@ -180,6 +180,7 @@ export default function GroundingGuide() {
       {/* Prompt screen (extracted component) */}
       <GroundingPrompt
         isFirstVisit={state.isFirstVisit}
+        visits={state.visits}
         onEnter={state.enter}
         visible={!state.started}
       />

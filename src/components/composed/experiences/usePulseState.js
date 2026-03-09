@@ -205,19 +205,19 @@ export default function usePulseState() {
     setPhase('FIND_PULSE');
     await delay(987);
     if (isFirstVisit) {
-      setGuide('find your pulse\nyour wrist, your neck, your chest');
-      await delay(2584); // fib-sacred
-      setGuide('when you feel it');
-      await delay(1597); // fib-ceremony — let them find it
-      setGuide('tap with each beat');
+      setGuide('find your pulse');
+      await delay(2584); // fib-sacred — let it land
+      setGuide('your neck, your wrist\nor your chest');
+      await delay(4181); // fib-long — give them time to physically find it
+      setGuide('tap the screen\nwith each beat');
     } else {
-      setGuide('find your pulse\ntap with each beat');
+      setGuide('find your pulse');
+      await delay(2584);
+      setGuide('tap the screen\nwith each beat');
     }
-    await delay(2584);
 
     // Phase: FIRST_TAPS — 5 taps (prime)
     setPhase('FIRST_TAPS');
-    setGuide('');
     const firstAnalysis = await waitForTaps(5);
     await delay(610);
 

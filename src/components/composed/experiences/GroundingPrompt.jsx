@@ -9,10 +9,10 @@
 
 import { useRef } from 'react';
 
-export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
+export default function GroundingPrompt({ isFirstVisit, visits, onEnter, visible }) {
   // Freeze content when fading out so it doesn't flash to return-visit text
-  const frozenRef = useRef({ isFirstVisit });
-  if (visible) frozenRef.current = { isFirstVisit };
+  const frozenRef = useRef({ isFirstVisit, visits });
+  if (visible) frozenRef.current = { isFirstVisit, visits };
   const show = frozenRef.current;
 
   return (
@@ -64,6 +64,11 @@ export default function GroundingPrompt({ isFirstVisit, onEnter, visible }) {
           <>
             <span className="block">Welcome back.</span>
             <span className="block mt-2">Your body remembers this place.</span>
+            {show.visits > 0 && (
+              <span className="block mt-4 text-slate-300/50 text-xs">
+                visit {show.visits + 1}
+              </span>
+            )}
           </>
         )}
       </div>
