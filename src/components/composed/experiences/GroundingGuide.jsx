@@ -12,7 +12,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
-import { ROUTES, VOID_BLACK } from '@/lib/constants';
+import { ROUTES, VOID_BLACK, VOID_BLACK_RGB } from '@/lib/constants';
 import { generateComposition, generatePlayLayer } from '@/lib/groundingCompositions';
 import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
@@ -33,7 +33,7 @@ const TIER_TRANSITIONS = {
   FLASH:    { in: '0.089s', out: '0.144s' },
 };
 
-const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
+const TEXT_SHADOW = `0 0 16px rgba(${VOID_BLACK_RGB},0.8), 0 0 42px rgba(${VOID_BLACK_RGB},0.5)`;
 
 export default function GroundingGuide() {
   const router = useRouter();
@@ -208,7 +208,7 @@ export default function GroundingGuide() {
             paddingTop: 'clamp(68px, 12vh, 110px)',
             paddingBottom: 42,
             pointerEvents: 'none',
-            background: 'linear-gradient(to bottom, rgba(3,7,18,0.92) 0%, rgba(3,7,18,0.7) 50%, rgba(3,7,18,0.3) 80%, transparent 100%)',
+            background: `linear-gradient(to bottom, rgba(${VOID_BLACK_RGB},0.92) 0%, rgba(${VOID_BLACK_RGB},0.7) 50%, rgba(${VOID_BLACK_RGB},0.3) 80%, transparent 100%)`,
           }}
         >
           <p
