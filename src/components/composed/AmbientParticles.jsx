@@ -79,14 +79,16 @@ export default function AmbientParticles() {
             key={p.id}
             className="absolute rounded-full ambient-particle"
             style={{
-              left: `${p.x + pushX}%`,
-              top: `${p.y + pushY}%`,
+              left: `${p.x}%`,
+              top: `${p.y}%`,
               width: `${p.size}px`,
               height: `${p.size}px`,
               backgroundColor: p.color,
               opacity: p.opacity,
               boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-              transition: mousePos ? 'left 377ms ease-out, top 377ms ease-out' : 'left 2584ms ease-out, top 2584ms ease-out',
+              transform: `translate(${pushX}vw, ${pushY}vh)`,
+              transition: mousePos ? 'transform 377ms ease-out' : 'transform 2584ms ease-out',
+              willChange: 'transform',
             }}
           />
         );

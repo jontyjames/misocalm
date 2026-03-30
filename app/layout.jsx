@@ -141,7 +141,9 @@ export default function RootLayout({ children }) {
               <NavProvider>
                 <ErrorBoundary>
                   <AnalyticsTracker />
-                  {children}
+                  <main id="main-content">
+                    {children}
+                  </main>
                 </ErrorBoundary>
               </NavProvider>
             </PremiumProvider>

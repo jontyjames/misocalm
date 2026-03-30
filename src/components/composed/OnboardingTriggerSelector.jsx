@@ -73,6 +73,7 @@ export default function OnboardingTriggerSelector({ onComplete }) {
               onClick={() => toggleTrigger(trigger)}
               className={`
                 px-4 py-2.5 rounded-full text-sm font-light transition-all duration-[233ms]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60
                 ${isSelected
                   ? 'bg-indigo-500/30 border border-indigo-400/50 text-white shadow-[0_0_12px_rgba(99,102,241,0.2)]'
                   : 'bg-slate-800/40 border border-slate-700/50 text-slate-300 hover:border-slate-600'

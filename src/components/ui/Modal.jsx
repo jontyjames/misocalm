@@ -86,6 +86,7 @@ export default function Modal({
                   p-2 rounded-lg text-slate-500
                   hover:text-white hover:bg-slate-800
                   transition-colors
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60
                 "
               >
                 <X className="w-5 h-5" />

@@ -20,6 +20,8 @@ export default function Spinner({ size = 'md' }) {
     <div
       className="relative"
       style={{ width: s, height: s }}
+      role="status"
+      aria-label="Loading"
     >
       {/* Glow layer */}
       <div

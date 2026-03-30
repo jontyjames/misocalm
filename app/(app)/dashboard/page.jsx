@@ -162,7 +162,7 @@ export default function DashboardPage() {
 
           <a
             href={ROUTES.RESOURCES}
-            className="text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-400/70 transition-colors mt-6"
+            className="text-slate-400/70 text-xs font-light tracking-wider hover:text-slate-300 transition-colors mt-6"
             style={{ transition: 'color 0.377s ease' }}
           >
             crisis support and resources

@@ -68,6 +68,7 @@ function NavItem({ href, icon: Icon, label, isActive }) {
         relative flex items-center justify-center
         w-11 h-11 rounded-full
         transition-colors duration-[144ms]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900
         ${isActive ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}
       `}
     >

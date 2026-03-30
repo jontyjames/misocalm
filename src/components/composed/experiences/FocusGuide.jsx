@@ -98,7 +98,7 @@ export default function FocusGuide() {
             position: 'fixed', top: 'calc(env(safe-area-inset-top, 0px) + clamp(16px, 3vh, 26px))', left: 16, zIndex: 8,
             opacity: 0, animation: 'fadeIn 0.610s ease-out 0.377s forwards',
           }}
-          className="flex items-center gap-1 py-4 px-4 text-slate-500/50 text-xs font-light tracking-wider hover:text-slate-300/60 transition-colors"
+          className="flex items-center gap-1 py-4 px-4 text-slate-400/70 text-xs font-light tracking-wider hover:text-slate-300 transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           leave
@@ -135,7 +135,7 @@ export default function FocusGuide() {
 
       {/* Progress — quiet count */}
       {state.started && state.totalFlashes > 0 && !state.complete && (
-        <p className="text-slate-300/30 text-xs font-light tracking-widest" style={{
+        <p className="text-slate-400/60 text-xs font-light tracking-widest" style={{
           position: 'fixed', bottom: 'clamp(68px, 12vh, 110px)', left: 0, right: 0,
           zIndex: 3, textAlign: 'center', pointerEvents: 'none', transition: 'opacity 0.377s ease',
         }}>
@@ -154,7 +154,7 @@ export default function FocusGuide() {
             style={{ position: 'fixed', inset: 0, zIndex: 2, cursor: 'pointer' }}
             onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') handlePlayTap({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 }); }}
           />
-          <p className="text-slate-300/30 text-xs font-light tracking-widest" style={{
+          <p className="text-slate-400/60 text-xs font-light tracking-widest" style={{
             position: 'fixed', top: 'clamp(68px, 12vh, 110px)', left: 0, right: 0,
             textAlign: 'center', zIndex: 3, pointerEvents: 'none', opacity: 0,
             animation: 'fadeIn 1.597s ease-out 0.610s forwards',

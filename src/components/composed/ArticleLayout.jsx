@@ -32,10 +32,13 @@ export default function ArticleLayout({ children, slug }) {
     <>
       {/* Reading progress bar */}
       <div
-        className="fixed top-[68px] left-0 h-[2px] z-50 transition-[width] duration-[89ms]"
+        className="fixed top-[68px] left-0 w-full h-[2px] z-50"
         style={{
-          width: `${progress}%`,
+          transform: `scaleX(${progress / 100})`,
+          transformOrigin: 'left',
+          transition: 'transform 89ms ease-out',
           background: 'linear-gradient(90deg, rgba(99,102,241,0.6), rgba(139,92,246,0.6))',
+          willChange: 'transform',
         }}
         role="progressbar"
         aria-valuenow={Math.round(progress)}

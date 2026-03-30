@@ -64,7 +64,7 @@ export default function ExpandingTriggerCard({
           <button
             onClick={() => onRemove(name)}
             aria-label={`Remove ${name}`}
-            className="p-1 text-slate-400 hover:text-white transition-colors duration-[233ms]"
+            className="p-2.5 -m-1.5 text-slate-400 hover:text-white transition-colors duration-[233ms]"
           >
             <X className="w-4 h-4" />
           </button>

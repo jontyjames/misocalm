@@ -79,7 +79,7 @@ export default function ProfilePage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-300 font-light mb-1">How misophonia affects you</p>
+                <h2 className="text-xs text-slate-300 font-light mb-1">How misophonia affects you</h2>
                 <p className="text-white font-light">{impactLabel}</p>
               </div>
               <span className="text-xs text-indigo-300 font-light">Update</span>
@@ -94,7 +94,7 @@ export default function ProfilePage() {
           style={PROFILE_CARD_STYLE_VIOLET}
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white font-light">My Sounds</p>
+            <h2 className="text-white font-light text-base">My Sounds</h2>
             <ChevronRight className="w-4 h-4 text-slate-300" />
           </div>
           {triggers.length > 0 ? (

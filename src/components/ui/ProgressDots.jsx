@@ -5,7 +5,14 @@
 
 export default function ProgressDots({ current, total }) {
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2"
+      role="progressbar"
+      aria-valuenow={current}
+      aria-valuemin={1}
+      aria-valuemax={total}
+      aria-label={`Step ${current} of ${total}`}
+    >
       {Array.from({ length: total }, (_, i) => (
         <div
           key={i}
