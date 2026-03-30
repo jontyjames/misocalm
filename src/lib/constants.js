@@ -200,6 +200,20 @@ export const SOLFEGGIO = {
   white:  { hz: 963, name: 'Higher Connection', purpose: 'Unity, oneness' },
 };
 
+// Solfeggio colour palette — RGB base strings for rgba() construction
+// Usage: `rgba(${SOLFEGGIO_COLORS.violet.base}, 0.15)`
+export const SOLFEGGIO_COLORS = {
+  indigo: { base: '99,102,241',  hex: '#6366F1' },  // 528Hz
+  violet: { base: '139,92,246',  hex: '#8B5CF6' },  // 852Hz
+  cyan:   { base: '34,211,238',  hex: '#22D3EE' },   // 741Hz
+  slate:  { base: '148,163,184', hex: '#94A3B8' },   // 396Hz
+  white:  { base: '226,232,240', hex: '#E2E8F0' },   // 963Hz
+};
+
+// Void-black — the app's deepest background
+export const VOID_BLACK = '#030712';
+export const VOID_BLACK_RGB = '3,7,18';
+
 // Sacred counts
 export const SACRED = {
   stars: 37,        // prime

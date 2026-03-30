@@ -6,6 +6,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { SOLFEGGIO_COLORS } from '@/lib/constants';
+
+const { indigo, violet } = SOLFEGGIO_COLORS;
 
 // Breathing patterns configuration
 const BREATH_PATTERNS = {
@@ -171,8 +174,8 @@ export default function BreathingCircle({
         <div
           className="absolute -inset-[10px] rounded-full pointer-events-none"
           style={{
-            border: '1px solid rgba(139,92,246,0.04)',
-            background: 'radial-gradient(circle, transparent 65%, rgba(99,102,241,0.03) 100%)',
+            border: `1px solid rgba(${violet.base},0.04)`,
+            background: `radial-gradient(circle, transparent 65%, rgba(${indigo.base},0.03) 100%)`,
           }}
         />
 
@@ -180,7 +183,7 @@ export default function BreathingCircle({
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, rgba(139,92,246,0.2) 50%, transparent 70%)',
+            background: `radial-gradient(circle, rgba(${indigo.base},0.35) 0%, rgba(${violet.base},0.2) 50%, transparent 70%)`,
           }}
         />
 
@@ -189,8 +192,8 @@ export default function BreathingCircle({
           className="absolute inset-0 rounded-full pointer-events-none"
           style={{
             background: `
-              radial-gradient(ellipse 80% 50% at 50% -10%, rgba(139,92,246,0.10) 0%, transparent 60%),
-              radial-gradient(ellipse 80% 50% at 50% 110%, rgba(139,92,246,0.05) 0%, transparent 60%)
+              radial-gradient(ellipse 80% 50% at 50% -10%, rgba(${violet.base},0.10) 0%, transparent 60%),
+              radial-gradient(ellipse 80% 50% at 50% 110%, rgba(${violet.base},0.05) 0%, transparent 60%)
             `,
             animation: 'solfeggio-breathe-852 3.7s ease-in-out infinite',
           }}
@@ -205,13 +208,13 @@ export default function BreathingCircle({
             animation: 'counter-rotate 89s linear infinite',
           }}
         >
-          <circle cx="50" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="68" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="59" cy="65.6" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="41" cy="65.6" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="32" cy="50" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="41" cy="34.4" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
-          <circle cx="59" cy="34.4" r="18" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="0.4" />
+          <circle cx="50" cy="50" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="68" cy="50" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="59" cy="65.6" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="41" cy="65.6" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="32" cy="50" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="41" cy="34.4" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
+          <circle cx="59" cy="34.4" r="18" fill="none" stroke={`rgba(${violet.base},0.7)`} strokeWidth="0.4" />
         </svg>
 
         {/* Inner gradient ring */}

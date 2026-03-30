@@ -22,8 +22,9 @@ import {
   MAX_DRIFT_SPARKLES, SECTOR_COUNT,
   spawnTendrils, pickRingColor, drawSeedDot,
 } from './AliveShapeData';
+import { VOID_BLACK_RGB } from '@/lib/constants';
 
-const VOID_COLOR = 'rgba(3, 7, 18, 0.025)';
+const VOID_COLOR = `rgba(${VOID_BLACK_RGB}, 0.025)`;
 
 export default function AliveCanvas({ breathCount, treePalette, freePlay }) {
   const canvasRef = useRef(null);

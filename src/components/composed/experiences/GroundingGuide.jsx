@@ -12,7 +12,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
-import { ROUTES } from '@/lib/constants';
+import { ROUTES, VOID_BLACK } from '@/lib/constants';
 import { generateComposition, generatePlayLayer } from '@/lib/groundingCompositions';
 import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
@@ -21,6 +21,7 @@ import GroundingCanvas from './GroundingCanvas';
 import GroundingPrompt from './GroundingPrompt';
 import GroundingIntro from './GroundingIntro';
 import ExitThreshold from './ExitThreshold';
+import GroundingRipples from './GroundingRipples';
 
 let rippleId = 0;
 
@@ -118,7 +119,7 @@ export default function GroundingGuide() {
   const transitions = TIER_TRANSITIONS[tier] || TIER_TRANSITIONS.STANDARD;
 
   return (
-    <div style={{ background: '#030712', minHeight: '100dvh' }}>
+    <div style={{ background: VOID_BLACK, minHeight: '100dvh' }}>
       {state.started && composition && (
         <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}
@@ -137,24 +138,8 @@ export default function GroundingGuide() {
         />
       )}
 
-      {/* Tap ripples — larger (110px phi scale) */}
-      {ripples.map((r) => (
-        <div
-          key={r.id}
-          style={{
-            position: 'fixed',
-            left: r.x - 55,
-            top: r.y - 55,
-            width: 110,
-            height: 110,
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${r.color}30 0%, transparent 70%)`,
-            zIndex: 1,
-            pointerEvents: 'none',
-            animation: 'groundingRipple 0.610s ease-out forwards',
-          }}
-        />
-      ))}
+      {/* Tap ripples — 110px phi scale, 610ms fib fade */}
+      <GroundingRipples ripples={ripples} />
       {/* Full-screen tap target — active during grounding and play mode */}
       {state.started && (!state.complete || playing) && (
         <div
