@@ -29,9 +29,12 @@ const AUTO_FADE_AT = 4181;    // fib — start fade-out
 const FADE_DURATION = 987;    // fib — fade-out length
 const SKIP_FADE = 233;        // fib — tap-to-skip fade
 
-export default function WelcomeArrival({ onComplete, profileName }) {
+export default function WelcomeArrival({ onComplete, profileName, dayOverride }) {
   const prefersReduced = useReducedMotion();
-  const variant = useMemo(() => VARIANTS[new Date().getDay()], []);
+  const variant = useMemo(() => {
+    const day = dayOverride != null ? dayOverride : new Date().getDay();
+    return VARIANTS[day % 7];
+  }, [dayOverride]);
   const [opacity, setOpacity] = useState(1);
   const [textVisible, setTextVisible] = useState(false);
   const completeCalled = useRef(false);

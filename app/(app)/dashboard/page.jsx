@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { BookOpen, Wind, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AppLayout, BetaInstallBanner } from '@/components/composed';
@@ -43,18 +43,22 @@ function getDailyAffirmation() {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dayParam = searchParams.get('day');
+  const dayOverride = dayParam != null ? parseInt(dayParam, 10) : null;
   const { profile, isAuthenticated, loading, hasCompletedOnboarding, refreshProfile } = useAuth();
   const todaysPractice = useMemo(() => getDailyPractice(), []);
   const profileFetchAttempted = useRef(false);
   const [profileFailed, setProfileFailed] = useState(false);
   const [welcomeComplete, setWelcomeComplete] = useState(() => {
     if (typeof window === 'undefined') return true;
+    if (dayParam != null) return false; // ?day= forces welcome to show
     return sessionStorage.getItem('misocalm_welcome_shown') === 'true';
   });
   const handleWelcomeComplete = useCallback(() => {
-    sessionStorage.setItem('misocalm_welcome_shown', 'true');
+    if (dayParam == null) sessionStorage.setItem('misocalm_welcome_shown', 'true');
     setWelcomeComplete(true);
-  }, []);
+  }, [dayParam]);
 
   useEffect(() => {
     if (loading) return;
@@ -181,7 +185,7 @@ export default function DashboardPage() {
       </div>
     </AppLayout>
     {!welcomeComplete && (
-      <WelcomeArrival onComplete={handleWelcomeComplete} profileName={profile?.name} />
+      <WelcomeArrival onComplete={handleWelcomeComplete} profileName={profile?.name} dayOverride={dayOverride} />
     )}
     </>
   );
