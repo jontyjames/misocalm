@@ -81,7 +81,7 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 5,
+  maximumScale: 1,
   viewportFit: 'cover',
   themeColor: '#0f172a',
 }
@@ -141,7 +141,7 @@ export default function RootLayout({ children }) {
               <NavProvider>
                 <ErrorBoundary>
                   <AnalyticsTracker />
-                  <main id="main-content">
+                  <main id="main-content" className="w-full">
                     {children}
                   </main>
                 </ErrorBoundary>
