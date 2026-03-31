@@ -9,6 +9,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { BookOpen, Wind, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useNav } from '@/context/NavContext';
 import { AppLayout, BetaInstallBanner } from '@/components/composed';
 import { DashboardHeader, FindMyCalmCard, DashboardActionCard, DashboardSkeleton } from '@/components/composed/dashboard';
 import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const dayParam = searchParams.get('day');
   const dayOverride = dayParam != null ? parseInt(dayParam, 10) : null;
   const { profile, isAuthenticated, loading, hasCompletedOnboarding, refreshProfile } = useAuth();
+  const { setShowNav } = useNav();
   const todaysPractice = useMemo(() => getDailyPractice(), []);
   const profileFetchAttempted = useRef(false);
   const [profileFailed, setProfileFailed] = useState(false);
@@ -59,6 +61,13 @@ export default function DashboardPage() {
     if (dayParam == null) sessionStorage.setItem('misocalm_welcome_shown', 'true');
     setWelcomeComplete(true);
   }, [dayParam]);
+
+  // Hide nav during welcome, restore on complete or unmount
+  useEffect(() => {
+    if (!welcomeComplete) setShowNav(false);
+    else setShowNav(true);
+    return () => setShowNav(true);
+  }, [welcomeComplete, setShowNav]);
 
   useEffect(() => {
     if (loading) return;
@@ -128,8 +137,12 @@ export default function DashboardPage() {
   return (
     <>
     <AppLayout>
+      <div style={{
+        opacity: welcomeComplete ? 1 : 0,
+        transition: welcomeComplete ? 'opacity 987ms ease' : 'none',
+      }}>
       <BetaInstallBanner />
-      <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
+      <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: welcomeComplete ? 'fadeIn 0.377s ease-out' : 'none', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
         <DashboardHeader profileName={profile?.name} />
 
         {/* Content — vertically centred */}
@@ -182,6 +195,7 @@ export default function DashboardPage() {
             crisis support and resources
           </a>
         </div>
+      </div>
       </div>
     </AppLayout>
     {!welcomeComplete && (

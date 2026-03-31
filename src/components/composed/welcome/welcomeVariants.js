@@ -25,7 +25,6 @@ const impermanence = {
     return { blooms: [], spawnTimer: 0 };
   },
   render(ctx, W, H, time, s) {
-    // Spawn new bloom every ~40 frames
     if (time - s.spawnTimer > 40 && s.blooms.length < 7) {
       s.blooms.push({
         x: W * 0.15 + Math.random() * W * 0.7,
@@ -44,7 +43,7 @@ const impermanence = {
       const alpha = life < 0.3 ? life / 0.3 : 1 - (life - 0.3) / 0.7;
       const r = 68 * life;
       const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
-      grad.addColorStop(0, `rgba(${b.color.base},${alpha * 0.25})`);
+      grad.addColorStop(0, `rgba(${b.color.base},${alpha * 0.5})`);
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -68,14 +67,14 @@ const grounding = {
     return { circles, r };
   },
   render(ctx, W, H, time, s) {
-    const alpha = Math.min(time / 180, 1) * 0.15;
+    const alpha = Math.min(time / 180, 1) * 0.35;
     const breathe = 1 + Math.sin(time * 0.02) * 0.03;
     ctx.globalCompositeOperation = 'screen';
     for (const c of s.circles) {
       ctx.beginPath();
       ctx.arc(c.x, c.y, s.r * breathe, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${violet.base},${alpha})`;
-      ctx.lineWidth = 0.8;
+      ctx.lineWidth = 1.2;
       ctx.stroke();
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -100,11 +99,11 @@ const pulse = {
       const life = ring.age / 120;
       if (life > 1) { s.rings.splice(i, 1); continue; }
       const r = 110 * life;
-      const alpha = (1 - life) * 0.2;
+      const alpha = (1 - life) * 0.45;
       ctx.beginPath();
       ctx.arc(s.cx, s.cy, r, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${indigo.base},${alpha})`;
-      ctx.lineWidth = 1.5 * (1 - life);
+      ctx.lineWidth = 2 * (1 - life);
       ctx.stroke();
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -124,11 +123,11 @@ const focus = {
     ctx.rotate(rotation);
     ctx.globalCompositeOperation = 'screen';
     for (let i = 0; i < s.radii.length; i++) {
-      const alpha = (0.06 + Math.sin(time * 0.015 + i * 1.2) * 0.04);
+      const alpha = (0.15 + Math.sin(time * 0.015 + i * 1.2) * 0.1);
       ctx.beginPath();
       ctx.arc(0, 0, s.radii[i], 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${i < 3 ? indigo.base : violet.base},${Math.max(0, alpha)})`;
-      ctx.lineWidth = 0.6;
+      ctx.lineWidth = 1;
       ctx.stroke();
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -148,7 +147,7 @@ const mandala = {
         particles.push({
           arm: a, dist: 10 + p * 16,
           speed: 0.15 + p * 0.08,
-          size: 3 - p * 0.5,
+          size: 4 - p * 0.5,
         });
       }
     }
@@ -162,7 +161,7 @@ const mandala = {
       const dist = p.dist + p.speed * time * 0.1 * growFactor;
       const x = s.cx + Math.cos(angle) * dist;
       const y = s.cy + Math.sin(angle) * dist;
-      const alpha = Math.min(growFactor, 0.2) * (1 - Math.min(dist / 150, 1) * 0.6);
+      const alpha = Math.min(growFactor, 0.4) * (1 - Math.min(dist / 150, 1) * 0.5);
       const color = dist < 50 ? indigo : dist < 100 ? violet : cyan;
       ctx.beginPath();
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
@@ -203,18 +202,18 @@ const alive = {
       ctx.beginPath();
       ctx.moveTo(s.cx, s.cy);
       ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-      ctx.strokeStyle = `rgba(${violet.base},${0.12 * growFactor})`;
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = `rgba(${violet.base},${0.3 * growFactor})`;
+      ctx.lineWidth = 1.8;
       ctx.stroke();
     }
     // Seed dot
-    const dotAlpha = Math.min(time / 90, 0.3);
-    const grad = ctx.createRadialGradient(s.cx, s.cy, 0, s.cx, s.cy, 6);
+    const dotAlpha = Math.min(time / 90, 0.5);
+    const grad = ctx.createRadialGradient(s.cx, s.cy, 0, s.cx, s.cy, 8);
     grad.addColorStop(0, `rgba(${slate.base},${dotAlpha})`);
     grad.addColorStop(1, 'transparent');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(s.cx, s.cy, 6, 0, Math.PI * 2);
+    ctx.arc(s.cx, s.cy, 8, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalCompositeOperation = 'source-over';
   },
@@ -240,9 +239,9 @@ const aurora = {
       const bandHeight = 110;
       const grad = ctx.createLinearGradient(0, y - bandHeight / 2, 0, y + bandHeight / 2);
       grad.addColorStop(0, 'transparent');
-      grad.addColorStop(0.3, `rgba(${band.color.base},0.06)`);
-      grad.addColorStop(0.5, `rgba(${band.color.base},0.09)`);
-      grad.addColorStop(0.7, `rgba(${band.color.base},0.06)`);
+      grad.addColorStop(0.3, `rgba(${band.color.base},0.14)`);
+      grad.addColorStop(0.5, `rgba(${band.color.base},0.2)`);
+      grad.addColorStop(0.7, `rgba(${band.color.base},0.14)`);
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.fillRect(0, y - bandHeight / 2, W, bandHeight);

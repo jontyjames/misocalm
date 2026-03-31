@@ -3,16 +3,23 @@
  *
  * Shown once per browser session. Selects today's animation variant
  * (one per day of the week), plays a canvas animation with letter-by-letter
- * text, then fades to reveal the dashboard underneath.
+ * text, then fades through darkness to gently reveal the dashboard.
+ *
+ * Phases:
+ *   'active'     — canvas + text visible, letter-by-letter reveal
+ *   'darkening'  — canvas + text fade to 0 (610ms), container stays opaque → void-black
+ *   'revealing'  — container fades to 0 (987ms), dashboard appears underneath
+ *   'done'       — onComplete called, component unmounts
  *
  * Timing (all Fibonacci):
  *   0ms      — canvas starts, void-black fills screen
  *   610ms    — text begins letter-by-letter reveal (34ms stagger)
  *   ~2584ms  — text complete, animation at full beauty
- *   4181ms   — begin fade-out (987ms duration)
- *   ~5168ms  — welcome gone, dashboard revealed
+ *   4181ms   — phase → darkening (610ms content fade)
+ *   4791ms   — phase → revealing (987ms container fade)
+ *   5778ms   — done, onComplete fires
  *
- * Tap anywhere to skip (233ms quick fade).
+ * Tap anywhere to skip (compressed: 233ms each phase).
  */
 
 'use client';
@@ -25,9 +32,10 @@ import WelcomeCanvas from './WelcomeCanvas';
 
 const LETTER_STAGGER = 34;   // fib — per character delay
 const TEXT_DELAY = 610;       // fib — before text starts
-const AUTO_FADE_AT = 4181;    // fib — start fade-out
-const FADE_DURATION = 987;    // fib — fade-out length
-const SKIP_FADE = 233;        // fib — tap-to-skip fade
+const AUTO_FADE_AT = 4181;    // fib — start darkening phase
+const DARKEN_DURATION = 610;  // fib — content fade to black
+const REVEAL_DURATION = 987;  // fib — container fade to show dashboard
+const SKIP_FADE = 233;        // fib — compressed phase duration on tap
 
 export default function WelcomeArrival({ onComplete, profileName, dayOverride }) {
   const prefersReduced = useReducedMotion();
@@ -35,10 +43,12 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
     const day = dayOverride != null ? dayOverride : new Date().getDay();
     return VARIANTS[day % 7];
   }, [dayOverride]);
-  const [opacity, setOpacity] = useState(1);
+
+  const [phase, setPhase] = useState('active');
   const [textVisible, setTextVisible] = useState(false);
   const completeCalled = useRef(false);
   const mountTime = useRef(Date.now());
+  const skipping = useRef(false);
 
   // Start text reveal after delay
   useEffect(() => {
@@ -46,30 +56,44 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
     return () => clearTimeout(t);
   }, [prefersReduced]);
 
-  // Auto fade-out
+  // Auto phase transitions
   useEffect(() => {
     const delay = prefersReduced ? 2584 : AUTO_FADE_AT;
-    const duration = prefersReduced ? 610 : FADE_DURATION;
-    const t1 = setTimeout(() => setOpacity(0), delay);
+    const darken = prefersReduced ? 377 : DARKEN_DURATION;
+    const reveal = prefersReduced ? 610 : REVEAL_DURATION;
+
+    const t1 = setTimeout(() => {
+      if (!skipping.current) setPhase('darkening');
+    }, delay);
+
     const t2 = setTimeout(() => {
+      if (!skipping.current) setPhase('revealing');
+    }, delay + darken);
+
+    const t3 = setTimeout(() => {
       if (!completeCalled.current) {
         completeCalled.current = true;
+        setPhase('done');
         onComplete();
       }
-    }, delay + duration);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    }, delay + darken + reveal);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete, prefersReduced]);
 
-  // Tap to skip
+  // Tap to skip — compressed two-phase exit
   const handleSkip = useCallback(() => {
-    if (completeCalled.current) return;
-    setOpacity(0);
+    if (completeCalled.current || skipping.current) return;
+    skipping.current = true;
+    setPhase('darkening');
+    setTimeout(() => setPhase('revealing'), SKIP_FADE);
     setTimeout(() => {
       if (!completeCalled.current) {
         completeCalled.current = true;
+        setPhase('done');
         onComplete();
       }
-    }, SKIP_FADE);
+    }, SKIP_FADE * 2);
   }, [onComplete]);
 
   // Letter-by-letter text
@@ -85,6 +109,12 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
     return () => clearInterval(id);
   }, [textVisible, charsVisible, message.length]);
 
+  // Compute opacities from phase
+  const contentOpacity = phase === 'active' ? 1 : 0;
+  const contentTransition = skipping.current ? SKIP_FADE : DARKEN_DURATION;
+  const containerOpacity = phase === 'revealing' || phase === 'done' ? 0 : 1;
+  const containerTransition = skipping.current ? SKIP_FADE : REVEAL_DURATION;
+
   return (
     <div
       onClick={handleSkip}
@@ -97,12 +127,20 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
         inset: 0,
         zIndex: 50,
         background: VOID_BLACK,
-        opacity,
-        transition: `opacity ${opacity === 0 ? (completeCalled.current ? SKIP_FADE : FADE_DURATION) : 0}ms ease`,
+        opacity: containerOpacity,
+        transition: `opacity ${containerTransition}ms ease`,
         cursor: 'pointer',
       }}
     >
-      {!prefersReduced && <WelcomeCanvas variant={variant} />}
+      {/* Canvas + text — fade independently during darkening phase */}
+      <div
+        style={{
+          opacity: contentOpacity,
+          transition: `opacity ${contentTransition}ms ease`,
+        }}
+      >
+        {!prefersReduced && <WelcomeCanvas variant={variant} />}
+      </div>
 
       {/* Centered text */}
       <div
@@ -115,6 +153,8 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
           alignItems: 'center',
           justifyContent: 'center',
           pointerEvents: 'none',
+          opacity: contentOpacity,
+          transition: `opacity ${contentTransition}ms ease`,
         }}
       >
         <p
@@ -135,7 +175,7 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
               key={i}
               style={{
                 opacity: i < charsVisible ? 1 : 0,
-                transition: `opacity 0.377s ease`,
+                transition: 'opacity 0.377s ease',
               }}
             >
               {char}
