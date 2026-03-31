@@ -118,6 +118,11 @@ export default function RootLayout({ children }) {
         />
         <script
           dangerouslySetInnerHTML={{
+            __html: `try{if(!sessionStorage.getItem('misocalm_welcome_shown'))document.documentElement.dataset.welcome=''}catch(e){}`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {

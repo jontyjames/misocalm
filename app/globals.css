@@ -104,6 +104,9 @@ body {
   background-clip: text;
 }
 
+/* Welcome arrival — hide dashboard content before React hydrates */
+html[data-welcome] [data-dashboard-content] { opacity: 0 !important; }
+
 /* Starfield animation */
 @keyframes twinkle {
   0%, 100% { opacity: 0.2; }

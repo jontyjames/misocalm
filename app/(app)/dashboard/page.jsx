@@ -94,17 +94,27 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, hasCompletedOnboarding, loading, profile, router, refreshProfile]);
 
-  if (loading || (!profile && !profileFailed)) {
-    return (
-      <AppLayout>
-        <DashboardSkeleton />
-      </AppLayout>
-    );
-  }
+  const isLoading = loading || (!profile && !profileFailed);
+  const practiceAccent = !isLoading && !profileFailed ? ACCENT_STYLES[todaysPractice.accent] : null;
 
-  if (profileFailed) {
-    return (
-      <AppLayout>
+  // Clean up data-welcome attribute when welcome completes (SSR flash prevention)
+  useEffect(() => {
+    if (welcomeComplete) delete document.documentElement.dataset.welcome;
+  }, [welcomeComplete]);
+
+  return (
+    <>
+    <AppLayout>
+      <div
+        data-dashboard-content
+        style={{
+          opacity: welcomeComplete ? 1 : 0,
+          transition: welcomeComplete ? 'opacity 987ms ease' : 'none',
+        }}
+      >
+      {isLoading ? (
+        <DashboardSkeleton />
+      ) : profileFailed ? (
         <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
           <p
             className="text-xl text-white mb-2"
@@ -128,74 +138,65 @@ export default function DashboardPage() {
             Try again
           </button>
         </div>
-      </AppLayout>
-    );
-  }
+      ) : (
+        <>
+        <BetaInstallBanner />
+        <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: welcomeComplete ? 'fadeIn 0.377s ease-out' : 'none', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
+          <DashboardHeader profileName={profile?.name} />
 
-  const practiceAccent = ACCENT_STYLES[todaysPractice.accent];
+          {/* Content — vertically centred */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
+            {/* Greeting */}
+            <div className="mb-10">
+              <h1
+                className="text-2xl text-white mb-2"
+                style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+              >
+                Welcome back, {profile.name}
+              </h1>
+              <p className="text-base text-slate-300 font-light">
+                {getDailyMessage()}
+              </p>
+              <p
+                className="text-sm text-indigo-300/70 font-light italic mt-3"
+                style={{ animation: 'fadeIn 2.584s ease-out' }}
+              >
+                {getDailyAffirmation()}
+              </p>
+            </div>
 
-  return (
-    <>
-    <AppLayout>
-      <div style={{
-        opacity: welcomeComplete ? 1 : 0,
-        transition: welcomeComplete ? 'opacity 987ms ease' : 'none',
-      }}>
-      <BetaInstallBanner />
-      <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: welcomeComplete ? 'fadeIn 0.377s ease-out' : 'none', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
-        <DashboardHeader profileName={profile?.name} />
+            <FindMyCalmCard />
 
-        {/* Content — vertically centred */}
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
-          {/* Greeting */}
-          <div className="mb-10">
-            <h1
-              className="text-2xl text-white mb-2"
-              style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+            <DashboardActionCard
+              href={buildPracticeHref(todaysPractice)}
+              icon={todaysPractice.type === 'experience' ? Sparkles : Wind}
+              iconColor={practiceAccent}
+              accent={todaysPractice.accent}
+              title="Today's Practice"
+              subtitle={`${todaysPractice.name} · ${todaysPractice.label} · ${todaysPractice.time}`}
+              className="mb-2.5"
+            />
+
+            <DashboardActionCard
+              href={ROUTES.JOURNAL}
+              icon={BookOpen}
+              iconColor={{ bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' }}
+              accent="cyan"
+              title="Go inward"
+              subtitle="Reflect, log, or check in with yourself"
+            />
+
+            <a
+              href={ROUTES.RESOURCES}
+              className="text-slate-400/70 text-xs font-light tracking-wider hover:text-slate-300 transition-colors mt-6"
+              style={{ transition: 'color 0.377s ease' }}
             >
-              Welcome back, {profile.name}
-            </h1>
-            <p className="text-base text-slate-300 font-light">
-              {getDailyMessage()}
-            </p>
-            <p
-              className="text-sm text-indigo-300/70 font-light italic mt-3"
-              style={{ animation: 'fadeIn 2.584s ease-out' }}
-            >
-              {getDailyAffirmation()}
-            </p>
+              crisis support and resources
+            </a>
           </div>
-
-          <FindMyCalmCard />
-
-          <DashboardActionCard
-            href={buildPracticeHref(todaysPractice)}
-            icon={todaysPractice.type === 'experience' ? Sparkles : Wind}
-            iconColor={practiceAccent}
-            accent={todaysPractice.accent}
-            title="Today's Practice"
-            subtitle={`${todaysPractice.name} · ${todaysPractice.label} · ${todaysPractice.time}`}
-            className="mb-2.5"
-          />
-
-          <DashboardActionCard
-            href={ROUTES.JOURNAL}
-            icon={BookOpen}
-            iconColor={{ bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' }}
-            accent="cyan"
-            title="Go inward"
-            subtitle="Reflect, log, or check in with yourself"
-          />
-
-          <a
-            href={ROUTES.RESOURCES}
-            className="text-slate-400/70 text-xs font-light tracking-wider hover:text-slate-300 transition-colors mt-6"
-            style={{ transition: 'color 0.377s ease' }}
-          >
-            crisis support and resources
-          </a>
         </div>
-      </div>
+        </>
+      )}
       </div>
     </AppLayout>
     {!welcomeComplete && (
