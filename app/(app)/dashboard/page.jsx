@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Wind, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -14,6 +14,7 @@ import { DashboardHeader, FindMyCalmCard, DashboardActionCard, DashboardSkeleton
 import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { getDailyPractice, buildPracticeHref } from '@/lib/dailyPractice';
+import WelcomeArrival from '@/components/composed/welcome/WelcomeArrival';
 
 const DAILY_MESSAGES = [
   'Your space is ready.',
@@ -46,6 +47,14 @@ export default function DashboardPage() {
   const todaysPractice = useMemo(() => getDailyPractice(), []);
   const profileFetchAttempted = useRef(false);
   const [profileFailed, setProfileFailed] = useState(false);
+  const [welcomeComplete, setWelcomeComplete] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return sessionStorage.getItem('misocalm_welcome_shown') === 'true';
+  });
+  const handleWelcomeComplete = useCallback(() => {
+    sessionStorage.setItem('misocalm_welcome_shown', 'true');
+    setWelcomeComplete(true);
+  }, []);
 
   useEffect(() => {
     if (loading) return;
@@ -113,6 +122,7 @@ export default function DashboardPage() {
   const practiceAccent = ACCENT_STYLES[todaysPractice.accent];
 
   return (
+    <>
     <AppLayout>
       <BetaInstallBanner />
       <div className="flex flex-col px-6 py-8 overflow-clip" style={{ animation: 'fadeIn 0.377s ease-out', height: 'calc(100dvh - 5rem - env(safe-area-inset-top, 0px))' }}>
@@ -170,5 +180,9 @@ export default function DashboardPage() {
         </div>
       </div>
     </AppLayout>
+    {!welcomeComplete && (
+      <WelcomeArrival onComplete={handleWelcomeComplete} profileName={profile?.name} />
+    )}
+    </>
   );
 }
