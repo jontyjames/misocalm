@@ -1,164 +1,146 @@
 /**
- * useTriggerLogs Hook
- * Manages trigger log data fetching and operations
+ * useTriggerLogs Hook — paginated trigger log data with CRUD
+ * useTriggerStats Hook — aggregated trigger statistics
+ *
+ * Both use React Query for caching, deduplication, and background refetch.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { triggerLogService } from '@/services';
+import { queryKeys } from '@/lib/queryKeys';
 
 export function useTriggerLogs(userId, options = {}) {
-  const { autoFetch = true, page = 1, limit = 20 } = options;
+  const { autoFetch = true, page: initialPage = 1, limit = 20 } = options;
+  const queryClient = useQueryClient();
 
-  const [logs, setLogs] = useState([]);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 20,
-    total: 0,
-    totalPages: 0,
-    hasMore: false,
-  });
-  const [loading, setLoading] = useState(autoFetch);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [accumulatedLogs, setAccumulatedLogs] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(null);
+  const isAppending = useRef(false);
+  const prevDataRef = useRef(null);
 
-  const fetch = useCallback(
-    async (fetchOptions = {}) => {
-      if (!userId) return;
-
-      setLoading(true);
-      setError(null);
-
-      const { data, pagination: pag, error: fetchError } = await triggerLogService.getAll(
-        userId,
-        {
-          page: fetchOptions.page || page,
-          limit: fetchOptions.limit || limit,
-          ...fetchOptions,
-        }
-      );
-
-      if (fetchError) {
-        setError(fetchError);
-      } else {
-        setLogs(data || []);
-        setPagination(pag);
-      }
-
-      setLoading(false);
+  const { data: queryData, isLoading, error: queryError, refetch } = useQuery({
+    queryKey: queryKeys.triggerLogs(userId, { page: currentPage, limit }),
+    queryFn: async () => {
+      const result = await triggerLogService.getAll(userId, { page: currentPage, limit });
+      if (result.error) throw new Error(result.error);
+      return { data: result.data || [], pagination: result.pagination };
     },
-    [userId, page, limit]
-  );
+    enabled: !!userId && autoFetch,
+    placeholderData: (prev) => prev,
+  });
 
-  const create = useCallback(
-    async (data) => {
-      if (!userId) return { error: 'Not authenticated' };
+  // Sync query data to accumulated logs
+  useEffect(() => {
+    if (!queryData || queryData === prevDataRef.current) return;
+    prevDataRef.current = queryData;
+    if (isAppending.current) {
+      setAccumulatedLogs(prev => [...prev, ...queryData.data]);
+      setLoadingMore(false);
+      isAppending.current = false;
+    } else {
+      setAccumulatedLogs(queryData.data);
+    }
+  }, [queryData]);
 
-      setError(null);
-      const result = await triggerLogService.create({
-        user_id: userId,
-        ...data,
-      });
+  const pagination = queryData?.pagination ?? {
+    page: 1, limit: 20, total: 0, totalPages: 0, hasMore: false,
+  };
 
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Refresh the list
-        await fetch();
-      }
-
-      return result;
+  const createMutation = useMutation({
+    mutationFn: (data) => triggerLogService.create({ user_id: userId, ...data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['triggerLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['triggerStats'] });
     },
-    [userId, fetch]
-  );
+  });
 
-  const update = useCallback(
-    async (logId, data) => {
-      setError(null);
-      const result = await triggerLogService.update(logId, data);
-
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Update local state
-        setLogs((prev) =>
-          prev.map((log) =>
-            log.id === logId ? { ...log, ...data } : log
-          )
+  const updateMutation = useMutation({
+    mutationFn: ({ logId, data }) => triggerLogService.update(logId, data),
+    onSuccess: (result, { logId, data }) => {
+      if (!result.error) {
+        setAccumulatedLogs(prev =>
+          prev.map(log => log.id === logId ? { ...log, ...data } : log)
         );
       }
-
-      return result;
+      queryClient.invalidateQueries({ queryKey: ['triggerLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['triggerStats'] });
     },
-    []
-  );
+  });
 
-  const remove = useCallback(
-    async (logId) => {
-      setError(null);
-      const result = await triggerLogService.delete(logId);
-
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Remove from local state
-        setLogs((prev) => prev.filter((log) => log.id !== logId));
+  const removeMutation = useMutation({
+    mutationFn: (logId) => triggerLogService.delete(logId),
+    onSuccess: (result, logId) => {
+      if (!result.error) {
+        setAccumulatedLogs(prev => prev.filter(log => log.id !== logId));
       }
+      queryClient.invalidateQueries({ queryKey: ['triggerLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['triggerStats'] });
+    },
+  });
 
+  const create = useCallback(async (data) => {
+    if (!userId) return { error: 'Not authenticated' };
+    try {
+      const result = await createMutation.mutateAsync(data);
       return result;
-    },
-    []
-  );
-
-  const goToPage = useCallback(
-    async (newPage) => {
-      await fetch({ page: newPage });
-    },
-    [fetch]
-  );
-
-  /**
-   * Load more entries (append to existing list)
-   */
-  const loadMore = useCallback(
-    async () => {
-      if (!userId || !pagination.hasMore || loadingMore) return;
-
-      setLoadingMore(true);
-      setError(null);
-
-      const nextPage = pagination.page + 1;
-      const { data, pagination: pag, error: fetchError } = await triggerLogService.getAll(
-        userId,
-        { page: nextPage, limit }
-      );
-
-      if (fetchError) {
-        setError(fetchError);
-      } else {
-        setLogs((prev) => [...prev, ...(data || [])]);
-        setPagination(pag);
-      }
-
-      setLoadingMore(false);
-    },
-    [userId, pagination.hasMore, pagination.page, limit, loadingMore]
-  );
-
-  // Auto-fetch on mount
-  useEffect(() => {
-    if (autoFetch && userId) {
-      fetch();
+    } catch (err) {
+      return { error: err.message };
     }
-  }, [autoFetch, userId, fetch]);
+  }, [userId, createMutation]);
+
+  const update = useCallback(async (logId, data) => {
+    try {
+      const result = await updateMutation.mutateAsync({ logId, data });
+      return result;
+    } catch (err) {
+      return { error: err.message };
+    }
+  }, [updateMutation]);
+
+  const remove = useCallback(async (logId) => {
+    try {
+      const result = await removeMutation.mutateAsync(logId);
+      return result;
+    } catch (err) {
+      return { error: err.message };
+    }
+  }, [removeMutation]);
+
+  const goToPage = useCallback((newPage) => {
+    isAppending.current = false;
+    setCurrentPage(newPage);
+  }, []);
+
+  const loadMore = useCallback(() => {
+    if (!pagination.hasMore || loadingMore) return;
+    isAppending.current = true;
+    setLoadingMore(true);
+    setCurrentPage(prev => prev + 1);
+  }, [pagination.hasMore, loadingMore]);
+
+  const fetch = useCallback((fetchOptions = {}) => {
+    if (fetchOptions.page) {
+      isAppending.current = false;
+      setCurrentPage(fetchOptions.page);
+    }
+    return refetch();
+  }, [refetch]);
 
   return {
-    logs,
+    logs: accumulatedLogs,
     pagination,
-    loading,
+    loading: isLoading,
     loadingMore,
-    error,
+    error: queryError?.message ?? null,
     fetch,
-    refresh: fetch,
+    refresh: () => {
+      isAppending.current = false;
+      setCurrentPage(initialPage);
+      setAccumulatedLogs([]);
+      return refetch();
+    },
     create,
     update,
     remove,
@@ -168,35 +150,26 @@ export function useTriggerLogs(userId, options = {}) {
 }
 
 /**
- * Hook for trigger log statistics
+ * Hook for trigger log statistics — cached and deduplicated via React Query.
+ * Multiple components requesting the same userId+days share a single fetch.
  */
 export function useTriggerStats(userId, days = 30) {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: stats, isLoading: loading, error, refetch } = useQuery({
+    queryKey: queryKeys.triggerStats(userId, days),
+    queryFn: async () => {
+      const result = await triggerLogService.getStats(userId, days);
+      if (result.error) throw new Error(result.error);
+      return result.stats;
+    },
+    enabled: !!userId,
+  });
 
-  const fetch = useCallback(async () => {
-    if (!userId) return;
-
-    setLoading(true);
-    setError(null);
-
-    const { stats: data, error: fetchError } = await triggerLogService.getStats(userId, days);
-
-    if (fetchError) {
-      setError(fetchError);
-    } else {
-      setStats(data);
-    }
-
-    setLoading(false);
-  }, [userId, days]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { stats, loading, error, refresh: fetch };
+  return {
+    stats: stats ?? null,
+    loading,
+    error: error?.message ?? null,
+    refresh: refetch,
+  };
 }
 
 export default useTriggerLogs;

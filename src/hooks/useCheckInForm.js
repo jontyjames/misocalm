@@ -5,12 +5,14 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { triggerLogService } from '@/services';
 import { ROUTES } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 
 export function useCheckInForm(userId, fromBreathwork = false) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Scale state (default to midpoint: 3)
   const [energy, setEnergy] = useState(3);
@@ -24,7 +26,7 @@ export function useCheckInForm(userId, fromBreathwork = false) {
   const handleSave = useCallback(async () => {
     if (saving) return;
     if (!userId) {
-      setError('Not signed in');
+      setError('Please sign in to save your check-in');
       return;
     }
 
@@ -46,7 +48,7 @@ export function useCheckInForm(userId, fromBreathwork = false) {
     }
 
     if (!data?.length) {
-      setError('Save failed — no data returned');
+      setError('Something went wrong saving your check-in. You can try again when ready.');
       setSaving(false);
       return;
     }
@@ -58,6 +60,11 @@ export function useCheckInForm(userId, fromBreathwork = false) {
       fromBreathwork,
     });
 
+    // Invalidate cached queries so journal/stats/streak update immediately
+    queryClient.invalidateQueries({ queryKey: ['triggerLogs'] });
+    queryClient.invalidateQueries({ queryKey: ['triggerStats'] });
+    queryClient.invalidateQueries({ queryKey: ['streak'] });
+
     setSaving(false);
 
     const entryId = data[0].id;
@@ -65,7 +72,7 @@ export function useCheckInForm(userId, fromBreathwork = false) {
     if (fromBreathwork) params.set('from', 'breathwork');
     if (entryId) params.set('entry', entryId);
     router.push(`${ROUTES.LOG_SUCCESS}?${params.toString()}`);
-  }, [userId, energy, pleasantness, bodySensation, fromBreathwork, saving, router]);
+  }, [userId, energy, pleasantness, bodySensation, fromBreathwork, saving, router, queryClient]);
 
   return {
     energy, setEnergy,

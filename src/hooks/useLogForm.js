@@ -6,6 +6,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { triggerLogService } from '@/services';
 import { ROUTES, TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
@@ -15,6 +16,7 @@ export { TIME_OF_DAY_OPTIONS, BODY_RESPONSE_OPTIONS };
 
 export function useLogForm(userId) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Core fields — per-trigger intensity map: { "Chewing": 7, "Sniffing": 4 }
   const [triggerEntries, setTriggerEntries] = useState({});
@@ -107,6 +109,11 @@ export function useLogForm(userId) {
       environment,
     });
 
+    // Invalidate cached queries so journal/stats/streak update immediately
+    queryClient.invalidateQueries({ queryKey: ['triggerLogs'] });
+    queryClient.invalidateQueries({ queryKey: ['triggerStats'] });
+    queryClient.invalidateQueries({ queryKey: ['streak'] });
+
     setSaving(false);
     submittingRef.current = false;
 
@@ -114,7 +121,7 @@ export function useLogForm(userId) {
       const entryId = data?.[0]?.id;
       router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
     }
-  }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, router]);
+  }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, router, queryClient]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);

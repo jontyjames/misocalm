@@ -15,13 +15,13 @@ const defaultOptions = {
     staleTime: 5 * 60 * 1000,
     // Keep unused data in cache for 30 minutes
     gcTime: 30 * 60 * 1000,
-    // Retry failed requests 3 times with exponential backoff
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    // Retry failed requests once (10s timeout per attempt — 2 retries = 20s+ wait)
+    retry: 1,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
     // Refetch when window regains focus
     refetchOnWindowFocus: true,
-    // Don't refetch on mount if data is fresh
-    refetchOnMount: false,
+    // Refetch stale data on mount (shows cached data instantly, refreshes in background)
+    refetchOnMount: true,
   },
   mutations: {
     // Retry mutations once

@@ -1,81 +1,66 @@
 /**
  * useStreak Hook
- * Tracks active days — no pressure, no "streak broken" language
+ * Tracks active days — no pressure, no "streak broken" language.
+ * React Query cached with background refetch.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { streakService } from '@/services';
+import { queryKeys } from '@/lib/queryKeys';
+
+const DEFAULT_ACTIVITY = {
+  activeDays: 0,
+  longestRun: 0,
+  hasActivityToday: false,
+  lastActivityDate: null,
+};
 
 export function useStreak(userId, options = {}) {
   const { autoFetch = true } = options;
+  const queryClient = useQueryClient();
 
-  const [activity, setActivity] = useState({
-    activeDays: 0,
-    longestRun: 0,
-    hasActivityToday: false,
-    lastActivityDate: null,
+  const { data: activity, isLoading: loading, error, refetch } = useQuery({
+    queryKey: queryKeys.streak(userId),
+    queryFn: async () => {
+      const { summary, error: fetchError } = await streakService.getSummary(userId);
+      if (fetchError) throw new Error(fetchError);
+      return summary ?? DEFAULT_ACTIVITY;
+    },
+    enabled: !!userId && autoFetch,
+    placeholderData: DEFAULT_ACTIVITY,
   });
-  const [loading, setLoading] = useState(autoFetch);
-  const [error, setError] = useState(null);
 
-  const fetch = useCallback(async () => {
-    if (!userId) return;
+  const recordMutation = useMutation({
+    mutationFn: () => streakService.recordActivity(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.streak(userId) });
+    },
+  });
 
-    setLoading(true);
-    setError(null);
-
-    const { summary, error: fetchError } = await streakService.getSummary(userId);
-
-    if (fetchError) {
-      setError(fetchError);
-    } else if (summary) {
-      setActivity(summary);
-    }
-
-    setLoading(false);
-  }, [userId]);
-
-  /**
-   * Record activity for today
-   */
   const recordActivity = useCallback(async () => {
     if (!userId) return { error: 'Not authenticated' };
-
-    setError(null);
-    const result = await streakService.recordActivity(userId);
-
-    if (result.error) {
-      setError(result.error);
-    } else {
-      await fetch();
+    try {
+      const result = await recordMutation.mutateAsync();
+      return result;
+    } catch (err) {
+      return { error: err.message };
     }
+  }, [userId, recordMutation]);
 
-    return result;
-  }, [userId, fetch]);
-
-  /**
-   * Check if user has activity today
-   */
   const checkActivityToday = useCallback(async () => {
     if (!userId) return { hasActivity: false, error: 'Not authenticated' };
-
-    const result = await streakService.hasActivityToday(userId);
-    return result;
+    return streakService.hasActivityToday(userId);
   }, [userId]);
 
-  // Auto-fetch on mount
-  useEffect(() => {
-    if (autoFetch && userId) {
-      fetch();
-    }
-  }, [autoFetch, userId, fetch]);
+  const safeActivity = activity ?? DEFAULT_ACTIVITY;
 
   return {
-    ...activity,
+    ...safeActivity,
     loading,
-    error,
-    fetch,
-    refresh: fetch,
+    error: error?.message ?? null,
+    fetch: refetch,
+    refresh: refetch,
     recordActivity,
     checkActivityToday,
   };

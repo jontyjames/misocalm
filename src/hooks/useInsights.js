@@ -1,10 +1,11 @@
 /**
  * useInsights Hook
- * Computes meaningful patterns from trigger log data
+ * Computes meaningful patterns from trigger log data.
+ * Consumes useTriggerStats for automatic cache deduplication.
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { triggerLogService } from '@/services';
+import { useMemo } from 'react';
+import { useTriggerStats } from './useTriggerLogs';
 import { SOURCE_OPTIONS } from '@/lib/constants';
 
 function getSourceLabel(value) {
@@ -87,7 +88,6 @@ function buildInsights(stats) {
     const days = Object.keys(stats.byDay).sort();
     const mid = Math.floor(days.length / 2);
     if (mid > 0) {
-      // Simple: compare average intensity message
       const avg = stats.averageIntensity;
       if (avg <= 4) {
         insights.push({
@@ -119,25 +119,7 @@ function buildInsights(stats) {
 }
 
 export function useInsights(userId, days = 30) {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetch = useCallback(async () => {
-    if (!userId) return;
-
-    setLoading(true);
-    const { stats: data, error: fetchError } = await triggerLogService.getStats(userId, days);
-    if (fetchError) {
-      setError(fetchError);
-    } else {
-      setStats(data);
-    }
-    setLoading(false);
-  }, [userId, days]);
-
-  useEffect(() => { fetch(); }, [fetch]);
-
+  const { stats, loading, error, refresh } = useTriggerStats(userId, days);
   const insights = useMemo(() => buildInsights(stats), [stats]);
 
   return {
@@ -145,7 +127,7 @@ export function useInsights(userId, days = 30) {
     stats,
     loading,
     error,
-    refresh: fetch,
+    refresh,
     aiSummary: null,
   };
 }

@@ -1,84 +1,61 @@
 /**
- * useTools Hook
- * Manages tools/practices data fetching and progress
+ * useTools, useTool, useToolStats Hooks
+ * Tools/practices data fetching with React Query caching.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toolService } from '@/services';
+import { queryKeys } from '@/lib/queryKeys';
+
+function invalidateToolCaches(queryClient) {
+  queryClient.invalidateQueries({ queryKey: ['tools'] });
+  queryClient.invalidateQueries({ queryKey: ['tool'] });
+  queryClient.invalidateQueries({ queryKey: ['toolStats'] });
+  queryClient.invalidateQueries({ queryKey: ['streak'] });
+}
 
 export function useTools(userId, options = {}) {
   const { autoFetch = true, withProgress = true } = options;
+  const queryClient = useQueryClient();
 
-  const [tools, setTools] = useState([]);
-  const [loading, setLoading] = useState(autoFetch);
-  const [error, setError] = useState(null);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    let result;
-    if (withProgress && userId) {
-      result = await toolService.getToolsWithProgress(userId);
-    } else {
-      result = await toolService.getAll();
-    }
-
-    if (result.error) {
-      setError(result.error);
-    } else {
-      setTools(result.data || []);
-    }
-
-    setLoading(false);
-  }, [userId, withProgress]);
-
-  const markCompleted = useCallback(
-    async (toolId) => {
-      if (!userId) return { error: 'Not authenticated' };
-
-      setError(null);
-      const result = await toolService.markCompleted(userId, toolId);
-
-      if (result.error) {
-        setError(result.error);
+  const { data: tools, isLoading: loading, error, refetch } = useQuery({
+    queryKey: queryKeys.tools(userId),
+    queryFn: async () => {
+      let result;
+      if (withProgress && userId) {
+        result = await toolService.getToolsWithProgress(userId);
       } else {
-        // Update local state
-        setTools((prev) =>
-          prev.map((tool) =>
-            tool.id === toolId
-              ? {
-                  ...tool,
-                  progress: {
-                    ...(tool.progress || {}),
-                    completed: true,
-                    completed_at: new Date().toISOString(),
-                    times_completed: ((tool.progress?.times_completed || 0) + 1),
-                  },
-                }
-              : tool
-          )
-        );
+        result = await toolService.getAll();
       }
-
-      return result;
+      if (result.error) throw new Error(result.error);
+      return result.data || [];
     },
-    [userId]
-  );
+    enabled: autoFetch,
+    placeholderData: [],
+  });
 
-  // Auto-fetch on mount
-  useEffect(() => {
-    if (autoFetch) {
-      fetch();
+  const completeMutation = useMutation({
+    mutationFn: (toolId) => toolService.markCompleted(userId, toolId),
+    onSuccess: () => invalidateToolCaches(queryClient),
+  });
+
+  const markCompleted = useCallback(async (toolId) => {
+    if (!userId) return { error: 'Not authenticated' };
+    try {
+      const result = await completeMutation.mutateAsync(toolId);
+      return result;
+    } catch (err) {
+      return { error: err.message };
     }
-  }, [autoFetch, fetch]);
+  }, [userId, completeMutation]);
 
   return {
-    tools,
+    tools: tools ?? [],
     loading,
-    error,
-    fetch,
-    refresh: fetch,
+    error: error?.message ?? null,
+    fetch: refetch,
+    refresh: refetch,
     markCompleted,
   };
 }
@@ -87,98 +64,64 @@ export function useTools(userId, options = {}) {
  * Hook for a single tool
  */
 export function useTool(toolId, userId) {
-  const [tool, setTool] = useState(null);
-  const [progress, setProgress] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const fetch = useCallback(async () => {
-    if (!toolId) return;
+  const { data, isLoading: loading, error, refetch } = useQuery({
+    queryKey: queryKeys.tool(toolId, userId),
+    queryFn: async () => {
+      const { data: toolData, error: toolError } = await toolService.getById(toolId);
+      if (toolError) throw new Error(toolError);
 
-    setLoading(true);
-    setError(null);
+      let progressData = null;
+      if (userId) {
+        const { data: prog } = await toolService.getToolProgress(userId, toolId);
+        progressData = prog;
+      }
+      return { tool: toolData, progress: progressData };
+    },
+    enabled: !!toolId,
+  });
 
-    // Fetch tool details
-    const { data: toolData, error: toolError } = await toolService.getById(toolId);
-
-    if (toolError) {
-      setError(toolError);
-      setLoading(false);
-      return;
-    }
-
-    setTool(toolData);
-
-    // Fetch progress if user is logged in
-    if (userId) {
-      const { data: progressData } = await toolService.getToolProgress(userId, toolId);
-      setProgress(progressData);
-    }
-
-    setLoading(false);
-  }, [toolId, userId]);
+  const completeMutation = useMutation({
+    mutationFn: () => toolService.markCompleted(userId, toolId),
+    onSuccess: () => invalidateToolCaches(queryClient),
+  });
 
   const markCompleted = useCallback(async () => {
     if (!userId || !toolId) return { error: 'Not authenticated' };
-
-    const result = await toolService.markCompleted(userId, toolId);
-
-    if (!result.error) {
-      setProgress((prev) => ({
-        ...(prev || {}),
-        completed: true,
-        completed_at: new Date().toISOString(),
-        times_completed: ((prev?.times_completed || 0) + 1),
-      }));
+    try {
+      const result = await completeMutation.mutateAsync();
+      return result;
+    } catch (err) {
+      return { error: err.message };
     }
-
-    return result;
-  }, [userId, toolId]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
+  }, [userId, toolId, completeMutation]);
 
   return {
-    tool,
-    progress,
+    tool: data?.tool ?? null,
+    progress: data?.progress ?? null,
     loading,
-    error,
-    refresh: fetch,
+    error: error?.message ?? null,
+    refresh: refetch,
     markCompleted,
   };
 }
 
 /**
- * Hook for tool statistics
+ * Hook for tool completion statistics
  */
 export function useToolStats(userId) {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: stats, isLoading: loading, error, refetch } = useQuery({
+    queryKey: queryKeys.toolStats(userId),
+    queryFn: async () => {
+      const result = await toolService.getCompletionStats(userId);
+      if (result.error) throw new Error(result.error);
+      return result.stats;
+    },
+    enabled: !!userId,
+  });
 
-  const fetch = useCallback(async () => {
-    if (!userId) return;
-
-    setLoading(true);
-    setError(null);
-
-    const { stats: data, error: fetchError } = await toolService.getCompletionStats(userId);
-
-    if (fetchError) {
-      setError(fetchError);
-    } else {
-      setStats(data);
-    }
-
-    setLoading(false);
-  }, [userId]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { stats, loading, error, refresh: fetch };
+  return { stats: stats ?? null, loading, error: error?.message ?? null, refresh: refetch };
 }
 
 export default useTools;
