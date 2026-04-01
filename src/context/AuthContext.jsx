@@ -7,6 +7,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { auth, db } from '@/services/supabase';
 import { identify, clearUserId as analyticsReset, track, EVENTS } from '@/lib/analytics';
 
@@ -16,6 +17,7 @@ const ProfileContext = createContext(null);
 const AuthActionsContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -107,9 +109,10 @@ export function AuthProvider({ children }) {
     } else {
       setUser(null);
       setProfile(null);
+      queryClient.clear();
     }
     return result;
-  }, []);
+  }, [queryClient]);
 
   // Create or update user profile
   const upsertProfile = useCallback(async (data) => {

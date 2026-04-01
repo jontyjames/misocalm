@@ -31,7 +31,7 @@ export function useTools(userId, options = {}) {
       if (result.error) throw new Error(result.error);
       return result.data || [];
     },
-    enabled: autoFetch,
+    enabled: autoFetch && !!userId,
     placeholderData: [],
   });
 

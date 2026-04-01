@@ -17,8 +17,6 @@ export function useUserTriggers(userId) {
   const { data, isLoading: loading } = useQuery({
     queryKey: queryKeys.userTriggers(userId),
     queryFn: async () => {
-      if (!userId) return { triggers: DEFAULT_TRIGGERS, isUsingDefaults: true };
-
       const { data: dbTriggers } = await userTriggerService.getUserTriggers(userId);
 
       let allTriggers;

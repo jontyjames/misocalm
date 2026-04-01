@@ -63,6 +63,7 @@ export function useLogForm(userId) {
 
   const handleSave = useCallback(async (skipCrisisCheck = false, { skipNavigate = false } = {}) => {
     if (submittingRef.current) return;
+    if (!userId) { setError('Please sign in to save your log'); return; }
 
     const triggerNames = Object.keys(triggerEntries);
     if (triggerNames.length === 0) return;
