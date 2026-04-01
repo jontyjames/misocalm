@@ -168,7 +168,7 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
             padding: '0 26px',
             lineHeight: 1.8,
           }}
-          className="text-slate-200"
+          className="text-white"
         >
           {message.split('').map((char, i) => (
             <span
@@ -183,19 +183,20 @@ export default function WelcomeArrival({ onComplete, profileName, dayOverride })
           ))}
         </p>
 
-        {profileName && charsVisible >= message.length && (
-          <p
-            className="text-slate-400/50 text-xs font-light tracking-widest mt-6"
-            style={{
-              opacity: 0,
-              animation: 'fadeIn 1.597s ease-out forwards',
-              fontFamily: "'Josefin Sans', sans-serif",
-              fontWeight: 200,
-            }}
-          >
-            welcome back, {profileName}
-          </p>
-        )}
+        <p
+          className="text-slate-400 text-xs font-light tracking-widest mt-6"
+          style={{
+            fontFamily: "'Josefin Sans', sans-serif",
+            fontWeight: 200,
+            opacity: 0,
+            ...(profileName && charsVisible >= message.length
+              ? { animation: 'fadeIn 1.597s ease-out forwards' }
+              : {}),
+            ...(!profileName ? { visibility: 'hidden' } : {}),
+          }}
+        >
+          welcome back, {profileName || ''}
+        </p>
       </div>
     </div>
   );
