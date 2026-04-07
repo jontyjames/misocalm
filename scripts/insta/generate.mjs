@@ -64,7 +64,7 @@ async function main() {
   let totalSlides = 0;
 
   for (const carousel of carousels) {
-    const outDir = join(ROOT, 'output', 'insta', carousel.slug);
+    const outDir = join(ROOT, '..', 'thriving-with-misophonia', 'content', 'insta', carousel.slug);
     mkdirSync(outDir, { recursive: true });
 
     console.log(`\nCarousel: ${carousel.slug}`);

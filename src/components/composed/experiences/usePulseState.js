@@ -204,17 +204,11 @@ export default function usePulseState() {
     // Phase: FIND_PULSE
     setPhase('FIND_PULSE');
     await delay(987);
-    if (isFirstVisit) {
-      setGuide('find your pulse');
-      await delay(2584); // fib-sacred — let it land
-      setGuide('your neck, your wrist\nor your chest');
-      await delay(4181); // fib-long — give them time to physically find it
-      setGuide('tap the screen\nwith each beat');
-    } else {
-      setGuide('find your pulse');
-      await delay(2584);
-      setGuide('tap the screen\nwith each beat');
-    }
+    setGuide('find your pulse');
+    await delay(2584); // fib-sacred — let it land
+    setGuide('your neck, your wrist\nor your chest');
+    await delay(4181); // fib-long — give them time to physically find it
+    setGuide('tap the screen\nwith each beat');
 
     // Phase: FIRST_TAPS — 5 taps (prime)
     setPhase('FIRST_TAPS');
@@ -262,7 +256,7 @@ export default function usePulseState() {
     await delay(2584);
     track(EVENTS.EXPERIENCE_COMPLETED, { experience_id: 'pulse', experience_name: 'Pulse', duration_ms: Date.now() - (analyticsStartRef.current || Date.now()) });
     setFreePlay(true);
-  }, [visits, lastTeaching, isFirstVisit, setLastTeaching, delay, waitForTaps, setGuide, startHapticSync, clearHaptic]);
+  }, [visits, lastTeaching, setLastTeaching, delay, waitForTaps, setGuide, startHapticSync, clearHaptic]);
 
   const enter = useCallback(() => {
     analyticsStartRef.current = Date.now();

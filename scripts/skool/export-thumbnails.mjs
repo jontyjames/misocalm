@@ -11,7 +11,7 @@ import puppeteer from 'puppeteer';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 const HTML_PATH = join(ROOT, '..', 'misocalm-landing', 'skool-assets', 'skool-thumbnails.html');
-const OUT_DIR = join(ROOT, 'output', 'skool');
+const OUT_DIR = join(ROOT, '..', 'thriving-with-misophonia', 'course-overlays', 'skool-thumbnails');
 
 function slugify(text) {
   return text
@@ -221,8 +221,8 @@ async function main() {
           </svg>`;
       }
 
-      // 2.2 Your Body Is Your Ally - heartbeat pulse line (simple, clean)
-      if (num === '2.2') {
+      // 2.3 Your Body Is Your Ally - heartbeat pulse line (simple, clean)
+      if (num === '2.3') {
         thumb.querySelector('.icon').innerHTML = `
           <svg width="100" height="60" viewBox="0 0 100 60">
             <polyline points="5,30 20,30 28,30 33,12 38,48 43,20 48,38 53,30 68,30 95,30"
@@ -246,6 +246,12 @@ async function main() {
             <circle cx="50" cy="48" r="4" fill="#c4b5fd" opacity="0.1"/>
             <circle cx="50" cy="48" r="1.5" fill="#c4b5fd" opacity="0.5"/>
           </svg>`;
+      }
+
+      // 2.5 Outer Practices — shrink title to fit one line
+      if (num === '2.5') {
+        const title = thumb.querySelector('.title');
+        if (title) title.style.setProperty('font-size', '32px', 'important');
       }
 
       // 4.1 Healthy Body Foundation - lotus flower (growth, wellness, foundation)

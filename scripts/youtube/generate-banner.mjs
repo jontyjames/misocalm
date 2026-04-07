@@ -328,7 +328,7 @@ async function render(jsx) {
 }
 
 async function main() {
-  const outDir = join(ROOT, 'output', 'youtube');
+  const outDir = join(ROOT, '..', 'thriving-with-misophonia', 'content', 'youtube');
   mkdirSync(outDir, { recursive: true });
 
   console.log('Generating YouTube banner (2560x1440)...');
