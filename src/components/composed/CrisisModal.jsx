@@ -74,7 +74,7 @@ export default function CrisisModal({ isOpen, onContinue, onGetSupport, onClose 
             onClick={onContinue}
             className="w-full text-sm text-slate-400 hover:text-white transition-colors font-light py-3"
           >
-            Continue without support
+            Let me breathe through this
           </button>
         </div>
       </div>

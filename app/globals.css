@@ -535,12 +535,12 @@ html[data-welcome] [data-dashboard-content] { opacity: 0 !important; }
   50% { border-color: rgba(0,255,65,0.1); }
 }
 
-/* Reduced motion: disable mantra pattern and overlay animations */
+/* Reduced motion: global kill-switch for all animations and transitions */
 @media (prefers-reduced-motion: reduce) {
-  .mantra-pattern,
-  .mantra-pattern ~ *,
-  [aria-label="Mantra"] {
-    animation: none !important;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
   .mantra-pattern {
     opacity: 1 !important;

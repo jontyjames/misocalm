@@ -219,52 +219,9 @@ Is it server data needing cache/sync?
 
 ---
 
-## Build Order for New Projects
+## Anti-Patterns
 
-### Phase 1: Foundation
-1. Set up project (Vite, Tailwind)
-2. Create folder structure
-3. Build shared UI components (Button, Card, Input, Modal)
-4. Create utility stubs (dateUtils, formatters, validators)
-5. Set up base API service
-
-### Phase 2: Layout
-6. Build Layout component
-7. Set up routing
-8. Create page placeholders
-
-### Phase 3: Features
-9. Build ONE feature at a time
-10. Use shared components - don't write new styles
-11. Need a new pattern? Add to shared first
-12. Keep components under limits
-
----
-
-## Anti-Patterns to Avoid
-
-```jsx
-// BAD: Inline styles repeated everywhere
-<button className="w-full py-5 px-6 rounded-full bg-blue-500...">
-
-// GOOD: Shared component
-<Button variant="primary" size="lg">
-
-// BAD: Data fetching in component
-useEffect(() => {
-  supabase.from('posts').select('*').then(...)
-}, []);
-
-// GOOD: Custom hook
-const { posts, loading } = usePosts();
-
-// BAD: Same utility in multiple files
-const timeAgo = (date) => { ... }  // in File1.jsx
-const timeAgo = (date) => { ... }  // in File2.jsx
-
-// GOOD: Shared utility
-import { timeAgo } from '@/lib/dateUtils';
-```
+Reference on demand when reviewing code or designing new features. Full good/bad examples live in `ANTI-PATTERNS.md` (load when needed).
 
 ---
 
@@ -276,3 +233,12 @@ Before finishing work each day:
 - [ ] Any component over 200 lines?
 - [ ] Any pattern repeated 3+ times?
 - [ ] Any new code that should be in `src/lib/`?
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)

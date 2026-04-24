@@ -68,6 +68,11 @@ export default function SoundscapesPage() {
       <div className="px-6 py-8">
         <PageHeader title="Sound Sanctuary" backHref={ROUTES.DASHBOARD} className="mb-8" />
 
+        {/* Coming soon note */}
+        <p className="text-sm text-slate-400 font-light text-center mb-6 leading-relaxed">
+          Sound journeys are being crafted. While they're on their way, the breathing tools and experiences are here for you.
+        </p>
+
         {/* Soundscape Grid */}
         <div className="grid grid-cols-2 gap-4">
           {SOUNDSCAPES.map((sound, index) => (
@@ -77,7 +82,7 @@ export default function SoundscapesPage() {
               className={`
                 flex flex-col items-center justify-center py-8
                 animate-fade-in-up stagger-${index + 1}
-                ${playing?.id === sound.id ? 'border-cyan-500/50 bg-cyan-500/10' : ''}
+                opacity-70
               `}
             >
               <span className="text-4xl mb-3">{iconMap[sound.icon]}</span>

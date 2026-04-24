@@ -1,7 +1,7 @@
 -- MisoMind Database Schema
 -- Run this in Supabase SQL Editor
 
--- Note: RLS is DISABLED for MVP as requested
+-- Note: RLS is ENABLED via 002_enable_rls.sql (supersedes this file)
 
 -- Users table (extends Supabase auth.users)
 CREATE TABLE IF NOT EXISTS users (
