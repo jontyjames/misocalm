@@ -20,12 +20,6 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/soundscapes`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
       url: `${baseUrl}/boundaries`,
       lastModified: new Date(),
       changeFrequency: 'monthly',

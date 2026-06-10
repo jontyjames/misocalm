@@ -209,7 +209,7 @@ export default function ResourcesPage() {
             <BookOpen className="w-5 h-5 text-indigo-400 shrink-0" />
             <div>
               <p className="text-white font-light">Explore all tools</p>
-              <p className="text-sm text-slate-300 font-light">Breathing, grounding, soundscapes, and more</p>
+              <p className="text-sm text-slate-300 font-light">Breathing, grounding, guided practices, and more</p>
             </div>
           </button>
         </div>

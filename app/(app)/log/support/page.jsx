@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Wind, Heart, Music, MessageCircle, X } from 'lucide-react';
+import { Wind, Heart, MessageCircle, X } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
 import { Button, Card } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
@@ -29,14 +29,6 @@ const supportOptions = [
     iconBg: 'bg-pink-500/20 border-pink-500/30',
     iconColor: 'text-pink-400',
     href: null, // Shows inline
-  },
-  {
-    icon: Music,
-    title: 'Soothing Soundscape',
-    description: 'Block out triggers with calming sounds',
-    iconBg: 'bg-cyan-500/20 border-cyan-500/30',
-    iconColor: 'text-cyan-400',
-    href: ROUTES.SOUNDSCAPES,
   },
   {
     icon: MessageCircle,
