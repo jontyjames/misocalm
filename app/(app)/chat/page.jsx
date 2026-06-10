@@ -11,8 +11,9 @@ import { ArrowLeft, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremiumContext } from '@/context/PremiumContext';
 import { useAuthGuard, useChat } from '@/hooks';
-import { Button, Input, Spinner, PremiumGate } from '@/components/ui';
+import { Button, Input, PremiumGate } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
+import { ChatSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 
 export default function ChatPage() {
@@ -58,9 +59,7 @@ export default function ChatPage() {
   if (authLoading || chatLoading || premiumLoading) {
     return (
       <AppLayout showNav={false}>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <ChatSkeleton />
       </AppLayout>
     );
   }
