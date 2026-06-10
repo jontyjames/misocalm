@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { useLogForm } from '../useLogForm';
+import { renderHookWithProviders } from '@/test/test-utils';
 
 // Mock dependencies
 vi.mock('next/navigation', () => ({
@@ -24,18 +25,18 @@ describe('useLogForm', () => {
   });
 
   it('initialises with empty triggerEntries', () => {
-    const { result } = renderHook(() => useLogForm('user-1'));
+    const { result } = renderHookWithProviders(() => useLogForm('user-1'));
     expect(result.current.triggerEntries).toEqual({});
   });
 
   it('initialises environment as null', () => {
-    const { result } = renderHook(() => useLogForm('user-1'));
+    const { result } = renderHookWithProviders(() => useLogForm('user-1'));
     expect(result.current.environment).toBeNull();
   });
 
   describe('toggleTrigger', () => {
     it('adds trigger with default intensity 5', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -45,7 +46,7 @@ describe('useLogForm', () => {
     });
 
     it('removes trigger when toggled again', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -58,7 +59,7 @@ describe('useLogForm', () => {
     });
 
     it('supports multiple triggers simultaneously', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -73,7 +74,7 @@ describe('useLogForm', () => {
 
   describe('setTriggerIntensity', () => {
     it('updates intensity for a specific trigger', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -86,7 +87,7 @@ describe('useLogForm', () => {
     });
 
     it('does not affect other triggers', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -101,7 +102,7 @@ describe('useLogForm', () => {
     });
 
     it('accepts boundary values 0 and 10', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -120,7 +121,7 @@ describe('useLogForm', () => {
 
   describe('environment', () => {
     it('sets environment value', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.setEnvironment('home');
@@ -130,7 +131,7 @@ describe('useLogForm', () => {
     });
 
     it('can change environment', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.setEnvironment('home');
@@ -146,7 +147,7 @@ describe('useLogForm', () => {
   describe('handleSave', () => {
     it('does not save when no triggers selected', async () => {
       const { triggerLogService } = await import('@/services');
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       await act(async () => {
         await result.current.handleSave();
@@ -156,7 +157,7 @@ describe('useLogForm', () => {
     });
 
     it('shows crisis modal when any trigger intensity >= 9', async () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -171,7 +172,7 @@ describe('useLogForm', () => {
     });
 
     it('does not show crisis modal when all intensities < 9', async () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -187,7 +188,7 @@ describe('useLogForm', () => {
 
     it('saves with both old and new format', async () => {
       const { triggerLogService } = await import('@/services');
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleTrigger('Chewing');
@@ -215,7 +216,7 @@ describe('useLogForm', () => {
 
   describe('toggleBodyResponse', () => {
     it('adds body response', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleBodyResponse('Jaw tension');
@@ -225,7 +226,7 @@ describe('useLogForm', () => {
     });
 
     it('removes body response when toggled again', () => {
-      const { result } = renderHook(() => useLogForm('user-1'));
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
 
       act(() => {
         result.current.toggleBodyResponse('Jaw tension');

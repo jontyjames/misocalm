@@ -3,19 +3,13 @@ import { describe, it, expect, vi } from 'vitest';
 import Button from '../Button';
 
 // Mock the hooks Button depends on
-vi.mock('@/hooks/useTouchGlow', () => ({
-  default: () => ({
+vi.mock('@/hooks', () => ({
+  useTouchGlow: () => ({
     glowStyle: null,
     handlers: { onPointerDown: vi.fn(), onPointerUp: vi.fn() },
   }),
-}));
-
-vi.mock('@/hooks/useHaptic', () => ({
-  default: () => ({ vibrate: vi.fn() }),
-}));
-
-vi.mock('@/hooks/useReducedMotion', () => ({
-  default: () => false,
+  useHaptic: () => ({ vibrate: vi.fn() }),
+  useReducedMotion: () => false,
 }));
 
 describe('Button', () => {

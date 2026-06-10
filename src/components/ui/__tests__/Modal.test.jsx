@@ -3,8 +3,8 @@ import { describe, it, expect, vi } from 'vitest';
 import Modal from '../Modal';
 
 // Mock useFocusTrap
-vi.mock('@/hooks/useFocusTrap', () => ({
-  default: vi.fn(),
+vi.mock('@/hooks', () => ({
+  useFocusTrap: vi.fn(),
 }));
 
 // Mock lucide-react icons

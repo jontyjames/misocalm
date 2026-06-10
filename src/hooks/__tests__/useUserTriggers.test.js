@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { useUserTriggers } from '../useUserTriggers';
 import { DEFAULT_TRIGGERS } from '@/lib/constants';
+import { renderHookWithProviders } from '@/test/test-utils';
 
 // Mock services
 const mockGetUserTriggers = vi.fn();
@@ -37,7 +38,7 @@ describe('useUserTriggers', () => {
     it('returns DEFAULT_TRIGGERS with isUsingDefaults:true when no userId', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: null, error: null });
 
-      const { result } = renderHook(() => useUserTriggers(null));
+      const { result } = renderHookWithProviders(() => useUserTriggers(null));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -50,7 +51,7 @@ describe('useUserTriggers', () => {
     it('returns DEFAULT_TRIGGERS with isUsingDefaults:true when DB returns empty', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: [], error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -67,10 +68,10 @@ describe('useUserTriggers', () => {
       });
       mockGetStats.mockResolvedValue({ stats: { triggerCounts: {} }, error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isUsingDefaults).toBe(false);
       });
 
       expect(result.current.triggers).toEqual(['Chewing', 'Sniffing']);
@@ -89,19 +90,17 @@ describe('useUserTriggers', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.triggers).toEqual(['Sniffing', 'Typing', 'Chewing']);
       });
-
-      expect(result.current.triggers).toEqual(['Sniffing', 'Typing', 'Chewing']);
     });
 
     it('skips stats fetch for new users (defaults)', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: [], error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -120,7 +119,7 @@ describe('useUserTriggers', () => {
       mockGetStats.mockResolvedValue({ stats: { triggerCounts: {} }, error: null });
       mockAddCustomTrigger.mockResolvedValue({ data: { id: 'new-id' }, error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -142,7 +141,7 @@ describe('useUserTriggers', () => {
       mockGetStats.mockResolvedValue({ stats: { triggerCounts: {} }, error: null });
       mockAddCustomTrigger.mockResolvedValue({ error: 'DB error' });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -163,7 +162,7 @@ describe('useUserTriggers', () => {
       });
       mockGetStats.mockResolvedValue({ stats: { triggerCounts: {} }, error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -178,7 +177,7 @@ describe('useUserTriggers', () => {
     it('validates name length (too short)', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: [], error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -193,7 +192,7 @@ describe('useUserTriggers', () => {
     it('validates name length (too long)', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: [], error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -208,7 +207,7 @@ describe('useUserTriggers', () => {
     it('validates empty name', async () => {
       mockGetUserTriggers.mockResolvedValue({ data: [], error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -228,10 +227,10 @@ describe('useUserTriggers', () => {
         .mockResolvedValueOnce({ data: [{ name: 'Chewing' }, { name: 'Sniffing' }], error: null });
       mockGetStats.mockResolvedValue({ stats: { triggerCounts: {} }, error: null });
 
-      const { result } = renderHook(() => useUserTriggers('user-1'));
+      const { result } = renderHookWithProviders(() => useUserTriggers('user-1'));
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.triggers).toEqual(['Chewing']);
       });
 
       expect(result.current.triggers).toEqual(['Chewing']);
@@ -240,7 +239,9 @@ describe('useUserTriggers', () => {
         await result.current.refresh();
       });
 
-      expect(result.current.triggers).toEqual(['Chewing', 'Sniffing']);
+      await waitFor(() => {
+        expect(result.current.triggers).toEqual(['Chewing', 'Sniffing']);
+      });
     });
   });
 });
