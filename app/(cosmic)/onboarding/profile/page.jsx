@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion } from '@/hooks';
-import { Button, Input, ProgressDots } from '@/components/ui';
+import { Button, Checkbox, Input, ProgressDots } from '@/components/ui';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 
@@ -28,6 +28,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
 
   useEffect(() => {
     track(EVENTS.ONBOARDING_STEP_VIEWED, { step: 'profile', step_number: 3 });
@@ -41,6 +42,7 @@ export default function ProfilePage() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = 'Please enter a valid email';
     }
+    if (!ageConfirmed) newErrors.age = 'Please confirm you are 13 or older';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -132,6 +134,17 @@ export default function ProfilePage() {
             error={errors.email}
           />
 
+          <div>
+            <Checkbox
+              checked={ageConfirmed}
+              onChange={setAgeConfirmed}
+              label="I confirm I am 13 or older"
+            />
+            {errors.age && (
+              <p className="mt-2 text-xs text-rose-300 font-light">{errors.age}</p>
+            )}
+          </div>
+
           {/* Error message */}
           {(errors.submit || authError) && (
             <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30">
@@ -147,7 +160,7 @@ export default function ProfilePage() {
           <Button
             onClick={handleContinue}
             loading={loading}
-            disabled={!name.trim() || !email.trim()}
+            disabled={!name.trim() || !email.trim() || !ageConfirmed}
             className="w-full"
             size="lg"
           >

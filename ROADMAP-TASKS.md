@@ -55,10 +55,12 @@ Everything shipped and working. The app already supports the full Stage 1 journe
 - [x] Interval timer with setup, launch sequence, and bloom completion
 - [x] Locked premium card treatment
 
-### AI Chat (Miso), Soundscapes, Boundaries
+### AI Chat (Miso) and Boundaries
 - [x] Claude API integration with system prompt, rate limiting, history
-- [x] 7 ambient sounds with playback controls
 - [x] 9 communication scripts across 3 categories, copy to clipboard
+
+### Soundscapes
+- [ ] Soundscapes are not built yet. The live page should be completed or hidden before launch.
 
 ### Profile & Premium
 - [x] Stats, triggers, community link, sign out

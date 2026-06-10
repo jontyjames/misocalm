@@ -7,9 +7,11 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useState } from 'react';
 import { LogOut, ChevronRight, BookOpen, Download, AlertCircle, Users, ExternalLink, Wind } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useAuthGuard, useUserTriggers, useTriggerStats, useToolStats } from '@/hooks';
+import { supabase } from '@/services/supabase';
 import { Button } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { ProfileSkeleton } from '@/components/composed/skeletons';
@@ -29,6 +31,8 @@ const PROFILE_CARD_STYLE_VIOLET = { background: 'rgba(139,92,246,0.08)', boxShad
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(null);
   const { loading } = useAuthGuard();
   const { user, profile, signOut } = useAuth();
   const { triggers } = useUserTriggers(user?.id);
@@ -38,6 +42,41 @@ export default function ProfilePage() {
   const handleSignOut = async () => {
     await signOut();
     router.push(ROUTES.HOME);
+  };
+
+  const handleExportData = async () => {
+    setExporting(true);
+    setExportError(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch('/api/export', {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      const exportData = await response.json();
+
+      if (!response.ok || exportData.error) {
+        throw new Error(exportData.error || 'Could not export your data');
+      }
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const date = new Date().toISOString().slice(0, 10);
+
+      link.href = url;
+      link.download = `misocalm-data-${date}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setExportError(error.message || 'Could not export your data');
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading || !profile) {
@@ -169,8 +208,9 @@ export default function ProfilePage() {
 
         {/* Export Data */}
         <button
-          disabled
-          className="w-full p-4 rounded-xl border-2 border-white/[0.33] transition-all duration-[144ms] text-left mb-8 opacity-50 cursor-not-allowed"
+          onClick={handleExportData}
+          disabled={exporting}
+          className="w-full p-4 rounded-xl border-2 border-white/[0.33] hover:border-white/40 transition-all duration-[144ms] text-left mb-3 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ background: 'rgba(30,41,59,0.3)', boxShadow: '0 0 12px rgba(255,255,255,0.06)' }}
         >
           <div className="flex items-center justify-between">
@@ -178,9 +218,19 @@ export default function ProfilePage() {
               <Download className="w-5 h-5 text-slate-300" />
               <span className="text-white font-light">Export My Data</span>
             </div>
-            <span className="text-xs text-slate-400 font-light">Coming soon</span>
+            <span className="text-xs text-slate-400 font-light">
+              {exporting ? 'Preparing...' : 'JSON'}
+            </span>
           </div>
         </button>
+
+        {exportError && (
+          <div className="mb-8 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30">
+            <p className="text-sm text-rose-300 font-light">{exportError}</p>
+          </div>
+        )}
+
+        {!exportError && <div className="mb-8" />}
 
         {/* Sign Out */}
         <Button
