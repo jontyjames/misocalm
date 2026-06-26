@@ -9,9 +9,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { testConnection, db } from '@/services/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { Button, Card, Badge } from '@/components/ui';
+import { Button, Card, Badge, Skeleton, SkeletonText } from '@/components/ui';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES, ADMIN_EMAILS } from '@/lib/constants';
-import { RefreshCw, CheckCircle, XCircle, AlertCircle, Database, User, Key } from 'lucide-react';
+import { RefreshCw, CheckCircle, XCircle, AlertCircle, Database, User, Key, Monitor } from 'lucide-react';
 import AnalyticsDashboard from './AnalyticsDashboard';
 
 export default function DebugPage() {
@@ -58,7 +59,13 @@ export default function DebugPage() {
     runConnectionTest();
   }, []);
 
-  if (authLoading || !isAdmin) return null;
+  if (authLoading || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-void-black p-8">
+        <RouteSkeleton titleWidth={180} introLines={1} cardCount={3} />
+      </div>
+    );
+  }
 
   const requiredTables = [
     'users',
@@ -81,6 +88,23 @@ export default function DebugPage() {
             Verify database connectivity and auth status
           </p>
         </div>
+
+        <Card variant="elevated">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Monitor className="w-5 h-5 text-violet-400" />
+              <div>
+                <h2 className="text-xl font-light">Flow Lab</h2>
+                <p className="text-sm text-slate-400 font-light">
+                  Replay loading states, route handoffs, and welcome arrivals.
+                </p>
+              </div>
+            </div>
+            <Button variant="secondary" size="sm" onClick={() => router.push('/debug/flow-lab')}>
+              Open
+            </Button>
+          </div>
+        </Card>
 
         {/* Connection Status */}
         <Card variant="elevated">
@@ -151,7 +175,7 @@ export default function DebugPage() {
               )}
             </div>
           ) : (
-            <div className="text-slate-500">Testing connection...</div>
+            <DebugPanelSkeleton />
           )}
         </Card>
 
@@ -163,7 +187,7 @@ export default function DebugPage() {
           </div>
 
           {authLoading ? (
-            <div className="text-slate-500">Loading auth state...</div>
+            <DebugPanelSkeleton />
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
@@ -284,6 +308,18 @@ export default function DebugPage() {
           </div>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function DebugPanelSkeleton() {
+  return (
+    <div className="space-y-3" aria-label="Loading debug panel" aria-busy="true">
+      <div className="flex items-center gap-3">
+        <Skeleton width={26} height={26} circle />
+        <Skeleton width={110} height={18} rounded="rounded-full" />
+      </div>
+      <SkeletonText lines={2} className="max-w-md" />
     </div>
   );
 }

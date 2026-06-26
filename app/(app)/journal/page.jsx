@@ -12,12 +12,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useAuthGuard, useTriggerStats } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { JournalHistoryList, JournalInsights } from '@/components/composed/journal';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_CLASSES, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle, SACRED_GLASS_SUBTLE_CLASSES, sacredGlassSubtleStyle } from '@/lib/sacredGlass';
 
 export default function JournalPage() {
   const router = useRouter();
-  useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const { user } = useAuth();
   const { stats } = useTriggerStats(user?.id, 7);
   const [view, setView] = useState('hub');
@@ -48,6 +49,14 @@ export default function JournalPage() {
       window.history.pushState({ view: newView }, '', '/journal');
     }
   };
+
+  if (loading || !isAuthenticated) {
+    return (
+      <AppLayout>
+        <RouteSkeleton titleWidth={140} introLines={2} cardCount={3} />
+      </AppLayout>
+    );
+  }
 
   if (view !== 'hub') {
     return (

@@ -10,8 +10,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useAuthGuard, useReducedMotion } from '@/hooks';
 import { userTriggerService } from '@/services';
-import { Button, Spinner, ProgressDots } from '@/components/ui';
+import { Button, ProgressDots } from '@/components/ui';
 import { Logo } from '@/components/composed';
+import { OnboardingSkeleton } from '@/components/composed/skeletons';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { track, EVENTS } from '@/lib/analytics';
 import { GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
@@ -22,7 +23,7 @@ const CURRENT_STEP = 6;
 export default function PlanPage() {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const { loading: authLoading } = useAuthGuard();
+  const { isAuthenticated, loading: authLoading } = useAuthGuard();
   const { user, upsertProfile, refreshProfile } = useAuth();
   const [onboardingData, setOnboardingData] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -110,6 +111,7 @@ export default function PlanPage() {
       // Clear localStorage
       localStorage.removeItem(STORAGE_KEYS.ONBOARDING_DATA);
       localStorage.removeItem(STORAGE_KEYS.PENDING_EMAIL);
+      sessionStorage.setItem('misocalm_welcome_shown', 'true');
     } catch (err) {
       console.error('Error saving onboarding data:', err);
       setSaveError(true);
@@ -120,12 +122,8 @@ export default function PlanPage() {
     router.push(ROUTES.DASHBOARD);
   };
 
-  if (authLoading || !onboardingData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
+  if (authLoading || !isAuthenticated || !onboardingData) {
+    return <OnboardingSkeleton />;
   }
 
   return (

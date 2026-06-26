@@ -1,9 +1,7 @@
-import { Spinner } from '@/components/ui';
+import { ChatSkeleton } from '@/components/composed/skeletons';
 
 export default function Loading() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <Spinner size="lg" />
-    </div>
+    <ChatSkeleton />
   );
 }

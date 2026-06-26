@@ -1,4 +1,4 @@
-const CACHE_NAME = 'misocalm-v1';
+const CACHE_NAME = 'misocalm-v2';
 const OFFLINE_URL = '/offline';
 
 // Assets to cache on install
@@ -33,7 +33,19 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch - network first, fall back to cache
+function shouldCacheAsset(url) {
+  return (
+    url.origin === self.location.origin &&
+    (
+      url.pathname.startsWith('/_next/static/') ||
+      url.pathname.startsWith('/icons/') ||
+      url.pathname === '/manifest.json' ||
+      url.pathname === OFFLINE_URL
+    )
+  );
+}
+
+// Fetch - never cache authenticated pages; cache only static app assets.
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
@@ -42,10 +54,22 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) return;
 
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
+
+  if (!shouldCacheAsset(url)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses
+        // Cache successful static responses
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {

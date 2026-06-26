@@ -9,16 +9,12 @@ import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuthGuard } from '@/hooks';
 import { useNav } from '@/context/NavContext';
-import { Spinner } from '@/components/ui';
+import { ExperienceLoading } from '@/components/composed/skeletons';
 
 const AliveGuide = dynamic(
   () => import('@/components/composed/experiences/AliveGuide'),
   {
-    loading: () => (
-      <div className="min-h-screen flex items-center justify-center bg-void-black">
-        <Spinner size="lg" />
-      </div>
-    ),
+    loading: () => <ExperienceLoading />,
     ssr: false,
   }
 );
@@ -32,11 +28,7 @@ export default function AlivePage() {
     return () => setShowNav(true);
   }, [setShowNav]);
 
-  if (loading || !isAuthenticated) return (
-    <div className="min-h-screen flex items-center justify-center bg-void-black">
-      <Spinner size="lg" />
-    </div>
-  );
+  if (loading || !isAuthenticated) return <ExperienceLoading />;
 
   return <AliveGuide />;
 }

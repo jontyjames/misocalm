@@ -33,7 +33,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState(null);
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const { user, profile, signOut } = useAuth();
   const { triggers } = useUserTriggers(user?.id);
   const { stats } = useTriggerStats(user?.id, 90);
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading || !profile) {
+  if (loading || !isAuthenticated || !profile) {
     return (
       <AppLayout>
         <ProfileSkeleton />

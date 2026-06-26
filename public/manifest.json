@@ -2,14 +2,18 @@
   "name": "MisoCalm - A Space for Living with Misophonia",
   "short_name": "MisoCalm",
   "description": "A companion app for understanding misophonia, regulating your nervous system, and finding steadier ground. Free breathwork, journaling, and calming tools.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#030712",
   "theme_color": "#0f172a",
   "orientation": "portrait",
   "lang": "en",
   "dir": "ltr",
   "categories": ["health", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon.svg",
@@ -40,6 +44,29 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find My Calm",
+      "short_name": "Calm",
+      "description": "Open a calming practice quickly.",
+      "url": "/calm",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Practices",
+      "short_name": "Practice",
+      "description": "Open the guided practice suite.",
+      "url": "/tools",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Journal",
+      "short_name": "Journal",
+      "description": "Open reflection and check-in spaces.",
+      "url": "/journal",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

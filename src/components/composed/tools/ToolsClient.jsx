@@ -16,9 +16,9 @@ import EducationSection from './EducationSection';
 import ComingSoonSection from './ComingSoonSection';
 
 export default function ToolsClient() {
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
 
-  if (loading) {
+  if (loading || !isAuthenticated) {
     return <AppLayout><ToolsSkeleton /></AppLayout>;
   }
 

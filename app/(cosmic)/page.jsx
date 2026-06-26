@@ -9,8 +9,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion } from '@/hooks';
-import { Button, Input, Spinner } from '@/components/ui';
+import { Button, Input } from '@/components/ui';
 import { Logo } from '@/components/composed';
+import { WelcomeSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_PILL_CLASSES, sacredGlassPillStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
@@ -99,11 +100,7 @@ export default function WelcomePage() {
   }, [transitioning, router]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <WelcomeSkeleton />;
   }
 
   return (

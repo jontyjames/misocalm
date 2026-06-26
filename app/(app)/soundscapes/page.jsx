@@ -1,64 +1,47 @@
 /**
  * Soundscapes Page
- * Calming background sounds
+ * Honest holding space until audio journeys are built.
  */
 
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { X } from 'lucide-react';
-import { usePremiumContext } from '@/context/PremiumContext';
+import { BookOpen, Waves, Wind, Sparkles } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
-import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
+import { Button, Card, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
-import { ROUTES, SOUNDSCAPES } from '@/lib/constants';
+import { RouteSkeleton } from '@/components/composed/skeletons';
+import { ROUTES } from '@/lib/constants';
 
-// Icon mapping
-const iconMap = {
-  CloudRain: '🌧️',
-  Waves: '🌊',
-  TreePine: '🌲',
-  Radio: '📻',
-  Moon: '🌙',
-  Flame: '🔥',
-  Droplets: '💧',
-};
+const AVAILABLE_PATHS = [
+  {
+    icon: Wind,
+    title: 'Calm your system',
+    body: 'Start with a breathing practice that works now.',
+    href: ROUTES.CALM,
+  },
+  {
+    icon: Sparkles,
+    title: 'Open the practice suite',
+    body: 'Use one of the six guided visual experiences.',
+    href: ROUTES.TOOLS,
+  },
+  {
+    icon: BookOpen,
+    title: 'Find support resources',
+    body: 'Use the support links and grounding options that are ready now.',
+    href: ROUTES.RESOURCES,
+  },
+];
 
 export default function SoundscapesPage() {
   const router = useRouter();
-  const { loading } = useAuthGuard();
-  const [playing, setPlaying] = useState(null);
+  const { isAuthenticated, loading } = useAuthGuard();
 
-  const handlePlay = (soundscape) => {
-    if (playing?.id === soundscape.id) {
-      setPlaying(null);
-    } else {
-      setPlaying(soundscape);
-    }
-  };
-
-  const handleClose = () => {
-    setPlaying(null);
-  };
-
-  const { isPremium, isLoading: premiumLoading } = usePremiumContext();
-
-  if (loading || premiumLoading) {
+  if (loading || !isAuthenticated) {
     return (
       <AppLayout showNav={false}>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
-      </AppLayout>
-    );
-  }
-
-  if (!isPremium) {
-    return (
-      <AppLayout showNav={false}>
-        <PageHeader title="Sound Sanctuary" backHref={ROUTES.DASHBOARD} className="px-6 py-8" />
-        <PremiumGate feature="Sound Sanctuary" />
+        <RouteSkeleton titleWidth={160} introLines={2} cardCount={3} />
       </AppLayout>
     );
   }
@@ -68,59 +51,41 @@ export default function SoundscapesPage() {
       <div className="px-6 py-8">
         <PageHeader title="Sound Sanctuary" backHref={ROUTES.DASHBOARD} className="mb-8" />
 
-        {/* Coming soon note */}
-        <p className="text-sm text-slate-400 font-light text-center mb-6 leading-relaxed">
-          Sound journeys are being crafted. While they're on their way, the breathing tools and experiences are here for you.
-        </p>
+        <section className="text-center mb-[42px]">
+          <div className="w-[68px] h-[68px] mx-auto mb-[26px] rounded-full border border-cyan-400/30 bg-cyan-400/10 flex items-center justify-center">
+            <Waves className="w-8 h-8 text-cyan-300" />
+          </div>
+          <h1
+            className="text-3xl text-white mb-4"
+            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
+          >
+            Sound journeys are being crafted
+          </h1>
+          <p className="text-sm text-slate-300 font-light leading-relaxed max-w-sm mx-auto">
+            This space is not ready yet. No fake previews, no pretend playback.
+            While it is being built, these working spaces are here for you.
+          </p>
+        </section>
 
-        {/* Soundscape Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {SOUNDSCAPES.map((sound, index) => (
-            <Card
-              key={sound.id}
-              onClick={() => handlePlay(sound)}
-              className={`
-                flex flex-col items-center justify-center py-8
-                animate-fade-in-up stagger-${index + 1}
-                opacity-70
-              `}
-            >
-              <span className="text-4xl mb-3">{iconMap[sound.icon]}</span>
-              <span className="text-white font-light">{sound.name}</span>
-              <span className="text-xs text-slate-500 mt-1">Coming soon</span>
+        <div className="space-y-3 mb-[42px]">
+          {AVAILABLE_PATHS.map(({ icon: Icon, title, body, href }) => (
+            <Card key={href} onClick={() => router.push(href)} className="text-left">
+              <div className="flex items-start gap-4">
+                <div className="w-[42px] h-[42px] rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-indigo-300" />
+                </div>
+                <div>
+                  <h2 className="text-white font-light mb-1">{title}</h2>
+                  <p className="text-sm text-slate-400 font-light leading-relaxed">{body}</p>
+                </div>
+              </div>
             </Card>
           ))}
         </div>
 
-        {/* Preview Overlay */}
-        {playing && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-fade-in-up">
-            <div className="w-full max-w-sm text-center animate-scale-in">
-              {/* Close button */}
-              <button
-                onClick={handleClose}
-                aria-label="Close"
-                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
-              >
-                <X className="w-6 h-6" />
-              </button>
-
-              {/* Icon */}
-              <div className="text-8xl mb-6">{iconMap[playing.icon]}</div>
-
-              {/* Name */}
-              <h2 className="text-2xl text-white mb-4" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>{playing.name}</h2>
-
-              <p className="text-sm text-slate-300 font-light mb-2">
-                {playing.duration}
-              </p>
-
-              <p className="text-sm text-indigo-300/70 font-light">
-                Sound Sanctuary is being crafted. Audio playback is coming soon.
-              </p>
-            </div>
-          </div>
-        )}
+        <Button variant="secondary" className="w-full" onClick={() => router.push(ROUTES.DASHBOARD)}>
+          Return to sanctuary
+        </Button>
       </div>
     </AppLayout>
   );

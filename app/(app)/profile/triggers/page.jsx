@@ -13,14 +13,20 @@ import { useAuthGuard, useUserTriggers } from '@/hooks';
 import { userTriggerService } from '@/services';
 import { TriggerChips, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { DEFAULT_TRIGGERS, ROUTES } from '@/lib/constants';
 import { isValidTriggerName } from '@/lib/validators';
 
 export default function EditTriggersPage() {
   const router = useRouter();
-  useAuthGuard();
+  const { isAuthenticated, loading: authLoading } = useAuthGuard();
   const { user } = useAuth();
-  const { triggers: savedTriggers, addCustomTrigger, refresh: refreshTriggers } = useUserTriggers(user?.id);
+  const {
+    triggers: savedTriggers,
+    loading: triggersLoading,
+    addCustomTrigger,
+    refresh: refreshTriggers,
+  } = useUserTriggers(user?.id);
 
   const [selected, setSelected] = useState([]);
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -90,6 +96,14 @@ export default function EditTriggersPage() {
             Triggers updated
           </p>
         </div>
+      </AppLayout>
+    );
+  }
+
+  if (authLoading || !isAuthenticated || triggersLoading) {
+    return (
+      <AppLayout showNav={false}>
+        <RouteSkeleton titleWidth={120} introLines={2} cardCount={3} showFooter />
       </AppLayout>
     );
   }

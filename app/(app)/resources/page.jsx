@@ -9,7 +9,8 @@ import { useRouter } from 'next/navigation';
 import { ExternalLink, Phone, MessageSquare, Heart, BookOpen, Wind } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
-import { Spinner, PageHeader } from '@/components/ui';
+import { PageHeader } from '@/components/ui';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_STATIC_CLASSES, SACRED_GLASS_CLASSES } from '@/lib/sacredGlass';
 
@@ -54,14 +55,12 @@ function Section({ title, icon: Icon, iconColor = 'text-indigo-400', children })
 
 export default function ResourcesPage() {
   const router = useRouter();
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
 
-  if (loading) {
+  if (loading || !isAuthenticated) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <RouteSkeleton titleWidth={110} introLines={2} cardCount={3} />
       </AppLayout>
     );
   }

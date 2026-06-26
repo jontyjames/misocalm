@@ -13,7 +13,7 @@ import { usePremiumContext } from '@/context/PremiumContext';
 import { useAuthGuard } from '@/hooks';
 import { supabase } from '@/services/supabase';
 import { AppLayout } from '@/components/composed';
-import { Spinner } from '@/components/ui';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_CLASSES, GLASS_HIGHLIGHT_STYLE } from '@/lib/sacredGlass';
 
@@ -27,13 +27,17 @@ const FEATURES = [
 function PremiumContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  useAuthGuard();
+  const { isAuthenticated, loading: authLoading } = useAuthGuard();
   const { user } = useAuth();
-  const { isPremium, subscription, isLoading } = usePremiumContext();
+  const { isPremium, isLoading } = usePremiumContext();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [manageLoading, setManageLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
   const success = searchParams.get('success') === 'true';
+
+  if (authLoading || !isAuthenticated || isLoading) {
+    return <RouteSkeleton titleWidth={170} introLines={1} cardCount={5} showHero />;
+  }
 
   const handleCheckout = async () => {
     setCheckoutLoading(true);
@@ -210,7 +214,7 @@ function PremiumContent() {
 export default function PremiumPage() {
   return (
     <AppLayout showNav={false}>
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>}>
+      <Suspense fallback={<RouteSkeleton titleWidth={170} introLines={1} cardCount={5} showHero />}>
         <PremiumContent />
       </Suspense>
     </AppLayout>

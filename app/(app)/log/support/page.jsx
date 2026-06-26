@@ -11,6 +11,7 @@ import { Wind, Heart, MessageCircle, X } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
 import { Button, Card } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 
 const supportOptions = [
@@ -49,7 +50,7 @@ const mantras = [
 
 export default function SupportPage() {
   const router = useRouter();
-  useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const [showMantra, setShowMantra] = useState(false);
   const [currentMantra, setCurrentMantra] = useState('');
 
@@ -68,6 +69,14 @@ export default function SupportPage() {
     const mantra = mantras[Math.floor(Math.random() * mantras.length)];
     setCurrentMantra(mantra);
   };
+
+  if (loading || !isAuthenticated) {
+    return (
+      <AppLayout showNav={false}>
+        <RouteSkeleton titleWidth={170} introLines={1} cardCount={3} />
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout showNav={false}>

@@ -22,6 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata = {
+  applicationName: 'MisoCalm',
   title: {
     default: 'MisoCalm - A Space for Living with Misophonia',
     template: '%s | MisoCalm',
@@ -41,7 +42,12 @@ export const metadata = {
     'misophonia tools',
   ],
   authors: [{ name: 'Thriving With Misophonia' }],
+  creator: 'MisoCalm',
+  publisher: 'MisoCalm',
   manifest: '/manifest.json',
+  formatDetection: {
+    telephone: false,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -88,7 +94,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${josefinSans.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${josefinSans.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />

@@ -52,28 +52,45 @@ export default function DashboardPage() {
   const todaysPractice = useMemo(() => getDailyPractice(), []);
   const profileFetchAttempted = useRef(false);
   const [profileFailed, setProfileFailed] = useState(false);
-  const [welcomeComplete, setWelcomeComplete] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    if (dayParam != null) return false; // ?day= forces welcome to show
-    return sessionStorage.getItem('misocalm_welcome_shown') === 'true';
-  });
-  const handleWelcomeComplete = useCallback(() => {
-    if (dayParam == null) sessionStorage.setItem('misocalm_welcome_shown', 'true');
-    setWelcomeComplete(true);
-  }, [dayParam]);
-
-  // Hide nav during welcome, restore on complete or unmount
-  useEffect(() => {
-    if (!welcomeComplete) setShowNav(false);
-    else setShowNav(true);
-    return () => setShowNav(true);
-  }, [welcomeComplete, setShowNav]);
+  const [welcomeState, setWelcomeState] = useState('pending');
+  const welcomeComplete = welcomeState === 'complete';
+  const showWelcome = isAuthenticated && welcomeState === 'showing';
 
   useEffect(() => {
     if (loading) return;
 
     if (!isAuthenticated) {
-      router.push(ROUTES.HOME);
+      setWelcomeState('complete');
+      return;
+    }
+
+    if (dayParam != null) {
+      setWelcomeState('showing');
+      return;
+    }
+
+    setWelcomeState(
+      sessionStorage.getItem('misocalm_welcome_shown') === 'true' ? 'complete' : 'showing'
+    );
+  }, [dayParam, isAuthenticated, loading]);
+
+  const handleWelcomeComplete = useCallback(() => {
+    if (dayParam == null) sessionStorage.setItem('misocalm_welcome_shown', 'true');
+    setWelcomeState('complete');
+  }, [dayParam]);
+
+  // Hide nav during welcome, restore on complete or unmount
+  useEffect(() => {
+    if (welcomeState === 'complete') setShowNav(true);
+    else setShowNav(false);
+    return () => setShowNav(true);
+  }, [welcomeState, setShowNav]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      router.replace(ROUTES.HOME);
       return;
     }
 
@@ -199,7 +216,7 @@ export default function DashboardPage() {
       )}
       </div>
     </AppLayout>
-    {!welcomeComplete && (
+    {showWelcome && (
       <WelcomeArrival onComplete={handleWelcomeComplete} profileName={profile?.name} dayOverride={dayOverride} />
     )}
     </>

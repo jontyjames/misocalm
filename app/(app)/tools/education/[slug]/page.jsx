@@ -10,18 +10,14 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuthGuard } from '@/hooks';
 import { useNav } from '@/context/NavContext';
-import { Spinner } from '@/components/ui';
+import { TerminalSkeleton } from '@/components/composed/skeletons';
 import { getEducationModule } from '@/lib/educationData';
 import { ROUTES } from '@/lib/constants';
 
 const TerminalGuide = dynamic(
   () => import('@/components/composed/education/TerminalGuide'),
   {
-    loading: () => (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#030712' }}>
-        <Spinner size="lg" />
-      </div>
-    ),
+    loading: () => <TerminalSkeleton />,
     ssr: false,
   }
 );
@@ -29,7 +25,7 @@ const TerminalGuide = dynamic(
 export default function EducationPage() {
   const { slug } = useParams();
   const router = useRouter();
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const { setShowNav } = useNav();
 
   const module = getEducationModule(slug);
@@ -43,12 +39,8 @@ export default function EducationPage() {
     if (!loading && !module) router.replace(ROUTES.TOOLS);
   }, [loading, module, router]);
 
-  if (loading || !module) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#030712' }}>
-        <Spinner size="lg" />
-      </div>
-    );
+  if (loading || !isAuthenticated || !module) {
+    return <TerminalSkeleton />;
   }
 
   return <TerminalGuide module={module} />;

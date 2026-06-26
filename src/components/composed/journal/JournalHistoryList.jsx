@@ -9,7 +9,7 @@ import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion, useTriggerLogs } from '@/hooks';
-import { Spinner } from '@/components/ui';
+import { Skeleton, SkeletonCard, SkeletonText } from '@/components/ui';
 import { ROUTES } from '@/lib/constants';
 import { formatDate } from '@/lib/dateUtils';
 import JournalEntryCard from './JournalEntryCard';
@@ -48,11 +48,7 @@ export default function JournalHistoryList() {
   const groups = useMemo(() => groupByDate(logs), [logs]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner size="md" />
-      </div>
-    );
+    return <JournalHistorySkeleton />;
   }
 
   if (logs.length === 0) {
@@ -112,6 +108,30 @@ export default function JournalHistoryList() {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function JournalHistorySkeleton() {
+  return (
+    <div className="space-y-8" aria-label="Loading journal entries" aria-busy="true">
+      <div className="px-4 py-3 rounded-xl border border-slate-700/50 bg-slate-800/30">
+        <div className="flex items-center justify-between gap-4">
+          <Skeleton width={110} height={16} rounded="rounded-full" />
+          <Skeleton width={16} height={16} circle />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <Skeleton width={68} height={12} rounded="rounded-full" />
+        <div className="space-y-3">
+          <SkeletonCard height="5.5rem" />
+          <SkeletonCard height="5.5rem" />
+          <SkeletonCard height="5.5rem" />
+        </div>
+      </div>
+
+      <SkeletonText lines={2} className="max-w-sm" />
     </div>
   );
 }

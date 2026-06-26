@@ -11,22 +11,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { analyticsService } from '@/services/analyticsService';
 import { Card, Badge, Button } from '@/components/ui';
 import { Activity, Users, Eye, Clock, RefreshCw, ChevronRight } from 'lucide-react';
-
-const TABS = ['Overview', 'Live', 'Journeys', 'Funnel', 'Sessions'];
-
-function timeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  if (diff < 60_000) return `${Math.floor(diff / 1000)}s ago`;
-  if (diff < 3600_000) return `${Math.floor(diff / 60_000)}m ago`;
-  if (diff < 86400_000) return `${Math.floor(diff / 3600_000)}h ago`;
-  return `${Math.floor(diff / 86400_000)}d ago`;
-}
-
-function formatDuration(ms) {
-  if (!ms) return '-';
-  if (ms < 60_000) return `${Math.round(ms / 1000)}s`;
-  return `${Math.round(ms / 60_000)}m`;
-}
+import { AnalyticsLoading, TABS, formatDuration, timeAgo } from './analyticsShared';
 
 // ── Overview Tab ────────────────────────────────────────────
 
@@ -44,7 +29,7 @@ function OverviewTab() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <p className="text-slate-500 text-sm">Loading...</p>;
+  if (loading) return <AnalyticsLoading />;
   if (!data) return <p className="text-slate-500 text-sm">No data</p>;
 
   const topEvents = Object.entries(data.event_counts)
@@ -145,7 +130,7 @@ function LiveTab() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <p className="text-slate-500 text-sm">Loading...</p>;
+  if (loading) return <AnalyticsLoading />;
 
   return (
     <div>
@@ -193,7 +178,7 @@ function JourneysTab() {
     setJourney(data);
   };
 
-  if (loading) return <p className="text-slate-500 text-sm">Loading...</p>;
+  if (loading) return <AnalyticsLoading />;
 
   if (journey && selected) {
     return (
@@ -276,7 +261,7 @@ function FunnelTab() {
     })();
   }, []);
 
-  if (loading) return <p className="text-slate-500 text-sm">Loading...</p>;
+  if (loading) return <AnalyticsLoading />;
   if (!data) return <p className="text-slate-500 text-sm">No data</p>;
 
   return (
@@ -324,7 +309,7 @@ function SessionsTab() {
     })();
   }, []);
 
-  if (loading) return <p className="text-slate-500 text-sm">Loading...</p>;
+  if (loading) return <AnalyticsLoading />;
 
   return (
     <div>

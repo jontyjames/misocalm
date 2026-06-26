@@ -69,7 +69,7 @@ export default function AppGroupClient({ children }) {
           pointerEvents: showNav ? 'auto' : 'none',
         }}
         aria-hidden={!showNav || undefined}
-        inert={!showNav ? '' : undefined}
+        inert={!showNav ? true : undefined}
       >
         <Navigation />
       </div>

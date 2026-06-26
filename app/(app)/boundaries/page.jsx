@@ -10,8 +10,9 @@ import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import { usePremiumContext } from '@/context/PremiumContext';
 import { useAuthGuard } from '@/hooks';
-import { Card, Spinner, PremiumGate, PageHeader } from '@/components/ui';
+import { Card, PremiumGate, PageHeader } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 
 const boundaryScripts = {
@@ -70,7 +71,7 @@ const boundaryScripts = {
 
 export default function BoundariesPage() {
   const router = useRouter();
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const [expandedSection, setExpandedSection] = useState('With Family');
   const [expandedScript, setExpandedScript] = useState(null);
   const [copied, setCopied] = useState(null);
@@ -83,12 +84,10 @@ export default function BoundariesPage() {
 
   const { isPremium, isLoading: premiumLoading } = usePremiumContext();
 
-  if (loading || premiumLoading) {
+  if (loading || !isAuthenticated || premiumLoading) {
     return (
       <AppLayout showNav={false}>
-        <div className="min-h-screen flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+        <RouteSkeleton titleWidth={170} introLines={2} cardCount={3} />
       </AppLayout>
     );
   }

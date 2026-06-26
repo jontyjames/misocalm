@@ -18,7 +18,7 @@ import { ROUTES } from '@/lib/constants';
 
 export default function ChatPage() {
   const router = useRouter();
-  const { loading: authLoading } = useAuthGuard();
+  const { isAuthenticated, loading: authLoading } = useAuthGuard();
   const { user, profile } = useAuth();
   const {
     messages,
@@ -56,7 +56,7 @@ export default function ChatPage() {
 
   const { isPremium, isLoading: premiumLoading } = usePremiumContext();
 
-  if (authLoading || chatLoading || premiumLoading) {
+  if (authLoading || !isAuthenticated || chatLoading || premiumLoading) {
     return (
       <AppLayout showNav={false}>
         <ChatSkeleton />

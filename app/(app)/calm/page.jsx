@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle, SOLFEGGIO_RGBA } from '@/lib/sacredGlass';
 
@@ -46,11 +47,19 @@ const SUPPORT_LEVELS = [
 
 export default function CalmPage() {
   const router = useRouter();
-  useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
 
   const handleSelect = (level) => {
     router.push(`/tools/3?duration=${level.id}`);
   };
+
+  if (loading || !isAuthenticated) {
+    return (
+      <AppLayout>
+        <RouteSkeleton titleWidth={170} introLines={1} cardCount={3} />
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

@@ -1,15 +1,20 @@
 # MisoCalm Current Status
 
-Last verified: 2026-06-10
+Last verified: 2026-06-24
 
 This is the operational source of truth for what is actually ready, what is unfinished, and what should happen next.
 
 ## Verified Baseline
 
 - Branch baseline: `codex/baseline-test-harness`
+- Current cleanup branch: `codex/loading-flow-polish`
 - Tests: `npm.cmd run test:run` passes, 9 files / 80 tests
 - Build: `npm.cmd run build` passes
-- Graphify: refreshed by git hook on baseline commit
+- Latest app audit: `APP-AUDIT-2026-06-24.md`
+- MisoAI architecture: `MISOAI-ARCHITECTURE.md`
+- Launch checklist: `LAUNCH-OPERATIONS-CHECKLIST.md`
+- Mobile/PWA audit: `MOBILE-PWA-AUDIT-2026-06-24.md`
+- Graphify: latest report is present at `graphify-out/GRAPH_REPORT.md`; `graphify update .` is unavailable in the current shell because `graphify` is not on PATH
 - Known environment warning: `STRIPE_WEBHOOK_SECRET` is missing locally, so Stripe webhooks are not production-ready
 
 ## Actually Built
@@ -25,10 +30,11 @@ This is the operational source of truth for what is actually ready, what is unfi
 ## Not Built Or Not Ready
 
 - Soundscapes are not built yet; do not describe them as complete
+- `/soundscapes` is currently an honest holding page with links back to working tools
 - MisoAI is only a basic chat surface, not yet the core guided companion
 - Native iOS/Android projects are not present
 - App store screenshots, privacy forms, review/demo flows, icons, and native builds are not ready
-- Vercel and Supabase CLIs are not currently on PATH in this environment
+- Vercel CLI is usable through `npm.cmd exec --yes --package vercel -- vercel`; Supabase CLI is not currently on PATH in this environment
 
 ## Launch Blockers
 
@@ -43,11 +49,11 @@ This is the operational source of truth for what is actually ready, what is unfi
 
 ## Next Work Slices
 
-1. Current status + trust cleanup
-2. Loading and route-flow polish
-3. Core navigation simplification
-4. MisoAI product plan using course/research material
-5. MisoAI core v1
+1. Finish remaining route-flow polish and screenshot QA
+2. Split debug analytics and oversized onboarding/experience files
+3. Mobile/PWA device QA pass
+4. MisoAI mode UI and prompt contract implementation
+5. MisoAI research/course retrieval ingestion
 6. Native app-store readiness track
 
 ## MisoAI Direction

@@ -9,8 +9,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Spinner } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 import DurationSelector, { DURATION_OPTIONS_BY_TYPE } from '@/components/composed/tools/DurationSelector';
 import BreathingPlayer from '@/components/composed/tools/BreathingPlayer';
 import ComingSoon from '@/components/composed/tools/ComingSoon';
@@ -41,7 +41,7 @@ export default function ToolPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { loading } = useAuthGuard();
+  const { isAuthenticated, loading } = useAuthGuard();
   const { profile } = useAuth();
   const [tool, setTool] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
@@ -77,8 +77,12 @@ export default function ToolPage() {
     }
   }, [params.id, searchParams]);
 
-  if (loading || !tool) {
-    return <AppLayout><div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div></AppLayout>;
+  if (loading || !isAuthenticated || !tool) {
+    return (
+      <AppLayout>
+        <RouteSkeleton titleWidth={140} introLines={1} cardCount={3} showHero />
+      </AppLayout>
+    );
   }
 
   // Duration selection

@@ -20,7 +20,7 @@ export default function useAuthGuard() {
   const { isAuthenticated, loading } = useAuthState();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) router.push(ROUTES.HOME);
+    if (!loading && !isAuthenticated) router.replace(ROUTES.HOME);
   }, [isAuthenticated, loading, router]);
 
   return { isAuthenticated, loading };

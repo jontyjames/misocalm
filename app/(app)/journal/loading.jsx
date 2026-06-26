@@ -1,9 +1,7 @@
-import { Spinner } from '@/components/ui';
+import { RouteSkeleton } from '@/components/composed/skeletons';
 
 export default function Loading() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <Spinner size="lg" />
-    </div>
+    <RouteSkeleton titleWidth={110} introLines={2} cardCount={3} showFooter />
   );
 }

@@ -10,7 +10,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useReducedMotion, useInsights } from '@/hooks';
 import { usePremiumContext } from '@/context/PremiumContext';
-import { Spinner, PremiumGate } from '@/components/ui';
+import { PremiumGate, Skeleton, SkeletonCard, SkeletonText } from '@/components/ui';
 import InsightCard from './InsightCard';
 
 export default function JournalInsights() {
@@ -21,11 +21,7 @@ export default function JournalInsights() {
   const prefersReduced = useReducedMotion();
 
   if (loading || premiumLoading) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner size="md" />
-      </div>
-    );
+    return <JournalInsightsSkeleton />;
   }
 
   if (!isPremium) {
@@ -83,6 +79,25 @@ export default function JournalInsights() {
       {insights.map((insight, i) => (
         <InsightCard key={i} insight={insight} />
       ))}
+    </div>
+  );
+}
+
+function JournalInsightsSkeleton() {
+  return (
+    <div className="space-y-3" aria-label="Loading journal insights" aria-busy="true">
+      <div className="px-4 py-3 rounded-xl border border-slate-700/50 bg-slate-800/30">
+        <div className="flex items-center justify-between gap-4">
+          <Skeleton width={140} height={16} rounded="rounded-full" />
+          <Skeleton width={16} height={16} circle />
+        </div>
+      </div>
+
+      <SkeletonText lines={1} className="max-w-xs py-2" />
+
+      <SkeletonCard height="6rem" />
+      <SkeletonCard height="6rem" />
+      <SkeletonCard height="6rem" />
     </div>
   );
 }
