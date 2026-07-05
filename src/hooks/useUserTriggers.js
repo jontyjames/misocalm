@@ -4,7 +4,7 @@
  * React Query cached — shared across LogFormContainer and profile pages.
  */
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { triggerLogService, userTriggerService } from '@/services';
 import { DEFAULT_TRIGGERS, STORAGE_KEYS } from '@/lib/constants';
@@ -13,8 +13,9 @@ import { queryKeys } from '@/lib/queryKeys';
 
 export function useUserTriggers(userId) {
   const queryClient = useQueryClient();
+  const [optimisticTriggers, setOptimisticTriggers] = useState([]);
 
-  const { data, isLoading: loading } = useQuery({
+  const { data, isLoading, isPlaceholderData } = useQuery({
     queryKey: queryKeys.userTriggers(userId),
     queryFn: async () => {
       const { data: dbTriggers } = await userTriggerService.getUserTriggers(userId);
@@ -56,9 +57,21 @@ export function useUserTriggers(userId) {
     placeholderData: { triggers: DEFAULT_TRIGGERS, isUsingDefaults: true },
   });
 
+  const baseTriggers = data?.triggers ?? DEFAULT_TRIGGERS;
+  const triggers = useMemo(() => {
+    const pending = optimisticTriggers.filter(trigger => !baseTriggers.includes(trigger));
+    return pending.length > 0 ? [...pending, ...baseTriggers] : baseTriggers;
+  }, [baseTriggers, optimisticTriggers]);
+
+  useEffect(() => {
+    setOptimisticTriggers([]);
+  }, [userId]);
+
   // Ref for optimistic addCustomTrigger closure
-  const triggersRef = useRef(data?.triggers ?? DEFAULT_TRIGGERS);
-  triggersRef.current = data?.triggers ?? DEFAULT_TRIGGERS;
+  const triggersRef = useRef(triggers);
+  triggersRef.current = triggers;
+
+  const loading = !!userId && (isLoading || isPlaceholderData);
 
   const addCustomTrigger = useCallback(async (name) => {
     const { valid, error } = isValidTriggerName(name);
@@ -66,30 +79,37 @@ export function useUserTriggers(userId) {
 
     const trimmed = name.trim();
     if (triggersRef.current.includes(trimmed)) return { error: 'Already in your list' };
+    const queryKey = queryKeys.userTriggers(userId);
+    const previousData = queryClient.getQueryData(queryKey);
+    const withCustomTrigger = (old) => {
+      const triggers = old?.triggers ?? previousData?.triggers ?? triggersRef.current;
+      return {
+        ...old,
+        triggers: [trimmed, ...triggers.filter(t => t !== trimmed)],
+        isUsingDefaults: false,
+      };
+    };
 
     // Optimistic update
-    queryClient.setQueryData(queryKeys.userTriggers(userId), (old) => ({
-      ...old,
-      triggers: [trimmed, ...(old?.triggers || [])],
-    }));
+    setOptimisticTriggers(prev => [trimmed, ...prev.filter(t => t !== trimmed)]);
+    queryClient.setQueryData(queryKey, withCustomTrigger);
 
     if (userId) {
       const { error: dbError } = await userTriggerService.addCustomTrigger(userId, trimmed);
       if (dbError) {
         // Rollback
-        queryClient.setQueryData(queryKeys.userTriggers(userId), (old) => ({
-          ...old,
-          triggers: (old?.triggers || []).filter(t => t !== trimmed),
-        }));
+        setOptimisticTriggers(prev => prev.filter(t => t !== trimmed));
+        queryClient.setQueryData(queryKey, previousData);
         return { error: 'Could not save. You can try again when ready.' };
       }
+      queryClient.setQueryData(queryKey, withCustomTrigger);
     }
 
     return { error: null };
   }, [userId, queryClient]);
 
   return {
-    triggers: data?.triggers ?? DEFAULT_TRIGGERS,
+    triggers,
     loading,
     isUsingDefaults: data?.isUsingDefaults ?? true,
     addCustomTrigger,
