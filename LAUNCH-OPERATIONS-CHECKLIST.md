@@ -1,57 +1,108 @@
-# Launch Operations Checklist
+# MisoCalm Launch Operations Checklist
 
-Last updated: 2026-06-24
+Last updated: 2026-07-09
 
-This checklist tracks what must be true before MisoCalm is ready for a serious public launch or app-store submission.
+This checklist is the production and app-store operations gate. It does not ask
+for secret values in chat, and it does not approve deploys by itself. Use it
+before production launch, paid access, app-store submission, or a public MisoAI
+announcement.
 
-## Environment And Deploys
+## Operating Rules
 
-- [ ] Production `NEXT_PUBLIC_APP_URL` points to `https://misocalm.app`.
-- [ ] Production Supabase URL and anon key are set in Vercel.
-- [ ] Production service role keys are only used server-side.
-- [ ] Stripe secret key is set in production.
-- [ ] Stripe price IDs are set in production.
-- [ ] `STRIPE_WEBHOOK_SECRET` is set in production and locally documented.
-- [ ] Stripe webhook delivery is tested against `/api/stripe/webhook`.
-- [ ] Vercel preview deployment protection behavior is understood for review links.
-- [ ] Supabase CLI access is available for migration review.
+- Do not deploy, push, commit, or expose secrets without explicit user approval.
+- Use `npm.cmd` in PowerShell.
+- Treat `.env.local` as local-only.
+- Verify environment variable names and presence only; never paste secret values
+  into chat, screenshots, docs, logs, or preview handoffs.
+- Keep preview deployments separate from production launch approval.
 
-## Privacy And Trust
+## Seven Launch Gates
 
-- [ ] Privacy policy matches actual data collected.
-- [ ] Terms describe AI boundaries clearly.
-- [ ] User data export works for logs, triggers, chat, profile, streaks, and progress.
-- [ ] User deletion path is designed and tested.
-- [ ] Debug/admin routes are admin-only in production.
-- [ ] No secret values are exposed in client bundles or debug UI.
-- [ ] AI chat explains wellness support boundaries without sounding cold.
+### 1. Local Proof
 
-## Supabase
+- `npm.cmd run test:run` passes.
+- `npm.cmd run build` passes.
+- `git diff --check` passes.
+- `git status --short --branch` is reviewed and only intended files are present.
+- `graphify update .` runs, or the handoff records that graphify is unavailable.
 
-- [ ] RLS policies reviewed for every user-owned table.
-- [ ] Admin analytics endpoint is protected.
-- [ ] Chat messages cannot be read across users.
-- [ ] Trigger logs cannot be read across users.
-- [ ] Subscription records cannot be modified by normal users.
-- [ ] Backups and restore expectations are documented.
+### 2. Vercel And Environments
 
-## App Store Track
+- Production and preview projects are clearly identified.
+- Preview protection policy is documented.
+- Production env vars are present for Supabase, Stripe, Anthropic, and public app
+  URLs.
+- `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are public-only.
+- Server-only keys stay server-only.
+- `.env.local` values are never copied into chat.
 
-- [ ] Decide native wrapper strategy: live hosted app vs bundled static app.
-- [ ] Decide payment policy: web Stripe only, StoreKit, or hybrid.
-- [ ] Create iOS and Android native projects.
-- [ ] Verify splash screen, icons, status bar, keyboard, safe areas, and offline behavior.
-- [ ] Prepare store screenshots.
-- [ ] Prepare store description and age rating.
-- [ ] Prepare app review demo credentials or review mode.
-- [ ] Complete Apple privacy nutrition labels.
-- [ ] Complete Google Play data safety form.
+### 3. Stripe Payments
 
-## Product Readiness
+- `STRIPE_WEBHOOK_SECRET` is set in production before paid features are trusted.
+- Checkout, portal, and webhook routes are verified in preview and production.
+- webhook signature handling is tested with Stripe delivery logs.
+- Subscription state sync is checked against Supabase records.
+- Failed payment, cancelled subscription, and portal return states are tested.
 
-- [ ] Unbuilt soundscapes are not represented as finished.
-- [ ] MisoAI has safety boundaries before being promoted as core.
-- [ ] Onboarding first-signup handoff does not show returning welcome pages.
-- [ ] Critical flows work without odd loading flashes.
-- [ ] The app has one clear path back to sanctuary from every major screen.
+### 4. Supabase And Data
 
+- RLS policies are reviewed for profiles, triggers, journal entries, check-ins,
+  chat, memories, subscriptions, analytics, and exports.
+- Migrations are applied in the intended order and are not edited in place after
+  production use.
+- Service-role usage is limited to server routes that require it.
+- Data export works for a real user account.
+- Data deletion works or has a documented manual support path before launch.
+
+### 5. MisoAI Safety
+
+- MisoAI remains The Guide, not a therapist, clinician, diagnosis engine, or
+  emergency service.
+- Prompt tests cover no diagnosis, no cure promises, no exposure plans, no "just
+  ignore it" framing, and professional support escalation.
+- Retrieval uses curated Stage 2 and Regulation Toolkit content, not raw folder
+  dumps.
+- Memory is explicit, editable, exportable, and deleteable before it is promoted.
+- MisoAI claims are absent from app-store copy until safety, retrieval, and
+  memory contracts are implemented.
+
+### 6. Mobile And Store Review
+
+- The PWA and Capacitor packaging choice is explicit for the build under review.
+- Safe areas, keyboard resize, status bar, splash, Web Audio gestures, offline
+  recovery, and service worker behavior are tested on real devices.
+- Privacy policy, terms, support URL, deletion instructions, and marketing URL
+  are live.
+- App Store privacy labels and Google Data Safety answers match the real data
+  collected.
+- Review notes say MisoCalm is support and education, not emergency medical care.
+
+### 7. Product Truth
+
+- `/soundscapes` stays honest until final sound journeys exist.
+- Regulation Toolkit practices remain usable app spaces, not passive course pages.
+- Loading states use calm skeletons instead of generic stuck text.
+- Route flows preserve context and always offer a clear return to sanctuary.
+- Placeholder audio never autoplays and is clearly safe to test from user action.
+- Debug and flow-lab routes have a production visibility decision.
+
+## Known Current Blockers
+
+- Local production build reports `STRIPE_WEBHOOK_SECRET is not set`; production
+  payment confidence requires an env verification pass.
+- Native iOS and Android projects are not present in the repo yet.
+- Store assets still need final screenshots, descriptions, privacy labels, support
+  URL verification, deletion instructions, review notes, and demo account plan.
+- Graphify is currently unavailable from this shell, so graph refresh cannot be
+  completed until the command is installed or the PATH is fixed.
+
+## Handoff Evidence
+
+Every release candidate handoff should include:
+
+- Branch name.
+- Preview URL, if one was approved and created.
+- Test, build, diff-check, graphify, and status evidence.
+- Exact env var names checked, without values.
+- Known blockers.
+- What Jonty should test first.

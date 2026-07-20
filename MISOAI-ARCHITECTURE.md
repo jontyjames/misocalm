@@ -1,108 +1,125 @@
-# MisoAI Product Architecture
+# MisoAI Architecture
 
-Last updated: 2026-06-24
+## Status
 
-MisoAI should become the calm companion at the centre of MisoCalm, not a generic chatbot. Its job is to help someone with misophonia feel understood, find regulation quickly, and return to the app's working tools without pressure.
+This is the product and safety contract for MisoAI before deeper chat changes are built. It does not ship new app behavior by itself. It defines how The Guide should use course material, Regulation Toolkit practices, user context, and memory without becoming a therapist, diagnosis engine, or generic chatbot.
 
-## Product Shape
+## Product Role
 
-MisoAI has three primary modes:
+MisoAI is The Guide: a calm companion who helps someone choose the next regulated step. It should feel like a knowledgeable friend who understands misophonia, speaks gently, and keeps the user close to the app's proven practices.
 
-1. Triggered now
-   - Goal: reduce activation fast.
-   - Response length: short.
-   - First action: validate, then one body-based step.
-   - Target start time: under 30 seconds.
+MisoAI is not a therapist, clinician, emergency service, exposure-planning tool, or replacement for professional support.
 
-2. Preparing for a sound
-   - Goal: help the user enter a likely trigger situation with a simple plan.
-   - Response shape: exit plan, boundary phrase, recovery plan.
-   - Avoid: over-planning, clinical language, catastrophising.
+## Launch Modes
 
-3. Processing afterward
-   - Goal: help the user make sense of what happened without shame.
-   - Response shape: validation, pattern reflection, one gentle next step.
-   - Best app action: journal, deeper processing, or return to sanctuary.
+The first stable product version should keep 3 modes:
 
-## Context Contract
+1. `triggered_now` - for the moment a sound has already hit.
+2. `prepare` - for preparing to enter a sound situation.
+3. `process` - for processing after the wave has passed.
 
-Only include context that directly helps the user's current moment.
+These map cleanly to the current chat route and keep the decision surface small. Later modes should not be added until the 3-mode system has safety evidence, usage evidence, and clear user need.
 
-Allowed context:
-- First name, if present.
-- Selected triggers.
-- Misophonia severity band.
-- Recent high-level log patterns.
-- Recent practice usage.
-- Current course stage, once course context exists.
-- Curated research/course snippets retrieved for the current question.
+## Retrieval Sources
 
-Do not include by default:
-- Full raw journal history.
-- Full chat history beyond the active conversation window.
-- Sensitive profile details not needed for the answer.
-- Any content from user-uploaded/course folders until it has been curated and chunked.
+Use 5 retrieval source layers, in this order:
 
-## Retrieval Direction
+1. Active moment context: current user message, selected mode, intensity, and immediate need.
+2. User profile context: name, severity level, known triggers, sensory preferences, and safety preferences.
+3. Recent app context: journal summaries, check-in summaries, recent regulation practices, and completion state.
+4. Course and toolkit context: Stage 2 modules 2.4 and 2.5, Regulation Toolkit data, inner practices, outer practices, scripts, and safety notes.
+5. App action context: Find My Calm, Regulation Toolkit, Emergency Protocol, Butterfly Tapping, Body Scan, Journal, and Return to Sanctuary.
 
-MisoAI context should come from a curated knowledge base, not raw folders.
+The PDFs `2-4-the-regulation-toolkit-inner-practices.pdf` and `2-5-the-regulation-toolkit-outer-practices.pdf` are source material, not prompt dumps. Their content should be chunked, labeled, and retrieved by practice, situation, and safety boundary.
 
-Ingestion pipeline:
-1. Source inventory: research, course modules, scripts, worksheets, app copy.
-2. Trust rating: research, lived-experience guidance, course content, marketing copy.
-3. Chunking: short chunks with source title, type, date, and safety notes.
-4. Review: remove claims that sound medical, diagnostic, or unsupported.
-5. Retrieval: select only the few chunks needed for the current mode.
-6. Citation/debug: keep internal source IDs for review, but do not overload the user.
+## Stage 2 Practice Map
+
+Module 2.4 inner practices should map into breath, body, and senses support:
+
+- Box Breathing
+- 4-7-8 Breathing
+- Physiological Sigh
+- Mimicry as Regulation
+- Butterfly Tapping
+- 5-4-3-2-1 Grounding
+
+Module 2.5 outer practices should map into movement, sound, and protocol support:
+
+- Physical Reset
+- Cold Water Therapy
+- Movement
+- Sound-Based Tools
+- Building Healthy Grooves
+- Emergency Protocol
+- Personal Toolkit
+
+MisoAI should recommend one practice at a time unless the user is planning calmly. In triggered mode, it should prefer immediate body-based practices over explanation.
 
 ## Safety Boundaries
 
-MisoAI is wellness support, not therapy, diagnosis, crisis care, or medical advice.
+These 7 boundaries are non-negotiable:
 
-It must:
-- Validate before suggesting.
-- Avoid "calm down", "just ignore it", "failure", "lost streak", and shame language.
-- Ask at most one question at a time.
-- Offer one next step, not a menu of ten.
-- Escalate gently when the user mentions self-harm, harm to others, immediate danger, abuse, or inability to stay safe.
-- Encourage professional support when symptoms are severe, escalating, or impairing daily life.
+1. No diagnosis, clinical assessment, or severity interpretation beyond reflecting what the user supplied.
+2. No promise of cures, permanent relief, or guaranteed outcomes.
+3. No exposure plans, desensitization protocols, or instructions to endure triggers.
+4. No crisis handling beyond calm support and encouraging professional or emergency support when self-harm, harm, or severe distress appears.
+5. No shame language, streak pressure, productivity pressure, or "just ignore it" framing.
+6. No autoplay sound, sudden audio suggestions, mouth-sound examples, or sensory content that could activate the user.
+7. No raw secret, billing, auth, or full journal transcript exposure in prompts unless the user explicitly requests relevant personal context and privacy rules allow it.
 
-It must not:
-- Diagnose misophonia or other conditions.
-- Promise cures.
-- Tell users to endure unsafe situations.
-- Generate exposure plans without safeguards.
-- Replace crisis resources.
-- Use user data to pressure engagement or upsell.
+## Memory Rules
+
+MisoAI memory should be explicit, editable, and deleteable:
+
+1. Store summaries, not full transcripts, by default.
+2. Ask before remembering sensitive preferences or recurring patterns.
+3. Let users view, edit, export, and delete remembered facts.
+4. Never infer identity, health, relationship, or trauma facts silently.
+5. Treat "time away" as neutral; never mention broken streaks or failure.
+6. Keep memory separate from retrieval citations so the user can tell what came from them versus the course.
+7. Respect Supabase RLS, data export, and data deletion requirements before launch.
 
 ## Prompt Contract
 
-System prompt sections should be explicit:
+Every MisoAI answer should pass these 7 checks:
 
-- Identity: warm misophonia companion named Miso.
-- Mission: support regulation, reflection, and return to sanctuary.
-- Modes: triggered now, preparing, processing.
-- Style: short, warm, concrete, no clinical performance.
-- Safety: crisis/escalation handling.
-- Context use: use only relevant provided context.
-- App actions: suggest existing app spaces only when helpful.
+1. Validate before suggesting.
+2. Use warm authority: caring, direct, non-clinical.
+3. Offer one practical next step.
+4. Keep `triggered_now` responses to 2-3 sentences unless the user asks for more.
+5. Prefer app-native practices over generic advice.
+6. Avoid over-planning, especially in high activation.
+7. Return the user toward the torus flow: regulate, integrate, return to sanctuary.
 
-## UI Direction
+## Privacy And Operations
 
-The chat surface should become a guide space with mode chips, not a blank generic chat.
+Launch readiness requires:
 
-Initial mode choices:
-- I am triggered now
-- Help me prepare
-- Help me process
+- `ANTHROPIC_API_KEY` configured only in server environments.
+- Supabase auth verification before all personalized chat requests.
+- Rate limiting by user, with a calmer "wait a moment" error.
+- RLS policies checked for chat history, memory, journal, and profile tables.
+- No `.env.local` values exposed in chat, docs, logs, screenshots, or previews.
+- Data export and deletion paths documented before app-store submission.
+- Safety red-team fixtures included in test coverage before expanding retrieval.
 
-Each mode should have one calm primary action and a visible return to sanctuary. The user should always be able to type freely, but the first screen should reduce decision load.
+## Evaluation Plan
 
-## First Build Slice
+Before MisoAI becomes a central app feature, test:
 
-1. Add mode selection UI above chat.
-2. Pass mode to `/api/chat`.
-3. Update system prompt by mode.
-4. Add safety/escalation tests for prompt assembly.
-5. Add retrieval only after source inventory and curation are complete.
+- Mode routing: `triggered_now`, `prepare`, and `process`.
+- Crisis and self-harm language.
+- Requests for cures, diagnosis, exposure plans, and "make me tolerate it" prompts.
+- Triggered-user prompts with low reading capacity.
+- Retrieval answers from Stage 2 modules 2.4 and 2.5.
+- Practice recommendations that link back to the Regulation Toolkit.
+- Privacy prompts that ask for hidden data, secrets, billing, or raw journal content.
+
+## Build Sequence
+
+1. Stabilize current prompt contract and tests.
+2. Create a retrieval index from Stage 2 and Regulation Toolkit content.
+3. Add memory only after privacy controls and deletion flows are visible to the user.
+4. Add MisoAI UI polish after the safety layer is testable.
+5. Run QA across route flow, loading states, mobile PWA behavior, and app-store review constraints.
 
