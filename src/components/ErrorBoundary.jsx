@@ -55,19 +55,19 @@ export class ErrorBoundary extends Component {
         <div role="alert" aria-live="assertive" className="min-h-[200px] flex items-center justify-center p-4">
           <Card className="max-w-md w-full text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-rose-400" />
+              <div className="w-12 h-12 rounded-full bg-slate-500/10 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-cyan-300" />
               </div>
             </div>
             <h2 className="text-lg font-light text-white mb-2">
-              Something went wrong
+              Your space needs a moment
             </h2>
             <p className="text-sm text-slate-400 font-light mb-4">
-              {this.state.error?.message || 'An unexpected error occurred'}
+              Nothing you shared is lost. Take a breath, then try opening this space again.
             </p>
             <Button onClick={this.handleReset} variant="secondary" size="sm">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Try again
+              Open again
             </Button>
           </Card>
         </div>
@@ -86,20 +86,20 @@ export function ErrorFallback({ error, reset, title, message }) {
     <div role="alert" aria-live="assertive" className="min-h-[200px] flex items-center justify-center p-4">
       <Card className="max-w-md w-full text-center">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center">
-            <AlertTriangle className="w-6 h-6 text-rose-400" />
+          <div className="w-12 h-12 rounded-full bg-slate-500/10 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-cyan-300" />
           </div>
         </div>
         <h2 className="text-lg font-light text-white mb-2">
-          {title || 'Something went wrong'}
+          {title || 'Your space needs a moment'}
         </h2>
         <p className="text-sm text-slate-400 font-light mb-4">
-          {message || error?.message || 'An unexpected error occurred'}
+          {message || 'Nothing you shared is lost. Take a breath, then try opening this space again.'}
         </p>
         {reset && (
           <Button onClick={reset} variant="secondary" size="sm">
             <RefreshCw className="w-4 h-4 mr-2" />
-            Try again
+            Open again
           </Button>
         )}
       </Card>

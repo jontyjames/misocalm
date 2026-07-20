@@ -15,6 +15,7 @@ import { DashboardHeader, FindMyCalmCard, DashboardActionCard, DashboardSkeleton
 import { ROUTES, DAILY_AFFIRMATIONS } from '@/lib/constants';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { getDailyPractice, buildPracticeHref } from '@/lib/dailyPractice';
+import { ROUTE_CONTEXT, withRouteContext } from '@/lib/routeContext';
 import WelcomeArrival from '@/components/composed/welcome/WelcomeArrival';
 
 const DAILY_MESSAGES = [
@@ -50,6 +51,10 @@ export default function DashboardPage() {
   const { profile, isAuthenticated, loading, hasCompletedOnboarding, refreshProfile } = useAuth();
   const { setShowNav } = useNav();
   const todaysPractice = useMemo(() => getDailyPractice(), []);
+  const todaysPracticeHref = useMemo(
+    () => withRouteContext(buildPracticeHref(todaysPractice), ROUTE_CONTEXT.DASHBOARD),
+    [todaysPractice]
+  );
   const profileFetchAttempted = useRef(false);
   const [profileFailed, setProfileFailed] = useState(false);
   const [welcomeState, setWelcomeState] = useState('pending');
@@ -185,7 +190,7 @@ export default function DashboardPage() {
             <FindMyCalmCard />
 
             <DashboardActionCard
-              href={buildPracticeHref(todaysPractice)}
+              href={todaysPracticeHref}
               icon={todaysPractice.type === 'experience' ? Sparkles : Wind}
               iconColor={practiceAccent}
               accent={todaysPractice.accent}

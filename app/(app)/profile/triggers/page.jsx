@@ -83,7 +83,7 @@ export default function EditTriggersPage() {
     await refreshTriggers();
     setSaving(false);
     setSaved(true);
-    setTimeout(() => router.back(), 1597);
+    setTimeout(() => router.push(ROUTES.PROFILE), 1597);
   };
 
   // Save confirmation screen
@@ -91,8 +91,11 @@ export default function EditTriggersPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex items-center justify-center px-6">
-          <p className="text-lg text-indigo-300 font-light"
-             style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, animation: 'fadeIn 0.377s ease-out' }}>
+          <p
+            className="text-lg text-indigo-300 font-light"
+            aria-live="polite"
+            style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, animation: 'fadeIn 0.377s ease-out' }}
+          >
             Triggers updated
           </p>
         </div>
@@ -194,6 +197,7 @@ export default function EditTriggersPage() {
           <button
             onClick={handleSave}
             disabled={saving || selected.length === 0}
+            aria-live="polite"
             className={`w-full py-4 rounded-full text-base font-light transition-all duration-[144ms] border-2 ${
               selected.length === 0
                 ? 'border-slate-700 bg-slate-900/30 text-slate-600 cursor-not-allowed'
@@ -201,7 +205,7 @@ export default function EditTriggersPage() {
             }`}
             style={selected.length > 0 ? { boxShadow: '0 0 12px rgba(255,255,255,0.06)' } : undefined}
           >
-            {saving ? 'Saving...' : `Save ${selected.length} trigger${selected.length !== 1 ? 's' : ''}`}
+            {saving ? 'Saving gently...' : `Save ${selected.length} trigger${selected.length !== 1 ? 's' : ''}`}
           </button>
         </div>
       </div>

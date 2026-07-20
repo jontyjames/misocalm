@@ -68,8 +68,9 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText('Test error')).toBeInTheDocument();
+    expect(screen.getByText('Your space needs a moment')).toBeInTheDocument();
+    expect(screen.getByText('Nothing you shared is lost. Take a breath, then try opening this space again.')).toBeInTheDocument();
+    expect(screen.queryByText('Test error')).not.toBeInTheDocument();
   });
 
   it('renders custom fallback on error', () => {
@@ -96,10 +97,10 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(screen.getByText('Your space needs a moment')).toBeInTheDocument();
 
-    // Click try again
-    fireEvent.click(screen.getByText('Try again'));
+    // Click open again
+    fireEvent.click(screen.getByText('Open again'));
 
     // Re-render - it will throw again but the boundary should have reset
     // In a real app the error would be fixed; here we just verify reset was called

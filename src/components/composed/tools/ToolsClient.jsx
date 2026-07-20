@@ -10,6 +10,7 @@ import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { ToolsSkeleton } from '@/components/composed/skeletons';
 import HeroExperience from './HeroExperience';
+import RegulationToolkitEntry from './RegulationToolkitEntry';
 import QuickToolsRow from './QuickToolsRow';
 import ExperienceRow from './ExperienceRow';
 import EducationSection from './EducationSection';
@@ -46,6 +47,7 @@ export default function ToolsClient() {
           />
           <HeroExperience />
         </div>
+        <RegulationToolkitEntry />
         <QuickToolsRow />
         <ExperienceRow />
         <EducationSection />

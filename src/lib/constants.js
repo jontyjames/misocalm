@@ -121,6 +121,7 @@ export const ROUTES = {
   ONBOARDING_TRIGGERS: '/onboarding/triggers',
   DASHBOARD: '/dashboard',
   TOOLS: '/tools',
+  REGULATION_TOOLKIT: '/tools/regulation',
   LOG: '/journal/new',
   JOURNAL: '/journal',
   CHECK_IN: '/journal/check-in',
@@ -286,6 +287,17 @@ export const DEEPER_PROMPTS_BREATHWORK = [
   'What would it feel like to carry this stillness with you?',
   'What was the hardest part of staying present?',
   'What do you want to hold onto from this moment?',
+];
+
+// After regulation toolkit practice (7 prompts, prime)
+export const DEEPER_PROMPTS_REGULATION = [
+  'Which part of the practice did your body respond to most?',
+  'What feels even one degree different now?',
+  'Was there a moment where your system softened?',
+  'What did this practice show you about what helps?',
+  'Where could this tool fit in a real sound moment?',
+  'What would make this practice easier to reach for next time?',
+  'What do you want your nervous system to remember?',
 ];
 
 // Storage keys
@@ -582,6 +594,39 @@ export const DEEPER_PROMPTS_FOCUS = [
   'What does it feel like to know your attention is yours?',
   'Was there a moment where you forgot everything else?',
   'What would you like to carry from this into the rest of your day?',
+];
+
+// Mandala experience deeper prompts (7, prime)
+export const DEEPER_PROMPTS_MANDALA = [
+  'What did you notice as the pattern unfolded?',
+  'Was there a moment where the shape felt steady?',
+  'How did your body respond to symmetry?',
+  'What did repetition feel like when it was gentle?',
+  'Did anything in you want to slow down?',
+  'What part of this pattern would you like to carry with you?',
+  'Where do you feel order returning in your body?',
+];
+
+// Impermanence experience deeper prompts (7, prime)
+export const DEEPER_PROMPTS_IMPERMANENCE = [
+  'What did you notice about sounds passing through?',
+  'Was there a moment where something felt less permanent?',
+  'How does your body feel when you remember that sounds end?',
+  'What are you still holding that may be ready to move?',
+  'Did anything soften when the practice changed shape?',
+  'What would it feel like to let this moment keep moving?',
+  'What do you want to remember about not having to hold every sound?',
+];
+
+// Pulse experience deeper prompts (7, prime)
+export const DEEPER_PROMPTS_PULSE = [
+  'What rhythm did your body find during that?',
+  'Was there a moment where the pulse felt steady?',
+  'How does your body feel compared to the first beat?',
+  'What did the practice show you about pacing?',
+  'Did anything become easier when you followed the rhythm?',
+  'Where could a small steady pulse help you today?',
+  'What do you want to carry from this rhythm?',
 ];
 
 // Alive experience teachings (7, prime — each has 3 lines)

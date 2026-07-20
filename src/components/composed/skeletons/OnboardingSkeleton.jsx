@@ -8,7 +8,7 @@ export default function OnboardingSkeleton() {
   return (
     <div
       className="min-h-screen flex flex-col px-6 py-8"
-      aria-label="Loading onboarding step"
+      aria-label="Preparing your next step"
       aria-busy="true"
     >
       <div className="flex items-center gap-[10px] mb-[42px]">

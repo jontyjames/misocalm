@@ -19,7 +19,7 @@ export default function RouteSkeleton({
   return (
     <div
       className={`px-6 py-8 pb-32 space-y-[26px] ${className}`}
-      aria-label="Loading page"
+      aria-label="Preparing your space"
       aria-busy="true"
     >
       {showHeader && (

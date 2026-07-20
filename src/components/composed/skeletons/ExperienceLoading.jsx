@@ -6,7 +6,7 @@ export default function ExperienceLoading() {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-void-black px-6"
-      aria-label="Loading practice"
+      aria-label="Preparing your practice"
       aria-busy="true"
     >
       <div className="relative h-[110px] w-[110px]" style={{ animation: 'fadeIn 610ms ease-out' }}>

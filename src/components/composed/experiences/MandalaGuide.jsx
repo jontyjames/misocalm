@@ -1,5 +1,5 @@
 /**
- * MandalaGuide — orchestrates the full Mandala experience
+ * MandalaGuide â€” orchestrates the full Mandala experience
  *
  * Touch-based generative sacred geometry. Every touch creates
  * radially symmetric forms. You cannot make it ugly.
@@ -9,10 +9,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import MandalaCanvas from './MandalaCanvas';
 import ColourRibbon from './ColourRibbon';
 import SymmetrySelector from './SymmetrySelector';
@@ -21,11 +23,14 @@ import ExitThreshold from './ExitThreshold';
 
 export default function MandalaGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const state = useMandalaState();
   const [customColor, setCustomColor] = useState(null);
   const [freeSymmetry, setFreeSymmetry] = useState(11);
   const [exitTransition, setExitTransition] = useState(null);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   const handleTouch = useCallback((touchData) => {
     state.processTouchEvent(touchData);
@@ -33,8 +38,8 @@ export default function MandalaGuide() {
 
   const handleLeave = useCallback(() => {
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
@@ -43,8 +48,8 @@ export default function MandalaGuide() {
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: ROUTES.CHECK_IN + '?from=mandala', solfeggio: 'violet' });
-  }, [state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.MANDALA, checkInOrigin), solfeggio: 'violet' });
+  }, [checkInOrigin, state.clearSeqTimer]);
 
   const activeSymmetry = state.freePlay ? freeSymmetry : state.symmetry;
 
@@ -138,7 +143,7 @@ export default function MandalaGuide() {
         </button>
       </div>
 
-      {/* Exit button — always available once started */}
+      {/* Exit button â€” always available once started */}
       {state.started && (
         <button
           onClick={handleLeave}
@@ -158,7 +163,7 @@ export default function MandalaGuide() {
         </button>
       )}
 
-      {/* Guide text (upper third of screen — words first, visual supports) */}
+      {/* Guide text (upper third of screen â€” words first, visual supports) */}
       <div
         style={{
           position: 'fixed',
@@ -237,7 +242,7 @@ export default function MandalaGuide() {
         </>
       )}
 
-      {/* Exit threshold — soft transition out */}
+      {/* Exit threshold â€” soft transition out */}
       {exitTransition && (
         <ExitThreshold
           destination={exitTransition.destination}

@@ -12,7 +12,7 @@ import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks';
 import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
 
-export default function DeeperClosing({ message }) {
+export default function DeeperClosing({ message, practicesRoute = ROUTES.TOOLS }) {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const [closingChars, setClosingChars] = useState(0);
@@ -94,7 +94,7 @@ export default function DeeperClosing({ message }) {
             </button>
 
             <button
-              onClick={() => router.push(ROUTES.TOOLS)}
+              onClick={() => router.push(practicesRoute)}
               className={`relative w-full p-5 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} text-left`}
               style={sacredGlassStyle('cyan')}
             >

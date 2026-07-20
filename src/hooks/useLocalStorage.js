@@ -21,13 +21,15 @@ export function useLocalStorage(key, initialValue) {
   // Setter that also updates localStorage
   const setValue = useCallback((value) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      setStoredValue((currentValue) => {
+        const valueToStore = value instanceof Function ? value(currentValue) : value;
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        return valueToStore;
+      });
     } catch (error) {
       console.warn(`Error setting localStorage key "${key}":`, error);
     }
-  }, [key, storedValue]);
+  }, [key]);
 
   // Remove from storage
   const removeValue = useCallback(() => {

@@ -6,7 +6,11 @@ import { Skeleton } from '@/components/ui';
 
 export default function ChatSkeleton() {
   return (
-    <div className="flex flex-col h-[100dvh]">
+    <div
+      className="flex flex-col h-[100dvh]"
+      aria-label="Preparing your guide"
+      aria-busy="true"
+    >
       <div className="flex items-center gap-4 px-4 py-3 border-b border-slate-800">
         <Skeleton width={36} height={36} circle />
         <Skeleton width={32} height={32} circle />

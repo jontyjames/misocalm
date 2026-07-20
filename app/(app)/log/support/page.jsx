@@ -13,6 +13,7 @@ import { Button, Card } from '@/components/ui';
 import { AppLayout } from '@/components/composed';
 import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
+import { ROUTE_CONTEXT, withRouteContext } from '@/lib/routeContext';
 
 const supportOptions = [
   {
@@ -45,7 +46,8 @@ const mantras = [
   "This feeling is temporary. I am safe.",
   "I can't control sounds, but I can control my response.",
   "My reaction doesn't define me.",
-  "I am learning to cope, and that's enough.",
+  "I am learning to find my way, and that's enough.",
+  "I can come back to myself one breath at a time.",
 ];
 
 export default function SupportPage() {
@@ -56,7 +58,7 @@ export default function SupportPage() {
 
   const handleSelect = (option) => {
     if (option.href) {
-      router.push(option.href);
+      router.push(withRouteContext(option.href, ROUTE_CONTEXT.POST_LOG));
     } else {
       // Show mantra in overlay
       const mantra = mantras[Math.floor(Math.random() * mantras.length)];
@@ -124,7 +126,7 @@ export default function SupportPage() {
           onClick={() => router.push(ROUTES.DASHBOARD)}
           className="w-full"
         >
-          I'm Good For Now
+          Return to sanctuary
         </Button>
       </div>
 

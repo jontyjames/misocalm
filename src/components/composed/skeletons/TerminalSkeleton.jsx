@@ -8,7 +8,7 @@ export default function TerminalSkeleton() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center bg-void-black px-6"
-      aria-label="Loading education guide"
+      aria-label="Preparing your guide"
       aria-busy="true"
     >
       <div className="w-full max-w-sm space-y-[26px]">

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'misocalm-v2';
+const CACHE_NAME = 'misocalm-v3';
 const OFFLINE_URL = '/offline';
 
 // Assets to cache on install
@@ -39,6 +39,7 @@ function shouldCacheAsset(url) {
     (
       url.pathname.startsWith('/_next/static/') ||
       url.pathname.startsWith('/icons/') ||
+      url.pathname.startsWith('/audio/') ||
       url.pathname === '/manifest.json' ||
       url.pathname === OFFLINE_URL
     )
@@ -49,6 +50,7 @@ function shouldCacheAsset(url) {
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
+  if (event.request.headers.has('range')) return;
 
   // Skip API calls and auth requests
   const url = new URL(event.request.url);
@@ -69,8 +71,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful static responses
-        if (response.ok) {
+        // Cache only complete static responses; media range responses should stream normally.
+        if (response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, clone);

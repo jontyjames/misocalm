@@ -30,12 +30,37 @@ const SYSTEM_PROMPT = `You are a compassionate AI support companion for someone 
 Guidelines:
 1. Be warm, validating, and never dismissive of their experience
 2. Acknowledge that misophonia is real and their reactions are not their fault
-3. Offer practical coping strategies when appropriate
-4. If they seem distressed, gently suggest a breathing practice or grounding practice
+3. Offer one practical next step when appropriate
+4. If they seem distressed, gently suggest Find My Calm, the Regulation Toolkit, Emergency Protocol, Physiological Sigh, or Grounding
 5. Never suggest "just ignoring" the sound or that they're overreacting
 6. Keep responses concise (2-3 sentences) unless they want to talk more
 7. If they mention self-harm or severe distress, encourage professional support
-8. Always respond with empathy and understanding`;
+8. Always respond with empathy and understanding
+9. Do not diagnose, promise cures, or create exposure plans
+
+App actions you can suggest by name:
+- Find My Calm: fast physiological sigh reset
+- Regulation Toolkit: full practice library
+- Emergency Protocol: phrases and recovery steps for intense trigger moments
+- Butterfly Tapping: bilateral tapping for rumination or anticipation
+- Body Scan: noticing and softening body tension`;
+
+const MODE_INSTRUCTIONS = {
+  triggered_now: 'Mode: Triggered now. Validate first, keep it short, and suggest one body-based practice that can start immediately.',
+  prepare: 'Mode: Preparing for a sound. Help them choose an exit plan, one phrase, and one recovery practice. Do not over-plan.',
+  process: 'Mode: Processing afterward. Validate, reflect one pattern gently, and suggest journaling or one regulation practice.',
+};
+
+export function getMisoModeInstruction(misoMode) {
+  return MODE_INSTRUCTIONS[misoMode] || MODE_INSTRUCTIONS.triggered_now;
+}
+
+export function buildMisoSystemMessage({ userContext = '', misoMode } = {}) {
+  const modeInstruction = getMisoModeInstruction(misoMode);
+  return userContext
+    ? `${SYSTEM_PROMPT}\n\n${modeInstruction}\n\nUser's profile:\n${userContext}`
+    : `${SYSTEM_PROMPT}\n\n${modeInstruction}`;
+}
 
 export async function POST(request) {
   try {
@@ -64,7 +89,7 @@ export async function POST(request) {
       return rateLimitResponse(rateLimitResult);
     }
 
-    const { message, conversationHistory, userName, severityLevel, triggersList, recentTrigger } = await request.json();
+    const { message, conversationHistory, userName, severityLevel, triggersList, recentTrigger, misoMode } = await request.json();
 
     // Input validation - prevent cost amplification
     if (!message) {
@@ -95,9 +120,7 @@ export async function POST(request) {
     if (safeTriggers) userContext += `Known triggers: ${safeTriggers}\n`;
     if (safeRecentTrigger) userContext += `Recent trigger: ${safeRecentTrigger}\n`;
 
-    const systemMessage = userContext
-      ? `${SYSTEM_PROMPT}\n\nUser's profile:\n${userContext}`
-      : SYSTEM_PROMPT;
+    const systemMessage = buildMisoSystemMessage({ userContext, misoMode });
 
     // Build multi-turn messages from validated history + current message
     const messages = [...validHistory, { role: 'user', content: message }];

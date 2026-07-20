@@ -45,8 +45,8 @@ export const TOOLS = [
     longDescription: 'A guided journey through your body, noticing where tension lives and gently inviting it to soften. Layer by layer, breath by breath.',
     category: 'somatic',
     duration_minutes: 10,
-    type: 'coming_soon',
-    premium: true,
+    type: 'regulation',
+    route: `${ROUTES.REGULATION_TOOLKIT}/body-scan`,
   },
   {
     id: '5',
@@ -64,8 +64,8 @@ export const TOOLS = [
     longDescription: 'Systematically tense and release each muscle group, teaching your nervous system the difference between holding on and letting go.',
     category: 'somatic',
     duration_minutes: 15,
-    type: 'coming_soon',
-    premium: true,
+    type: 'regulation',
+    route: `${ROUTES.REGULATION_TOOLKIT}/progressive-muscle-relaxation`,
   },
   {
     id: '7',
@@ -82,14 +82,14 @@ export const TOOLS = [
 // Hero experience rotation order (cycles daily)
 export const EXPERIENCE_HERO_ORDER = ['grounding', 'mandala', 'pulse', 'impermanence', 'focus', 'alive'];
 
-// Solfeggio colour per experience — drives Card's solfeggio prop
+// Solfeggio colour per experience â€” drives Card's solfeggio prop
 export const EXPERIENCE_SOLFEGGIO = {
-  grounding: 'cyan',       // 741Hz — awakening, clarity, return to senses
-  mandala: 'violet',       // 852Hz — intuition, depth, creation
-  pulse: 'indigo',         // 528Hz — transformation, love, heartbeat
-  impermanence: 'violet',  // 852Hz — spiritual order, letting go
-  focus: 'cyan',           // 741Hz — awakening, clarity, attentional precision
-  alive: 'slate',           // 396Hz — liberation from fear, safety, grounding
+  grounding: 'cyan',       // 741Hz â€” awakening, clarity, return to senses
+  mandala: 'violet',       // 852Hz â€” intuition, depth, creation
+  pulse: 'indigo',         // 528Hz â€” transformation, love, heartbeat
+  impermanence: 'violet',  // 852Hz â€” spiritual order, letting go
+  focus: 'cyan',           // 741Hz â€” awakening, clarity, attentional precision
+  alive: 'slate',           // 396Hz â€” liberation from fear, safety, grounding
 };
 
 // Guided experiences

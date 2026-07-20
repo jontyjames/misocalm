@@ -218,8 +218,8 @@ export default function ProfilePage() {
               <Download className="w-5 h-5 text-slate-300" />
               <span className="text-white font-light">Export My Data</span>
             </div>
-            <span className="text-xs text-slate-400 font-light">
-              {exporting ? 'Preparing...' : 'JSON'}
+            <span className="text-xs text-slate-400 font-light" aria-live="polite">
+              {exporting ? 'Gathering data...' : 'JSON'}
             </span>
           </div>
         </button>

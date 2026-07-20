@@ -8,7 +8,7 @@ export default function WelcomeSkeleton() {
   return (
     <div
       className="min-h-screen relative flex flex-col items-center justify-center px-6"
-      aria-label="Loading welcome screen"
+      aria-label="Preparing your welcome"
       aria-busy="true"
     >
       <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '28%' }}>

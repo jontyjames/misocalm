@@ -14,6 +14,7 @@ import { Logo } from '@/components/composed';
 import { WelcomeSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
 import { SACRED_GLASS_PILL_CLASSES, sacredGlassPillStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle } from '@/lib/sacredGlass';
+import { FIRST_WELCOME_TIMING } from '@/lib/welcomeTiming';
 
 const INTRO_TEXT = 'Welcome';
 const SUBTITLE_TEXT = 'This is a space for you';
@@ -79,9 +80,9 @@ export default function WelcomePage() {
   // Start intro letter animation after a brief pause
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      const startTimer = setTimeout(() => setIntroStarted(true), 987);
+      const startTimer = setTimeout(() => setIntroStarted(true), FIRST_WELCOME_TIMING.introStartMs);
       // Welcome + subtitle animate, hold, then fade to reveal MisoCalm
-      const doneTimer = setTimeout(() => setIntroDone(true), 6765);
+      const doneTimer = setTimeout(() => setIntroDone(true), FIRST_WELCOME_TIMING.revealMs);
       return () => {
         clearTimeout(startTimer);
         clearTimeout(doneTimer);

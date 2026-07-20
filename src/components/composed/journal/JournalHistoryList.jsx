@@ -103,8 +103,9 @@ export default function JournalHistoryList() {
             onClick={loadMore}
             disabled={loadingMore}
             className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light disabled:opacity-50"
+            aria-live="polite"
           >
-            {loadingMore ? 'Loading...' : 'Load more entries'}
+            {loadingMore ? 'Bringing entries in...' : 'Load more entries'}
           </button>
         </div>
       )}

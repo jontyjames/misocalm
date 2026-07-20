@@ -20,7 +20,19 @@ import {
   DEEPER_PROMPTS_BREATHWORK,
   DEEPER_PROMPTS_GROUNDING,
   DEEPER_PROMPTS_FOCUS,
+  DEEPER_PROMPTS_REGULATION,
+  DEEPER_PROMPTS_ALIVE,
+  DEEPER_PROMPTS_MANDALA,
+  DEEPER_PROMPTS_IMPERMANENCE,
+  DEEPER_PROMPTS_PULSE,
 } from '@/lib/constants';
+import {
+  CHECK_IN_ORIGIN,
+  CHECK_IN_SOURCE,
+  buildCheckInSuccessRoute,
+  normalizeCheckInOrigin,
+  normalizeCheckInSource,
+} from '@/lib/checkInContext';
 import { getDayOfYear } from '@/lib/dateUtils';
 import DeeperClosing from './DeeperClosing';
 
@@ -28,24 +40,39 @@ const CLOSING_MESSAGES = {
   trigger: 'Thank you for going there',
   check_in: 'Thank you for checking in with yourself',
   breathwork: 'Thank you for staying present',
+  regulation: 'Thank you for listening to your body',
   grounding: 'Thank you for coming back to your senses',
   focus: 'Thank you for holding the centre',
+  alive: 'Thank you for building a softer space',
+  mandala: 'Thank you for letting order return',
+  impermanence: 'Thank you for letting the moment move',
+  pulse: 'Thank you for finding your rhythm',
 };
 
 const SUBTITLES = {
   trigger: 'There are no right answers. Write as much or as little as feels right.',
   check_in: 'Just notice what comes up. Nothing to fix.',
   breathwork: 'Let the practice settle. Notice what remains.',
+  regulation: 'Let the tool settle. Notice what your body learned.',
   grounding: 'Let the grounding settle. Notice what your senses found.',
   focus: 'Let the stillness settle. Notice what your attention found.',
+  alive: 'Let the breath-built space settle. Notice what feels different.',
+  mandala: 'Let the pattern settle. Notice what feels ordered.',
+  impermanence: 'Let the movement settle. Notice what has already shifted.',
+  pulse: 'Let the rhythm settle. Notice what feels steadier.',
 };
 
 const PROMPT_POOLS = {
   trigger: DEEPER_PROMPTS_TRIGGER,
   check_in: DEEPER_PROMPTS_CHECKIN,
   breathwork: DEEPER_PROMPTS_BREATHWORK,
+  regulation: DEEPER_PROMPTS_REGULATION,
   grounding: DEEPER_PROMPTS_GROUNDING,
   focus: DEEPER_PROMPTS_FOCUS,
+  alive: DEEPER_PROMPTS_ALIVE,
+  mandala: DEEPER_PROMPTS_MANDALA,
+  impermanence: DEEPER_PROMPTS_IMPERMANENCE,
+  pulse: DEEPER_PROMPTS_PULSE,
 };
 
 /**
@@ -67,15 +94,36 @@ function selectPrompts(pool) {
   return selected;
 }
 
-const EXPERIENCE_CONTEXTS = ['breathwork', 'grounding', 'focus'];
-
 function getContext(searchParams) {
   const isCheckIn = searchParams.get('type') === 'check_in';
-  const from = searchParams.get('from');
+  const source = normalizeCheckInSource(searchParams.get('from'));
 
-  if (isCheckIn && EXPERIENCE_CONTEXTS.includes(from)) return from;
+  if (isCheckIn && source) return source;
   if (isCheckIn) return 'check_in';
   return 'trigger';
+}
+
+function getClosingPracticeRoute(context, origin) {
+  return context === CHECK_IN_SOURCE.REGULATION || origin === CHECK_IN_ORIGIN.REGULATION
+    ? ROUTES.REGULATION_TOOLKIT
+    : ROUTES.TOOLS;
+}
+
+function getDeeperBackRoute(searchParams) {
+  const entryId = searchParams.get('entry');
+  const isCheckIn = searchParams.get('type') === 'check_in';
+
+  if (!entryId) return ROUTES.JOURNAL;
+
+  if (isCheckIn) {
+    return buildCheckInSuccessRoute({
+      source: normalizeCheckInSource(searchParams.get('from')),
+      origin: normalizeCheckInOrigin(searchParams.get('origin')),
+      entryId,
+    });
+  }
+
+  return `${ROUTES.LOG_SUCCESS}?entry=${entryId}`;
 }
 
 export default function DeeperProcessing() {
@@ -86,9 +134,11 @@ export default function DeeperProcessing() {
   const prefersReduced = useReducedMotion();
 
   const context = useMemo(() => getContext(searchParams), [searchParams]);
+  const origin = useMemo(() => normalizeCheckInOrigin(searchParams.get('origin')), [searchParams]);
   const prompts = useMemo(() => selectPrompts(PROMPT_POOLS[context]), [context]);
   const closingMessage = CLOSING_MESSAGES[context];
   const subtitle = SUBTITLES[context];
+  const backRoute = useMemo(() => getDeeperBackRoute(searchParams), [searchParams]);
 
   const [currentPrompt, setCurrentPrompt] = useState(0);
   const [responses, setResponses] = useState(['', '', '']);
@@ -150,7 +200,7 @@ export default function DeeperProcessing() {
   };
 
   if (showClosing) {
-    return <DeeperClosing message={closingMessage} />;
+    return <DeeperClosing message={closingMessage} practicesRoute={getClosingPracticeRoute(context, origin)} />;
   }
 
   return (
@@ -158,8 +208,8 @@ export default function DeeperProcessing() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <button
-          onClick={() => router.push(ROUTES.JOURNAL)}
-          aria-label="Go back to journal"
+          onClick={() => router.push(backRoute)}
+          aria-label="Go back"
           className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -220,13 +270,13 @@ export default function DeeperProcessing() {
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" aria-live="polite">
           <button
             onClick={saveAndExit}
             disabled={saving}
             className="text-sm text-slate-300 hover:text-slate-200 transition-colors font-light"
           >
-            {saving ? 'Saving...' : "That's enough for now"}
+            {saving ? 'Saving gently...' : "That's enough for now"}
           </button>
 
           <button
@@ -234,7 +284,7 @@ export default function DeeperProcessing() {
             disabled={saving}
             className="px-6 py-2.5 rounded-full text-sm font-light bg-violet-500/20 border border-violet-500/40 text-violet-300 hover:bg-violet-500/30 transition-all duration-[233ms]"
           >
-            {currentPrompt < prompts.length - 1 ? 'Next' : (saving ? 'Saving...' : 'Finish')}
+            {currentPrompt < prompts.length - 1 ? 'Next' : (saving ? 'Saving gently...' : 'Finish')}
           </button>
         </div>
       </div>

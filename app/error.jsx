@@ -29,23 +29,17 @@ export default function Error({ error, reset }) {
         </div>
 
         <h1 className="text-2xl text-white mb-3" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-          Something went wrong
+          This space needs a moment
         </h1>
 
         <p className="text-slate-400 font-light mb-6">
-          We encountered an unexpected error. Don't worry, your data is safe.
+          Nothing you shared is lost. Take one slow breath, then reopen this space when you are ready.
         </p>
-
-        {error?.message && (
-          <p className="text-sm text-slate-500 font-light mb-6 p-3 bg-slate-800/50 rounded-lg">
-            {error.message}
-          </p>
-        )}
 
         <div className="flex flex-col gap-3">
           <Button onClick={reset} className="w-full">
             <RefreshCw className="w-4 h-4 mr-2" />
-            Try again
+            Open again
           </Button>
 
           <Button
@@ -54,7 +48,7 @@ export default function Error({ error, reset }) {
             className="w-full"
           >
             <Home className="w-4 h-4 mr-2" />
-            Go to Dashboard
+            Return to sanctuary
           </Button>
         </div>
       </Card>

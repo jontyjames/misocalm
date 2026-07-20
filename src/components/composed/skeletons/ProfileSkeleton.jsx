@@ -6,7 +6,11 @@ import { Skeleton, SkeletonCard } from '@/components/ui';
 
 export default function ProfileSkeleton() {
   return (
-    <div className="px-6 py-8 pb-32">
+    <div
+      className="px-6 py-8 pb-32"
+      aria-label="Preparing your profile"
+      aria-busy="true"
+    >
       {/* Avatar & Name */}
       <div className="flex flex-col items-center mb-10">
         <Skeleton width={80} height={80} circle className="mb-4" />

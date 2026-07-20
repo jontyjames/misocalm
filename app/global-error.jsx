@@ -37,18 +37,12 @@ export default function GlobalError({ error, reset }) {
             </div>
 
             <h1 className="text-2xl text-white mb-3" style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}>
-              Critical Error
+              Your sanctuary needs a reset
             </h1>
 
             <p className="text-slate-400 font-light mb-6">
-              Something went seriously wrong. Please refresh the page or try again later.
+              The app hit a rough edge, but your space is still here. Try reopening it, or return home and start fresh.
             </p>
-
-            {error?.message && (
-              <p className="text-sm text-slate-500 font-light mb-6 p-3 bg-slate-800/50 rounded-lg">
-                {error.message}
-              </p>
-            )}
 
             <div className="flex flex-col gap-3">
               <button
@@ -68,14 +62,14 @@ export default function GlobalError({ error, reset }) {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                Try again
+                Open again
               </button>
 
               <button
                 onClick={() => window.location.href = '/'}
                 className="w-full py-3 px-4 rounded-full bg-slate-700 hover:bg-slate-600 text-white font-light transition-colors"
               >
-                Go to Home
+                Return home
               </button>
             </div>
           </div>

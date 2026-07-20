@@ -3,9 +3,11 @@ import { act } from '@testing-library/react';
 import { useLogForm } from '../useLogForm';
 import { renderHookWithProviders } from '@/test/test-utils';
 
+const mockPush = vi.hoisted(() => vi.fn());
+
 // Mock dependencies
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: mockPush }),
 }));
 
 vi.mock('@/services', () => ({
@@ -211,6 +213,44 @@ describe('useLogForm', () => {
       expect(call.environment).toBe('home');
       // Deprecated
       expect(call.source).toBeNull();
+    });
+
+    it('routes to saved page with safe recommendation context', async () => {
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
+
+      act(() => {
+        result.current.toggleTrigger('Chewing');
+        result.current.setTriggerIntensity('Chewing', 7);
+        result.current.toggleBodyResponse('Jaw tension');
+      });
+
+      await act(async () => {
+        await result.current.handleSave();
+      });
+
+      expect(mockPush).toHaveBeenCalledWith('/journal/saved?entry=test-id&intensity=7&body=Jaw+tension');
+    });
+
+    it('routes after crisis continue with high-intensity context', async () => {
+      const { result } = renderHookWithProviders(() => useLogForm('user-1'));
+
+      act(() => {
+        result.current.toggleTrigger('Chewing');
+        result.current.setTriggerIntensity('Chewing', 9);
+        result.current.toggleBodyResponse('Fists clenching');
+      });
+
+      await act(async () => {
+        await result.current.handleSave();
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
+
+      await act(async () => {
+        result.current.handleCrisisContinue();
+      });
+
+      expect(mockPush).toHaveBeenCalledWith('/journal/saved?entry=test-id&intensity=9&body=Fists+clenching');
     });
   });
 

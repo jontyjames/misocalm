@@ -199,10 +199,11 @@ export default function PlanPage() {
               <div className="absolute inset-0 pointer-events-none" style={PHI_LAYERS_STYLE} />
               <div className="absolute inset-0 pointer-events-none" style={torusFlowStyle('indigo')} />
               <span
+                aria-live="polite"
                 className="relative z-10 font-light text-white text-base"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200, textShadow: '0 0 12px rgba(255,255,255,0.3), 0 0 34px rgba(99,102,241,0.2)' }}
               >
-                {saving ? 'Preparing...' : 'Enter MisoCalm'}
+                {saving ? 'Opening sanctuary...' : 'Enter MisoCalm'}
               </span>
             </button>
           </div>

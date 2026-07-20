@@ -4,9 +4,7 @@
  *
  * Context-aware via search params:
  *   ?type=check_in        - after a check-in (vs trigger log)
- *   ?from=breathwork       - check-in was post-practice (cycle complete, return to centre)
- *   ?from=grounding        - check-in was post-grounding experience
- *   ?from=focus            - check-in was post-focus experience
+ *   ?from={practiceSource} - check-in was post-practice (cycle complete, return to centre)
  *   ?entry={id}            - links deeper processing to original entry
  */
 
@@ -15,8 +13,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Layers, Wind, Home, Compass } from 'lucide-react';
+import { CHECK_IN_ORIGIN, normalizeCheckInOrigin, normalizeCheckInSource } from '@/lib/checkInContext';
 import { ROUTES, FIBONACCI_TIMING } from '@/lib/constants';
-import { getBreathworkPractice, buildPracticeHref } from '@/lib/dailyPractice';
+import { REGULATION_MODES, getRecommendedPractice } from '@/lib/regulationToolkitData';
+import { ROUTE_CONTEXT, withRouteContext } from '@/lib/routeContext';
 import { getDayOfYear } from '@/lib/dateUtils';
 import { useReducedMotion } from '@/hooks';
 import StarDissolve from './StarDissolve';
@@ -49,7 +49,12 @@ export default function PostLogIntegration() {
   const entryId = searchParams.get('entry');
   const isCheckIn = searchParams.get('type') === 'check_in';
   const from = searchParams.get('from');
-  const fromPractice = ['breathwork', 'grounding', 'focus'].includes(from);
+  const origin = normalizeCheckInOrigin(searchParams.get('origin'));
+  const intensityParam = Number(searchParams.get('intensity') || 0);
+  const intensity = Number.isFinite(intensityParam) ? intensityParam : 0;
+  const bodyParam = searchParams.get('body') || '';
+  const practiceSource = normalizeCheckInSource(from);
+  const fromPractice = Boolean(practiceSource);
 
   const affirmations = isCheckIn ? CHECK_IN_AFFIRMATIONS : TRIGGER_AFFIRMATIONS;
 
@@ -57,7 +62,13 @@ export default function PostLogIntegration() {
     return affirmations[getDayOfYear() % affirmations.length];
   }, [affirmations]);
 
-  const practice = useMemo(() => getBreathworkPractice(), []);
+  const recommendedPractice = useMemo(() => {
+    return getRecommendedPractice({
+      mode: isCheckIn ? REGULATION_MODES.BUILD_CAPACITY : REGULATION_MODES.TRIGGERED_NOW,
+      intensity,
+      bodyResponses: bodyParam.split('|').filter(Boolean).slice(0, 5),
+    });
+  }, [bodyParam, intensity, isCheckIn]);
 
   // Letter-by-letter animation state
   const [visibleChars, setVisibleChars] = useState(0);
@@ -79,8 +90,13 @@ export default function PostLogIntegration() {
   const deeperParams = new URLSearchParams();
   if (entryId) deeperParams.set('entry', entryId);
   if (isCheckIn) deeperParams.set('type', 'check_in');
-  if (fromPractice) deeperParams.set('from', from);
+  if (fromPractice) deeperParams.set('from', practiceSource);
+  if (origin) deeperParams.set('origin', origin);
   const deeperRoute = `${ROUTES.JOURNAL_DEEPER}?${deeperParams.toString()}`;
+  const recommendedPracticeRoute = withRouteContext(recommendedPractice.route, ROUTE_CONTEXT.POST_LOG);
+  const returnToPracticesRoute = origin === CHECK_IN_ORIGIN.REGULATION || practiceSource === CHECK_IN_ORIGIN.REGULATION
+    ? ROUTES.REGULATION_TOOLKIT
+    : ROUTES.TOOLS;
 
   let paths;
 
@@ -107,7 +123,7 @@ export default function PostLogIntegration() {
         description: 'Find another practice when you are ready',
         icon: Compass,
         accent: 'cyan',
-        onClick: () => router.push(ROUTES.TOOLS),
+        onClick: () => router.push(returnToPracticesRoute),
       },
     ];
   } else if (isCheckIn) {
@@ -121,11 +137,11 @@ export default function PostLogIntegration() {
         onClick: () => router.push(deeperRoute),
       },
       {
-        title: 'Breathe',
-        description: 'Go straight into a calming practice',
+        title: recommendedPractice.title,
+        description: recommendedPractice.summary,
         icon: Wind,
         accent: 'cyan',
-        onClick: () => router.push(buildPracticeHref(practice)),
+        onClick: () => router.push(recommendedPracticeRoute),
       },
       {
         title: 'Return to sanctuary',
@@ -146,11 +162,11 @@ export default function PostLogIntegration() {
         onClick: () => router.push(deeperRoute),
       },
       {
-        title: 'Breathe',
-        description: 'Go straight into a calming practice',
+        title: recommendedPractice.title,
+        description: recommendedPractice.summary,
         icon: Wind,
         accent: 'cyan',
-        onClick: () => router.push(buildPracticeHref(practice)),
+        onClick: () => router.push(recommendedPracticeRoute),
       },
       {
         title: 'Return to sanctuary',
@@ -162,7 +178,7 @@ export default function PostLogIntegration() {
     ];
   }
 
-  // colorMap removed — using sacredGlass utilities instead
+  // colorMap removed â€” using sacredGlass utilities instead
 
   const iconStyles = {
     violet: 'bg-violet-500/20 border-violet-500/30 text-violet-400',

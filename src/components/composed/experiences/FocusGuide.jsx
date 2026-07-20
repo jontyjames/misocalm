@@ -1,5 +1,5 @@
 /**
- * FocusGuide — orchestrates the focus/attentional training experience
+ * FocusGuide â€” orchestrates the focus/attentional training experience
  *
  * Sacred tunnel with peripheral flash capture and spatial tapping.
  * Reuses GroundingIntro for letter-by-letter intro text.
@@ -9,10 +9,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import useFocusState from './useFocusState';
 import FocusCanvas from './FocusCanvas';
 import FocusPrompt from './FocusPrompt';
@@ -25,10 +27,13 @@ const TEXT_SHADOW = '0 0 16px rgba(3,7,18,0.8), 0 0 42px rgba(3,7,18,0.5)';
 
 export default function FocusGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const state = useFocusState();
   const [playTouch, setPlayTouch] = useState(null);
   const [exitTransition, setExitTransition] = useState(null);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   const handlePlayTap = useCallback((e) => {
     const x = e.clientX ?? e.touches?.[0]?.clientX;
@@ -44,8 +49,8 @@ export default function FocusGuide() {
 
   const handleLeave = useCallback(() => {
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
@@ -54,8 +59,8 @@ export default function FocusGuide() {
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=focus`, solfeggio: 'cyan' });
-  }, [state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.FOCUS, checkInOrigin), solfeggio: 'cyan' });
+  }, [checkInOrigin, state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
@@ -89,7 +94,7 @@ export default function FocusGuide() {
         visible={!state.started}
       />
 
-      {/* Exit button — visible within 377ms (non-negotiable safety) */}
+      {/* Exit button â€” visible within 377ms (non-negotiable safety) */}
       {state.started && !state.complete && (
         <button
           onClick={handleLeave}
@@ -105,10 +110,10 @@ export default function FocusGuide() {
         </button>
       )}
 
-      {/* Intro text — centred, letter-by-letter */}
+      {/* Intro text â€” centred, letter-by-letter */}
       {state.introActive && <GroundingIntro text={state.guideText} />}
 
-      {/* Guide text — upper portion */}
+      {/* Guide text â€” upper portion */}
       {!state.introActive && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 3,
@@ -133,7 +138,7 @@ export default function FocusGuide() {
         </div>
       )}
 
-      {/* Progress — quiet count */}
+      {/* Progress â€” quiet count */}
       {state.started && state.totalFlashes > 0 && !state.complete && (
         <p className="text-slate-400/60 text-xs font-light tracking-widest" style={{
           position: 'fixed', bottom: 'clamp(68px, 12vh, 110px)', left: 0, right: 0,
@@ -146,7 +151,7 @@ export default function FocusGuide() {
       {/* Completion */}
       {state.complete && <FocusComplete onJournal={handleJournal} onReturn={handleReturn} />}
 
-      {/* Free play — touch anywhere to create */}
+      {/* Free play â€” touch anywhere to create */}
       {state.freePlay && (
         <>
           <div onClick={handlePlayTap} role="button" tabIndex={0}

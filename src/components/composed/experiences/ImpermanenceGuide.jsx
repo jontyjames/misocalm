@@ -1,5 +1,5 @@
 /**
- * ImpermanenceGuide — orchestrates the full Impermanence experience
+ * ImpermanenceGuide â€” orchestrates the full Impermanence experience
  *
  * Ported from the standalone HTML version. Key differences from v1:
  * - Guide text at bottom of screen (not centre) with CSS transitions
@@ -11,10 +11,12 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useMicrophone, useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import SoundCanvas from './SoundCanvas';
 import ColourRibbon from './ColourRibbon';
 import useImpermanenceState from './useImpermanenceState';
@@ -23,12 +25,15 @@ import ExitThreshold from './ExitThreshold';
 
 export default function ImpermanenceGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const mic = useMicrophone();
   const state = useImpermanenceState();
   const [customColor, setCustomColor] = useState(null);
   const [exitTransition, setExitTransition] = useState(null);
   const rafRef = useRef(null);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   // Feed audio level to the state machine every frame
   useEffect(() => {
@@ -50,8 +55,8 @@ export default function ImpermanenceGuide() {
   const handleLeave = useCallback(() => {
     mic.stopListening();
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [mic, state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, mic, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     mic.stopListening();
@@ -62,8 +67,8 @@ export default function ImpermanenceGuide() {
   const handleJournal = useCallback(() => {
     mic.stopListening();
     state.clearSeqTimer();
-    setExitTransition({ destination: ROUTES.CHECK_IN + '?from=impermanence', solfeggio: 'violet' });
-  }, [mic, state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.IMPERMANENCE, checkInOrigin), solfeggio: 'violet' });
+  }, [checkInOrigin, mic, state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
@@ -85,7 +90,7 @@ export default function ImpermanenceGuide() {
         visible={!state.started}
       />
 
-      {/* Exit button — always available once started */}
+      {/* Exit button â€” always available once started */}
       {state.started && (
         <button
           onClick={handleLeave}
@@ -105,7 +110,7 @@ export default function ImpermanenceGuide() {
         </button>
       )}
 
-      {/* Guide text (upper third of screen — words first, visual supports) */}
+      {/* Guide text (upper third of screen â€” words first, visual supports) */}
       <div
         style={{
           position: 'fixed',
@@ -182,7 +187,7 @@ export default function ImpermanenceGuide() {
         </>
       )}
 
-      {/* Exit threshold — soft transition out */}
+      {/* Exit threshold â€” soft transition out */}
       {exitTransition && (
         <ExitThreshold
           destination={exitTransition.destination}

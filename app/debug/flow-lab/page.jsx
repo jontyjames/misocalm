@@ -51,6 +51,12 @@ const ROUTE_SHORTCUTS = [
   { label: 'Check-in', href: ROUTES.CHECK_IN },
   { label: 'Profile Triggers', href: ROUTES.PROFILE_TRIGGERS },
   { label: 'Tool Detail', href: '/tools/1' },
+  { label: 'Regulation Toolkit', href: ROUTES.REGULATION_TOOLKIT },
+  { label: 'Butterfly Tapping', href: `${ROUTES.REGULATION_TOOLKIT}/butterfly-tapping` },
+  { label: 'Emergency', href: `${ROUTES.REGULATION_TOOLKIT}/emergency-protocol` },
+  { label: 'Movement Reset', href: `${ROUTES.REGULATION_TOOLKIT}/movement-reset` },
+  { label: 'Sound Support', href: `${ROUTES.REGULATION_TOOLKIT}/sound-support` },
+  { label: 'Cold Water', href: `${ROUTES.REGULATION_TOOLKIT}/cold-water-micro-reset` },
 ];
 
 function ScenarioPreview({ scenario }) {

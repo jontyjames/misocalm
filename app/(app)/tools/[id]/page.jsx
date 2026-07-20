@@ -19,6 +19,7 @@ import TimerPlayer from '@/components/composed/tools/TimerPlayer';
 import LaunchSequence from '@/components/composed/tools/LaunchSequence';
 import { useAuthGuard, useTools } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
+import { getContextualBackRoute, withRouteContext } from '@/lib/routeContext';
 import { TOOLS } from '@/lib/toolsData';
 
 // Lookup by id — single source of truth from toolsData.js
@@ -47,6 +48,9 @@ export default function ToolPage() {
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [timerConfig, setTimerConfig] = useState(null);
   const [timerPhase, setTimerPhase] = useState('setup');
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const context = searchParams.get('from');
+  const openedWithDuration = searchParams.has('duration');
 
   const { markCompleted } = useTools(profile?.id, { autoFetch: false });
   const handleComplete = useCallback(() => { if (tool) markCompleted(tool.id); }, [tool, markCompleted]);
@@ -77,10 +81,24 @@ export default function ToolPage() {
     }
   }, [params.id, searchParams]);
 
+  useEffect(() => {
+    if (tool?.type === 'regulation' && tool.route) {
+      router.replace(withRouteContext(tool.route, context));
+    }
+  }, [context, router, tool]);
+
   if (loading || !isAuthenticated || !tool) {
     return (
       <AppLayout>
         <RouteSkeleton titleWidth={140} introLines={1} cardCount={3} showHero />
+      </AppLayout>
+    );
+  }
+
+  if (tool.type === 'regulation' && tool.route) {
+    return (
+      <AppLayout>
+        <RouteSkeleton titleWidth={170} introLines={1} cardCount={2} />
       </AppLayout>
     );
   }
@@ -92,7 +110,7 @@ export default function ToolPage() {
         <DurationSelector
           tool={tool}
           onSelect={setSelectedDuration}
-          onBack={() => router.push(ROUTES.TOOLS)}
+          onBack={() => router.push(backRoute)}
         />
       </AppLayout>
     );
@@ -103,7 +121,10 @@ export default function ToolPage() {
     return (
       <AppLayout showNav={false}>
         <div className="min-h-screen flex flex-col">
-          <ToolHeader title={tool.title} onBack={() => setSelectedDuration(null)} />
+          <ToolHeader
+            title={tool.title}
+            onBack={() => (openedWithDuration ? router.push(backRoute) : setSelectedDuration(null))}
+          />
           <BreathingPlayer
             tool={tool}
             selectedDuration={selectedDuration}
@@ -124,7 +145,7 @@ export default function ToolPage() {
         <AppLayout showNav={false}>
           <TimerSetup
             tool={tool}
-            onBack={() => router.push(ROUTES.TOOLS)}
+            onBack={() => router.push(backRoute)}
             onStart={handleTimerStart}
           />
         </AppLayout>
@@ -162,8 +183,8 @@ export default function ToolPage() {
   return (
     <AppLayout>
       <div className="min-h-screen flex flex-col">
-        <ToolHeader title={tool.title} onBack={() => router.push(ROUTES.TOOLS)} />
-        <ComingSoon tool={tool} onBack={() => router.push(ROUTES.TOOLS)} />
+        <ToolHeader title={tool.title} onBack={() => router.push(backRoute)} />
+        <ComingSoon tool={tool} onBack={() => router.push(backRoute)} />
       </div>
     </AppLayout>
   );

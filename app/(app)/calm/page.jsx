@@ -11,6 +11,7 @@ import { useAuthGuard } from '@/hooks';
 import { AppLayout } from '@/components/composed';
 import { RouteSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
+import { ROUTE_CONTEXT, withRouteContext } from '@/lib/routeContext';
 import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYERS_STYLE, torusFlowStyle, solfeggioBreathStyle, SOLFEGGIO_RGBA } from '@/lib/sacredGlass';
 
 // Solfeggio-mapped glass cards
@@ -18,27 +19,30 @@ import { SACRED_GLASS_CLASSES, sacredGlassStyle, GLASS_HIGHLIGHT_STYLE, PHI_LAYE
 const SUPPORT_LEVELS = [
   {
     id: 'quick',
-    name: 'Just a moment',
-    time: '1.5 min',
-    description: 'A few breaths to bring you back to centre',
+    duration: 'quick',
+    name: 'Just one breath',
+    time: '30 sec',
+    description: 'A quick release when the sound has just hit',
     accent: 'indigo',    // 528Hz, transformation
     badge: 'text-indigo-400 bg-indigo-400/10',
     breathe: 'solfeggio-breathe-528 5.28s ease-in-out infinite',
   },
   {
     id: 'deep',
-    name: 'I need some space',
-    time: '3 min',
-    description: 'Enough space to let your body fully calm',
+    duration: 'medium',
+    name: 'Stay with me',
+    time: '1 min',
+    description: 'A little more space for your body to settle',
     accent: 'violet',    // 852Hz, intuition
     badge: 'text-violet-400 bg-violet-400/10',
     breathe: 'solfeggio-breathe-852 3.7s ease-in-out infinite',
   },
   {
     id: 'full',
-    name: 'Stay with me',
-    time: '4 min',
-    description: 'A full session to find steady ground',
+    duration: 'full',
+    name: 'Full reset',
+    time: '1.5 min',
+    description: 'A complete physiological sigh practice',
     accent: 'cyan',    // 741Hz, expression
     badge: 'text-cyan-400 bg-cyan-400/10',
     breathe: 'solfeggio-breathe-741 5.3s ease-in-out infinite',
@@ -50,7 +54,7 @@ export default function CalmPage() {
   const { isAuthenticated, loading } = useAuthGuard();
 
   const handleSelect = (level) => {
-    router.push(`/tools/3?duration=${level.id}`);
+    router.push(withRouteContext(`/tools/4?duration=${level.duration}`, ROUTE_CONTEXT.CALM));
   };
 
   if (loading || !isAuthenticated) {

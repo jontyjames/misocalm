@@ -172,9 +172,10 @@ function PremiumContent() {
             <button
               onClick={handleManage}
               disabled={manageLoading}
+              aria-live="polite"
               className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors font-light disabled:opacity-50"
             >
-              {manageLoading ? 'Opening portal...' : 'Manage subscription'}
+              {manageLoading ? 'Preparing your portal...' : 'Manage subscription'}
             </button>
           </div>
         ) : (
@@ -182,6 +183,7 @@ function PremiumContent() {
             <button
               onClick={handleCheckout}
               disabled={checkoutLoading || isLoading}
+              aria-live="polite"
               className={`relative w-full py-4 rounded-2xl overflow-hidden ${SACRED_GLASS_CLASSES} disabled:opacity-50`}
               style={{
                 background: 'linear-gradient(160deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 30%, rgba(139,92,246,0.12) 60%, rgba(139,92,246,0.06) 100%)',
@@ -193,7 +195,7 @@ function PremiumContent() {
                 className="text-white"
                 style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 200 }}
               >
-                {checkoutLoading ? 'Opening checkout...' : 'Start Premium'}
+                {checkoutLoading ? 'Preparing checkout...' : 'Start Premium'}
               </span>
             </button>
             {checkoutError && (

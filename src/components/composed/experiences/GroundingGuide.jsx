@@ -1,5 +1,5 @@
 /**
- * GroundingGuide — orchestrates the 5-4-3-2-1 grounding experience
+ * GroundingGuide Ã¢â‚¬â€ orchestrates the 5-4-3-2-1 grounding experience
  *
  * Text-driven sensory grounding with sacred geometry generative art.
  * Each tap spawns a sacred shape on the canvas. By the end of 15 taps,
@@ -9,11 +9,13 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES, VOID_BLACK, VOID_BLACK_RGB } from '@/lib/constants';
 import { generateComposition, generatePlayLayer } from '@/lib/groundingCompositions';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import useGroundingState, { TIERS } from './useGroundingState';
 import SenseProgress from './SenseProgress';
 import GroundingComplete from './GroundingComplete';
@@ -37,6 +39,7 @@ const TEXT_SHADOW = `0 0 16px rgba(${VOID_BLACK_RGB},0.8), 0 0 42px rgba(${VOID_
 
 export default function GroundingGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const state = useGroundingState();
   const [ripples, setRipples] = useState([]);
@@ -45,6 +48,8 @@ export default function GroundingGuide() {
   const [playing, setPlaying] = useState(false);
   const [exitTransition, setExitTransition] = useState(null);
   const rippleTimers = useRef([]);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   // Generate composition on enter, register tap callback to reveal next shape
   useEffect(() => {
@@ -80,8 +85,8 @@ export default function GroundingGuide() {
   const handleLeave = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
@@ -92,8 +97,8 @@ export default function GroundingGuide() {
   const handleJournal = useCallback(() => {
     rippleTimers.current.forEach(clearTimeout);
     state.clearSeqTimer();
-    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=grounding`, solfeggio: 'cyan' });
-  }, [state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.GROUNDING, checkInOrigin), solfeggio: 'cyan' });
+  }, [checkInOrigin, state.clearSeqTimer]);
 
   const handlePlay = useCallback(() => setPlaying(true), []);
   const handlePlayTap = useCallback((e) => {
@@ -124,7 +129,7 @@ export default function GroundingGuide() {
         <GroundingCanvas composition={composition} revealedCount={revealedCount} />
       )}
 
-      {/* Sense glow — subtle radial background that shifts per sense */}
+      {/* Sense glow Ã¢â‚¬â€ subtle radial background that shifts per sense */}
       {state.started && !state.complete && (
         <div
           style={{
@@ -138,9 +143,9 @@ export default function GroundingGuide() {
         />
       )}
 
-      {/* Tap ripples — 110px phi scale, 610ms fib fade */}
+      {/* Tap ripples Ã¢â‚¬â€ 110px phi scale, 610ms fib fade */}
       <GroundingRipples ripples={ripples} />
-      {/* Full-screen tap target — active during grounding and play mode */}
+      {/* Full-screen tap target Ã¢â‚¬â€ active during grounding and play mode */}
       {state.started && (!state.complete || playing) && (
         <div
           onClick={playing ? handlePlayTap : handleTap}
@@ -190,10 +195,10 @@ export default function GroundingGuide() {
         </button>
       )}
 
-      {/* Intro text — centred, larger, letter-by-letter reveal */}
+      {/* Intro text Ã¢â‚¬â€ centred, larger, letter-by-letter reveal */}
       {state.introActive && <GroundingIntro text={state.guideText} />}
 
-      {/* Body text zone — top of screen, shown during active grounding */}
+      {/* Body text zone Ã¢â‚¬â€ top of screen, shown during active grounding */}
       {!state.introActive && (
         <div
           style={{

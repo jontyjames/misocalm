@@ -55,10 +55,10 @@
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Practices",
-      "short_name": "Practice",
-      "description": "Open the guided practice suite.",
-      "url": "/tools",
+      "name": "Regulation Toolkit",
+      "short_name": "Regulate",
+      "description": "Open body-based regulation practices.",
+      "url": "/tools/regulation",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {

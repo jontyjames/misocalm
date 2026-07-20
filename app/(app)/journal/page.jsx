@@ -50,6 +50,11 @@ export default function JournalPage() {
     }
   };
 
+  const returnToHub = () => {
+    setView('hub');
+    window.history.replaceState({ view: 'hub' }, '', '/journal');
+  };
+
   if (loading || !isAuthenticated) {
     return (
       <AppLayout>
@@ -63,7 +68,7 @@ export default function JournalPage() {
       <AppLayout>
         <div className="px-6 py-8 pb-32" style={{ animation: 'fadeIn 0.61s ease-out' }}>
           <button
-            onClick={() => window.history.back()}
+            onClick={returnToHub}
             className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors duration-[233ms] mb-6"
           >
             <ChevronLeft className="w-4 h-4" />

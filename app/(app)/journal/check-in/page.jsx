@@ -14,10 +14,12 @@ import { RouteSkeleton } from '@/components/composed/skeletons';
 
 function CheckInContent() {
   const searchParams = useSearchParams();
-  const fromBreathwork = searchParams.get('from') === 'breathwork';
+  const source = searchParams.get('from');
+  const origin = searchParams.get('origin');
+  const fromBreathwork = source === 'breathwork';
   const { user } = useAuth();
 
-  return <BreathworkCheckIn userId={user?.id} fromBreathwork={fromBreathwork} />;
+  return <BreathworkCheckIn userId={user?.id} fromBreathwork={fromBreathwork} source={source} origin={origin} />;
 }
 
 export default function CheckInPage() {

@@ -1,5 +1,5 @@
 /**
- * AliveGuide — orchestrates the full Alive experience
+ * AliveGuide â€” orchestrates the full Alive experience
  *
  * Guided-to-solo breath flow. 11 breaths build a bioluminescent Tree of Life.
  * Slide up to inhale, down to exhale. Solfeggio: slate (396Hz).
@@ -11,10 +11,12 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES } from '@/lib/constants';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import AliveCanvas from './AliveCanvas';
 import AliveComplete from './AliveComplete';
 import AlivePrompt from './AlivePrompt';
@@ -30,11 +32,14 @@ function normalizeY(clientY) {
 
 export default function AliveGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const state = useAliveState();
   const [playing, setPlaying] = useState(false);
   const [exitTransition, setExitTransition] = useState(null);
   const touchActiveRef = useRef(false);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   const handleEnter = useCallback(() => {
     state.enter();
@@ -42,8 +47,8 @@ export default function AliveGuide() {
 
   const handleLeave = useCallback(() => {
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
@@ -52,8 +57,8 @@ export default function AliveGuide() {
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: `${ROUTES.CHECK_IN}?from=alive`, solfeggio: 'slate' });
-  }, [state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.ALIVE, checkInOrigin), solfeggio: 'slate' });
+  }, [checkInOrigin, state.clearSeqTimer]);
 
   const handleKeepBreathing = useCallback(() => setPlaying(true), []);
 
@@ -108,7 +113,7 @@ export default function AliveGuide() {
         <AliveCanvas breathCount={state.breathCount} treePalette={state.treePalette} freePlay={state.freePlay} />
       )}
 
-      {/* Touch wrapper — full screen, below exit button */}
+      {/* Touch wrapper â€” full screen, below exit button */}
       {state.started && (
         <div
           onPointerDown={handlePointerDown}
@@ -121,7 +126,7 @@ export default function AliveGuide() {
         />
       )}
 
-      {/* Breath rail — thin vertical indicator on right edge */}
+      {/* Breath rail â€” thin vertical indicator on right edge */}
       {state.started && (
         <div
           style={{
@@ -147,7 +152,7 @@ export default function AliveGuide() {
               background: 'rgba(148, 163, 184, 0.1)', // slate-400
             }}
           />
-          {/* Threshold marker — inhale (0.382) */}
+          {/* Threshold marker â€” inhale (0.382) */}
           <div
             style={{
               position: 'absolute',
@@ -158,7 +163,7 @@ export default function AliveGuide() {
               background: 'rgba(148, 163, 184, 0.15)',
             }}
           />
-          {/* Threshold marker — exhale (0.618) */}
+          {/* Threshold marker â€” exhale (0.618) */}
           <div
             style={{
               position: 'absolute',
@@ -195,7 +200,7 @@ export default function AliveGuide() {
         visible={!state.started}
       />
 
-      {/* Exit button — visible quickly for trauma safety */}
+      {/* Exit button â€” visible quickly for trauma safety */}
       {state.started && !state.complete && (
         <button
           onClick={handleLeave}
@@ -217,7 +222,7 @@ export default function AliveGuide() {
         </button>
       )}
 
-      {/* Guide text — upper portion */}
+      {/* Guide text â€” upper portion */}
       {(
         <div
           style={{
@@ -261,7 +266,7 @@ export default function AliveGuide() {
         <AliveComplete onKeepBreathing={handleKeepBreathing} onJournal={handleJournal} onReturn={handleReturn} />
       )}
 
-      {/* Free play — done button */}
+      {/* Free play â€” done button */}
       {playing && (
         <div style={{ position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 0, right: 0, zIndex: 8, display: 'flex', justifyContent: 'center' }}>
           <button onClick={() => setPlaying(false)} className="text-slate-300/60 text-xs font-light tracking-widest hover:text-slate-200/90 transition-colors" style={{ padding: '16px 26px' }}>done</button>

@@ -7,12 +7,14 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { triggerLogService } from '@/services';
-import { ROUTES } from '@/lib/constants';
+import { buildCheckInSuccessRoute, normalizeCheckInOrigin, normalizeCheckInSource } from '@/lib/checkInContext';
 import { track, EVENTS } from '@/lib/analytics';
 
-export function useCheckInForm(userId, fromBreathwork = false) {
+export function useCheckInForm(userId, source = null, origin = null) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const checkInSource = normalizeCheckInSource(source);
+  const checkInOrigin = normalizeCheckInOrigin(origin);
 
   // Scale state (default to midpoint: 3)
   const [energy, setEnergy] = useState(3);
@@ -38,7 +40,7 @@ export function useCheckInForm(userId, fromBreathwork = false) {
       energy,
       pleasantness,
       body_sensation: bodySensation.trim() || null,
-      ...(fromBreathwork && { source_practice: 'breathwork' }),
+      ...(checkInSource && { source_practice: checkInSource }),
     });
 
     if (saveError) {
@@ -57,7 +59,8 @@ export function useCheckInForm(userId, fromBreathwork = false) {
       energy,
       pleasantness,
       hasBodySensation: bodySensation.trim().length > 0,
-      fromBreathwork,
+      fromBreathwork: checkInSource === 'breathwork',
+      source: checkInSource,
     });
 
     // Invalidate cached queries so journal/stats/streak update immediately
@@ -68,11 +71,8 @@ export function useCheckInForm(userId, fromBreathwork = false) {
     setSaving(false);
 
     const entryId = data[0].id;
-    const params = new URLSearchParams({ type: 'check_in' });
-    if (fromBreathwork) params.set('from', 'breathwork');
-    if (entryId) params.set('entry', entryId);
-    router.push(`${ROUTES.LOG_SUCCESS}?${params.toString()}`);
-  }, [userId, energy, pleasantness, bodySensation, fromBreathwork, saving, router, queryClient]);
+    router.push(buildCheckInSuccessRoute({ source: checkInSource, origin: checkInOrigin, entryId }));
+  }, [userId, energy, pleasantness, bodySensation, checkInSource, checkInOrigin, saving, router, queryClient]);
 
   return {
     energy, setEnergy,

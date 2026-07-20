@@ -12,6 +12,13 @@ import {
   DEEPER_PROMPTS_TRIGGER,
   DEEPER_PROMPTS_CHECKIN,
   DEEPER_PROMPTS_BREATHWORK,
+  DEEPER_PROMPTS_REGULATION,
+  DEEPER_PROMPTS_GROUNDING,
+  DEEPER_PROMPTS_FOCUS,
+  DEEPER_PROMPTS_ALIVE,
+  DEEPER_PROMPTS_MANDALA,
+  DEEPER_PROMPTS_IMPERMANENCE,
+  DEEPER_PROMPTS_PULSE,
 } from '../constants';
 
 // Helper to check if a number is in the Fibonacci sequence
@@ -102,5 +109,20 @@ describe('Sacred Geometry Constants', () => {
   it('DEEPER_PROMPTS_BREATHWORK count is prime (7)', () => {
     expect(DEEPER_PROMPTS_BREATHWORK.length).toBe(7);
     expect(isPrime(DEEPER_PROMPTS_BREATHWORK.length)).toBe(true);
+  });
+
+  it('practice deeper prompt pools use prime count (7)', () => {
+    [
+      DEEPER_PROMPTS_REGULATION,
+      DEEPER_PROMPTS_GROUNDING,
+      DEEPER_PROMPTS_FOCUS,
+      DEEPER_PROMPTS_ALIVE,
+      DEEPER_PROMPTS_MANDALA,
+      DEEPER_PROMPTS_IMPERMANENCE,
+      DEEPER_PROMPTS_PULSE,
+    ].forEach((pool) => {
+      expect(pool.length).toBe(7);
+      expect(isPrime(pool.length)).toBe(true);
+    });
   });
 });

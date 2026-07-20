@@ -15,6 +15,7 @@ import { Button, Input, PremiumGate } from '@/components/ui';
 import { AppLayout, Logo } from '@/components/composed';
 import { ChatSkeleton } from '@/components/composed/skeletons';
 import { ROUTES } from '@/lib/constants';
+import MisoModeChips from '@/components/composed/chat/MisoModeChips';
 
 export default function ChatPage() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function ChatPage() {
     addGreeting,
   } = useChat(user?.id);
   const [input, setInput] = useState('');
+  const [misoMode, setMisoMode] = useState('triggered_now');
   const messagesEndRef = useRef(null);
 
   // Add initial greeting if no messages loaded
@@ -51,6 +53,7 @@ export default function ChatPage() {
     await sendMessage(userMessage, {
       userName: profile?.name,
       severityLevel: profile?.severity_level,
+      misoMode,
     });
   };
 
@@ -101,6 +104,8 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
+
+        <MisoModeChips activeMode={misoMode} onChange={setMisoMode} />
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">

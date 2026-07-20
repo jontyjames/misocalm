@@ -1,5 +1,5 @@
 /**
- * PulseGuide — orchestrates the full Pulse experience
+ * PulseGuide â€” orchestrates the full Pulse experience
  *
  * Tap-based heartbeat visualisation. The most intimate input: your own rhythm.
  * Same architectural pattern as ImpermanenceGuide.
@@ -8,10 +8,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useReducedMotion } from '@/hooks';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { CHECK_IN_SOURCE, buildCheckInRoute, getCheckInOriginFromRouteContext } from '@/lib/checkInContext';
+import { getContextualBackRoute } from '@/lib/routeContext';
 import PulseCanvas from './PulseCanvas';
 import ColourRibbon from './ColourRibbon';
 import usePulseState from './usePulseState';
@@ -19,10 +21,13 @@ import ExitThreshold from './ExitThreshold';
 
 export default function PulseGuide() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReduced = useReducedMotion();
   const state = usePulseState();
   const [customColor, setCustomColor] = useState(null);
   const [exitTransition, setExitTransition] = useState(null);
+  const backRoute = getContextualBackRoute(searchParams, ROUTES.TOOLS);
+  const checkInOrigin = getCheckInOriginFromRouteContext(searchParams);
 
   const handleTap = useCallback(() => {
     state.processTap();
@@ -30,8 +35,8 @@ export default function PulseGuide() {
 
   const handleLeave = useCallback(() => {
     state.clearSeqTimer();
-    router.push(ROUTES.TOOLS);
-  }, [state.clearSeqTimer, router]);
+    router.push(backRoute);
+  }, [backRoute, state.clearSeqTimer, router]);
 
   const handleReturn = useCallback(() => {
     state.clearSeqTimer();
@@ -40,8 +45,8 @@ export default function PulseGuide() {
 
   const handleJournal = useCallback(() => {
     state.clearSeqTimer();
-    setExitTransition({ destination: ROUTES.CHECK_IN + '?from=pulse', solfeggio: 'indigo' });
-  }, [state.clearSeqTimer]);
+    setExitTransition({ destination: buildCheckInRoute(CHECK_IN_SOURCE.PULSE, checkInOrigin), solfeggio: 'indigo' });
+  }, [checkInOrigin, state.clearSeqTimer]);
 
   return (
     <div style={{ background: '#030712', minHeight: '100dvh' }}>
@@ -132,7 +137,7 @@ export default function PulseGuide() {
         </button>
       </div>
 
-      {/* Exit button — always available once started */}
+      {/* Exit button â€” always available once started */}
       {state.started && (
         <button
           onClick={handleLeave}
@@ -152,7 +157,7 @@ export default function PulseGuide() {
         </button>
       )}
 
-      {/* Guide text (upper third of screen — words first, visual supports) */}
+      {/* Guide text (upper third of screen â€” words first, visual supports) */}
       <div
         style={{
           position: 'fixed',
@@ -230,7 +235,7 @@ export default function PulseGuide() {
         </>
       )}
 
-      {/* Exit threshold — soft transition out */}
+      {/* Exit threshold â€” soft transition out */}
       {exitTransition && (
         <ExitThreshold
           destination={exitTransition.destination}

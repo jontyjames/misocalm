@@ -117,6 +117,7 @@ export function LoadMoreButton({ loading, hasMore, onLoadMore, className = '' })
     <button
       onClick={onLoadMore}
       disabled={loading}
+      aria-live="polite"
       className={`
         w-full py-3 px-4 rounded-lg
         bg-slate-800/50 border border-slate-700/50
@@ -127,7 +128,7 @@ export function LoadMoreButton({ loading, hasMore, onLoadMore, className = '' })
         ${className}
       `}
     >
-      {loading ? 'Loading...' : 'Load more'}
+      {loading ? 'Bringing more in...' : 'Load more'}
     </button>
   );
 }

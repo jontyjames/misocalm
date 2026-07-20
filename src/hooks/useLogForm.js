@@ -119,14 +119,22 @@ export function useLogForm(userId) {
     submittingRef.current = false;
 
     if (!skipNavigate) {
+      const params = new URLSearchParams();
       const entryId = data?.[0]?.id;
-      router.push(`${ROUTES.LOG_SUCCESS}${entryId ? `?entry=${entryId}` : ''}`);
+      if (entryId) params.set('entry', entryId);
+      if (maxIntensity) params.set('intensity', String(maxIntensity));
+      if (bodyResponses.length > 0) {
+        params.set('body', bodyResponses.slice(0, 5).join('|'));
+      }
+
+      const query = params.toString();
+      router.push(`${ROUTES.LOG_SUCCESS}${query ? `?${query}` : ''}`);
     }
   }, [userId, triggerEntries, environment, timeOfDay, bodyResponses, notes, router, queryClient]);
 
   const handleCrisisContinue = useCallback(() => {
     setShowCrisisModal(false);
-    handleSave(true);
+    return handleSave(true);
   }, [handleSave]);
 
   const handleCrisisSupport = useCallback(async () => {
