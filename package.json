@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "vitest",
     "test:run": "vitest run",
+    "audio:placeholders": "node scripts/generate-placeholder-audio.mjs",
     "generate-icons": "node scripts/generate-icons.js",
     "insta": "node scripts/insta/generate.mjs",
     "skool:thumbs": "node scripts/skool/export-thumbnails.mjs",
