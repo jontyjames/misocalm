@@ -9,6 +9,7 @@ import { useAuthGuard, useRegulationToolkitFavorites } from '@/hooks';
 import { PHI_SCALE, ROUTES } from '@/lib/constants';
 import { REGULATION_FAMILIES, getToolkitPreview } from '@/lib/regulationToolkitData';
 import { ROUTE_CONTEXT, withRouteContext } from '@/lib/routeContext';
+import RegulationBetaNotice from './RegulationBetaNotice';
 import ToolkitFamilySection from './ToolkitFamilySection';
 import ToolkitPathCard from './ToolkitPathCard';
 import ToolkitPracticePill from './ToolkitPracticePill';
@@ -30,6 +31,7 @@ export default function RegulationToolkitClient() {
 
   return (
     <AppLayout>
+      <RegulationBetaNotice />
       <div
         className="min-h-screen px-6 py-8 pb-32"
         style={{ animation: 'fadeIn 0.377s ease-out' }}
